@@ -1,0 +1,15 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+	<div th:replace="~{common/modal/simple-modal-template :: modal('deleteModal', ~{::modalHeader}, ~{::modalBody}, 
+		'danger','fa fa-circle-xmark', #{message.label.confirm},true)}">
+		<modalHeader>
+			<th:block th:text="${headerText}"></th:block>
+		</modalHeader>
+		<modalBody>
+			<span id="deleteBodyText" th:text="${bodyText}"></span>
+			<input id="dynamicId" type="hidden">
+			<input id="toasterMsg" type="hidden">
+			<input id="urlId" type="hidden">
+			<input id="prefixId" type="hidden">
+		</modalBody>
+	</div>
+</th:block>

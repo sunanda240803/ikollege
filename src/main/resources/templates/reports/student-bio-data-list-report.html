@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">							
+							<form action="#" method="get">
+		                        <div class="row mb-3">
+			        				<div class="col-auto">
+			        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+			        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+			        							data-bs-title="Use Application Number, Roll Number, Student Name, Gender and Prefered Mess to search"></i>
+			        					</label>
+		                            	<input type="text" class="form-control" name="search" id="search"
+		                                   th:field="${form.search}">
+		                             </div>
+		                             <div class="col-auto mt-3">
+		                            	<button class="btn btn-secondary mt-4" type="submit">
+		                            		<span th:text="#{message.label.search}"></span>
+		                            	</button>
+		                            </div>
+		                        </div>
+	                   		</form>							
+							<div class="table-responsive themeTable " id="myTable">
+								<table id="studentBioDataList" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+											<th class="text-center">
+												<span th:text="#{message.label.sl.no}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.application.no}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.roll.no}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.student.name}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.gender}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.prefered.mess}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.registration.date}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.pdf}"></span>
+											</th>
+										</tr>
+									</thead>									
+									<tbody>
+										<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											 th:each="studentBioDataList, iter: ${form.paginationList.getContent()}">
+											<td class="text-center" th:text="${form.paginationList.number * form.paginationList.size + iter.index + 1}"></td>
+											<td class="text-center" th:text="${studentBioDataList.applicationNumber}"></td>
+											<td class="text-center" th:text="${studentBioDataList.studentId}"></td>
+											<td class="text-center" th:text="${studentBioDataList.studentName}"></td>
+											<td class="text-center" th:text="${studentBioDataList.gender}"></td>
+											<td class="text-center" th:text="${studentBioDataList.messName}"></td>
+											<td class="text-center" th:text="${#temporals.format(studentBioDataList.registrationDate, #messages.msg('date.format'))}"></td>
+											<td class="text-center">
+												<a class="btn btn-outline-pink me-2" data-bs-toggle="tooltip" th:title="#{message.label.print.student.bio.data}"
+													th:href="@{#{url.admin.student.bio.data} + #{url.pdf.download} + '/' + ${studentBioDataList.studentId} +
+													'/true'}">
+													<i class="fa-solid fa-print"></i>
+												</a>
+				                            </td>									
+										</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="12" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/reports/student-bio-data-list-report.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.student.bio.data.list.report}]]*/ '';
+		</script>
+	</th:block>
+</body>
+
+</html>

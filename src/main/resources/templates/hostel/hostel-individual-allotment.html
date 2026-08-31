@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+    <link rel="stylesheet" th:href="@{/assets/css/hostel/hostel-individual-allotment.css}">
+</head>
+
+<body>
+    <header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+    <!-- //Main-->
+    <main id="main" class="main">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card main-card mt-4">
+                    <div class="card-body themeForm">
+                        <form>
+                            <!-- Filters Section -->
+                            <div class="row mb-4">
+                                <div class="col-lg-3">
+                                    <label for="hostelIdList" class="form-label">
+                                        <span th:text="#{message.label.hostel.name}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <select class="form-select" data-live-search="true"
+                                        th:value="${hostelId}" name="hostelIdList" id="hostelIdList" th:data-url="${baseUrl}"
+                                            onchange="getHostelFloorList('hostelIdList','floorNameList', this)" required>
+                                        <option value=""
+                                            th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+                                        <option th:each="hostelOrWardenList : ${hostelOrWardenList}"
+                                            th:value="${hostelOrWardenList.id}"
+                                            th:text="${hostelOrWardenList.hostelName}"
+                                            th:selected="${hostelId} eq ${hostelOrWardenList.id}">
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:text="#{message.validation.hostel.name.required}"></div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label for="floorNameList" class="form-label" th:text="#{message.label.floor.name}"></label>
+                                    <select id="floorNameList" class="form-select" th:value="${floorId}" >
+                                        <option value="" selected th:text="#{message.label.select}+' '+#{message.label.floor.name}"></option>
+                                        <option th:each="floor : ${hostelFloorList}" th:value="${floor.id}"
+                                                th:text="${floor.floorName}"
+                                                th:selected="${floor.id.toString() == floorId}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="occupancyStatus" class="form-label"
+                                        th:text="#{message.label.occupancy} + ' ' + #{message.label.status}"></label>
+                                    <div class="input-group">
+                                        <select class="form-select" th:value="${occupancyStatus}" name="occupancyStatus" id="occupancyStatus">
+                                            <option value=""
+                                                    th:text="#{message.label.select} + ' ' + #{message.label.occupancy} + ' ' + #{message.label.status}">
+                                            </option>
+                                            <option th:each="hostelAllotmentStatus : ${hostelAllotmentStatus}"
+                                                    th:value="${hostelAllotmentStatus.value}"
+                                                    th:text="${hostelAllotmentStatus.value}"
+                                                    th:selected="${occupancyStatus} eq ${hostelAllotmentStatus.value}">
+                                            </option>
+                                        </select>
+                                        <button class="btn btn-lgtblue" id="getDataButton" type="button"
+                                                th:data-url="${baseUrl}" onclick="getRoomList(this)">
+                                            <i class="fa-solid fa-database me-1"></i>
+                                            <span th:text="#{message.button.get.data}"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:replace="~{common/template/left-right-table-scroll-arrows.html :: leftRightArrow()}"></div>
+                            <div class="text-danger d-flex align-items-center"
+                                th:if="${errorMessage != null && !errorMessage.isEmpty()}">
+                                <ul>
+                                    <li th:text="${errorMessage}"></li>
+                                </ul>
+                            </div>
+                            <div class="roomAllocationTable"
+                                th:classappend="${hostelId != null && errorMessage == null} ? '' : 'd-none'">
+                                <div class="row mt-2">
+                                    <div class="col-lg-12">
+                                        <h2 class="tmsub-title row">
+                                            <div class="col-12 text-center d-flex justify-content-between">
+                                                <a th:href="@{${baseUrl}(monthOffset=${(monthOffset == null ? 0 : monthOffset)  - 1}, hostelId=${hostelId}, occupancyStatus=${occupancyStatus}, floorId=${floorId})}"
+                                                    data-bs-toggle="tooltip" title="Previous month"
+                                                    class="btn btn-sm btn-pink text-decoration-none me-3"><i
+                                                        class="fa-solid fa-xl fa-angle-left ps-3 pe-3"></i></a>
+                                                <span
+                                                    th:text="${#strings.concat(#temporals.format(startDate, #messages.msgOrNull('date.format')), ' to ', #temporals.format(endDate, #messages.msgOrNull('date.format')))}"></span>
+                                                <a th:href="@{${baseUrl}(monthOffset=${(monthOffset == null ? 0 : monthOffset) + 1}, hostelId=${hostelId}, occupancyStatus=${occupancyStatus}, floorId=${floorId})}"
+                                                    data-bs-toggle="tooltip" title="Next Month"
+                                                    class=" btn btn-sm btn-pink text-decoration-none ms-3"><i
+                                                        class="fa-solid fa-xl fa-angle-right ps-3 pe-3"></i></a>
+                                            </div>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <!-- Table Section -->
+                                <div class="table-responsive vh-100">
+                                    <table class="table table-bordered table-hover table-custom ">
+                                        <thead class="bg-light sticky-top">
+                                            <tr>
+                                                <th class="sticky-header sticky-first-column"
+                                                    th:text="#{message.lable.vacancy}"></th>
+                                                <th th:each="day : ${dateSequence}" class="grid-item sticky-header"
+                                                    th:text="${vacancyMap[T(java.time.LocalDate).parse(day.toString())]}">
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th class="sticky-header sticky-first-column"
+                                                    th:text="#{message.lable.room.or.date}"></th>
+                                                <th th:each="day : ${dateSequence}" class="grid-item sticky-header">
+                                                    <span th:text="${#temporals.format(day, #messages.msgOrNull('month.date.format'))}"></span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${roomList != null}"
+                                                th:each="roomOccupiedList, iter: ${roomList}" class="occupied-row">
+                                                <td class="sticky-first-column">
+                                                    <div class="d-flex justify-content-evenly align-items-center gap-1">
+                                                        <span>
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-secondary btn-room-no roomNumber font-weight-bold"
+                                                                th:data-room-id="${roomOccupiedList.id}"
+                                                                    th:data-url = "${baseUrl}"
+                                                                onclick="roomDetailsModal(this);"
+                                                                th:text="${roomOccupiedList.roomNo}"></button>
+                                                        </span>
+                                                        <span th:if="${roomOccupiedList.capacity > 1}">
+                                                            <span class="btn btn-sm btn-danger btn-capacity"
+                                                                data-bs-toggle="tooltip"
+                                                                th:title="#{message.label.room.capacity}"
+                                                                th:text="${roomOccupiedList.capacity}"></span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td th:each="day, index : ${dateSequence}"
+                                                    th:with="count=${roomOccupiedList.studentCount[index.index]},
+                                                capacity=${roomOccupiedList.capacity},
+                                                date=${#temporals.format(day, #messages.msgOrNull('date.format'))}, roomId = ${roomOccupiedList.id}">
+                                                    <button type="button" data-bs-toggle="tooltip"
+                                                        class="square-button d-flex justify-content-center"
+                                                        th:data-date="${date}" th:data-room-id="${roomId}"
+                                                            th:data-guest = "${isGuest}"
+                                                            th:data-url = "${baseUrl}"
+                                                        th:data-hostel-id="${hostelId}" onclick="occupiedModal(this);"
+                                                        th:title="${count == 0} ? #{message.label.hostel.vacant} : (${count > 0 && count < capacity} ?
+                                                        #{message.label.hostel.partially.occupied} : #{message.label.hostel.occupied})"
+                                                        th:classappend="${count == 0} ? #{message.label.hostel.vacant} : (${count > 0 && count < capacity} ?
+                                                        #{message.label.hostel.partially.occupied} : #{message.label.hostel.occupied})">
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- //Main-->
+
+    <!-- Modal-->
+    <div th:id="occupiedModalDiv"></div>
+    <div th:id="roomDetailsModalDiv"></div>
+    <!-- //Modal-->
+
+    <!-- Footer-->
+    <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+        <script th:inline="javascript">
+            const baseURL = /*[[#{url.hostel.individual.allotment}]]*/ '';
+            const checkCandidateOrStudent = /*[[#{url.hostel.check.candidate.or.student}]]*/ '';
+            const swapURL = /*[[#{url.swap}]]*/ '';
+            const saveStudent = /*[[#{url.save}]]*/ '';
+            const allocateURL = /*[[#{url.allocate}]]*/ '';
+            const deallocateURL = /*[[#{url.allocate}]]*/ '';
+            const validateSwapDetails = /*[[#{url.validate.student.hostel}]]*/ '';
+            const getHostelListURL = /*[[#{url.hostel.master}]]*/ '';
+            const getFloorListURL = /*[[#{url.floor.list}]]*/ '';
+            const getRoomListURL = /*[[#{url.room.list}]]*/ '';
+            const checkHostelOccupancyURL = /*[[#{url.hostel.check.hostel.change}]]*/ '';
+            const getFloorURL =/*[[#{url.floor.list}]]*/ '';
+            //label resources
+            const hostelSelectText = /*[[#{message.label.select} + ' '+ #{message.label.hostel.name}]]*/ '';
+            const floorSelectText = /*[[#{message.label.select} + ' '+ #{message.label.floor.name}]]*/ '';
+            const roomSelectText = /*[[#{message.label.select} + ' '+ #{message.label.room.number}]]*/ '';
+            const seatSelectText = /*[[#{message.label.select} + ' '+ #{message.label.seat.name}]]*/ '';
+            const firstText = /*[[#{message.label.first}]]*/ '';
+            const getStudentRegistrationURL = /*[[#{url.admin.student.bio.data}]]*/ '';
+        </script>
+        <script th:src="@{/assets/js/hostel/hostel-individual-allotment.js}"></script>
+        <script th:src="@{/assets/js/student/common-search.js}"></script>
+    </th:block>
+    <!-- //Footer-->
+</body>
+
+</html>

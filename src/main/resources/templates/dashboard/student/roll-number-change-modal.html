@@ -1,0 +1,66 @@
+<!-- Form Module -->
+<th:block th:fragment="rollNumberChange">
+	<div th:replace="~{common/modal-template :: modal('roll-number-change-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+		<modalHeader> 
+			<span th:text="#{message.label.roll.number.change}"></span>
+		</modalHeader>
+		<modalBody>
+			<form class="themeForm" enctype="multipart/form-data" th:object="${studentRollnoChange}" id="rollNumberForm">
+				<div class="row">
+					<div class="col-lg-6 mb-3">
+						<label class="form-label">
+							<span th:text="#{message.label.studentID}"></span>
+						</label>
+						<div class="form-control form-graybox text-uppercase" th:text="${@securityCtxUtil.userName()}"></div>
+					</div>
+					<div class="col-lg-6 mb-3">
+						<label class="form-label">
+							<span th:text="#{message.label.studentName}"></span>
+						</label>
+						<div class="form-control form-graybox text-uppercase" 
+						     th:text="${#strings.length(@securityCtxUtil.studentFullName()) > 30 ?
+						     @securityCtxUtil.studentFullName().substring(0, 30) + '.....' : @securityCtxUtil.studentFullName()}">
+						</div>
+					</div>
+					<div class="col-lg-6 ">
+						<label class="form-label">
+							<span th:text="#{message.label.new.roll.number}"></span> 
+							<th:block th:replace="~{common/template/mandatory-symbol}" />
+						</label> 
+						<input type="text" class="form-control uppercase required-input"
+							th:name="newRollNo" maxlength="10" id="studentId" oninput="validateAlphaNumericInput(this);" 
+							th:placeholder="#{message.placeholder.enter.new.roll.number}">
+						<div class="invalid-feedback">
+							<span th:text="#{message.validation.no.roll.no}"></span>
+						</div>
+						<div class="invalid-req-feedback d-none">
+							<span th:text="#{message.validation.no.roll.no}"></span>
+						</div>
+						<div class="invalid-min-feedback d-none">
+							<span th:text="#{message.validation.min.roll.no}"></span>
+						</div>
+						<div class="invalid-value-feedback d-none">
+							<span th:text="#{message.validation.no.roll.no}"></span>
+						</div>
+						<div class="invalid-exist-feedback d-none">
+							<span th:text="#{message.validation.roll.no.already.exists}"></span>
+						</div>
+						<div class="invalid-format-feedback d-none">
+							<span th:text="#{message.validation.alpha.numeric.roll.no}"></span>
+						</div>
+					</div>
+					<div class="col-lg-6 ">
+						<label class="form-label">
+							<span th:text="#{message.label.provide.student.doc}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" />
+						</label> 
+						<th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+							'uploadFile', 'file', ${#messages.msg('message.accepted.file.type.pdf')}, 'uploadDoc', null, ${#messages.msg('message.drag.drop.here.roll.no')})}">
+						</th:block>
+                		<div class="invalid-feedback" th:text="#{message.validation.roll.no.file.required}"></div>
+					</div>
+				</div>
+			</form>
+		</modalBody>
+	</div>
+</th:block>

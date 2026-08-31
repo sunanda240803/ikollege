@@ -1,0 +1,8 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(excelTemplate)">
+    <u class="text-tmPrimary">
+        <a th:href="@{#{url.bulk.room.inventory}+#{url.template.download}}"
+           id="excelTemplate">
+            <span th:text="#{message.label.click.here}"></span>
+        </a>
+    </u>
+</th:block>

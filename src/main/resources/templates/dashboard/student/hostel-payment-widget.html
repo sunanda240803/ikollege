@@ -1,0 +1,24 @@
+<div th:replace="~{common/widget-template :: content('hostelPayment', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <modalHeader><span th:text="#{message.hostel.payment}"></span></modalHeader>
+    <modalBody>
+        <div class="row text-center">
+            <div class="col-12">
+                <span class="text-tmPrimary fw-bold">Status</span>
+                <div class="text-success align-middle">
+                    <span th:text="${studentHostelPayments != null and studentHostelPayments.hostelOfficeEnrollment != null ?
+                    studentHostelPayments.hostelOfficeEnrollment : '-'}"></span>
+                </div>
+            </div>
+        </div>
+    </modalBody>
+    <modalfooter>
+        <div class="text-end">
+            <p class="text-secondary mb-0 align-middle">
+                <a th:href="@{#{url.hostel.payment}}" class="text-secondary mb-0 align-middle ms-2">
+                    <span class="me-2" th:text="#{message.view.hostel.payments}"></span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </p>
+        </div>
+    </modalfooter>
+</div>

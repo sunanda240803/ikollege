@@ -1,0 +1,24 @@
+Bugs
+1. -Tab privilege needs to be checked.
+2. -The Status filter for Coupon Issued List is not working.
+3. -HDC Complaint – Error occurs when adding a new student request (Providing the student ID triggers an error).
+4. Hostel Wardens should only be able to view details of the hostels assigned to them.
+5. -Remove the Scholars screen from the application.
+6. -The HDC Complaints screen should be visible to CCW and all Warden login users.
+7. -Place all action buttons on the right-hand side of the list.
+
+Enhancements
+1. Deploy the IP address of the existing system to the new system.
+2. Add summary details to each role-based login (excluding Admin and Student), including pending tasks.
+3. Add payment date range filter in the Temp Accommodation List.
+4. Add Hostel Warden Registration screen under the Warden login.
+5. Add Hostel Warden User Mapping screen under the Admin login.
+8. Update security features from old to new – add a Recheck button for CC Avenue on each coupon request.
+9. Students should not be allowed to submit the Hostel Vacating Form if they have a pending amount in HDC Complaints.
+11. Add Room Occupancy Reports screen with the following fields: Student ID, Student Name, Hostel Name, Room No, and Room Code.
+13. In the menu list screen, add an option to upload a dashboard image (use a standardized/common photo size).
+14. The hostel name should be displayed in the account details of Warden login (role already exists, only the hostel name needs to be shown).
+15. Online Guest Coupon students can generate coupons for a maximum of 7 days under the Non-Veg category.
+  - Conditions:
+   - They can request coupons only for 7 days (fixed).
+   - They can make the next request only after 7 days.

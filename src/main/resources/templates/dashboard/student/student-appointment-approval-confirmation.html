@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+</head>
+<body>
+<section class="login-page-wrapper pt-5">
+    <div class="login-page-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-9 col-lg-8 col-xl-6">
+                    <input type="hidden" name="" id="approveReject" th:value="${status}" th:data-status="${status} == 'r' ? 'Rejected' : 'Approved'">
+                    <input type="hidden" name="" id="encryptedString" th:value="${studentAppointmentRequestDto.encryptedString}">
+                    <input type="hidden" name="" id="studentId" th:value="${studentAppointmentRequestDto.studentId}">
+                    <input type="hidden" name="" id="requestId" th:value="${studentAppointmentRequestDto.requestId}">
+                    <input type="hidden"  class="form-control"  id="stayRequestFrom" th:value="${studentAppointmentRequestDto.stayFrom}">
+                    <input type="hidden"  class="form-control"  id="stayRequestTo" th:value="${studentAppointmentRequestDto.stayTo}">
+                    <input type="hidden"  class="form-control"  id="approveStatus" th:value="${studentAppointmentRequestDto.status}">
+                    <input class="form-control" type="hidden" id="occupancy" th:value="*{studentAppointmentRequestDto.occupancy}">
+                    <input class="form-control" type="hidden" id="thesisSubmittedDate" th:value="*{studentAppointmentRequestDto.thesisSubmittedDate}">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, null)}">
+    <script th:src="@{/assets/js/dashboard/student/student-appointment-approval.js}"></script>
+    <script th:src="@{/assets/js/dean/student-appointment-request.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.dean.student.accommodation.request}]]*/ '';
+        const updateApprovalStatus = /*[[#{url.update}]]*/ '';
+        const publicURL = /*[[#{url.public.api}]]*/ '';
+    </script>
+</th:block>
+<th:block th:replace="~{common/modal/info-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+<th:block th:replace="~{common/modal/success-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+<th:block th:replace="~{common/modal/delete-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+</body>
+</html>

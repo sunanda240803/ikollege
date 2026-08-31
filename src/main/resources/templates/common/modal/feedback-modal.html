@@ -1,0 +1,40 @@
+<div th:replace="~{common/modal-template :: modal('feedbackModal', ~{::modalHeader}, ~{::modalBody}, null, null, Submit, null, 'md')}">
+   <modalHeader>
+      <span th:text="#{message.label.feedback.form}"></span>
+   </modalHeader>
+   <modalBody>
+         <form class="themeForm" id="feedbackForm">
+            <div class="modal-content">
+               <div class="modal-body">
+                  <div class="row">
+                     <input type="hidden" id="sessionId" name="sessionId">
+                     <input type="hidden" id="requestId" name="id">
+                     <div class="mb-3">
+                        <label for="feedback" class="form-label"> <span
+                           th:text="#{message.label.feedback}"></span>
+                        </label>
+                        <textarea id="feedback" name="feedback" class="form-control"
+                           rows="3" required></textarea>
+                     </div>
+					<div class="mb-3" id="ratingContainer">
+						<label class="form-label"> <span
+							th:text="#{message.label.rating}"></span>
+						</label>
+						<div>
+							<div class="form-check form-check-inline"
+								th:each="ratingValue : ${#numbers.sequence(1, 5)}">
+								<input class="form-check-input required-input" type="radio"
+									th:value="${ratingValue}" th:id="'rating' + ${ratingValue}"
+									th:name="rating" /> <label class="form-check-label"
+									th:for="'rating' + ${ratingValue}" th:text="${ratingValue}"></label>
+							</div>
+						</div>
+					</div>
+
+				</div>
+               </div>
+            </div>
+         </form>
+     
+   </modalBody>
+</div>

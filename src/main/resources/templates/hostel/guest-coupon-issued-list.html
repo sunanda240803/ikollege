@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}">
+</header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form th:action="@{#{url.hostel.guest.coupon.issued}}" method="get" th:object="${coupon}" id="issuedForm">
+                        <div class="row mb-3">
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="name" th:text="#{message.label.name}"></label>
+                                <input type="text" class="form-control" id="name" maxlength="60" th:field="*{name}"
+                                       th:placeholder="#{message.placeholder.name}" name="name">
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="requestID" th:text="#{message.label.request.id}"></label>
+                                <input type="text" class="form-control" id="requestID"  maxlength="60" name="requestID"
+                                       th:field="*{requestId}" th:placeholder="#{message.placeholder.request.id}">
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="diningFrom" th:text="#{message.label.dining.from}"></label>
+                                <input type="date" class="form-control" id="diningFrom" onkeydown="return false"
+                                       th:field="*{diningFrom}" name="diningFrom">
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="diningTo" th:text="#{message.label.dining.to}"></label>
+                                <input type="date" class="form-control" id="diningTo" onkeydown="return false"
+                                       th:field="*{diningTo}" name="diningTo">
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="submittedFrom" th:text="#{message.label.submitted.from}"></label>
+                                <input type="date" class="form-control" id="submittedFrom" onkeydown="return false"
+                                       th:field="*{submittedFrom}" name="submittedFrom">
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="submittedTo" th:text="#{message.label.submitted.to}"></label>
+                                <input type="date" class="form-control" id="submittedTo" onkeydown="return false"
+                                       th:field="*{submittedTo}" name="submittedTo">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="messId" class="form-label" th:text="#{message.label.mess.name}"></label>
+                                <select class="selectpicker" data-live-search="true" th:field="*{messId}" id="messId">
+                                    <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+                                    <option th:each="mess: ${messes}" th:value="${mess.id}" th:text="${mess.messName}"></option>
+                                </select>
+                                <input type="hidden" th:field="*{messName}" id="messName">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="status" class="form-label" th:text="#{message.label.coupon.status}"></label>
+                                <select name="usedStatus" class="form-select" id="status" th:field="*{usedStatus}">
+                                    <option value="0" selected="selected" th:text="#{message.label.select} + ' ' + #{message.label.coupon.status}"></option>
+                                    <option th:each="status : ${couponStatuses}" th:value="${status.value}" th:text="${status.value}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button class="btn btn-lgtblue" id="getDataButton" type="submit" onclick="getIssuedCoupons()">
+                                    <i class="fa-solid fa-database me-1"></i>
+                                    <span th:text="#{message.button.get.data}"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" th:if="${@securityCtxUtil.userRole().equals('Caterer')}">
+                            <h2 class="tmsub-title">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <span th:text="|Count For: ${#temporals.format(T(java.time.LocalDate).now().plusDays(1), 'MMM dd, yyyy')}|"
+                                              class="form-label"></span>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <span th:text="'Break Fast Coupon: ' + ${bfCount}" class="form-label"></span>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <span th:text="'Lunch Coupon: ' + ${lcCount}" class="form-label"></span>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <span th:text="'Dinner Coupon: ' + ${drCount}" class="form-label"></span>
+                                    </div>
+                                </div>
+                            </h2>
+                        </div>
+                        <div class="mb-4" th:object="${searchedCoupons}" th:with="isRoleNotCaterer=${!@securityCtxUtil.userRole().equals('Caterer')}">
+                            <div th:replace="~{common/template/left-right-table-scroll-arrows.html :: leftRightArrow()}"></div>
+                            <div class="table-responsive themeTable">
+                                <table id="couponIssuedTable" class="table table-bordered nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th th:text="#{message.label.sl.no}"></th>
+                                            <th th:text="#{message.label.submitted.date}"></th>
+                                            <th th:text="#{message.label.request.id}"></th>
+                                            <th th:text="#{message.label.name}"></th>
+                                            <th th:text="#{message.label.student.id}"></th>
+                                            <th th:text="#{message.label.mess.name}"></th>
+                                            <th th:text="#{message.label.coupon.number}"></th>
+                                            <th th:text="#{message.label.dining.from}"></th>
+                                            <th th:text="#{message.label.dining.to}"></th>
+                                            <th th:text="#{message.label.coupon.type}"></th>
+                                            <th th:text="#{message.label.coupon.used.status}"></th>
+                                            <th class="text-center" th:text="#{message.label.return}" th:if="${isRoleNotCaterer}"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody th:if="${form.list != null and !#lists.isEmpty(form.list)}">
+                                        <tr th:each="coupon, iterator: ${form.getList()}">
+                                            <td><span th:text="${iterator.count}"></span></td>
+                                            <td><span th:text="${coupon.submittedDate}"></span></td>
+                                            <td><span th:text="${coupon.requestId}"></span></td>
+                                            <td><span th:text="${coupon.name}"></span></td>
+                                            <td><span th:text="${coupon.studentId}"></span></td>
+                                            <td><span th:text="${coupon.messName}"></span></td>
+                                            <td><span th:text="${coupon.couponNumber}"></span></td>
+                                            <td><span th:text="${coupon.validityFromDate}"></span></td>
+                                            <td><span th:text="${coupon.validityToDate}"></span></td>
+                                            <td><span th:text="${coupon.couponType}"></span></td>
+                                            <td><span th:text="${coupon.usedStatus}"></span></td>
+                                            <td class="text-center" th:if="${isRoleNotCaterer}">
+                                                <input th:if="${coupon.usedStatus} != 'Returned'" type="checkbox" class="form-check-input square-checkbox"
+                                                       th:id="${'returnReq_' + coupon.couponId}" value="true"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row text-end" th:if="${isRoleNotCaterer}">
+                                <div class="col-lg-12">
+                                    <div class="d-flex align-items-center  justify-content-end">
+                                        <button type="button" id="returnButton" class="btn btn-aqua px-4" th:if="${#lists.size(form.list) > 0}">
+                                            <i class="fa-solid fa-reply me-1"></i>
+                                            <span th:text="#{message.button.return}"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+
+<th:block th:replace="~{common/modal/warning-modal ::
+   contents(id = null, headerText=#{message.label.confirmation},bodyText=#{message.label.return.coupon})}">
+</th:block>
+
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/data-table-common.js}"></script>
+    <script th:src="@{/assets/js/hostel/guest-coupon-issued-list.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.hostel.guest.coupon.issued}]]*/ '';
+        const downloadPath = /*[[#{url.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>
+

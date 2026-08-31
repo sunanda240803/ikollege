@@ -1,0 +1,13 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(id, headerText, bodyText)">
+	<div th:replace="~{common/modal/simple-modal-template :: modal(${id ne null ?(id+'Modal'):'warningModal'}, ~{::modalHeader}, ~{::modalBody},
+		'warning','fa-solid fa-exclamation', #{message.label.okay},true)}">
+		<modalHeader>
+			<th:block th:text="${headerText}"></th:block>!
+		</modalHeader>
+		<modalBody>
+			<span id="bodyText" th:text="${bodyText}"></span>
+			<input id="dynamicId" type="hidden">
+			<input id="status" type="hidden">
+		</modalBody>
+	</div>
+</th:block>

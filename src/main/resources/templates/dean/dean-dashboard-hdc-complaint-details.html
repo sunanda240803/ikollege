@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}">
+  <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+  <header th:replace="~{common/header:: title(${headerForm})}"></header>
+  <!-- //Main-->
+  <main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                <th:block th:if="${deanHdcComplaintDto != null}">
+                   <form class="themeForm" th:action="@{#{url.dean.approval.hdc.complaint}}" method="post"
+                    	th:object="${deanHdcComplaintDto}" id="hdcComplaintForm">
+<!--                     	th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}"> -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.student.details}"></span>
+                                    <span th:text="#{message.label.iitm.student}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.student.id.colon}"> </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.studentId != null ? deanHdcComplaintDto.studentId : '-'}"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.student.name.colon}"> </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.studentName != null ? deanHdcComplaintDto.studentName : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hostel.name.colon}"> </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.HostelName != null ? deanHdcComplaintDto.HostelName : '-'}"></span>
+                            	</div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.hostel.roomno.colon}"> </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.roomNo != null ? deanHdcComplaintDto.roomNo : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                        <hr/>
+						<div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.complaint.involved.students.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive themeTable">
+                                <table class="table table-bordered nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th th:text="#{message.label.student.id}"></th>
+                                            <th th:text="#{message.label.student.name}"></th>
+                                            <th th:text="#{message.label.hostel.name}"></th>
+                                            <th th:text="#{message.label.room.number}"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                   	 	<tr class="normal-font"
+										    th:each="involvedStudent : ${deanHdcComplaintDto.involvedStudentsDto}"
+										    th:if="${involvedStudent.involvedStudentId != null 
+										            or involvedStudent.involvedStudentName != null 
+										            or involvedStudent.involvedStudentHostelName != null 
+										            or involvedStudent.involvedStudentRoomNo != null}">
+										    <td th:text="${involvedStudent.involvedStudentId}"></td>
+										    <td th:text="${involvedStudent.involvedStudentName}"></td>
+										    <td th:text="${involvedStudent.involvedStudentHostelName}"></td>
+										    <td th:text="${involvedStudent.involvedStudentRoomNo}"></td>
+										</tr>
+										<tr th:each="involvedStudent : ${deanHdcComplaintDto.involvedStudentsDto}"
+										    th:if="${involvedStudent.involvedStudentId == null 
+										            and involvedStudent.involvedStudentName == null 
+										            and involvedStudent.involvedStudentHostelName == null 
+										            and involvedStudent.involvedStudentRoomNo == null}">
+										    <td colspan="4" class="text-center" th:text="#{response.message.no.data.available}"></td>
+										</tr>
+																				
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.complaint.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.violation.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.violation != null ? deanHdcComplaintDto.violation : '-'}"></span>
+                            	</div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.complained.date.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.dateOfComplaint != null ? deanHdcComplaintDto.dateOfComplaint : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.warden.plea.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.wardenPlea != null ? deanHdcComplaintDto.wardenPlea : '-'}"></span>
+                            	</div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.warden.decision.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.wardenDecision != null ? deanHdcComplaintDto.wardenDecision : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.remarks.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.wardenRemarks != null ? deanHdcComplaintDto.wardenRemarks : '-'}"></span>
+                            	</div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.dayscholar.involved.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.dayScholarInvolve != null ? deanHdcComplaintDto.dayScholarInvolve : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                       <div class="row" th:if="${deanHdcComplaintDto.fileName} ne null and ${deanHdcComplaintDto.fileName} ne ''">
+                           <div class="col-lg-12">
+                               <h2 class="tmsub-title">
+                                   <span th:text="#{message.label.uploaded.documents}"></span>
+                               </h2>
+                           </div>
+                           <div class="col-lg-12 mt-2 mb-4">
+                               <div class="row mb-4">
+                                   <div class="col-lg-6">
+                                       <ul class="list-group">
+                                           <li class="list-group-item">
+                                               <div class="d-flex justify-content-between align-items-center">
+                                                   <div class="text-truncate" th:text="${deanHdcComplaintDto.fileName}"></div>
+                                                   <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+                                                           data-bs-placement="top"
+                                                           data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+                                                           th:file-name="${deanHdcComplaintDto.fileName}"
+                                                           onclick="downloadFile(this);"
+                                                           th:attr="data-bs-title=${deanHdcComplaintDto.fileName}">
+                                                       <i class="fa fa-download pdf text-white"></i>
+                                                   </button>
+                                                   <input type="hidden" th:value="${deanHdcComplaintDto.fileName}">
+                                               </div>
+                                           </li>
+                                       </ul>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.complaint.penalty.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.penalty.amount.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.penaltyAmount != null ? deanHdcComplaintDto.penaltyAmount : '-'}"></span>
+                            	</div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.due.date.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.penaltyDueDate != null ?
+                                	#temporals.format(deanHdcComplaintDto.penaltyDueDate, #messages.msgOrNull('date.format')) : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                        <th:block th:if="${userRole!=null and userRole!='Hostel Check In' or deanHdcComplaintDto.status=='Paid'}">
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.penalty.status.colon}">: </span>                                    
+                                </label>
+                                <div class="form-control form-graybox">
+                                	<span class="normal-font" th:text="${deanHdcComplaintDto.status != null ? deanHdcComplaintDto.status : '-'}"></span>
+                            	</div>
+                            </div>
+                        </div>
+                        </th:block>
+<!--                         <th:block th:if="${userRole!=null and userRole!=workflow.HOSTEL_CHECKED_ID.status and deanHdcComplaintDto.status!=workflow.PAID.status}"> -->
+                        <th:block th:if="${deanHdcComplaintDto.status!='Paid'}">
+	                        <div class="row">
+	                        <input type="hidden" class="form-control" th:field="*{id}">
+	                        <input type="hidden" class="form-control" th:field="*{penaltyAmount}">
+	                        <input type="hidden" class="form-control" th:field="*{data}">
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.hdc.complaint.penalty.status.colon}">: </span>                                    
+	                                </label>
+	                                <select class="form-select" th:field=*{status} onchange="validatePenaltyStatus()">
+	                                	<option value="" th:text="#{message.label.select}"></option>
+	                                	<option th:value="#{message.status.paid}" th:text="#{message.status.paid}"></option>
+	                                	<option th:value="#{message.label.partial.paid}" th:text="#{message.label.partial.paid}"></option>
+	                                	<option th:value="#{message.status.pending}" th:text=#{message.status.pending}></option>
+	                                </select>
+	                                <div class="invalid-feedback backendErrors" th:errors="*{status}"></div>
+	                                <div class="invalid-feedback"
+                                         th:text="#{message.validation.penalty.status}"></div>
+	                            </div>
+	                            <div class="col-lg-6 mb-3 pendingForm" th:classappend="${deanHdcComplaintDto.status=='Pending' ? 'd-none' : ''}">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.payment.reference.colon}"> </span>                                    
+	                                </label>
+	                                <input type="text" class="form-control required-input" th:field="*{paymentRefNo}" required>
+	                                <div class="invalid-feedback backendErrors" th:errors="*{paymentRefNo}"></div>
+	                                <div class="invalid-feedback"
+                                         th:text="#{message.validation.reference.no}"></div>
+	                            </div>
+	                            <div class="col-lg-6 mb-3 pendingForm" th:classappend="${deanHdcComplaintDto.status=='Pending' ? 'd-none' : ''}">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.payment.description.colon}"></span>                                    
+	                                </label>
+	                                <textarea type="text" class="form-control required-input" style="height: 99px; overflow: auto;" 
+	                                	th:field="*{paymentDesc}" required>
+	                                </textarea>
+	                                <div class="invalid-feedback backendErrors" th:errors="*{paymentDesc}"></div>
+	                                <div class="invalid-feedback"
+                                         th:text="#{message.validation.payment.description}"></div>
+	                            </div>
+	                            <div class="col-lg-6 mb-3 pendingForm" th:classappend="${deanHdcComplaintDto.status=='Pending' ? 'd-none' : ''}">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.paid.amount}">: </span> 
+	                                </label>
+	                                <input type="text" class="form-control required-input" th:field="*{paidAmount}" required
+	                                	oninput="validateNumberInput(this)">
+ 	                                <span th:if="${deanHdcComplaintDto.dueAmount>0}">Balance Due Amount: <b class="text-danger" th:text="${deanHdcComplaintDto.dueAmount}"></b></span>
+	                                <div class="invalid-feedback backendErrors" th:errors="*{paidAmount}"></div>
+	                                <div class="invalid-feedback"
+                                         th:text="#{message.validation.paid.amount}"></div>
+	                            </div>
+	                        </div>
+	                         <div class="row text-end ">
+                            	<div class="col-lg-12 mb-4">
+                                	<div class="d-flex align-items-center justify-content-end">
+                                	<span class="me-3 text-danger submitError"></span>
+                                		<button type="button"
+                                            class="btn btn-aqua px-4 me-3" id="hdcComplaintUpdate">
+                                        	<i class="fa-solid fa-floppy-disk me-1"></i>
+                                        	<span th:text="#{message.button.update}"></span>
+                                    	</button>
+                                	</div>
+                                </div>
+                             </div>
+                        </th:block>
+                    </form>
+                </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+  </main>
+  <!-- //Main-->
+
+  <!-- Footer-->
+  <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dean/dean-dashboard.js}"></script>
+    <script th:src="@{/assets/js/warden/hdc-complaint.js}"></script>
+    <script th:inline="javascript">
+    	const invalidAmount = /*[[${#messages.msg('message.validation.penalty.invalid.paid.amount')}]]*/ '';
+    	const statusInvalidAmount = /*[[${#messages.msg('message.validation.status.invalid.paid.amount')}]]*/ '';
+    	const amountInvalidStatus = /*[[${#messages.msg('message.validation.amount.invalid.status')}]]*/ '';
+    	const partialAmount = /*[[${#messages.msg('message.validation.partial.invalid.paid.amount')}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+	</script>
+</th:block>
+<!-- //Footer-->
+  </th:block>
+  <!-- //Footer-->
+</body>
+
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" th:action="@{#{url.mess.period.config}}" id="messPeriodConfigForm"
+                          th:object="${messMasterControllerDto}" method="post">
+                        <input type="hidden" th:field="*{id}" id="messPeriodConfigId">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.mess.controller}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="month">
+                                    <span th:text="#{message.label.month}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <select class="form-select required-input" id="month" required th:field="*{month}"
+                                        th:classappend="${#fields.hasErrors('month')} ? 'is-invalid' : ''">
+                                    <option value=""
+                                            th:text="#{message.label.select}+' '+#{message.label.month}"></option>
+                                    <option th:each="mon : ${monthList}" th:value="${mon.trim()}"
+                                            th:text="${mon}"></option>
+                                </select>
+                                <div class="invalid-feedback backendErrors" th:errors="*{month}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.month.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="semesterBegin">
+                                    <span th:text="#{message.label.semester.begin}"></span>
+                                </label>
+                                <div class=" form-check">
+                                    <input class="form-check-input" type="checkbox" id="semesterBegin"
+                                           th:field="*{semesterBegin}">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="diningFromDate">
+                                    <span th:text="#{message.label.dining.from.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="diningFromDate" required
+                                       th:field="*{diningFromDate}"
+                                       th:classappend="${#fields.hasErrors('diningFromDate')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{diningFromDate}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.dining.from.date.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="diningToDate">
+                                    <span th:text="#{message.label.dining.to.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="diningToDate" required
+                                       th:field="*{diningToDate}"
+                                       th:classappend="${#fields.hasErrors('diningToDate')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{diningToDate}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.dining.to.date.required}"></div>
+                                <div class="invalid-feedback-date-compare d-none"
+                                     th:text="#{message.validation.dining.to.date}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="registrationStartDate">
+                                    <span th:text="#{message.label.registration.start.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="registrationStartDate"
+                                       required
+                                       th:field="*{regBeginDate}"
+                                       th:classappend="${#fields.hasErrors('regBeginDate')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{regBeginDate}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.registration.start.date.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="registrationEndDate">
+                                    <span th:text="#{message.label.registration.end.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="registrationEndDate" required
+                                       th:field="*{regEndDate}"
+                                       th:classappend="${#fields.hasErrors('regEndDate')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{regEndDate}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.registration.end.date.required}"></div>
+                                <div class="invalid-feedback-date-compare d-none"
+                                     th:text="#{message.validation.reg.end.date}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="startTime">
+                                    <span th:text="#{message.label.start.time}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <div class="input-group">
+                                    <div class="me-2">
+                                        <select id="startHour" class="form-select custom-size"
+                                                onchange="updateHiddenTime('start');"
+                                                th:classappend="${#fields.hasErrors('regBeginTime')} ? 'is-invalid' : ''">
+                                            <option value="" selected><span th:text="#{message.label.hour}"></span>
+                                            </option>
+                                            <option th:each="i : ${#numbers.sequence(0, 23)}"
+                                                    th:with="formattedHour = ${i<10 ? '0'+i : i.toString()}"
+                                                    th:value="${i < 10 ? '0' + i : i}"
+                                                    th:text="${i < 10 ? '0' + i : i}"
+                                                    th:selected="${messMasterControllerDto.regBeginTime ne null
+												 and !messMasterControllerDto.regBeginTime.isEmpty() and formattedHour eq messMasterControllerDto.regBeginTime.split(':')[0]}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <select id="startMinute" class="form-select"
+                                                onchange="updateHiddenTime('start');"
+                                                th:classappend="${#fields.hasErrors('regBeginTime')} ? 'is-invalid' : ''">
+                                            <option value="" selected><span th:text="#{message.label.minute}"></span>
+                                            </option>
+                                            <option th:each="minute : ${#numbers.sequence(0, 3)}"
+                                                    th:with="formattedMinute=${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:value="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:text="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:selected="${messMasterControllerDto.regBeginTime ne null
+														and messMasterControllerDto.regBeginTime.contains(':') and formattedMinute.toString() eq messMasterControllerDto.regBeginTime.split(':')[1]}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="startTime" th:field="*{regBeginTime}"
+                                       th:classappend="${#fields.hasErrors('regBeginTime')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{regBeginTime}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.mess.start.time.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="endTime">
+                                    <span th:text="#{message.label.end.time}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <div class="input-group">
+                                    <div class="me-2">
+                                        <select id="endHour" class="form-select custom-size"
+                                                onchange="updateHiddenTime('end');"
+                                                th:classappend="${#fields.hasErrors('regEndTime')} ? 'is-invalid' : ''">
+                                            <option value="" selected><span th:text="#{message.label.hour}"></span>
+                                            </option>
+                                            <option th:each="i : ${#numbers.sequence(0, 23)}"
+                                                    th:with="formattedHour = ${i<10 ? '0'+i : i.toString()}"
+                                                    th:value="${i < 10 ? '0' + i : i.toString()}"
+                                                    th:text="${i < 10 ? '0' + i : i.toString()}"
+                                                    th:selected="${messMasterControllerDto.regEndTime != null
+                     									and !messMasterControllerDto.regEndTime.isEmpty()
+                     									and formattedHour eq messMasterControllerDto.regEndTime.split(':')[0]}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <select id="endMinute" class="form-select" onchange="updateHiddenTime('end');"
+                                                th:classappend="${#fields.hasErrors('regEndTime')} ? 'is-invalid' : ''">
+                                            <option value="" selected><span th:text="#{message.label.minute}"></span>
+                                            </option>
+                                            <option th:each="minute : ${#numbers.sequence(0, 3)}"
+                                                    th:with="formattedMinute=${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:value="${formattedMinute}"
+                                                    th:text="${formattedMinute}"
+                                                    th:selected="${messMasterControllerDto.regEndTime != null
+                     									and messMasterControllerDto.regEndTime.contains(':')
+                     									and formattedMinute.toString() eq messMasterControllerDto.regEndTime.split(':')[1]}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="endTime" th:field="*{regEndTime}"
+                                       th:classappend="${#fields.hasErrors('regEndTime')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{regEndTime}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.mess.end.time.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="regExtendStartDate">
+                                    <span th:text="#{message.label.reg.extend.start.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="regExtendStartDate"
+                                       th:field="*{regExtendStartDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="regExtendEndDate">
+                                    <span th:text="#{message.label.reg.extend.end.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="regExtendEndDate"
+                                       th:field="*{regExtendEndDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="regExtendStartTime">
+                                    <span th:text="#{message.label.reg.extend.start.time}"></span>
+                                </label>
+                                <div class="input-group">
+                                    <div class="me-2">
+                                        <select id="regExtendStartHour" class="form-select custom-size"
+                                                onchange="updateHiddenTime('regExtendStart');">
+                                            <option value="" selected><span th:text="#{message.label.hour}"></span>
+                                            </option>
+                                            <option th:each="i : ${#numbers.sequence(0, 24)}"
+                                                    th:with="formattedHour = ${i<10 ? '0'+i : i.toString()}"
+                                                    th:value="${i < 10 ? '0' + i : i}"
+                                                    th:text="${i < 10 ? '0' + i : i}"
+                                                    th:selected="${messMasterControllerDto.regExtendStartTime ne null
+												and !messMasterControllerDto.regExtendStartTime.isEmpty() and formattedHour eq messMasterControllerDto.regExtendStartTime.split(':')[0]}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <select id="regExtendStartMinute" class="form-select"
+                                                onchange="updateHiddenTime('regExtendStart');">
+                                            <option value="" selected><span th:text="#{message.label.minute}"></span>
+                                            </option>
+                                            <option th:each="minute : ${#numbers.sequence(0, 3)}"
+                                                    th:with="formattedMinute=${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:value="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:text="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:selected="${messMasterControllerDto.regExtendStartTime ne null
+														 and messMasterControllerDto.regExtendStartTime.contains(':') and formattedMinute.toString() eq messMasterControllerDto.regExtendStartTime.split(':')[1]}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="regExtendStartTime" th:field="*{regExtendStartTime}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="regExtendEndTime">
+                                    <span th:text="#{message.label.reg.extend.end.time}"></span>
+                                </label>
+                                <div class="input-group">
+                                    <div class="me-2">
+                                        <select id="regExtendEndHour" class="form-select custom-size"
+                                                onchange="updateHiddenTime('regExtendEnd');">
+                                            <option value="" selected><span th:text="#{message.label.hour}"></span>
+                                            </option>
+                                            <option th:each="i : ${#numbers.sequence(0, 24)}"
+                                                    th:with="formattedHour = ${i<10 ? '0'+i : i.toString()}"
+                                                    th:value="${i < 10 ? '0' + i : i}"
+                                                    th:text="${i < 10 ? '0' + i : i}"
+                                                    th:selected="${messMasterControllerDto.regExtendEndTime ne null
+												and !messMasterControllerDto.regExtendEndTime.isEmpty() and formattedHour eq messMasterControllerDto.regExtendEndTime.split(':')[0]}"></option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <select id="regExtendEndMinute" class="form-select"
+                                                onchange="updateHiddenTime('regExtendEnd');">
+                                            <option value="" selected><span th:text="#{message.label.minute}"></span>
+                                            </option>
+                                            <option th:each="minute : ${#numbers.sequence(0, 3)}"
+                                                    th:with="formattedMinute=${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:value="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:text="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:selected="${messMasterControllerDto.regExtendEndTime ne null
+													and messMasterControllerDto.regExtendEndTime.contains(':') and formattedMinute.toString() eq messMasterControllerDto.regExtendEndTime.split(':')[1]}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="regExtendEndTime" th:field="*{regExtendEndTime}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="pushDate">
+                                    <span th:text="#{message.label.push.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="pushDate" required
+                                       th:field="*{pushingDate}"
+                                       th:classappend="${#fields.hasErrors('pushingDate')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{pushingDate}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.push.date.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="pushTime">
+                                    <span th:text="#{message.label.push.time}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <div class="input-group">
+                                    <div class="me-2">
+                                        <select id="pushHour" class="form-select custom-size"
+                                                onchange="updateHiddenTime('push');"
+                                                th:classappend="${#fields.hasErrors('pushingTime')} ? 'is-invalid' : ''">
+                                            <option value="" selected><span th:text="#{message.label.hour}"></span>
+                                            </option>
+                                            <option th:each="i : ${#numbers.sequence(0, 24)}"
+                                                    th:with="formattedHour = ${i<10 ? '0'+i : i.toString()}"
+                                                    th:value="${i < 10 ? '0' + i : i}"
+                                                    th:text="${i < 10 ? '0' + i : i}"
+                                                    th:selected="${messMasterControllerDto.pushingTime ne null
+												 and !messMasterControllerDto.pushingTime.isEmpty() and formattedHour eq messMasterControllerDto.pushingTime.split(':')[0]}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <select id="pushMinute" class="form-select" onchange="updateHiddenTime('push');"
+                                                th:classappend="${#fields.hasErrors('pushingTime')} ? 'is-invalid' : ''">
+                                            <option value="" selected><span th:text="#{message.label.minute}"></span>
+                                            </option>
+                                            <option th:each="minute : ${#numbers.sequence(0, 3)}"
+                                                    th:with="formattedMinute=${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:value="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:text="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+                                                    th:selected="${messMasterControllerDto.pushingTime ne null
+														 and messMasterControllerDto.pushingTime.contains(':') and formattedMinute.toString() eq messMasterControllerDto.pushingTime.split(':')[1]}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="pushTime" class="d-none" th:field="*{pushingTime}"
+                                       th:classappend="${#fields.hasErrors('pushingTime')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{pushingTime}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.push.time.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="studentDetailsEdit">
+                                    <span th:text="#{message.label.student.details.edit}"></span>
+                                </label>
+                                <div class=" form-check">
+                                    <input class="form-check-input" type="checkbox" id="studentDetailsEdit"
+                                           th:field="*{studentEditStatus}">
+                                    <label class="form-check-label" for="studentDetailsEdit"></label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="studentDeviceRegistration">
+                                    <span th:text="#{message.label.student.device.reg}"></span>
+                                </label>
+                                <div class=" form-check">
+                                    <input class="form-check-input" type="checkbox" id="studentDeviceRegistration"
+                                           th:field="*{studentDeviceRegistrationStatus}">
+                                    <label class="form-check-label" for="studentDeviceRegistration"></label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="exchangeFromDate">
+                                    <span th:text="#{message.label.exchange.from.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="exchangeFromDate"
+                                       th:field="*{exchangeFromDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="exchangeToDate">
+                                    <span th:text="#{message.label.exchange.to.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="exchangeToDate"
+                                       th:field="*{exchangeToDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="selfAllotmentFromDate">
+                                    <span th:text="#{message.label.self.allotment.from.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="selfAllotmentFromDate"
+                                       th:field="*{allotmentFromDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="selfAllotmentToDate">
+                                    <span th:text="#{message.label.self.allotment.to.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="selfAllotmentToDate"
+                                       th:field="*{allotmentToDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="semesterStartDate">
+                                    <span th:text="#{message.label.semester.start.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="semesterStartDate"
+                                       th:field="*{semStartDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="semesterEndDate">
+                                    <span th:text="#{message.label.semester.end.date}"></span>
+                                </label>
+                                <input type="date" class="form-control" id="semesterEndDate" th:field="*{semEndDate}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="feedbackStatus">
+                                    <span th:text="#{message.label.feedback.status}"></span>
+                                </label>
+                                <div class=" form-check">
+                                    <input class="form-check-input" type="checkbox" id="feedbackStatus"
+                                           th:field="*{feedbackStatus}">
+                                    <label class="form-check-label" for="feedbackStatus"></label>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 my-3 d-lg-flex align-items-lg-center justify-content-lg-end">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <a class="btn btn-secondary px-4 me-3" id="cancelForm"> <i
+                                            class="fa-solid fa-xmark-circle me-1"></i> <span
+                                            th:text="#{message.button.cancel}"></span>
+                                    </a>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mb-3"
+                                     th:if="*{id ne null and id > 0}">
+                                    <button type="button" class="btn btn-tmSecondary px-4 me-3"
+                                            id="sendMail" onclick="showMail()">
+                                        <i class="fa-solid fa-arrow-pointer me-1"></i> <span
+                                            th:text="#{message.button.send.mail.to.students}"></span>
+                                    </button>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-center mb-3"
+                                    th:if="*{id eq null or id <= 0}">
+                                    <button type="button" class="btn btn-aqua px-4 me-3" id="saveForm">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i> <span
+                                            th:text="#{message.button.save}"></span>
+                                    </button>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                <button th:if="*{id ne null and id>0}" type="button"
+                                        class="btn btn-aqua px-4" id="saveForm">
+                                    <i class="fa-solid fa-floppy-disk me-1"></i>
+                                    <span th:text="#{message.button.update}"></span>
+                                </button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </form>
+
+                    <form class="themeForm d-none" id="studentMessBulkMailForm"
+                          th:action="@{#{url.mess.period.config}+#{url.mess.mail}}"
+                          th:object="${messMasterControllerDto}" th:method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.student.mess.bulk.mail.template}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.mess.period}"></span>
+                                </label>
+                                <div th:with="dateFormat=#{date.format}" class="form-control form-graybox"
+                                     th:text="${#temporals.format(messMasterControllerDto.diningFromDate, dateFormat)+' to '
+                                     +#temporals.format(messMasterControllerDto.diningToDate, dateFormat)}">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.mail.subject}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <textarea class="form-control" th:field="*{bulkMailSubject}"></textarea>
+                                <div class="invalid-feedback"
+                                     th:text="#{message.validation.mail.subject.required}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.mail.content}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <textarea class="form-control" rows="5" th:id="contentId" th:field="*{bulkMailContent}">
+                                </textarea>
+                                <div class="invalid-feedback"
+                                     th:text="#{message.validation.mail.content.required}"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 my-3 d-lg-flex align-items-lg-center justify-content-lg-end flex-wrap">
+                            <!-- Mail Sent Message -->
+                            <div th:if="*{mailStatus ne null}" class="me-3 mb-2">
+                                <h5 class="text-success mb-0"
+                                    th:text="#{message.lable.mail.sent.for.this.month}">
+                                </h5>
+                            </div>
+                            <!-- Send Button -->
+                            <div class="mb-2">
+                                <button type="button" class="btn btn-tmSecondary px-4" id="send"
+                                        th:if="*{id ne null and id > 0}">
+                                    <i class="fa-solid fa-arrow-pointer me-1"></i>
+                                    <span th:if="*{mailStatus eq null}"
+                                          th:text="#{message.label.send}"></span>
+                                    <span th:if="*{mailStatus ne null}"
+                                          th:text="#{message.label.send.pending}"></span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <hr>
+                    <th:block th:replace="~{common/log-content::content(${logTag})}"></th:block>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="modalDiv"></div>
+
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/mess/mess-period-config.js}"></script>
+    <script th:src="@{/assets/js/biometric/log.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.mess.period.config}]]*/'';
+        const mailUrl = /*[[#{url.mess.mail}]]*/'';
+
+        // Set the min attribute to tomorrow's date
+        document.addEventListener('DOMContentLoaded', () => {
+            const pushDateInput = document.getElementById('pushDate');
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            // Format date as yyyy-MM-dd
+            const yyyy = tomorrow.getFullYear();
+            const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            const dd = String(tomorrow.getDate()).padStart(2, '0');
+
+            // Set min attribute to tomorrow's date
+            pushDateInput.setAttribute('min', `${yyyy}-${mm}-${dd}`);
+        });
+    </script>
+</th:block>
+</body>
+</html>

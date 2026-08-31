@@ -1,0 +1,13 @@
+<th:block th:fragment="statusBadge(status,paymentStatus)">
+	<span th:classappend="${status == 'Validating' ? 'text-primary fw-bold'
+                                    : (status == 'Cancelled' || status == 'Rejected' || status == 'CancelledAfterApproval' || status == 'Failure' ? 'text-danger fw-bold'
+                                    : (status == 'Pending' || status == 'Initiated' ? 'text-warning fw-bold'
+                                    : (status == 'Approved' || status == 'Success' || status == 'Completed' ? 'text-success fw-bold'
+                                    : (status == 'Aborted' ? 'text-secondary fw-bold'  : 'text-primary fw-bold'))))}"
+          th:text="${status == 'CancelledAfterApproval' ? 'Cancelled After Approval' : status}">
+      </span>
+    <span th:classappend="${paymentStatus == 'Pending' ? 'text-warning fw-bold'
+                                    : (paymentStatus == 'Paid' || paymentStatus == 'Success' ? 'text-success fw-bold' : 'text-secondary fw-bold')}"
+          th:text="${paymentStatus}">
+	</span>
+</th:block>

@@ -1,0 +1,32 @@
+.card-title {
+    margin-top: var(--bs-card-title-spacer-y);
+}
+/* Styling for the card with translucent background */
+.card-background {
+    position: relative;
+    color: white; /* Ensure text is readable on background */
+}
+
+/* Apply background image with opacity */
+.card-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://picsum.photos/600/400?random=4') no-repeat center center;
+    background-size: cover;
+    opacity: 0.3; /* Set the transparency level here */
+    z-index: 0;
+    border-radius: 0.5rem; /* Same as Bootstrap's .card border-radius */
+}
+
+/* Ensure content overlays on top of background */
+.card-content {
+    position: relative;
+    z-index: 1;
+}
+.userInfo .btn {
+    width: 200px!important;
+}

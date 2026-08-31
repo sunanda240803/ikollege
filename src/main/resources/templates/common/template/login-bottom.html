@@ -1,0 +1,43 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(type)">
+    <div class="login-bottom">
+        <div class="login-bottom-title" th:if="${type == 'login' && loginRole !='Faculty' && loginRole != 'Office'}">
+            <h5 class="title" th:text="#{message.label.reg.hostel.fee}"></h5>
+        </div>
+        <div class="login-bottom-title" th:if="${type == 'otherRegister'}">
+            <h5 class="title" th:text="#{message.label.login.hostel.fee}"></h5>
+        </div>
+        <div class="login-bottom-content">
+            <a th:href="@{#{url.student.registration}}" th:if="${loginRole=='Student'}" type="button" class="btn btn-aqua mb-3 me-2">
+                <span th:text="#{message.button.register}"></span>
+                <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip"
+                   th:data-bs-title="#{message.label.student.other.reg.note}">
+                </i>
+            </a>
+            <!--<a th:href="@{#{url.accommodation.mess.convocation}}" th:if="${loginRole=='Student' && isConvocationOpen}" type="button" class="btn btn-primary mb-3 me-2">
+                <i class="fa fa-graduation-cap me-2"></i>
+                <span th:text="#{message.button.convocation}"></span>
+            </a>-->
+            <a th:href="@{#{url.online.registration}}" th:if="${type == #messages.msgOrNull('message.label.other.login.option')}" type="button" class="btn btn-aqua mb-3 me-2">
+                <span th:text="#{message.button.register}"></span>
+                <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip"
+                   th:data-bs-title="#{message.label.student.other.reg.note}">
+                </i>
+            </a>
+            <a th:href="@{#{url.other.login}}" th:if="${type == #messages.msgOrNull('message.label.other.register.option')}" type="button" class="btn btn-aqua mb-3 me-2">
+                <span th:text="#{message.label.login}"></span>
+                <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip"
+                   th:data-bs-title="#{message.label.student.other.login.note}">
+                </i>
+            </a>
+            <div th:replace="common/template/hostel-fee-button :: hostelFeeButton('loginRegistration')"></div>
+            <a th:href="@{#{url.home}}" type="button" class="btn btn-purple mb-3" th:text="#{message.button.other.login}"></a>
+            <div th:if="${loginRole !='Student' && loginRole !='Faculty' && loginRole != 'Office'}" th:utext="#{message.label.accommodation.note}"></div>
+            <div th:if="${loginRole =='Student'}" >
+                <div th:if="${(currentDateTime.isEqual(beginDateTime) or currentDateTime.isAfter(beginDateTime))
+                    and currentDateTime.isBefore(endDateTime)}">
+                <a th:href="@{#{url.login.issue.mess.reg}}" class="mb-3" th:utext="#{message.label.login.issue.link}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <link th:href="@{/assets/css/admin-settings/role-menu-privilege.css}" rel="stylesheet">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!--suppress HtmlUnknownTarget, HtmlRequiredTitleElement -->
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <form class="themeForm" id="roleForm" th:action="@{/roleMenuPrivilege/role}" method="post"
+                              th:object="${roleMenuPrivilegeForm}">
+                            <div class="row">
+                                <div class="col-lg-4 mb-3">
+                                    <div class="input-group">
+                                        <label class="input-group-text bg-tmPrimary fw-semibold text-white px-lg-4"
+                                        for="role">Account Privileges For</label>
+                                        <select class="form-select" onchange="checkNewRole(true)" id="role"
+                                                th:field="*{roleSelected}">
+                                            <option value="0" selected>Select Role</option>
+                                            <option th:each="role : *{roleList}" th:value="${role.roleId}"
+                                                    th:text="${role.roleName}"
+                                                    th:selected="${roleMenuPrivilegeForm.roleSelected == role.roleId}"></option>
+                                            <option value="-1">Add New Role</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="newRole"
+                                     th:attr="class='col-lg-3 mb-3 ' + ${roleMenuPrivilegeForm.roleSelected == '-1' ? '' : 'd-none'}">
+                                    <input type="text" class="form-control" placeholder="New Role" onblur="checkNewRole(true)"
+                                           th:field="*{newRoleName}" id="newRoleName" maxlength="26">
+                                    <span class="invalid-feedback" th:text="#{message.validation.role.required}"></span>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <button type="submit" onclick="return validateRoleName()" class="btn btn-lgtblue disabled"
+                                            style="height: 47px;" id="getMenu">
+                                        <i class="fa-solid fa-database me-1"></i> Get Menu
+                                    </button>
+
+                                    <button type="button" onclick="return deleteRoleFunc()" class="btn btn-danger disabled"
+                                            style="height: 47px;" id="deleteRole">
+                                        <i class="fa-solid fa-trash me-1"></i> Delete Role
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div th:if="${root} != null">
+						<hr class="my-4">
+                        <form id="menuPrivilegeForm" method="post" th:object="${root}">
+                            <input type="hidden" th:field="*{role.roleId}" th:value="*{role.roleId}">
+                            <input type="hidden" th:field="*{role.roleName}" th:value="*{role.roleName}">
+                            <div class="row mb-4 accordion" id="rolePrivileges">
+                                <div class="col-lg-4 col-md-6"
+                                     th:if="${root.submenu != null && root.submenu.size() > 0}"
+                                     th:each="parentMenu, index: *{submenu}">
+                                    <input type="hidden" th:field="*{submenu[__${index.index}__].checked}" th:value="0"/>
+                                    <input type="hidden" th:field="*{submenu[__${index.index}__].menu.menuId}" th:value="0"/>
+                                    <input type="hidden" th:field="*{submenu[__${index.index}__].menu.menuHeading}" th:value="''"/>
+                                    <input type="hidden" th:field="*{submenu[__${index.index}__].id}" th:value="true"/>
+                                    <div class="accordion-item" th:each="rolemenu, index2 : ${parentMenu.submenu}">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse"
+                                                    th:attr="data-bs-target='#rolePrivClps_' + __${rolemenu.menu.menuId}__,
+                                                    aria-controls=__${'rolePrivClps_' + rolemenu.menu.menuId}__"
+                                                    aria-expanded="false">
+<!--                                                <img alt="" th:src="@{'/assets/img/ccw-modules/' + ${rolemenu.menu.imageName} + '.svg'}"/>-->
+                                                <span th:text="${rolemenu.menu.menuHeading}"></span>
+                                                <span class="ms-auto" th:if="${!#lists.isEmpty(rolemenu.submenu)}">
+                                                    <span th:id="'selected_' + ${rolemenu.menu.menuId}"
+                                                          th:text="${rolemenu.getSubmenuChecked()}"></span>
+                                                    <span> / </span>
+                                                    <span th:id="'total_' + ${rolemenu.menu.menuId}"
+                                                          th:text="${rolemenu.submenu.size()}"></span>
+                                                </span>
+                                            </button>
+                                        </h2>
+                                        <div th:id="${'rolePrivClps_' + rolemenu.menu.menuId}" class="accordion-collapse collapse"
+                                             data-bs-parent="#rolePrivileges">
+                                            <div class="accordion-body"  th:if="${!#lists.isEmpty(rolemenu.submenu)}">
+                                                <th:block th:replace="~{adminSettings/role-sub-menu-privilege::content(${rolemenu}, ${index}, ${index2}, null)}"></th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+<!--//-->
+<th:block th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.role})}"></th:block>
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/collegeInfo/role-menu-privilege.js}"></script>
+</th:block>

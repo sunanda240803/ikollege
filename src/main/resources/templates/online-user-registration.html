@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+<link th:href="@{/assets/css/animation-style.css}" rel="stylesheet"/>
+<body>
+
+<section class="login-page-wrapper pt-5">
+    <div th:replace="~{common/template/login-page-wrapper:: title(${loginPageWrapper})}"></div>
+    <!-- Login Page Content -->
+    <div class="login-page-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="logo mb-4">
+                                <div th:replace="common/template/app-logo-name :: title(logoAndName)"></div>
+                                <div class="col-lg-12">
+                                    <h5 class="text-tmPrimary fw-bold text-uppercase" th:text="#{message.label.other.candidate.login}"></h5>
+                                </div>
+                            </div>
+                            <div class="info">
+                                <form th:action="@{#{url.save.online.user}}" method="post" id="registerForm"
+                                      th:object="${userManagementOnlineDto}">
+                                    <div class="float-label mb-4">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.applicant.name}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input type="text" class="form-control required-input" th:placeholder="#{message.placeholder.applicant.name}"
+                                               th:field="*{applicantName}"  maxlength="60" >
+                                        <div class="invalid-feedback" id="applicantNameRequired" th:text="#{message.validation.applicant.name.required}"></div>
+                                    </div>
+                                    <div class="float-label mb-4">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.email.id}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input type="email" class="form-control email-exist-valid" th:placeholder="#{message.placeholder.email.id}" maxlength="60"
+                                               th:field="*{applicantEmail}">
+                                        <div class="invalid-feedback" id="emailIdRequired" th:text="#{message.validation.email.id.required}"></div>
+                                        <div class="invalid-feedback d-none" id="invalidEmail" ></div>
+                                        <div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+                                        <div class="invalid-valid-feedback d-none" th:text="#{message.validation.local.guardian.details.email}"></div>
+                                    </div>
+                                    <div class="float-label mb-4">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.password}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input class="form-control password-length" type="password" th:placeholder="#{message.placeholder.password}" maxlength="8"
+                                               th:field="*{applicantPassword}" >
+                                        <div class="invalid-feedback" id="passwordRequired" th:text="#{message.validation.password.required}"></div>
+                                        <div class="invalid-feedback d-none" id="invalidPassword"></div>
+                                    </div>
+                                    <div class="float-label mb-4">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.retype.password}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input class="form-control password-match" type="password" th:placeholder="#{message.label.retype.password}" maxlength="8"
+                                               th:field="*{confirmPassword}">
+                                        <div class="invalid-feedback" id="reTypePasswordRequired" th:text="#{message.validation.password.match}"></div>
+                                        <div class="invalid-feedback d-none" id="invalidReTypePassword"></div>
+                                    </div>
+                                    <div class="float-label mb-4">
+                                        <img id="captcha" width="200" src="" alt="Captcha image" onerror="this.src='assets/img/default.png';">
+                                        <a href="javascript:void(0)" class="captchaBox ml-4"
+                                           onclick="getCaptchaCode();">
+                                            <i data-toggle="tooltip" title="Reset Captcha" class="fas fa-redo-alt"></i></a>
+                                    </div>
+                                    <div class="float-label mb-4">
+                                        <label class="form-label"> <span th:text="#{message.label.captcha.code}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input type="text" class="form-control" th:placeholder="#{message.placeholder.captcha.code}"
+                                               id="captchaCode">
+                                        <span class="captchaError text-danger"></span>
+                                        <div class="invalid-feedback" th:text="#{message.validation.captcha.code.required}"></div>
+                                    </div>
+                                    <div th:replace="common/template/register-login-button :: buttons('registerLogic', 'registerIcon', 'registerText')"></div>
+                                    <div class="errorText" id="errorDiv"></div>
+                                </form>
+                            </div>
+                            <div th:replace="common/template/login-bottom :: title('otherRegister')"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div th:replace="~{common/template/footer:: title(${footer})}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hostel Fee Payment Module -->
+<div th:replace="~{common/modal/hostel-fee-model:: title(${hostelFeeModel})}"></div>
+
+<!-- //Login Page-->
+<!--//-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, ${footerForm})}">
+    <script th:inline="javascript">
+        const CAPTCHA_URL=/*[[#{url.captcha}]]*/'';
+        const checkEmailIdExistURL=/*[[#{url.email.id.exists}]]*/'';
+    </script>
+    <script th:src="@{/assets/js/landing-page.js}"></script>
+    <script th:src="@{/assets/js/common/login-registration.js}"></script>
+</th:block>
+</body>
+</html>

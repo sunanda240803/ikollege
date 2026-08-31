@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header
+		th:replace="~{common/student-dashboard-header:: title(${headerForm}, 'Hostel Accommodation',
+	 	'Dashboard', null, null, 'Save', 'Back', null,#{url.dashboard}+#{url.student}, null)}">
+	</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body">
+						<form class="themeForm" id="hostelAccommodationForm" th:action="@{#{url.hostel.accommodation} + #{url.save}}"
+							th:object="${studentAppointmentRequestDto}" method="post" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="row">
+												<div class="col-lg-12">
+													<h2 class="tmsub-title" th:text="#{message.label.period.appointment}"></h2>
+												</div>
+												<div class="col-lg-6 mb-3">
+													<label class="form-label" for="fromDate">
+														<span th:text="#{message.label.from.date}"></span> 
+														<th:block th:replace="~{common/template/mandatory-symbol}" />
+													</label>
+													<input type="date" th:field="*{appointmentFrom}" class="form-control date-validation future-date"
+													 id="appointmentFrom" required th:classappend="${#fields.hasErrors('appointmentFrom')} ? 'is-invalid' : ''">
+               										<div class="invalid-feedback backendErrors" th:errors="*{appointmentFrom}"></div>
+													<div class="invalid-feedback-frontEnd" th:text="#{message.validation.from.date.required}"></div>
+													<div class="invalid-req-feedback d-none" th:text="#{message.validation.from.date.required}"></div>
+													<div class="invalid-already-approved-feedback d-none" th:text="#{message.validation.already.approved}"></div>
+												</div>
+												<div class="col-lg-6 mb-3">
+													<label class="form-label" for="toDate_1"> 
+														<span th:text="#{message.label.to.date}"></span> 
+														<th:block th:replace="~{common/template/mandatory-symbol}" />
+													</label> 
+													<input type="date" class="form-control date-validation future-date" th:field="*{appointmentTo}"
+													 id="appointmentTo" required th:classappend="${#fields.hasErrors('appointmentTo')} ? 'is-invalid' : ''">
+               										<div class="invalid-feedback backendErrors" th:errors="*{appointmentTo}"></div>
+													<div class="invalid-feedback-frontEnd" th:text="#{message.validation.to.date.required}"></div>
+													<div class="invalid-req-feedback d-none" th:text="#{message.validation.to.date.required}"></div>
+													<div class="invalid-future-feedback d-none" th:text="#{message.validation.appointment.to.date.greater.than.from.date}"></div>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="row">
+												<div class="col-lg-12">
+													<h2 class="tmsub-title" th:text="#{message.label.period.stay.request}"></h2>
+												</div>
+												<div class="col-lg-6 mb-3">
+													<label class="form-label" for="fromDate_2">
+														<span th:text="#{message.label.from.date}"></span>
+														<th:block th:replace="~{common/template/mandatory-symbol}" />
+													</label>
+													<input type="date" class="form-control date-validation future-date" th:field="*{stayFrom}"
+													 id="stayFrom" required th:classappend="${#fields.hasErrors('stayFrom')} ? 'is-invalid' : ''">
+													<div class="invalid-feedback backendErrors" th:errors="*{stayFrom}"></div>
+													<div class="invalid-feedback-frontEnd" th:text="#{message.validation.from.date.required}"></div>
+													<div class="invalid-req-feedback d-none" th:text="#{message.validation.from.date.required}"></div>
+													<div class="invalid-between-feedback d-none" th:text="#{message.validation.stay.from.date.between.appointment.date}"></div>
+												</div>
+												<div class="col-lg-6 mb-3">
+													<label class="form-label" for="toDate_2">
+														<span th:text="#{message.label.to.date}"></span>
+														<th:block th:replace="~{common/template/mandatory-symbol}" />
+													</label>
+													<input type="date" class="form-control date-validation future-date" th:field="*{stayTo}"
+													 id="stayTo" required th:classappend="${#fields.hasErrors('stayTo')} ? 'is-invalid' : ''">
+               										<div class="invalid-feedback backendErrors" th:errors="*{stayTo}"></div>
+													<div class="invalid-feedback-frontEnd" th:text="#{message.validation.to.date.required}"></div>
+													<div class="invalid-req-feedback d-none" th:text="#{message.validation.to.date.required}"></div>
+													<div class="invalid-future-feedback d-none" th:text="#{message.validation.stay.to.date.greater.than.from.date}"></div>
+													<div class="invalid-between-feedback d-none" th:text="#{message.validation.stay.to.date.between.appointment.date}"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row mt-4">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title"
+												th:text="#{message.label.other.details}"></h2>
+										</div>
+<!-- 										<div class="col-lg-3 mb-3"> -->
+<!-- 											<label class="form-label" for="stipend"> -->
+<!-- 												<span th:text="#{message.label.stipend.model}"></span> -->
+<!-- 												<i class="fa-solid fa-indian-rupee-sign"></i> -->
+<!-- 												<th:block th:replace="~{common/template/mandatory-symbol}" /> -->
+<!-- 											</label> -->
+<!-- 											<input type="text" class="form-control isNumberAndDot required-input" th:field="*{grossPay}" -->
+<!-- 												th:placeholder="#{message.placeholder.stipend}" id="stipend" maxlength='10' -->
+<!-- 												required th:classappend="${#fields.hasErrors('grossPay')} ? 'is-invalid' : ''"> -->
+<!-- 											<div class="invalid-feedback backendErrors" th:errors="*{grossPay}"></div> -->
+<!-- 											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.stipend.required}"></div> -->
+<!-- 											<div class="invalid-req-feedback d-none" th:text="#{message.validation.stipend.required}"></div> -->
+<!-- 										</div> -->
+<!-- 										<div class="col-lg-3 mb-3"> -->
+<!-- 											<label class="form-label" for="dining"> -->
+<!-- 												<span th:text="#{message.label.dining}"></span> -->
+<!-- 												<th:block th:replace="~{common/template/mandatory-symbol}" /> -->
+<!-- 											</label> -->
+<!-- 											<div class="checkRadio-bg form-control" id="diningChecks"> -->
+<!-- 												<div class="form-check form-check-inline"> -->
+<!-- 													<input type="radio" class="form-check-input required-input" th:field="*{dining}" -->
+<!-- 														value="y" id="dining" required th:classappend="${#fields.hasErrors('dining')} ? 'is-invalid' : ''"> -->
+<!-- 													<label class="form-check-label" for="dining" -->
+<!-- 														th:text="#{message.label.required}"> -->
+<!-- 													</label> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 											<div class="invalid-feedback backendErrors" th:errors="*{dining}"></div> -->
+<!-- 											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.dining.required}"></div> -->
+<!-- 											<div class="invalid-req-feedback d-none" th:text="#{message.validation.dining.required}"></div> -->
+<!-- 										</div> -->
+										<div class="col-lg-3 mb-3">
+										    <label class="form-label" for="appointmentNature"> 
+										        <span th:text="#{message.label.appointment.nature}"></span> 
+										        <th:block th:replace="~{common/template/mandatory-symbol}" />
+										    </label>
+										    <select class="form-select required-input" th:field="*{category}" id="category" required
+													 th:classappend="${#fields.hasErrors('category')} ? 'is-invalid' : ''">
+										        <option value="0" th:text="#{message.label.select}+' '+#{message.label.appointment.nature}"></option>
+										        <option th:each="natureOfAppointment : ${natureOfAppointment}"
+										            th:value="${natureOfAppointment.id}"
+										            th:text="${natureOfAppointment.value}">
+										        </option>
+										    </select>
+										    <div class="invalid-feedback backendErrors" th:errors="*{category}"></div>
+										    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.appointment.nature.required}"></div>
+										    <div class="invalid-req-feedback d-none" th:text="#{message.validation.appointment.nature.required}"></div>
+										    <div id="categoryOthersContainer" class="mt-3 d-none">
+										        <input type="text" class="form-control required-input" th:field="*{categoryOthers}"
+										            th:placeholder="#{message.placeholder.other.appointment}"
+										            id="categoryOthers" th:classappend="${#fields.hasErrors('categoryOthers')} ? 'is-invalid' : ''">
+										        <div class="invalid-feedback backendErrors" th:errors="*{categoryOthers}"></div>
+										        <div class="invalid-feedback-frontEnd" th:text="#{message.validation.category.others.required}"></div>
+										        <div class="invalid-req-feedback d-none" th:text="#{message.validation.category.others.required}"></div>
+										    </div>
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label" for="purpose">
+												<span th:text="#{message.label.purpose}"></span>
+												<th:block th:replace="~{common/template/mandatory-symbol}" />
+											</label>
+											<textarea type="text" class="form-control required-input" th:field="*{purpose}"
+												th:placeholder="#{message.placeholder.purpose}" id="purpose"
+												required th:classappend="${#fields.hasErrors('purpose')} ? 'is-invalid' : ''">
+											</textarea>
+											<div class="invalid-feedback backendErrors" th:errors="*{purpose}"></div>
+											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.stay.request.purpose.required}"></div>
+											<div class="invalid-req-feedback d-none" th:text="#{message.validation.stay.request.purpose.required}"></div>
+										</div>
+									</div>
+									<div class="row mt-4">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title"
+												th:text="#{message.label.validating.authority}"></h2>
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label" for="authorityName">
+												<span th:text="#{message.label.authority.name}"></span> 
+												<th:block th:replace="~{common/template/mandatory-symbol}" />
+											</label>
+											<input type="text" class="form-control isAlphaAndSpace required-input" th:field="*{validatingAuthority}"
+												th:placeholder="#{message.placeholder.authority.name}"
+												id="authorityName" required maxlength='64' th:classappend="${#fields.hasErrors('validatingAuthority')} ? 'is-invalid' : ''">
+											<div class="invalid-feedback backendErrors" th:errors="*{validatingAuthority}"></div>
+											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.authority.name.required}"></div>
+											<div class="invalid-req-feedback d-none" th:text="#{message.validation.authority.name.required}"></div>
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label" for="authorityEmail">
+												<span th:text="#{message.label.authority.email}"></span>
+												<th:block th:replace="~{common/template/mandatory-symbol}" />
+											</label>
+											<input type="email" class="form-control required-email" th:field="*{validatingAuthorityEmail}"
+												th:placeholder="#{message.placeholder.authority.email}"
+												id="authorityEmail" required  maxlength='128' th:classappend="${#fields.hasErrors('validatingAuthorityEmail')} ? 'is-invalid' : ''">
+											<div class="invalid-feedback backendErrors" th:errors="*{validatingAuthorityEmail}"></div>
+											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.authority.email.required}"></div>
+											<div class="invalid-domain-email d-none" th:text="#{message.validation.invalid.email.domain}"></div>
+										</div>
+									</div>
+									<div class="row mt-4">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title"
+												th:text="#{message.label.upload.documents}"></h2>
+										</div>
+										<div class="col-lg-8 mb-3" id="documentUploadSection">
+										    <div th:each="index : ${#numbers.sequence(1, 4)}" class="row">
+										        <div class="col-lg-4 mt-2">
+										            <label class="form-label" th:for="'uploadAddFileDescId_' + ${index}"
+										                   th:text="#{message.label.file.description}"></label><br>
+<!-- 										            <input type="text" class="form-control" -->
+<!-- 										                   th:field="*{fileDescription}" -->
+<!-- 										                   th:id="'uploadAddFileDescId_' + ${index}" -->
+<!-- 										                   th:placeholder="#{message.placeholder.description}"> -->
+										                  <input type="text" class="form-control"
+														       th:field="*{fileDescription[__${index - 1}__]}"
+														       th:id="'uploadAddFileDescId_' + ${index}"
+														       th:placeholder="#{message.placeholder.description}">
+										        </div>
+										        <div class="col-lg-6 mt-2"><br>
+										            <th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+										                'uploadFile' + ${index}, 'file', ${#messages.msg('message.accepted.file.type.pdf.images.doc.xl')},
+										                'uploadDoc', null, ${#messages.msg('message.drag.drop.here.document')})}">
+										            </th:block>
+										        </div>
+										    </div>
+										</div>
+									</div>
+									<div class="col-lg-12 mb-3 mt-4">
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" id="rulesRegulations" th:field="*{hostelRules}" required
+												 th:classappend="${#fields.hasErrors('hostelRules')} ? 'is-invalid' : ''">
+											<label class="form-check-label" for="rulesRegulations">
+												<span th:text="#{message.label.rules.regulations.start}"></span>
+												<a th:href="#{url.iitm.link}" target="_blank">
+													<span th:text="#{message.label.rules.regulations.link}"></span>
+												</a>
+												<span th:text="#{message.label.rules.regulations.end}"></span>
+											</label>
+										</div>
+									</div>
+									<div class="col-lg-12 mb-3">
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input"
+												id="applicableCharge" th:field="*{applicableCharges}" required
+												th:classappend="${#fields.hasErrors('applicableCharges')} ? 'is-invalid' : ''">
+											<label class="form-check-label"  for="applicableCharge">
+												<ul class="mb-0 ps-3">
+													<li th:text="#{message.label.applicable.charges.1}"></li>
+													<li th:text="#{message.label.applicable.charges.2}"></li>
+													<li th:text="#{message.label.applicable.charges.3}"></li>
+													<li th:text="#{message.label.applicable.charges.4}"></li>
+												</ul>
+											</label>
+										</div>
+									</div>
+
+									<div class="col-lg-12 mt-2 mb-4">
+										<div class="d-flex align-items-center justify-content-end">
+											<button class="btn btn-secondary px-4 me-3"
+													onclick="window.location.href = contextPath + hostelAccommodationURL + list" id="cancelForm">
+												<i class="fa-solid fa-xmark-circle me-1"></i> <span th:text="#{message.button.cancel}"></span>
+											</button>
+											<button type="button" class="btn btn-aqua px-4 me-3"
+												id="saveForm" onclick="return validateForm()">
+												<i class="fa-solid fa-floppy-disk me-1"></i> <span
+													th:text="#{message.button.save}"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Modal-->
+	<th:block
+			th:replace="~{common/modal/info-modal :: contents(id = null, headerText=#{message.label.confirmation},bodyText=#{message.label.already.applied.request.cancelling.previous.request})}"></th:block>
+
+	<!-- //Main-->
+	<!-- Footer-->
+	<th:block
+		th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dashboard/student/student-hostel-accommodation.js}"></script>
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:inline="javascript">
+			const hostelAccommodationURL = /*[[#{url.hostel.accommodation}]]*/ '';
+			const checkDetailsExistURL = /*[[#{url.exist}]]*/ '';
+			const newURL = /*[[#{url.new}]]*/ '';
+			const list = /*[[#{url.list}]]*/ '';
+			const guideEmail = [[${guideEmail}]];
+	   	</script>
+	</th:block>
+	<!-- //Footer-->
+</body>
+</html>
+

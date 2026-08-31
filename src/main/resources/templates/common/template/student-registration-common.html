@@ -1,0 +1,1339 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+	<div class="col-lg-12 mb-3">
+		<div class="alert alert-warning" role="alert">
+			<ul>
+				<li><span th:text="#{message.label.fill.fields}"></span></li>
+				<li><span th:text="#{message.label.registration.enable}"></span></li>
+				<li><span th:text="#{message.label.fill.roll.no.application.no}"></span></li>
+			</ul>
+			<!-- Hidden content -->
+			<ul id="moreContent" class="d-none">
+				<li><span th:text="#{message.label.photo.instructions}"></span>
+					<ul>
+						<li>
+							<span th:text="#{message.label.candidate.photo}"></span>
+							<span class="text-danger" th:text="#{message.label.photo.dimensions}"></span>
+						</li>
+						<li>
+							<span th:text="#{message.label.signature}"></span>
+							<span class="text-danger" th:text="#{message.label.signature.size}"></span>
+						</li>
+						<li>
+							<span th:text="#{message.label.parent.proof}"></span>
+							<span class="text-danger" th:text="#{message.label.parent.proof.size}"></span>
+						</li>
+					</ul>
+				</li>
+				<li><span th:text="#{message.label.hostel.rules.regulations}"></span></li>
+				<li><span th:text="#{message.label.pdf.generation.submission}"></span></li>
+				<li><span th:text="#{message.label.payments}"></span></li>
+				<li>
+					<span th:text="#{message.label.instruction.student.details}"></span>
+					<ul>
+						<li><span
+								th:text="#{message.label.instruction.faculty.name}"></span>
+						</li>
+						<li><span
+								th:text="#{message.label.instruction.roll.no}"></span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+			<!-- Show more/less link -->
+			<button type="button" class="btn btn-sm btn-tmPrimary" id="toggleContent">
+				<span th:text="#{message.label.instruction.more.details}"></span>
+			</button>
+		</div>
+	</div>
+	<!--Upload Documents-->
+	<div class="row mt-4">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.upload.documents}"></span>
+			</h2>
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col-lg-3 mb-3">
+			<th:block th:if="${form.imageBytes == null}">
+				<div class="upload-box d-lg-block">
+					<div class="box text-center has-validation">
+						<span th:text="#{message.label.upload.documents.student.photo}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+						<input type="file" name="studentProfile" id="studentPhoto"
+							   class="inputfile inputfile-4"
+							   data-multiple-caption="{count} files selected" required data-width="300"
+							   data-height="400" th:accept="#{message.accepted.image.types}">
+						<label for="studentPhoto">
+							<img class="img-fluid d-block mx-auto profile" id="studentProfileImage"
+								 th:data-default="@{/assets/img/user-img1.png}"
+								 th:src="@{/assets/img/user-img1.png}" alt="">
+						</label>
+						<div class="invalid-feedback"><span th:text="#{message.validation.upload.documents.picture}"></span></div>
+						<div class="invalid-value-feedback d-none" th:text="#{message.validation.upload.documents.picture}"></div>
+						<div class="invalid-dimension-feedback d-none" th:text="#{message.validation.profile.dimension}"></div>
+						<div class="invalid-size-feedback d-none" th:text="#{message.validation.image.size}"></div>
+						<div class="invalid-img-feedback d-none" th:text="#{message.validation.image}"></div>
+						<div class="invalid-format-feedback d-none" th:text="#{message.invalid.file.format}"></div>
+					</div>
+				</div>
+			</th:block>
+			<th:block th:if="${form.imageBytes != null}">
+				<div class="upload-box d-lg-block">
+					<div class="box text-center">
+						<label>Student Photo</label>
+						<div class="d-flex justify-content-center mt-3">
+							<img th:src="@{'data:image/jpeg;base64,' + ${studentProfile}}" alt="Student Photo" style="max-width: 100px; max-height: 110px;" />
+						</div>
+					</div>
+				</div>
+			</th:block>
+		</div>
+		<div class="col-lg-3 mb-3">
+			<th:block th:if="${form.studentSignBytes == null}">
+				<div class="upload-box d-lg-block">
+					<div class="box text-center">
+						<span th:text="#{message.label.upload.documents.student.signature}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+						<input type="file" name="studentSignature" id="studentSignature"
+							   class="inputfile inputfile-4"
+							   data-multiple-caption="{count} files selected" required data-width="400"
+							   data-height="100" th:accept="#{message.accepted.image.types}">
+						<label for="studentSignature">
+							<div class="photoSign-upload">
+								<img class="img-fluid d-block mx-auto signature"
+									 id="studentSignaturePreview"
+									 th:data-default="@{/assets/img/signature-img.png}"
+									 th:src="@{/assets/img/signature-img.png}">
+							</div>
+						</label>
+						<div class="invalid-feedback"><span th:text="#{message.validation.upload.documents.signature}"></span></div>
+						<div class="invalid-value-feedback d-none" th:text="#{message.validation.upload.documents.signature}"></div>
+						<div class="invalid-dimension-feedback d-none" th:text="#{message.validation.signature.dimension}"></div>
+						<div class="invalid-size-feedback d-none" th:text="#{message.validation.image.size}"></div>
+						<div class="invalid-img-feedback d-none" th:text="#{message.validation.image}"></div>
+						<div class="invalid-format-feedback d-none" th:text="#{message.invalid.file.format}"></div>
+					</div>
+				</div>
+			</th:block>
+			<th:block th:if="${form.studentSignBytes != null}">
+				<div class="upload-box d-lg-block">
+					<div class="box text-center d-flex justify-content-center">
+						<div style="width: 200px; height: 170px;">
+						<label>Student Signature</label>
+							<div class="photoSign-upload mt-3">
+								<img th:src="@{'data:image/jpeg;base64,' + ${studentSignature}}" alt="Student Signature" style="max-width: 95%; max-height: 95%;" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</th:block>
+		</div>
+		<div class="col-lg-3 mb-3">
+			<label class="form-label" for="signedParentName">
+				<span th:text="#{message.label.upload.documents.parent.name}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label>
+			<th:block th:if="${form.signedParentName == null}">
+				<input type="text" id="signedParentName" name="signedParentName"
+					   class="form-control uppercase required-input" required
+					   th:placeholder="#{message.placeholder.upload.documents.parent.name}" maxlength="120">
+				<div class="invalid-feedback"><span th:text="#{message.validation.upload.documents.parent.name}"></span></div>
+			</th:block>
+			<th:block th:if="${form.signedParentName != null}">
+				<div class="form-control form-graybox">
+					<span th:text="${form.signedParentName}"></span>
+					<input type="hidden" id="signedParentName" th:value="${form.signedParentName}">
+				</div>
+			</th:block>
+		</div>
+		<div class="col-lg-3 mb-3">
+			<th:block th:if="${form.parentSignBytes == null}">
+				<div class="upload-box d-lg-block">
+					<div class="box text-center">
+						<span th:text="#{message.label.upload.documents.parent.signature}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+						<input type="file" name="parentSignature" id="parentSignatureFile"
+							   class="inputfile inputfile-4"
+							   data-multiple-caption="{count} files selected" required data-width="400"
+							   data-height="100" th:accept="#{message.accepted.image.types}">
+						<label for="parentSignatureFile">
+							<div class="photoSign-upload">
+								<img class="img-fluid d-block mx-auto signature"
+									 id="parentSignaturePreview"
+									 th:data-default="@{/assets/img/signature-img.png}"
+									 th:src="@{/assets/img/signature-img2.png}">
+							</div>
+						</label>
+						<div class="invalid-feedback"><span th:text="#{message.validation.upload.documents.parent.signature}"></span></div>
+						<div class="invalid-value-feedback d-none" th:text="#{message.validation.upload.documents.parent.signature}"></div>
+						<div class="invalid-dimension-feedback d-none" th:text="#{message.validation.signature.dimension}"></div>
+						<div class="invalid-size-feedback d-none" th:text="#{message.validation.image.size}"></div>
+						<div class="invalid-img-feedback d-none" th:text="#{message.validation.image}"></div>
+						<div class="invalid-format-feedback d-none" th:text="#{message.invalid.file.format}"></div>
+					</div>
+				</div>
+			</th:block>
+			<th:block th:if="${form.parentSignBytes != null}">
+				<div class="upload-box d-lg-block">
+					<div class="box text-center d-flex justify-content-center">
+						<div style="width: 200px; height: 170px;">
+						<label>Parent Signature</label>
+							<div class="photoSign-upload mt-3">
+								<img th:src="@{'data:image/jpeg;base64,' + ${parentSignature}}" alt="Profile Image" style="max-width: 95%; max-height: 95%;" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</th:block>
+		</div>
+	</div>
+	<!--Undertaking form--->
+	<div class="row">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.undertaking.form}"></span>
+			</h2>
+		</div>
+	</div>
+	<div class="col-lg-4 mb-3">
+		<th:block th:if="${form.id == null}">
+			<div class="form-check">
+				<input class="form-check-input d-none required-select-input" type="checkbox" id="underTakingCheck"
+					   value="option1" disabled required>
+				<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#undertakingFormModel">
+					<label for="underTakingCheck">
+						<u class="text-tmPrimary"><span th:text="#{message.label.undertaking.form.read}"></span></u>
+					</label>
+				</a>
+				<div class="invalid-feedback"><span th:text="#{message.validation.undertaking.form.read}"></span></div>
+			</div>
+		</th:block>
+		<th:block th:if="${form.id != null}">
+		    <div class="form-check">
+		        <input class="form-check-input" type="checkbox" disabled checked>
+		        <u class="text-tmPrimary">
+					<a href="javascript:void(0);" data-bs-toggle="modal"
+					   data-bs-target="#undertakingFormModel" id="undertakingFormLink">
+		                <span th:text="#{message.label.undertaking.form.read}"></span>
+		            </a>
+		        </u>
+		    </div>
+		</th:block>
+	</div>
+	<div class="col-lg-4 mb-3">
+		<th:block th:if="${form.id == null}">
+			<div class="form-check">
+				<input class="form-check-input d-none required-select-input" type="checkbox" id="hostelRulesCheck"
+					   value="option2" disabled required>
+				<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#hostelRulesModel">
+					<label for="hostelRulesCheck">
+						<u class="text-tmPrimary"><span th:text="#{message.label.undertaking.form.read.hostel.rules}"></span></u>
+					</label>
+				</a>
+				<div class="invalid-feedback"><span th:text="#{message.validation.undertaking.form.read}"></span></div>
+			</div>
+		</th:block>
+		<th:block th:if="${form.id != null}">
+		    <div class="form-check">
+		        <input class="form-check-input" type="checkbox" disabled checked>
+		        <u class="text-tmPrimary">
+					<a href="javascript:void(0);" data-bs-toggle="modal"
+					   data-bs-target="#hostelRulesModel" id="hostelRulesRegulationLink">
+		                <span th:text="#{message.label.undertaking.form.read.hostel.rules}"></span>
+		            </a>
+		        </u>
+		    </div>
+		</th:block>
+	</div>
+	<div class="col-lg-4 mb-3">
+		<th:block th:if="${form.id == null}">
+			<div class="form-check">
+				<input class="form-check-input d-none required-select-input" type="checkbox" id="vehicleRulesCheck"
+					   value="option3" disabled required>
+				<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#vehicleRulesModel">
+					<label for="vehicleRulesCheck">
+						<u class="text-tmPrimary"><span th:text="#{message.label.undertaking.form.read.vehicle.rules}"></span></u>
+					</label>
+				</a>
+				<div class="invalid-feedback"><span th:text="#{message.validation.undertaking.form.vehicle.rules}"></span></div>
+			</div>
+		</th:block>
+		<th:block th:if="${form.id != null}">
+		    <div class="form-check">
+		        <input class="form-check-input" type="checkbox" disabled checked>
+		        <u class="text-tmPrimary">
+					<a href="javascript:void(0);" data-bs-toggle="modal"
+					   data-bs-target="#vehicleRulesModel" id="vehicleRulesRegulationLink">
+		                <span th:text="#{message.label.undertaking.form.read.vehicle.rules}"></span>
+		            </a>
+		        </u>
+		    </div>
+		</th:block>
+	</div>
+
+	<!--Student Details--->
+	<div class="row mt-4">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.student.details}"></span>
+			</h2>
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col-lg-12">
+			<div class="row">
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="studentId">
+						<span th:text="#{message.label.iitm.roll.no}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.studentId == null}">
+						<input type="text" id="studentId" name="studentId"
+						   class="form-control uppercase required-student-id"
+							   onblur="validateStudentId();" oninput="validateAlphaNumericInput(this);"
+						   th:placeholder="#{message.placeholder.roll.no}" maxlength="10"
+						   required>
+					</th:block>
+					<th:block th:if="${form.studentId != null}">
+						<div class="form-control form-graybox">
+							<span th:text="${form.studentId}"></span>
+						</div>
+						<input type="hidden" id="updateStudentId" th:value="${form.studentId}"/>
+					</th:block>
+					
+					<div class="invalid-feedback"><span th:text="#{message.validation.no.roll.no}"></span></div>
+					<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.no.roll.no}"></span></div>
+					<div class="invalid-min-feedback d-none"><span th:text="#{message.validation.min.roll.no}"></span></div>
+					<div class="invalid-value-feedback d-none"><span th:text="#{message.validation.no.roll.no}"></span></div>
+					<div class="invalid-exist-feedback d-none"><span th:text="#{message.validation.roll.no.already.exists}"></span></div>
+					<div class="invalid-format-feedback d-none"><span th:text="#{message.validation.alpha.numeric.roll.no}"></span></div>
+
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="applicationNumber">
+						<span th:text="#{message.label.qualifying.exam.application.no}"></span>
+					</label>
+					<th:block th:if="${form.applicationNumber == null}">
+						<input type="text" name="applicationNumber" id="applicationNumber"
+							   class="form-control uppercase required-input" th:placeholder="#{message.placeholder.application.no}"
+							   maxlength="12">
+					</th:block>
+					<th:block th:if="${form.applicationNumber != null}">
+						<div class="form-control form-graybox"><span th:text="${form.applicationNumber}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="studentName">
+						<span th:text="#{message.label.student.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.studentName == null}">
+						<input type="text" id="studentName" class="form-control uppercase required-input" required
+							   th:placeholder="#{message.placeholder.student.name}" name="studentName" maxlength="60">
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.name}"></span>
+						</div>
+					</th:block>
+					<th:block th:if="${form.studentName != null}">
+						<div class="form-control form-graybox"><span th:text="${form.studentName}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.gender}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.gender == null}">
+						<div class="checkRadio-bg form-control" id="genderChecks">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input required-input" type="radio" value="M" id="male"
+									   name="gender" required>
+								<label class="form-check-label" for="male"><span th:text="#{message.label.male}"></span></label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input required-input" type="radio" value="F" id="female"
+									   name="gender" required>
+								<label class="form-check-label" for="female"><span th:text="#{message.label.female}"></span></label>
+							</div>
+						</div>
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.gender}"></span></div>
+					</th:block>
+					<th:block th:if="${form.gender != null}">
+						<div class="form-control form-graybox">
+							<span th:text="${form.gender == 'M' ? 'Male' : (form.gender == 'F' ? 'Female' : '')}"></span>
+						</div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="dob">
+						<span th:text="#{message.label.dob}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.dob == null}">
+						<input type="date" id="dob" name="dob" min="1900-01-01" class="form-control required-input"
+							   th:placeholder="#{message.label.dob}" onkeydown="return false" required th:max="${dobMax}">
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.dob}"></span></div>
+					</th:block>
+					<th:block th:if="${form.dob != null}">
+						<div class="form-control form-graybox">
+							<span th:text="${#temporals.format(form.dob, #messages.msg('date.format'))}"></span>
+						</div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="studentPersonalEmail">
+						<span th:text="#{message.label.personal.email}"></span>
+					</label>
+					<th:block th:if="${form.studentPersonalEmail == null}">
+						<input type="text" id="studentPersonalEmail" class="form-control required-email"
+							   th:placeholder="#{message.placeholder.personal.email}" name="studentPersonalEmail" >
+						  <div class="invalid-feedback" th:text="#{message.label.personal.email.required}"></div>
+			              <div class="invalid-req-feedback d-none" th:text="#{message.label.personal.email.required}"></div>
+			              <div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+		            </th:block>
+					<th:block th:if="${form.studentPersonalEmail != null}">
+						<div class="form-control form-graybox"><span th:text="${form.studentPersonalEmail}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<th:block th:replace="~{common/field/blood-group-select::select(${form}, 'true', '')}"></th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label for="messPreference" class="form-label">
+						<span th:text="#{message.label.mess.preference}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.messName == null}">
+						<div class="input-group mb-3">
+							<select id="messPreference" class="form-select required-input" name="messName" required>
+								<option value="" th:text="#{message.label.select}+' '+#{message.label.mess.preference}"></option>
+								<option value="South Indian">South Menu</option>
+								<option value="North Indian">North Menu</option>
+								<option value="Food Court">Food Court</option>
+								<option value="South Indian with Extras">South Menu with extras only Veg</option>
+								<option value="North Indian with Extras">North Menu with extras only Veg</option>
+							</select>
+							<div class="invalid-feedback"><span th:text="#{message.validation.student.details.mess.pref}"></span></div>
+						</div>
+					</th:block>
+					<th:block th:if="${form.messName != null}">
+						<div class="form-control form-graybox">
+							<span th:text="${form.messName == 'South Indian' ? 'South Menu' 
+				                 : (form.messName == 'North Indian' ? 'North Menu' 
+				                 : (form.messName == 'Food Court' ? 'Food Court' 
+				                 : (form.messName == 'South Indian with Extras' ? 'South Menu with extras only Veg' 
+				                 : (form.messName == 'North Indian with Extras' ? 'North Menu with extras only Veg' : ''))))}">
+							</span>
+						</div>
+					</th:block>
+				</div>
+				<div class="col-lg-12 mb-3">
+					<label class="form-label" for="address">
+						<span th:text="#{message.label.address}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.studentAddress == null}">
+						<textarea id="address" name="studentAddress" rows="2" class="form-control addressForm required-input"
+								  th:placeholder="#{message.placeholder.address}" required maxlength="300"></textarea>
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.registration.address.required}"></span></div>
+					</th:block>
+					<th:block th:if="${form.studentAddress != null}">
+						<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;"><span th:text="${form.studentAddress}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-2">
+		            <label class="form-label"><span th:text="#{message.label.pwd}"></span></label>
+					<th:block th:if="${form.pwd == null}">
+			            <div class="checkRadio-bg form-control col-lg-3">
+			                <div class="form-check form-check-inline me-4">
+			                    <input class="form-check-input required-input" type="radio" id="yes" name="pwd"
+			                           onclick="togglePwdFields(true)" value="Y"
+			                           th:checked="${form.pwd ne null and !form.pwd.isEmpty()}">
+			                    <label class="form-check-label" for="yes">
+			                        <span th:text="#{message.label.yes}"></span>
+			                    </label>
+			                </div>
+			                <div class="form-check form-check-inline">
+			                    <input class="form-check-input required-input" type="radio" id="no" name="pwd"
+			                           onclick="togglePwdFields(false)" value="N"
+			                           th:checked="${form.pwd eq null or form.pwd.isEmpty()}">
+			                    <label class="form-check-label" for="no">
+			                        <span th:text="#{message.label.no}"></span>
+			                    </label>
+			                </div>
+			            </div>
+		            </th:block>
+					<th:block th:if="${form.pwd != null}">
+						<div class="form-control form-graybox">
+							<span th:text="${form.pwd == 'Y' ? 'Yes' : form.pwd == 'N' ? 'No' : ''}"></span>
+						</div>
+					</th:block>
+					<input type="hidden" id="pwdValue" th:value="${form.pwd != null ? form.pwd : ''}">
+		        </div>
+		        <div class="col-lg-3 mb-2 pwd d-none">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.pwd.percentage}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.pwd == null}">
+			            <input type="number" id="pwdPercentage" class="form-control required-input"
+			                   th:placeholder="#{message.placeholder.pwd.percentage}" name="pwdPercentage">
+			            <div class="invalid-feedback">
+			                <span th:text="#{message.validation.pwd.percentage.required}"></span>
+			            </div>
+		            </th:block>
+					<th:block th:if="${form.pwd != null && form.pwd == 'Y' && form.pwdPercentage != null && form.pwdPercentage != ''}">
+						<div class="form-control form-graybox"><span th:text="${form.pwdPercentage}"></span></div>
+					</th:block>
+		        </div>
+		        <div class="col-lg-3 mb-2 pwd d-none">
+		            <label class="form-label" for="pwdDesc">
+		                <span th:text="#{message.label.pwd.description}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+					<th:block th:if="${form.pwd == null}">
+			            <textarea id="pwdDesc" name="pwdDescription" rows="2" maxlength="300"
+			                      class="form-control" th:value="${form.pwd}"
+			                      th:placeholder="#{message.placeholder.pwd}">
+			            </textarea>
+			            <div class="invalid-feedback">
+			                <span th:text="#{message.validation.pwd.description.required}"></span>
+			            </div>
+		            </th:block>
+					<th:block th:if="${form.pwd != null && form.pwd == 'Y' && form.pwdDescription != null && form.pwdDescription != ''}">
+						<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+							<span th:text="${form.pwdDescription}"></span>
+						</div>
+					</th:block>
+		        </div>
+		        <div class="col-lg-3 mb-3 pwd d-none">
+		            <label class="form-label" for="otherInfo">
+		                <span th:text="#{message.label.other.info}"></span>
+		            </label>
+		            <th:block th:if="${(form.otherInfo == null) || (form.otherInfo == '')}">
+		                <textarea id="otherInfo" name="otherInfo" rows="2" maxlength="300"
+		                          class="form-control" th:placeholder="#{message.placeholder.other.info}">
+		                </textarea>
+		            </th:block>
+		            <th:block th:if="${(form.otherInfo != null) && (form.otherInfo != '')}">
+		                <div class="form-control form-graybox text-wrap"
+		                     style="height: 99px; overflow: auto;">
+		                    <span th:text="${form.otherInfo}"></span>
+		                </div>
+		            </th:block>
+		        </div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="mobileNumber">
+						<span th:text="#{message.label.mobile.number}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.studentMobile == null}">
+						<input type="text" id="mobileNumber" name="studentMobile" th:data-mask="${mobileNumberMask}" required onblur="validateMobileStart(this)"
+							   class="form-control numeric required-mob-num" th:placeholder="#{message.placeholder.mobile.number}">
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+						<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+						<div class="invalid-val-feedback d-none"><span th:text="#{message.validation.student.details.mob.no}"></span>
+						</div>
+					</th:block>
+					<th:block th:if="${form.studentMobile != null}">
+						<div class="form-control form-graybox"><span th:text="${form.studentMobile}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.categories}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<th:block th:if="${form.category == null}">
+						<div class="checkRadio-bg form-control" id="categoriesChecks">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input required-input" type="radio" value="OBC" id="obc"
+									   name="category" required>
+								<label class="form-check-label" for="obc"><span th:text="#{message.label.obc}"></span></label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input required-input" type="radio" value="General"
+									   id="general" name="category" required>
+								<label class="form-check-label" for="general"><span th:text="#{message.label.general}"></span></label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input required-input" type="radio" value="SC/ST"
+									   id="scOrSt" name="category" required>
+								<label class="form-check-label" for="scOrSt"><span th:text="#{message.label.st.sc}"></span></label>
+							</div>
+						</div>
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.category}"></span></div>
+					</th:block>
+					<th:block th:if="${form.category != null}">
+						<div class="form-control form-graybox">
+							<span th:text="${form.category == 'OBC' ? 'OBC' : (form.category == 'General' ? 'General'
+								: (form.category == 'SC/ST' ? 'SC / ST' : ''))}"></span>
+						</div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="aadhaarNumber">
+						<span th:text="#{message.label.aadhaar.no}"></span>
+					</label>
+					<th:block th:if="${form.aadhaarNumber == null}">
+						<input type="text" id="aadhaarNumber" name="aadhaarNumber"
+							   class="form-control numeric required-aadhaar" th:placeholder="#{message.placeholder.aadhaar.no}">
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.aadhar}"></span></div>
+					</th:block>
+					<th:block th:if="${form.aadhaarNumber != null}">
+						<div class="form-control form-graybox"><span th:text="${form.aadhaarNumber}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="panNumber">
+						<span th:text="#{message.label.pan.no}"></span>
+					</label>
+					<th:block th:if="${form.panNum == null}">
+						<input type="text" id="panNumber" name="panNum" th:placeholder="#{message.placeholder.pan.no}"
+							   class="form-control uppercase required-pan" maxlength="10">
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.pan}"></span></div>
+					</th:block>
+					<th:block th:if="${form.panNum != null}">
+						<div class="form-control form-graybox"><span th:text="${form.panNum}"></span></div>
+					</th:block>
+				</div>
+				
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="facultyName">
+						<span th:text="#{message.label.faculty.name}"></span>
+					</label>
+					<th:block th:if="${form.facultyName == null}">
+						<input type="text" id="facultyName" name="facultyName" class="form-control required-input uppercase"
+							   th:placeholder="#{message.placeholder.faculty.name}" th:value="${form.facultyName}" maxlength="128">
+						<div class="invalid-feedback"><span th:text="#{message.validation.student.details.faculty.name}"></span></div>
+					</th:block>
+					<th:block th:if="${form.facultyName != null}">
+						<div class="form-control form-graybox"><span th:text="${form.facultyName}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="facultyContactNo">
+						<span th:text="#{message.label.faculty.no}"></span>
+					</label>
+					<th:block th:if="${form.facultyContactNo == null || form.facultyContactNo == '0'}">
+						<input type="text"  id="facultyContactNo" th:placeholder="#{message.placeholder.faculty.no}" onblur="validateMobileStart(this)"
+							   name="facultyContactNo" class="form-control numeric required-mob-num facultyDetails">
+						<div class="invalid-feedback"><span th:text="#{message.label.faculty.no.required}"></span></div>
+						<div class="invalid-req-feedback d-none"><span th:text="#{message.label.faculty.no.required}"></span></div>
+						<div class="invalid-val-feedback d-none"><span th:text="#{message.validation.student.details.mob.no}"></span></div>
+					</th:block>
+					<th:block th:if="${form.facultyContactNo != null && form.facultyContactNo != '0'}">
+						<div class="form-control form-graybox"><span th:text="${form.facultyContactNo}"></span></div>
+					</th:block>
+				</div>
+				<div class="col-lg-3 mb-3">
+					<label class="form-label" for="facultyEmail">
+						<span th:text="#{message.label.faculty.email}"></span>
+					</label>
+					<th:block th:if="${form.facultyEmail == null}">
+						<input type="email" id="facultyEmail" th:placeholder="#{message.placeholder.faculty.email}"
+							   name="facultyEmail" class="form-control required-email facultyDetails">
+						  <div class="invalid-feedback" th:text="#{message.label.faculty.email.required}"></div>
+			              <div class="invalid-req-feedback d-none"><span th:text="#{message.label.faculty.email.required}"></span></div>
+			              <div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+						  <div class="invalid-domain-email d-none"
+								 th:text="#{message.validation.invalid.email.domain}"></div>
+		            </th:block>
+					<th:block th:if="${form.facultyEmail != null}">
+						<div class="form-control form-graybox"><span th:text="${form.facultyEmail}"></span></div>
+					</th:block>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block th:replace="~{student-family-details :: familyDetails(familySize=${form.familyDetails.size()}, edit=${edit})}"></th:block>
+	
+	<div class="row">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.local.guardian.details}"></span></h2>
+		</div>
+	</div>
+	<div class="row mb-2">
+		<div class="col-lg-2 ">
+			<th:block th:if="${form.guardianStatus == null}">
+				<div class="checkRadio-bg form-control teaching">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="guardianStatus"
+							   id="libraryReferenceYes" value="Y">
+						<label class="form-check-label" for="libraryReferenceYes">
+							<span th:text="#{message.label.yes}"></span>
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="guardianStatus"
+							   id="libraryReferenceNo" value="N" th:checked="t">
+						<label class="form-check-label" for="libraryReferenceNo">
+							<span th:text="#{message.label.no}"></span>
+						</label>
+					</div>
+				</div>
+			</th:block>
+			<th:block th:if="${form.guardianStatus != null}">
+				<div class="form-control form-graybox">
+					<span th:text="${form.guardianStatus == 'Y' ? 'Yes' : (form.guardianStatus == 'N' ? 'No' : '')}"></span>
+				</div>
+			</th:block>
+		</div>
+	</div>
+	<div class="row mb-2 d-none" id="localGuardianSection">
+		<div class="col-lg-3 mb-3">
+			<th:block th:if="${form.guardianDetails == null}">
+				<label class="form-label" for="relationNameOfGuardian">
+					<span th:text="#{message.label.local.guardian.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<input type="text" id="relationNameOfGuardian" name="guardianDetails.relationName"
+					   list="parentNameList" class="form-control uppercase relationName required-input"
+					   th:placeholder="#{message.placeholder.local.guardian.name}" maxlength="120">
+				<div class="invalid-feedback"><span th:text="#{message.validation.local.guardian.details.relationName}"></span></div>
+			</th:block>
+			<th:block th:if="${form.guardianDetails != null and form.guardianDetails.relationName != null}">
+				<div class="form-control form-graybox"><span th:text="${form.guardianDetails.relationName}"></span></div>
+			</th:block>
+		</div>
+		<div class="col-lg-3 mb-3">
+			<label class="form-label" for="guardianEmail">
+				<span th:text="#{message.label.email.id}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label>
+			<th:block th:if="${form.guardianDetails == null}">
+				<input type="text" id="guardianEmail" name="guardianDetails.email"
+					   class="form-control required-email" th:placeholder="#{message.placeholder.email.id}" maxlength="256">
+				<div class="invalid-feedback" th:text="#{message.validation.email.id.required}"></div>
+				<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+				<div class="invalid-valid-feedback d-none" th:text="#{message.validation.local.guardian.details.email}"></div>
+			</th:block>
+			<th:block th:if="${form.guardianDetails != null and form.guardianDetails.email != null}">
+				<div class="form-control form-graybox">
+					<span th:text="${form.guardianDetails.email}"></span>
+				</div>
+			</th:block>
+		</div>
+		<div class="col-lg-3 mb-3">
+			<label class="form-label" for="relationContactOfGuardian"><span
+					th:text="#{message.label.mobile.number}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label>
+			<th:block th:if="${form.guardianDetails == null}">
+				<input type="text" id="relationContactOfGuardian" name="guardianDetails.mobileNo"
+					   class="form-control relationContact numeric required-mob-num" th:placeholder="#{message.placeholder.mobile.number}">
+				<div class="invalid-feedback" th:text="#{message.validation.student.details.mob.no.required}"></div>
+				<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+				<div class="invalid-val-feedback d-none"><span th:text="#{message.validation.student.details.mob.no}"></span></div>
+			</th:block>
+			<th:block th:if="${form.guardianDetails != null and form.guardianDetails.mobileNo != null}">
+				<div class="form-control form-graybox"><span th:text="${form.guardianDetails.mobileNo}"></span></div>
+			</th:block>
+		</div>
+		<div class="col-lg-3 mb-3">
+			<label class="form-label" for="guardianAddress">
+				<span th:text="#{message.label.address}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label>
+			<th:block th:if="${form.guardianDetails == null}">
+				<textarea type="text" id="guardianAddress" name="guardianDetails.address" th:placeholder="#{message.placeholder.address}"
+						  class="form-control addressForm required-input" rows="2" maxlength="300"></textarea>
+				<div class="invalid-feedback"><span th:text="#{message.validation.local.guardian.details.address}"></span></div>
+			</th:block>
+			<th:block th:if="${form.guardianDetails != null and form.guardianDetails.address != null}">
+				<div class="form-control form-graybox"><span th:text="${form.guardianDetails.address}"></span></div>
+			</th:block>
+		</div>
+	</div>
+	<!--Student Self Declaration Starts-->
+	<div class="row">
+		<div class="col-lg-12"><h2 class="tmsub-title"><span th:text="#{message.label.student.self.dec}"></span></h2></div>
+	</div>
+
+	<div class="col-lg-12 mb-2">
+		<div class="form-check">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input student-declaration" id="studentDeclaration1" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input type="checkbox" class="form-check-input" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="studentDeclaration1">
+				<span class="d-inline"><span th:text="#{message.label.parents.student.prefix}"></span></span>
+				<span class="d-inline align-items-center">
+					<th:block th:if="${form.studentName == null}">
+							<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									id="studentDeclarationStudentName"></span>
+					</th:block>
+					<th:block th:if="${form.studentName != null}">
+							<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentName}"></span>
+					</th:block>
+				</span>
+				<span class="d-inline"><span th:text="#{message.label.name.note}"></span></span>
+				<span class="d-inline"> <span th:text="#{message.label.student.parents.prefix}"></span></span>
+				<span class="d-inline align-items-center">
+					<th:block th:if="${form.signedParentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="studentDeclarationParentOrGuardiansName"></span>
+					</th:block>
+					<th:block th:if="${form.signedParentName != null}">
+							<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.signedParentName}"></span>
+					</th:block>
+				</span>
+				<span class="d-inline"> <span th:text="#{message.label.admission.declaration}"></span></span>
+				<ul class="mb-3">
+					<li><span
+							th:text="#{message.label.student.supreme.court.judgement}"></span>
+					</li>
+					<li><span
+							th:text="#{message.label.student.regulations.essential.extracts.acknowledgment}"></span>
+					</li>
+					<li><span
+							th:text="#{message.label.student.provisions.acknowledgment}"></span>
+					</li>
+				</ul>
+			</label>
+		</div>
+
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input student-declaration"
+					   id="studentDeclaration2" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="studentDeclaration2">
+				<span th:text="#{message.label.regulations.clause.three.understanding}"></span>
+			</label>
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input student-declaration"
+					   id="studentDeclaration3" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="studentDeclaration3">
+				<span th:text="#{message.label.student.regulations.clause.seven.nine.understanding}"></span>
+			</label>
+		</div>
+		<div class="form-check">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input student-declaration"
+					   id="studentDeclaration4" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="studentDeclaration4">
+				<span th:text="#{message.label.undertaking.statement}"></span>
+				<ul class="mb-3">
+					<li><span
+							th:text="#{message.label.student.commitment.no.ragging}"></span>
+					</li>
+					<li><span
+							th:text="#{message.label.student.commitment.ragging.participation}"></span>
+					</li>
+				</ul>
+			</label>
+
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input student-declaration"
+					   id="studentDeclaration5" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="studentDeclaration5">
+				<span th:text="#{message.label.student.affirmation.ragging.consequences}"></span>
+			</label>
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input student-declaration"
+					   id="studentDeclaration6" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="studentDeclaration6">
+				<span th:text="#{message.label.ward.not.expelled.debarred}"></span>
+			</label>
+			<input id="studentDeclaration" hidden />
+			<div class="invalid-feedback"><span th:text="#{message.validation.student.self.dec.checkbox}"></span></div>
+		</div>
+		<div class="row mt-4 mb-3">
+			<div class="col-xl-4 form-group">
+				<label for="studentDeclarationStudentName2" class="form-label"><span
+						th:text="#{message.label.student.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<th:block th:if="${form.studentName == null}">
+					<div class="form-control form-graybox" id="studentDeclarationStudentName2"
+						 th:placeholder="#{message.label.student.name}"></div>
+				</th:block>
+				<th:block th:if="${form.studentName != null}">
+					<div class="form-control form-graybox">
+						<span th:text="${form.studentName}"></span>
+					</div>
+				</th:block>
+			</div>
+
+			<div class="col-xl-4 form-group">
+				<label for="telephoneOrMobileNumber2" class="form-label"><span
+						th:text="#{message.label.student.mob.no}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<th:block th:if="${form.studentMobile == null}">
+					<div class="form-control form-graybox" id="telephoneOrMobileNumber2"></div>
+				</th:block>
+				<th:block th:if="${form.studentMobile != null}">
+					<div class="form-control form-graybox">
+						<span th:text="${form.studentMobile}"></span>
+					</div>
+				</th:block>
+			</div>
+			<div class="col-lg-1 mb-3">
+			</div>
+			<div class="col-lg-2 form-group">
+				<label class="form-label"><span
+						th:text="#{message.label.student.signature}"></span></label><br>
+				<th:block th:if="${form.studentSignBytes == null}">
+					<img id="studentDeclarationSignaturePreview" class="img-fluid w-50 h-auto" />
+				</th:block>
+				<th:block th:if="${form.studentSignBytes != null}">
+					<img th:src="@{'data:image/jpeg;base64,' + ${studentSignature}}"
+										alt="Student Signature" style="max-width: 70%; max-height: 50%;" />
+				</th:block>
+			</div>
+		</div>
+	</div>
+	<!--Student Self Declaration Ends-->
+	<!--Parent Self Declaration Starts-->
+	<div class="row mt-4">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.parents.self.dec}"></span>
+			</h2>
+		</div>
+	</div>
+	<div class="col-lg-12 mb-3">
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input parent-declaration"
+					   id="parentsDeclaration1" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="parentsDeclaration1">
+					<span class="d-inline"> <span
+							th:text="#{message.label.parents.prefix}"></span></span>
+				<span class="d-inline align-items-center">
+					<th:block th:if="${form.signedParentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsName1"></span>
+					</th:block>
+					<th:block th:if="${form.signedParentName != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.signedParentName}"></span>
+					</th:block>
+					</span>
+				<span class="d-inline"> <span
+						th:text="#{message.label.parents.full.name.note}"></span></span>
+				<span class="d-inline"> <span
+						th:text="#{message.label.parents.student.prefix}"></span>
+					</span>
+				<span class="d-inline align-items-center">
+					<th:block th:if="${form.studentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationStudentName1"></span>
+					</th:block>
+					<th:block th:if="${form.studentName != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.studentName}"></span>
+					</th:block>
+					</span>
+				<span class="d-inline">,</span>
+				<span class="d-inline align-items-center">
+					<th:block th:if="${form.studentId == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationRollNumber1"></span>
+					</th:block>
+					<th:block th:if="${form.studentId != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.studentId}"></span>
+					</th:block>
+				</span>
+				<span class="d-inline"> <span th:text="#{message.label.student.name.roll.no.note}"></span></span>
+				<span class="d-inline"> <span th:text="#{message.label.student.context}"></span></span>
+
+				<ul class="mb-3">
+					<li><span
+							th:text="#{message.label.parents.supreme.court.judgement}"></span>
+					</li>
+					<li><span
+							th:text="#{message.label.parents.regulations.essential.extracts.acknowledgment}"></span>
+					</li>
+					<li><span
+							th:text="#{message.label.parents.provisions.acknowledgment}"></span>
+					</li>
+				</ul>
+			</label>
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input parent-declaration"
+					   id="parentsDeclaration2" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="parentsDeclaration2">
+					<span class="d-inline"> <span
+							th:text="#{message.label.regulations.clause.three.understanding}"></span></span>
+			</label>
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+			<input type="checkbox" class="form-check-input parent-declaration"
+				   id="parentsDeclaration3" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="parentsDeclaration3">
+					<span class="d-inline"> <span
+							th:text="#{message.label.parents.regulations.clause.seven.nine.understanding}"></span></span>
+				<span class="d-inline align-items-center">
+				<th:block th:if="${form.studentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationStudentName2"></span>
+				</th:block>
+				<th:block th:if="${form.studentName != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.studentName}"></span>
+				</th:block>
+				</span>
+				<span class="d-inline">,</span>
+				<span class="d-inline align-items-center">
+				<th:block th:if="${form.studentId == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationRollNumber2"></span>
+				</th:block>
+				<th:block th:if="${form.studentId != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.studentId}"></span>
+				</th:block>
+					</span>
+				<span class="d-inline"> <span
+						th:text="#{message.label.regulations.ragging.consequences}"></span></span>
+			</label>
+		</div>
+		<div class="form-check">
+			<th:block th:if="${form.id == null}">
+				<input type="checkbox" class="form-check-input parent-declaration"
+					   id="parentsDeclaration4" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="parentsDeclaration4">
+					<span class="d-inline"> <span
+							th:text="#{message.label.undertaking.statement}"></span></span>
+				<ul class="mb-3">
+					<li>
+							<span class="d-inline"><span
+									th:text="#{message.label.my.ward}"></span></span>
+						<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentName == null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+										id="parentsDeclarationStudentName3"></span>
+						</th:block>
+						<th:block th:if="${form.studentName != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentName}"></span>
+						</th:block></span>
+						<span class="d-inline">,</span>
+						<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentId == null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+										id="parentsDeclarationRollNumber3"></span>
+						</th:block>
+						<th:block th:if="${form.studentId != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentId}"></span>
+						</th:block>
+						</span>
+						<span class="d-inline"><span
+								th:text="#{message.label.parents.commitment.no.ragging}"></span></span>
+					</li>
+					<li>
+							<span class="d-inline"><span
+									th:text="#{message.label.my.ward}"></span></span>
+						<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentName == null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+										id="parentsDeclarationStudentName4"></span>
+						</th:block>
+						<th:block th:if="${form.studentName != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentName}"></span>
+						</th:block>
+							</span>
+						<span class="d-inline">,</span>
+						<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentId == null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+										id="parentsDeclarationRollNumber4"></span>
+						</th:block>
+						<th:block th:if="${form.studentId != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentId}"></span>
+						</th:block></span>
+						<span class="d-inline"><span
+								th:text="#{message.label.parents.commitment.ragging.participation}"></span></span>
+					</li>
+				</ul>
+			</label>
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+			<input type="checkbox" class="form-check-input parent-declaration"
+				   id="parentsDeclaration5" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="parentsDeclaration5">
+					<span class="d-inline"><span
+							th:text="#{message.label.affirmation.ragging.consequences}"></span></span>
+				<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationStudentName5"></span>
+						</th:block>
+						<th:block th:if="${form.studentName != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentName}"></span>
+						</th:block></span>
+				<span class="d-inline">,</span>
+				<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentId == null}">
+							<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									id="parentsDeclarationRollNumber5"></span>
+						</th:block>
+						<th:block th:if="${form.studentId != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentId}"></span>
+						</th:block></span>
+				<span class="d-inline"><span
+						th:text="#{message.label.liability.punishment.clause}"></span></span>
+				<span class="d-inline"><span
+						th:text="#{message.label.against.ward}"></span></span>
+				<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationStudentName6"></span>
+						</th:block>
+						<th:block th:if="${form.studentName != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentName}"></span>
+						</th:block></span>
+				<span class="d-inline">,</span>
+				<span class="d-inline align-items-center">
+						<th:block th:if="${form.studentId == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="parentsDeclarationRollNumber6"></span>
+						</th:block>
+						<th:block th:if="${form.studentId != null}">
+								<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+									th:text="${form.studentId}"></span>
+						</th:block></span>
+				<span class="d-inline"><span
+						th:text="#{message.label.liability.penal.law.applicable.law}"></span></span>
+			</label>
+		</div>
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+			<input type="checkbox" class="form-check-input parent-declaration"
+				   id="parentsDeclaration6" name="example1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="parentsDeclaration6">
+					<span th:text="#{message.label.ward.not.expelled.debarred}"></span>
+			</label>
+			<input hidden id="parentDeclaration" class=" d-none">
+			<div class="invalid-feedback"><span th:text="#{message.validation.parents.self.dec.checkbox}"></span>
+			</div>
+		</div>
+		<div class="row mt-3 mb-3">
+			<div class="col-xl-4 form-group">
+				<label for="parentsName2" class="form-label"><span
+						th:text="#{message.label.parent.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<div class="form-control form-graybox" id="parentsName2">
+					<th:block th:if="${form.signedParentName != null}">
+						<span th:text="${form.signedParentName}" id="signedParentText"></span>
+					</th:block>
+				</div>
+			</div>
+
+			<div class="col-xl-4 form-group">
+				<label for="telephoneOrMobileNumber1" class="form-label">
+					<span th:text="#{message.label.parents.mob.no}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<div class="form-control form-graybox" id="telephoneOrMobileNumber1"></div>
+			</div>
+			<div class="col-lg-1 mb-3">
+			</div>
+			<div class="col-lg-2 form-group">
+				<label class="form-label"><span
+						th:text="#{message.label.parents.signature}"></span></label><br>
+				<th:block th:if="${form.parentSignBytes == null}">
+				<img id="parentsSignaturePreview" class="img-fluid w-50 h-auto" />
+				</th:block>
+				<th:block th:if="${form.parentSignBytes != null}">
+					<img th:src="@{'data:image/jpeg;base64,' + ${parentSignature}}"
+						alt="Parent Signature" style="max-width: 70%; max-height: 50%;" />
+				</th:block>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.vehicle.declaration}"></span>
+			</h2>
+		</div>
+	</div>
+	<!--Parent Self Declaration Ends-->
+	<div class="col-lg-12 mb-3">
+		<div class="form-check">
+			<th:block th:if="${form.id == null}">
+			<input type="checkbox" class="form-check-input vehicle-declaration"
+				   id="vehicleDeclarationCheck1" name="vehicleDeclarationCheck1" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+				   
+			<label class="form-check-label" for="vehicleDeclarationCheck1">
+				<span class="d-inline"> I, </span>
+				<span class="d-inline align-items-center">
+				<th:block th:if="${form.studentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="vehicleDeclarationStudentName"></span>
+				</th:block>
+				<th:block th:if="${form.studentName != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.studentName}"></span>
+				</th:block>
+					</span>
+				<span class="d-inline"> <span
+						th:text="#{message.label.vehicle.declaration.student.prefix}"></span></span>
+				<span class="d-inline align-items-center">
+				<th:block th:if="${form.signedParentName == null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+								id="vehicleDeclarationparentsName"></span>
+				</th:block>
+				<th:block th:if="${form.signedParentName != null}">
+						<span class="d-inline-block text-uppercase text-tmPrimary border-bottom declaration-field"
+							th:text="${form.signedParentName}"></span>
+				</th:block>
+					</span>
+				<span class="d-inline"> <span
+						th:text="#{message.label.no.powered.vehicle}"></span></span>
+			</label>
+		</div>
+
+		<div class="form-check mb-3">
+			<th:block th:if="${form.id == null}">
+			<input type="checkbox" class="form-check-input vehicle-declaration"
+				   id="vehicleDeclarationCheck2" name="vehicleDeclarationCheck2" required>
+			</th:block>
+			<th:block th:if="${form.id != null}">
+				<input class="form-check-input" type="checkbox" checked disabled>
+			</th:block>
+			<label class="form-check-label" for="vehicleDeclarationCheck2">
+					<span
+							th:text="#{message.label.non.compliance.consequences}"></span>
+			</label>
+			<input id="vehicleDeclaration" hidden />
+			<div class="invalid-feedback"><span
+					th:text="#{message.validation.vehicle.self.dec.checkbox}"></span>
+			</div>
+		</div>
+		<div class="row mt-4 mb-3">
+			<div class="col-xl-3 form-group">
+				<label for="declarationDate" class="form-label"><span
+						th:text="#{message.label.date}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<div class="form-control form-graybox" id="declarationDate" th:text="${form.registrationDate == null} ?
+					${#temporals.format(declarationMin, #messages.msg('date.format'))}
+					: ${#temporals.format(form.registrationDate, #messages.msg('date.format'))}">
+				</div>
+			</div>
+			<div class="col-lg-2 mb-3">
+			</div>
+			<div class="col-lg-2 form-group">
+				<label class="form-label"><span
+						th:text="#{message.label.student.signature}"></span></label><br>
+				<th:block th:if="${form.studentSignBytes == null}">
+				<img id="studentVehicleDeclarationSignaturePreview"
+					 class="img-fluid w-50 h-auto" />
+				</th:block>
+				<th:block th:if="${form.studentSignBytes != null}">
+					<img th:src="@{'data:image/jpeg;base64,' + ${studentSignature}}" alt="Student Signature" style="max-width: 70%; max-height: 50%;" />
+				</th:block>
+			</div>
+			<div class="col-lg-2 mb-3">
+			</div>
+			<div class="col-lg-2 form-group">
+				<label class="form-label"><span
+						th:text="#{message.label.parents.signature}"></span></label><br>
+				<th:block th:if="${form.parentSignBytes == null}">
+				<img id="parentsDeclarationSignaturePreview" class="img-fluid w-50 h-auto" />
+				</th:block>
+				<th:block th:if="${form.parentSignBytes != null}">
+					<img th:src="@{'data:image/jpeg;base64,' + ${parentSignature}}"
+										alt="Parent Signature" style="max-width: 70%; max-height: 50%;" />
+				</th:block>
+			</div>
+		</div>
+	</div>
+
+	<!--Button Section-->
+	<th:block th:if="${action != 'view'}">
+		<hr>
+		<div class="row text-end">
+			<div class="col-lg-12">
+				<input hidden id="parentNameMismatch">
+				<div class="invalid-feedback"
+					 th:text="#{message.validation.family.details.name.mismatch}"></div>
+			</div>
+			<div class="col-lg-12">
+				<input hidden id="formErrors">
+				<div class="invalid-feedback" th:text="#{message.validation.form.errors}"></div>
+			</div>
+			<div class="col-lg-12 mt-2 mb-4">
+				<div class="d-flex align-items-center justify-content-end">
+					<button type="submit" class="btn btn-tmPrimary px-4 me-4" id="saveForm" onclick="return validateForm();">
+						<i class="fa-solid fa-arrow-pointer me-1"></i>
+						<span th:text="${action == 'new'} ? #{message.button.submit.form} : #{message.button.update.form}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</th:block>
+</th:block>

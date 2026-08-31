@@ -1,0 +1,52 @@
+<div th:replace="~{common/widget-template :: content('rollNumberChangeId', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+	<modalHeader><span th:text="#{message.label.roll.number.change}"></span></modalHeader>
+	<modalBody>
+		<div class="row text-center">
+			<div th:class="${rollnoDto.status == null ? 'col-6 mb-3' : 'col-4 mb-3'}">
+				<span class="text-tmPrimary fw-bold" th:text="#{message.label.current}"></span><br>
+				<div class="fw-bold text-primary text-uppercase" th:text="${@securityCtxUtil.userName()}"></div>
+			</div>
+			<div th:class="${rollnoDto.status == null ? 'col-6 mb-3' : 'col-4 mb-3'}">
+				<span class="text-tmPrimary fw-bold" th:text="#{message.label.requested}"></span><br>
+				 <div class="fw-bold text-primary text-uppercase" th:text="${rollnoDto.newRollNo}"></div>
+			</div>
+			<th:block th:if="${rollnoDto.status != null}">
+				<div class="col-4 mb-3">
+					<span class="text-tmPrimary fw-bold" th:text="#{message.label.status}"></span><br>
+					<th:block th:include="common/template/approval-status-badge :: statusBadge(${rollnoDto.status}, null)"></th:block>
+				</div>
+				<div th:class="${rollnoDto.status != 'Pending' ? 'col-6 mb-3' : 'col-12 mb-3'}">
+					<span class="text-tmPrimary fw-bold" th:text="#{message.label.requested}+' '+#{message.label.date}"></span><br>
+					<div class="fw-bold text-primary"
+						th:text="${#temporals.format(rollnoDto.createdAt, #messages.msg('date.format'))}"></div>
+				</div>
+			</th:block>
+			<th:block th:if="${rollnoDto.status == 'Approved' || rollnoDto.status == 'Rejected'}">
+			    <div class="col-6 mb-3">
+					<span class="text-tmPrimary fw-bold" 
+					      th:if="${rollnoDto.status == 'Approved'}" 
+					      th:text="#{message.label.approved} + ' ' + #{message.label.date}">
+					</span>
+					<span class="text-tmPrimary fw-bold" 
+					      th:if="${rollnoDto.status == 'Rejected'}" 
+					      th:text="#{message.label.rejected} + ' ' + #{message.label.date}">
+					</span><br>
+			        <div class="fw-bold text-primary"
+			             th:text="${#temporals.format(rollnoDto.modifiedAt, #messages.msg('date.format'))}">
+			        </div>
+			    </div>
+			</th:block>
+		</div>
+	</modalBody>
+	<modalfooter>
+		<div class="text-end">
+			<a href="#" class="text-secondary mb-0 align-middle" onclick="validateRollNumberChange();">
+				<span th:text="#{message.label.click.view.apply}"/>
+				<i class="fa-solid fa-arrow-right ms-2"></i>
+			</a>
+		</div>
+	</modalfooter>
+</div>
+
+<script th:src="@{/assets/js/dashboard/student/roll-number-change.js}"></script>
+<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>

@@ -1,0 +1,77 @@
+<th:block>
+    <div class="row col-lg-12">
+        <div class="card main-card mt-4">
+            <form class="themeForm" th:action="@{#{url.download.student.bulk.accommodation.upload}}" method="post"
+                  enctype="multipart/form-data" th:object="${studentBulkAccommodationDto}" id="studentBulkUploadForm">
+                <div class="row" id="bulkRoomInventory">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.download}"></span></h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-3 d-flex align-items-center">
+                                            <span class="fs-5">
+                                                <u class="text-tmPrimary">
+                                                    <a th:href="@{#{url.download.student.bulk.accommodation.template}}" th:text="#{message.label.click.here.caps}"></a>
+                                                </u>
+                                                <span th:text="#{message.label.student.bulk.upload.click.here.note}"></span>
+                                            </span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.file.header}"></span></h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="eventName">
+                                <span th:text="#{message.label.bulk.upload.event.name}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}"/></label>
+                            <input type="text" class="form-control" id="eventName" name="eventName" th:placeholder="#{message.label.bulk.upload.event.name}"/>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="description">
+                                <span th:text="#{message.label.bulk.upload.desc}"></span></label>
+                            <input type="text" class="form-control" id="description" name="description" th:placeholder="#{message.label.bulk.upload.desc}">
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="uploadFile">
+                                <span th:text="#{message.label.bulk.upload.file}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <div>
+                                <input type="file" class="form-control" id="uploadFile" name="file" th:placeholder="#{message.label.bulk.upload.file}">
+                                <div class="selectFile2 d-none"><span class="text-danger">Please choose file to upload.</span></div>
+                                <div class="validFile d-none"><span class="text-danger">Invalid file format</span></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 d-flex justify-content-center justify-content-lg-end align-items-center my-4 pt-2">
+                            <button type="button" id="uploadFileButton" class="btn btn-purple px-4 me-2" onclick=" return validateFile()">
+                                <i class="fa fa-upload" aria-hidden="true"></i> <span th:text="#{message.button.upload.file}"></span>
+                            </button>
+                        </div>
+
+                        <div class="text-danger errorList d-flex align-items-center" th:if="${excelErrorList != null && !excelErrorList.isEmpty()}">
+                            <ul>
+                                <li th:each="error : ${excelErrorList}">
+                                    <span th:text="${error}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.filter}"></h2>
+            </div>
+        </div>
+    </div>
+</th:block>

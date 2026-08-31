@@ -1,0 +1,51 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('floor-master-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.edit.floor}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.floor.master}}" method="post" th:object="${hostelFloorMasterDto}"
+			id="floorMasterForm">
+			<input type="hidden" th:value="${hostelFloorMasterDto.id}" th:name="id" th:id="floorId" />
+			<div class="row"> 
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="hostelId">
+						<span th:text="#{message.label.hostel.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<select class="selectpicker required-select-input" data-live-search="true" th:field="*{hostel.id}" id="hostelId"
+						th:disabled="${hostelFloorMasterDto.id != null && hostelFloorMasterDto.id > 0}">
+						<option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+						<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+							th:text="${hostelList.hostelName}"></option>
+					</select>
+					<div class="invalid-feedback" id="hostelInputVal" th:text="#{message.validation.hostel.name.required}"></div>
+					<input type="hidden" th:if="${hostelFloorMasterDto.id != null && hostelFloorMasterDto.id > 0}" 
+						th:field="*{hostel.id}" />
+				</div>
+				
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.floor.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control floor-name-validation" id="floorNameId" th:name="floorName"
+						th:value="${hostelFloorMasterDto.floorName}"
+						th:placeholder="#{message.placeholder.floor.name}" maxlength="32">
+					<div class="invalid-feedback floorNameReq" th:text="#{message.validation.floor.name.required}"></div>
+					<div class="invalid-feedback floorNameExist d-none" th:text="#{message.validation.floor.name.exist}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.floor.description}"></span>
+					 </label>
+					<textArea  class="form-control" id="floorDescriptionId"
+						th:field="*{floorDesc}"
+						th:placeholder="#{message.placeholder.floor.description}" maxlength="128"></textArea>
+					</div>
+				</div>
+		</form>
+	</modalBody>
+</div>

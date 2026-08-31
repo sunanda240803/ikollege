@@ -1,0 +1,109 @@
+  <div th:replace="~{common/modal-template ::
+   modal('accountHeadModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader><span th:text="#{message.label.add.edit.account.head}"></span></modalHeader>
+    <modalBody>
+      <form class="themeForm" id="accountHeadform" th:action="@{#{url.hostel.account.head}}" method="post" 
+      	th:object="${accountHeadDto}">
+      	<input type="hidden" th:value="${accountHeadDto?.id?.acchead}" th:name="id.acchead" id="accHead"
+      		th:disabled="${accountHeadDto?.id?.acchead == null or accountHeadDto?.id?.acchead == ''}">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="accountHead">
+              	<span th:text="#{message.label.account.head}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+             </label>
+             <input type="text"  class="form-control required-input"  id="accountHead" required
+             	 th:field="*{id.acchead}" maxlength="32"
+             	th:placeholder="#{message.label.account.head}"
+             	th:disabled="${accountHeadDto?.id?.acchead != null and accountHeadDto?.id?.acchead != ''}"
+             	oninput="validateAlphabetInputWithSpace(this);"
+             	th:classappend="${#fields.hasErrors('id.acchead')} ? 'is-invalid' : ''">
+             <div class="invalid-feedback backendErrors" th:errors="*{id.acchead}"></div>
+             <div class="invalid-feedback-frontEnd" th:text="#{message.validation.account.head.required}"></div>
+             <div class="text-danger accHeadExist d-none" th:text="#{message.validation.account.head.exist}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="accountName">
+              	<span th:text="#{message.label.account.name}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control required-input"  id="accountName" required
+              	th:field="*{accname}" th:placeholder="#{message.label.account.name}"
+              	oninput="validateAlphabetInputWithSpace(this);" maxlength="45"
+              	th:classappend="${#fields.hasErrors('accname')} ? 'is-invalid' : ''">
+              <div class="invalid-feedback backendErrors" th:errors="*{accname}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.account.name.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="accountType">
+              	<span th:text="#{message.label.account.type}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <select id="accountType" class="form-select required-input" required th:field="*{type}"
+              	th:classappend="${#fields.hasErrors('type')} ? 'is-invalid' : ''">
+                 <option value="" th:text="#{message.label.select}"></option>
+                 <option value="C" th:selected="${accountHeadDto?.type == 'C'}">Cash</option>
+                 <option value="B" th:selected="${accountHeadDto?.type == 'B'}">Bank</option>
+                 <option value="R" th:selected="${accountHeadDto?.type == 'R'}">Creditor</option>
+                 <option value="D" th:selected="${accountHeadDto?.type == 'D'}">Debtor</option>
+                 <option value="F" th:selected="${accountHeadDto?.type == 'F'}">Capital</option>
+                 <option value="G" th:selected="${accountHeadDto?.type == 'G'}">General ledger</option>
+			  </select>
+			  <div class="invalid-feedback backendErrors" th:errors="*{type}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.account.type.required}"></div>
+            </div>
+            <div class="col-lg-6"></div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="openingBalance">
+              	<span th:text="#{message.label.opening.balance}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control required-input numeric" 
+              	oninput="checkInputLength(this)" data-maxlength="8"
+                id="openingBalance" required th:field="*{opbal}"
+                th:placeholder="#{message.label.opening.balance}"
+                th:disabled="${accountHeadDto?.opbal != null and accountHeadDto?.opbal != ''}"
+                th:classappend="${#fields.hasErrors('opbal')} ? 'is-invalid' : ''">
+              <div class="invalid-feedback backendErrors" th:errors="*{opbal}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.opening.balance.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="closingBalance">
+              	<span th:text="#{message.label.closing.balance}"></span>
+              </label>
+              <input type="text" class="form-control numeric"  id="closingBalance" 
+              	oninput="checkInputLength(this)" data-maxlength="8"
+              	th:value="${accountHeadDto?.clbal}" th:name="clbal"
+              	th:placeholder="#{message.label.closing.balance}"
+              	th:disabled="${accountHeadDto?.clbal != null and accountHeadDto?.clbal != ''}">
+            </div>
+            <input type="hidden" th:value="${accountHeadDto?.opbal}" th:name="opbal" id="opbal"
+      			th:disabled="${accountHeadDto?.id?.acchead == null or accountHeadDto?.id?.acchead == ''}">
+      		<input type="hidden" th:value="${accountHeadDto?.clbal}" th:name="clbal" id="clbal"
+      		th:disabled="${accountHeadDto?.id?.acchead == null or accountHeadDto?.id?.acchead == ''}">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="openingBalanceDate">
+              	<span th:text="#{message.label.opening.balance.date}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="date" class="form-control required-input "  id="openingBalanceDate" required
+              	th:value="${accountHeadDto?.opdate}" th:name="opdate"
+              	th:classappend="${#fields.hasErrors('opdate')} ? 'is-invalid' : ''">
+              	<div class="invalid-feedback backendErrors" th:errors="*{opdate}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.opening.balance.date.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="closingBalanceDate">
+              	<span th:text="#{message.label.closing.balance.date}"></span>
+              </label>
+              <input type="date" class="form-control"  id="closingBalanceDate" 
+              	th:value="${accountHeadDto?.cldate}" th:name="cldate"
+              	th:classappend="${#fields.hasErrors('cldate')} ? 'is-invalid' : ''">
+              	<div class="invalid-feedback backendErrors" th:errors="*{cldate}"></div>
+              	<div class="text-danger"><small class="balDate"></small></div>
+            </div>
+          </div>
+      </form>
+    </modalBody>
+  </div>
+  

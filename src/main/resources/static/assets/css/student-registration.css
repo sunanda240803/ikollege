@@ -1,0 +1,27 @@
+input.uppercase {
+    text-transform: uppercase;
+}
+
+.declaration-field {
+    border-width: 1px;
+    min-width: 200px;
+    height: 1.5em;
+}
+
+#resizedImage, #imageToResize {
+    max-width: 30%;
+}
+
+/* Center the image in the modal */
+.image-preview-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ensure the resized image is also centered */
+.resized-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,106 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('hostel-master-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.edit.hostel}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.hostel.master}}" method="post" th:object="${hostelMasterDto}"
+			id="hostelMasterForm">
+			<input type="hidden" th:value="${hostelMasterDto.id}" th:name="id" th:id="hostelId" />
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="facilityName">
+						<span th:text="#{message.label.hostel.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control hostel-name-validation" id="hostelNameId" th:name="hostelName"
+						th:value="${hostelMasterDto.hostelName}" oninput="validateAlphabetInputWithSpace(this);"
+						th:placeholder="#{message.placeholder.hostel.name}" maxlength="64">
+					<div class="invalid-feedback nameReq" th:text="#{message.validation.hostel.name.required}"></div>
+					<div class="invalid-feedback nameExist d-none" th:text="#{message.validation.hostel.name.exist}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.hostel.type}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<div class="checkRadio-bg form-control">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input required-input" type="radio" name="hostelGenderType" id="boys"
+								th:name="hostelGenderType" th:checked="*{hostelGenderType == 'M'}" th:value="M">
+							<label class="form-check-label" for="boys"><span
+									th:text="#{message.label.boys}"></span></label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input required-input" type="radio" name="hostelGenderType" id="girls"
+								th:name="hostelGenderType" th:checked="*{hostelGenderType == 'F'}" th:value="F">
+							<label class="form-check-label" for="girls"><span
+									th:text="#{message.label.girls}"></span></label>
+						</div>
+					</div>
+					<div class="invalid-feedback" th:text="#{message.validation.hostel.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="hostelOfficeEmailId">
+						<span th:text="#{message.label.hostel.office.email}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control required-email" id="hostelOfficeEmailId" th:name="hostelOfficeEmail"
+						th:value="${hostelMasterDto.hostelOfficeEmail}"
+						th:placeholder="#{message.placeholder.hostel.office.email}"
+						maxlength="128">
+					<div class="invalid-feedback emailErrReq" th:text="#{message.validation.hostel.office.email.required}"></div>
+					<div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+					<div class="invalid-feedback studentEmailIdPattern d-none" th:text="#{message.validation.email.pattern}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.hostel.short.code}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control hostel-shot-code-validation" id="hostelShortCodeId" th:name="hostelShortCode"
+						th:value="${hostelMasterDto.hostelShortCode}"
+						th:placeholder="#{message.placeholder.hostel.short.code}" maxlength="4">
+					<div class="invalid-feedback shortCodeReq" th:text="#{message.validation.hostel.shortcode.required}"></div>
+					<div class="invalid-feedback shortCodeExist d-none" th:text="#{message.validation.hostel.shortcode.exist}">
+					</div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.veg.coupon.amount}"></span>
+					</label>
+					<input type="text" class="form-control currency" id="vegAmount" th:name="vegAmount" maxlength="10" pattern="\d{1,10}"
+						th:value="${hostelMasterDto.vegAmount}" th:placeholder="#{message.placeholder.veg.coupon.amount}"
+					onkeypress="validateAmountInput(event, this)">
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.non.veg.coupon.amount}"></span>
+					</label>
+					<input type="text" class="form-control currency" id="nonVegAmount" th:name="nonVegAmount" maxlength="10" 
+						onkeypress="validateAmountInput(event, this)" pattern="\d{1,10}"
+						th:value="${hostelMasterDto.nonVegAmount}" th:placeholder="#{message.placeholder.non.veg.coupon.amount}">
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="extensionFlag"><span
+							th:text="#{message.label.extension.flag}"></span></label>
+					<div class=" form-check">
+						<input th:class="form-check-input" type="checkbox" th:id="extensionFlag" th:name="extensionFlag"
+							th:checked="${hostelMasterDto.extensionFlag=='Y'}"
+							th:value="${hostelMasterDto.extensionFlag == 'Y' ? 'Y' : 'N'}"
+							onclick="updateCheckboxValue(this)">
+						<label class="form-check-label" for="extensionFlag"><span
+								th:text="#{message.label.is.extension.flag}"></span></label>
+
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</modalBody>
+</div>

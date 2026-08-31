@@ -1,0 +1,35 @@
+<div th:replace="~{common/modal-template ::
+   modal('roomDetailsModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+    <modalHeader th:text="#{message.lable.room.details}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="guestCouponForm">
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" th:text="#{message.label.hostel.name}"></label>
+                    <div class="form-control form-graybox" th:text="${hostelMasterDto.hostelName}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" th:text="#{message.lable.floor.name}"></label>
+                    <div class="form-control form-graybox" th:text="${hostelFloorMasterDto.floorName}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" th:text="#{message.label.roomNo}"></label>
+                    <div class="form-control form-graybox" th:text="${hostelRoomInfoDto.roomNo}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" th:text="#{message.lable.room.size}"></label>
+                    <div class="form-control form-graybox" th:text="${hostelRoomInfoDto.roomSize}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" th:text="#{message.lable.regular.period.capacity}"></label>
+                    <div class="form-control form-graybox" th:text="${hostelRoomInfoDto.capacity}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" th:text="#{message.lable.vacation.period.capacity}"></label>
+                    <div class="form-control form-graybox" th:text="${hostelRoomInfoDto.vacCapacity}"></div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>
+  

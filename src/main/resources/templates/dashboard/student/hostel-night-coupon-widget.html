@@ -1,0 +1,21 @@
+<div th:replace="~{common/widget-template :: content('hostelNightForm', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <modalHeader><span th:text="#{message.hostel.night.coupon.widget.header}"></span></modalHeader>
+    <modalBody>
+        <div class="row text-center">
+            <div class="col-lg-12">
+                <span class="fw-bold text-tmPrimary" th:text="#{message.label.payment.status}"></span><br>
+                <div class="fw-bold text-primary" th:text="${status}"></div>
+            </div>
+        </div>
+    </modalBody>
+    <modalfooter>
+        <div class="text-end">
+            <p class="text-secondary mb-0 align-middle">
+                <a th:href="@{#{url.hostel.night.coupon}}" class="text-secondary mb-0 align-middle ms-2">
+                    <span class="me-2" th:text="#{message.hostel.night.coupon.purchase}"></span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </p>
+        </div>
+    </modalfooter>
+</div>

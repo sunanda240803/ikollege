@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+<body>
+	<header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Guest Accommodation Request','Dashboard', null,null,null,back,null,#{url.dashboard}+#{url.student},null)}">
+</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body">
+					<form class="themeForm needs-validation" id="guestRequestForm" th:object="${guestRequestDto}"
+						th:action="@{#{url.guest.accommodation.request}}" method="post" enctype="multipart/form-data" >
+						<div class="row mb-3">
+							<div class="col-lg-12">
+								<th:block th:replace="~{common/template/note :: noteContent('message.label.rules.regulation', ${rules}, null)}"></th:block>
+							</div>
+						</div>
+						<div class="form-check mb-3">
+							<input class="form-check-input required-input" type="checkbox" id="agreement1" value="option1" required>
+							<label class="form-check-label" for="agreement1">
+								<span th:text="#{message.label.accomm.request.agreement}"></span>
+							</label>
+						</div>
+						<div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.guest.details}"></h2>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-12">
+                            	<div class="row">
+                            		<span class="mb-2" th:text="#{message.label.select.guest.name}"></span>
+								    <th:block th:each="family, index : ${familyList}">
+								        <div class="col-auto mb-3 RadioCheckToggle">
+								            <!-- Radio input -->
+								            <input type="checkbox" class="btn-check" th:name="|guestList[${index.index}].selected|"
+								                   th:id="'CheckToggle' + ${family.id}" th:data-index="${index.index}"
+								                   autocomplete="off" value="true">
+								                  
+								            <!-- Label for the radio input -->
+								            <label class="btn btn-outline-tmPrimary text-start" 
+								                   th:for="'CheckToggle' + ${family.id}">
+								                <span class="fw-bold" th:text="${family.relationName}"></span><br>
+								                <span class="fw-normal" th:text="${family.relationType}"></span>
+								                <span class="fw-normal" th:if="${family.relationType == #messages.msg('message.relation.father') ||
+												              family.relationType == #messages.msg('message.relation.brother') ||
+												              family.relationType == #messages.msg('message.relation.husband')||
+												              family.relationType == #messages.msg('message.relation.mother') ||
+										          	family.relationType == #messages.msg('message.relation.sister')}">-</span>
+												 <span class="fw-normal" 
+												      th:if="${family.relationType == #messages.msg('message.relation.father') || 
+												              family.relationType == #messages.msg('message.relation.brother') || 
+												              family.relationType == #messages.msg('message.relation.husband')}" 
+												      th:text="#{message.gender.male}">
+												</span>
+												
+										    	<span class="fw-normal" 
+										          	th:if="${family.relationType == #messages.msg('message.relation.mother') ||
+										          	family.relationType == #messages.msg('message.relation.sister') || 
+										          	family.relationType == #messages.msg('message.relation.wife')}" 
+										          	th:text=#{message.gender.female}></span>
+								            </label>
+								            <!-- Hidden fields to pass guestName and relationType -->
+								            <input type="hidden" th:name="|guestList[${index.index}].guestName|" 
+								                   th:value="${family.relationName}">
+								            <input type="hidden" th:name="|guestList[${index.index}].relationOfGuest|" 
+								                   th:value="${family.relationType}">
+								            <input type="hidden" th:name="|guestList[${index.index}].guestId|" 
+								                   th:value="${family.id}">
+								        </div>
+								    </th:block>
+								</div>
+                                <div class="row">
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label" for="checkInDate">
+                                        	<span th:text="#{message.label.checkin.date}"></span>
+                                        	<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+                                        </label>
+										<div class="row">
+											<div class="col-lg-8">
+		                                        <input type="date" id="checkInDate" class="form-control required-input" th:name="requestStartDate" required
+												onclick="this.blur()">
+                                        		<div class="invalid-feedback" th:text="#{message.validation.checkin.date.required}"></div>
+											</div>
+											<div class="col-lg-4">
+												<select th:name="checkinTime" id="checkInTime" class="form-control" required>
+													<option th:each="hour : ${#numbers.sequence(0, 23)}"
+															th:value="${(hour < 10 ? '0' + hour : hour) + ':00'}"
+															th:text="${(hour < 10 ? '0' + hour : hour) + ':00'}">
+													</option>
+												</select>
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label" for="checkOutDate">
+                                        	<span th:text="#{message.label.checkout.date}"></span>
+                                        	<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+                                        </label>
+										<div class="row">
+											<div class="col-lg-8">
+		                                        <input type="date" id="checkOutDate" class="form-control" th:name="requestEndDate" required
+													   onclick="this.blur()">
+		                                        <div class="invalid-feedback" th:text="#{message.validation.checkout.date.required}"></div>
+		                                        <div class="invalid-value-feedback text-danger d-none" th:text="#{message.validation.checkout.date.exceed}"></div>
+		                                        <div class="invalid-limit-feedback text-danger d-none" th:text="#{message.validation.checkin.one.day.limit}"></div>
+											</div>
+											<div class="col-lg-4">
+												<select th:name="checkoutTime" id="checkOutTime" class="form-control" required>
+													<option th:each="hour : ${#numbers.sequence(0, 23)}"
+															th:value="${(hour < 10 ? '0' + hour : hour) + ':00'}"
+															th:text="${(hour < 10 ? '0' + hour : hour) + ':00'}">
+													</option>
+												</select>
+											</div>
+							 			</div>
+                                    </div>
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label" for="noOfDays">
+                                        	<span th:text="#{message.label.noOfDays}"></span>
+                                        	<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+                                         </label>
+                                         <div class="form-control form-graybox" ><span id="days"></span></div>
+                                        <input type="hidden" id="noOfDays" class="form-control " th:name="noOfDays">
+                                        <div class="invalid-feedback" th:text="#{message.validation.noOfDays.required}"></div>
+                                    </div>
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label" for="noOfPersons">
+                                        	<span th:text="#{message.label.noOfPersons}"></span>
+                                        	<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+                                         </label>
+                                         <div class="form-control form-graybox" ><span id="persons"></span></div>
+                                        <input type="hidden" id="noOfPersons"  class="form-control " th:name="noOfPersons">
+                                        <div class="invalid-feedback" th:text="#{message.validation.noOfPersons.required}"></div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label" for="purposeOfVisit">
+                                        	<span th:text="#{message.label.purposeof.visit}"></span>
+                                        	<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+                                         </label>
+                                        <textarea type="text" id="purposeOfVisit" rows="2" class="form-control required-input" th:name="purposeOfVisit"
+                                        	th:placeholder="#{message.label.purposeof.visit}" required maxlength="256"></textarea>
+                                        <div class="invalid-feedback" th:text="#{message.validation.purpose.required}"></div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+										<label class="form-label"><span th:text="#{message.label.accommodation.type}"></span> 
+											<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+										</label>
+										<div class="checkRadio-bg form-control " id="alongWithStudent">
+											<div class="form-check form-check-inline">
+											  <input class="form-check-input required-input" type="radio" id="individualGuestRoom" value="Individual Guest Room" th:name="accommodationType" required>
+											  <label class="form-check-label" for="individualGuestRoom"><span th:text="#{message.label.individual.guestroom}"></span></label>
+											</div>
+											<div class="form-check form-check-inline">
+											  <input class="form-check-input required-input" type="radio" th:disabled="${!disabled}" 
+											  		id="stayWithStudent" value="Stay Along with Student" th:name="accommodationType" required>
+											  <input type="hidden" id="studentHostel" th:value="${disabled}">
+											  <label class="form-check-label" for="stayWithStudent"><span th:text="#{message.label.along.with.student}"></span></label>
+											</div>
+										</div>
+										<div class="invalid-feedback" th:text="#{message.validation.accommodation.type}"></div>
+									</div>
+									<div class="col-lg-6"></div>
+									
+									<div id="fileUploadSection" class="d-none">
+										<div class="row mt-2">
+				                            <div class="col-lg-12">
+				                                <h2 class="tmsub-title" th:text="#{message.label.upload.documents}"></h2>
+				                            </div>
+				                        </div>
+				                        <div class="row mb-3">
+											<div class="col-lg-12">
+												<div class="noteBox">
+													<h4><i class="fa-solid fa-file-circle-exclamation me-1"></i> 
+													<span th:text="#{message.label.note}"></span> :</h4>
+													<ul>
+														<li th:text="#{message.guest.upload.documents}"></li>
+														<li th:text="#{message.guest.choose.upload.type}"></li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<div id="fileUploadContainer" class="row"></div>
+									</div>
+									
+                                   </div>
+								   <div class="form-check mb-3">
+									<input class="form-check-input required-input" type="checkbox" id="agreement2"
+										   value="option1" required>
+									<label class="form-check-label" for="agreement2">
+										<span th:text="#{message.label.guest.request.understoodform}"></span>
+									</label>
+								  </div>
+								  <div class="form-check">
+									<input class="form-check-input required-input" type="checkbox" id="agreement3"
+										   value="option2" required>
+									<label class="form-check-label" for="agreement3">
+										<span th:text="#{message.label.guest.request.undertakeform}"></span>
+									</label>
+								 </div>
+                             </div>
+                            </div>
+                            <input type="hidden" id="gender" th:value="${studentDetailsInfoDto.gender}" />
+                            <input type="hidden" id="maximumDays" th:value="${maxNoDays}" />
+							<!--Button Section-->
+							<hr>
+							<div class="row text-end">
+								<div class="col-lg-12 mt-2 mb-4">
+									<div class="d-flex align-items-center justify-content-end">
+										<a th:href="@{#{url.guest.accommodation.request}}" class="btn btn-secondary px-4 me-3" id="cancel" >
+											<i class="fa-solid fa-circle-arrow-left me-1"></i>
+											<span th:text="#{message.button.cancel}"></span>
+										</a>
+										<button type="button" class="btn btn-aqua px-4" id="guestRequestSave" >
+											<i class="fa-solid fa-floppy-disk me-1"></i>
+											<span th:text="#{message.button.save}"></span>
+										</button>
+									</div>
+									
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<input type="hidden" id="proofFileName" th:value="${allProofFileNamesNull}"/>
+	<th:block th:replace="~{student-family-details-proof::familyDetailsProof}"></th:block>
+	<th:block th:replace="~{common/modal/guest-request-gender-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.guest.gender.selection})}"></th:block>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+		<script th:src="@{/assets/js/mess/guest-accommodation-request.js}"></script>
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:src="@{/assets/js/student/student-family-details.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.guest.accommodation.request}]]*/ '';
+			const father = /*[[${#messages.msg('message.relation.father')}]]*/'';
+			const mother = /*[[${#messages.msg('message.relation.mother')}]]*/'';
+			const brother = /*[[${#messages.msg('message.relation.brother')}]]*/'';
+			const sister = /*[[${#messages.msg('message.relation.sister')}]]*/'';
+			const wife = /*[[${#messages.msg('message.relation.wife')}]]*/'';
+			const husband = /*[[${#messages.msg('message.relation.husband')}]]*/'';
+			const guestSelectionMsg = /*[[${#messages.msg('message.validation.guest.selection')}]]*/'';
+			const  guestSelectionLimitMessage = /*[[${#messages.msg('message.guest.selection.limit')}]]*/'';
+			const checkindateInvalidMsg= /*[[${#messages.msg('message.checkin.date.greater')}]]*/'';
+			const uploadFileMsg = /*[[${#messages.msg('message.validation.guest.upload.file')}]]*/'';
+			const femaleShortForm = /*[[${#messages.msg('messages.gender.female.shortform')}]]*/'';
+			const maleShortForm = /*[[${#messages.msg('messages.gender.male.shortform')}]]*/'';
+			const checkoutDateLimit = /*[[${#messages.msg('message.checkout.date.limit',maxNoDays)}]]*/'';
+			const idProof = /*[[${#messages.msg('message.status.id.proof')}]]*/'';
+			const checkFileNameById = /*[[#{url.check.file.name}]]*/ '';
+			const checkHostelRoomOccupancy = /*[[#{url.check.hostel.room.occupancy}]]*/ '';
+			const oneDayLimit = /*[[${#messages.msg('message.validation.checkin.one.day.limit')}]]*/'';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

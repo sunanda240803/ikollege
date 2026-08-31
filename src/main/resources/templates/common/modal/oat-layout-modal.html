@@ -1,0 +1,13 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(text)">
+  <div th:replace="~{common/modal-template ::
+   modal('oat-layout-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+    <modalHeader th:text="#{message.label.layout.image.size.chart}"></modalHeader>
+    <modalBody>
+      <form class="themeForm" id="oat-layout-form">
+        <div class="row">
+          <img id="oatLayout" th:src="@{/assets/img/student/img_4.png}" alt="">
+        </div>
+      </form>
+    </modalBody>
+  </div>
+</th:block>

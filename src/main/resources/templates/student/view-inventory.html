@@ -1,0 +1,43 @@
+<th:block th:fragment="viewInventory">
+   <div th:replace="~{common/modal-template :: modal('view-inventory', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+      <modalHeader>
+         <span th:text="#{message.label.view.inventory}"></span>
+      </modalHeader>
+      <modalBody>
+         <form class="themeForm">
+            <div class="row">
+               <div class="col-lg-12">
+                  <div class="mb-4">
+                     <div class="table-responsive themeTable">
+                        <table id="inventoryTable" class="table table-bordered nowrap w-100">
+                           <thead>
+                              <tr>
+                                 <th th:text="#{message.label.inventory.code}"></th>
+                                 <th th:text="#{message.label.inventory.name}"></th>
+                                 <th th:text="#{message.label.inventory.category}"></th>
+                                 <th th:text="#{message.label.inventory.condition}"></th>
+                                 
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr th:if="${#lists.isEmpty(inventoryList)}">
+                                <td colspan="4" class="text-center" 
+                                th:text="#{message.label.no.record.found}"> 
+                              </tr>
+                              <tr th:each="item : ${inventoryList}">
+                                 <td th:text="${item.assetCode}"></td>
+                                 <td th:text="${item.assetName}"></td>
+                                 <td th:text="${item.assetCategory}"></td>
+                                 <td th:text="${item.assetConditionStatus}"></td>
+                                 
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </modalBody>
+   </div>
+</th:block>

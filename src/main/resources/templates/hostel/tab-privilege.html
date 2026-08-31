@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<!-- //Main-->
+
+<!-- //Main-->
+<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body themeForm">
+					<form class="themeForm" th:action="@{#{url.hostel.tab-privilege}}" method="get" id="tabPrivilege">
+						<!-- Hidden Input to store selected checkbox values as JSON -->
+						<input type="hidden" id="selectedCheckboxes" name="selectedCheckboxes" />
+						
+						<div class="row" th:classappend="${(roleId!=null and roleId=='SoftwareAdmin') ? '' : 'd-none'}">
+							<div class="col-lg-12">
+								<h2 class="tmsub-title">
+									<span th:text="#{message.label.tab.privileges}"></span>
+								</h2>
+							</div>
+						</div>
+						<div class="row mb-3" th:classappend="${(roleId!=null and roleId=='SoftwareAdmin') ? '' : 'd-none'}">
+							<div class="col-lg-3 mb-3">
+								<label class="form-label">
+									<span th:text="#{message.label.user}+' '+#{message.label.tab.privileges}"></span>
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label>
+								<select class="form-select required-input" data-live-search="true" id="selectRole" th:value="${role}">
+									<option value="0" th:text="#{message.label.select}+' '+#{message.label.role}"></option>
+									<option th:each="roleObj : ${roleList}" th:value="${roleObj}" th:text="${roleObj}" th:selected="*{role} == ${roleObj}"></option>
+								</select>
+								<div class="invalid-feedback" th:text="#{message.validation.role.required}"></div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-lg-12">
+								<h2 class="tmsub-title">
+									<span th:text="#{message.label.user}+' '+#{message.label.tab.privileges}+' '+#{message.label.list}"></span>
+								</h2>
+							</div>
+						</div>
+
+						<!-- Iterating through tabPrevilegeList -->
+						<div class="row mb-3" th:each="tab : ${tabPrevilegeList}" th:id="tabPrivilegeList">
+							<div class="col-lg-10">
+								<h2 class="tmsub-title">
+									<span th:text="${tab.l1Name}"></span>
+								</h2>
+							</div>
+							<!-- Child Checkboxes (L2) -->
+							<div class="col-lg-12">
+								<div class="row">
+									<div class="col-lg-3 col-md-3 RadioCheckToggle mb-3" th:if="${tab.subList != null}" th:each="subItem : ${tab.subList}">
+										<input type="checkbox" th:id="'l2-' + ${subItem?.l2Id}" th:checked="${subItem?.l2show != null ? subItem?.l2show : false}"
+											   th:onchange="|updateParentCheckbox(${tab.l1Id})|" class="btn-check child-checkbox"
+											   data-l1-id="${tab.l1Id}">
+										<label th:for="'l2-' + ${subItem?.l2Id}" class="btn btn-outline-tmPrimary text-center d-flex flex-column">
+											<span th:text="${subItem?.l2Name}"></span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Save Button -->
+						<div th:if="${tabPrevilegeList  != null}"
+							 class="col-lg-12 my-3 d-lg-flex align-items-lg-center justify-content-lg-end">
+							<div class="d-flex align-items-center justify-content-center mb-3">
+								<button type="button" class="btn btn-lgtblue px-4" style="margin-top: 38px" id="saveForm" onclick="return validateForm()">
+									<i class="fa-solid fa-floppy-disk me-1"></i> <span th:text="#{message.button.save}"></span>
+								</button>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/hostel/tab-privilege.js}"></script>
+	<script th:inline="javascript">
+		const baseURL = /*[[#{url.hostel.tab-privilege}]]*/ '';
+	</script>
+</th:block>
+<!-- Footer-->
+
+</body>
+</html>

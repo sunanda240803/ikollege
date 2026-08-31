@@ -1,0 +1,16 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+	<div th:replace="~{common/modal/simple-modal-template :: modal('biodataModal', ~{::modalHeader}, ~{::modalBody},
+		'danger','fa-solid fa-xmark', 'Fill Bio-Data',true)}">
+		<modalHeader>
+			<label th:text="${headerText}"></label>
+		</modalHeader>
+		<modalBody>
+			<span th:text="${bodyText}"></span>
+			<input id="dynamicId" type="hidden">
+			<input id="status" type="hidden">
+			<input id="toasterMsg" type="hidden">
+			<input id="urlId" type="hidden">
+			<input id="prefixId" type="hidden">
+		</modalBody>
+	</div>
+</th:block>

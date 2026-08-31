@@ -1,0 +1,31 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(title, needBack, needAddRow, needSave,needCancel,needUpdate)">
+    <!--Breadcrumb Section-->
+    <div class="fixed-bar">
+        <div class="pagetitle">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 th:include="${title}"></h1>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                <button type="button" class="btn btn-dark btn-sm" th:if="${needCancel} == true">
+                  <i class="fa-solid fa-circle-xmark me-1"></i>  <span th:text="#{message.button.cancel}"></span>
+                </button>
+                <button type="button" class="btn btn-tmPrimary btn-sm" th:if="${needUpdate} == true">
+                  <i class="fa-solid fa-refresh me-1"></i>  <span th:text="#{message.button.update}"></span>
+                </button>
+            	<button type="submit" class="btn btn-tmPrimary btn-sm" th:if="${needSave} == true">
+                  <i class="fa-solid fa-floppy-disk me-1"></i>   <span th:text="#{message.button.save}"></span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm addRow"
+                	th:if="${needAddRow} == true" id="addRowMethod" disabled>
+                    <i class="fa-solid fa-circle-plus me-1"></i> <span th:text="#{message.button.add}"></span>
+                </button>
+                <button type="button" class="btn btn-secondary"
+                	onclick="window.history.back();" th:if="${needBack} == true">
+                    <i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

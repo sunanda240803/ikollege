@@ -1,0 +1,12 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+  <div th:replace="~{common/modal/simple-modal-template :: modal('checkin-modal', ~{::modalHeader}, ~{::modalBody},
+		'primary','fa-solid fa-exclamation', #{message.label.confirm},true)}">
+    <modalHeader>
+      <th:block th:text="${headerText}"></th:block>!
+    </modalHeader>
+    <modalBody>
+      <span th:text="${bodyText}"></span>
+      <input id="dynamicId" type="hidden">
+    </modalBody>
+  </div>
+</th:block>

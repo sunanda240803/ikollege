@@ -1,0 +1,167 @@
+<div th:replace="~{common/modal-template ::
+    modal('show-event-master-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader th:text="#{message.label.event.master}"></modalHeader>
+    <modalBody>
+        <form id="show-event-master-modal-form" class="themeForm" th:action="@{#{url.hostel.event.master}+#{url.save}}"
+              th:object="${showEventMasterDto}" novalidate method="post">
+            <div class="row">
+                <input type="hidden" th:field="*{id}">
+                <div class="col-lg-6">
+                    <label class="form-label" for="eventName">
+                        <span th:text="#{message.label.event.name}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" th:field="*{eventName}" id="eventName"
+                           th:placeholder="#{message.placeholder.event.name}" maxlength="64"
+                           th:classappend="${#fields.hasErrors('eventName')} ? 'is-invalid' : ''"
+                           required>
+                    <div class="invalid-feedback backendErrors" th:errors="*{eventName}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.event.name.required}"></div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="eventDescription">
+                        <span th:text="#{message.label.event.description}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea type="text" class="form-control required-input" maxlength="127" th:field="*{eventDesc}" id="eventDescription"
+                           th:placeholder="#{message.label.event.description}"
+                              th:classappend="${#fields.hasErrors('eventDesc')} ? 'is-invalid' : ''" required>
+                        </textarea>
+                    <div class="invalid-feedback backendErrors" th:errors="*{eventDesc}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.event.description.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3">
+                        <span th:text="#{message.label.sales.start.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" th:field="*{eventStartingDate}" onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.sales.start.date.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3">
+                        <span th:text="#{message.label.sales.end.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" th:field="*{eventEndingDate}" onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.accomm.req.end.date.required}"></div>
+                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.sales.end.date.required}"></div>
+                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.sales.end.date}"></div>
+                    <div class="invalid-feedback-sales-greater-event d-none" th:text="#{message.validation.sales.end.date.event.date}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3">
+                        <span th:text="#{message.label.event.start.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" th:field="*{actualEventStartingDate}" onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.event.start.date.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3">
+                        <span th:text="#{message.label.event.end.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" th:field="*{actualEventEndingDate}" onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.accomm.req.end.date.required}"></div>
+                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.event.end.date.required}"></div>
+                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.event.end.date}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3">
+                        <span th:text="#{message.label.accomm.req.start.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" th:field="*{eventAccRegistrationStartingDate}" onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.accomm.req.start.date.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3">
+                        <span th:text="#{message.label.accomm.req.end.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" th:field="*{eventAccRegistrationEndingDate}" onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.accomm.req.end.date.required}"></div>
+                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.accomm.req.end.date.required}"></div>
+                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.accomadation.request.end.date}"></div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="contactUs">
+                        <span th:text="#{message.label.contact.us}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control" maxlength="300" id="contactUs" th:field="*{contactUs}"
+                           th:placeholder="#{message.placeholder.contact.info}"
+                           th:classappend="${#fields.hasErrors('contactUs')} ? 'is-invalid' : ''"
+                           required>
+                    <div class="invalid-feedback backendErrors" th:errors="*{contactUs}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.contact.us.required}"></div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="maxAmount">
+                        <span th:text="#{message.label.max.amount}"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                    </label>
+                    <input type="text" class="form-control" maxlength="8" oninput="validateNumberInput(this)" id="maxAmount"
+                           th:name="|creditLimit|"
+                           th:value="${#numbers.formatDecimal(showEventMasterDto.creditLimit, 0, '2', 'POINT')}"
+                           th:placeholder="#{message.placeholder.max.amount}">
+                    <div class="invalid-feedback" th:text="#{message.validation.max.amount.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3" for="hasSales"><span th:text="#{message.label.sales}"></span></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:name="|salesType|" id="hasSales"
+                               th:checked="*{salesType eq true}"
+                               th:value="*{salesType ne null ? salesType : 'false'}"
+                               onclick="this.value = this.checked ?'true' : 'false'">
+                        <label class="form-check-label" for="hasSales" th:text="#{message.label.event.sales}"></label>
+                        <div class="invalid-feedback" th:text="#{message.validation.sales.required}"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label mt-3" for="currentlyActive">
+                        <span th:text="#{message.label.active}"></span>
+                    </label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:name="|currentlyActive|" id="currentlyActive"
+                               th:value="*{currentlyActive ne null and !#strings.isEmpty(currentlyActive)?currentlyActive:'N'}"
+                               th:checked="*{currentlyActive eq 'Y'}"  onclick="this.value = this.checked ? 'Y' : 'N'">
+                        <label class="form-check-label" for="currentlyActive" th:text="#{message.label.currently.active}"></label>
+                        <div class="invalid-feedback" th:text="#{message.validation.currently.active.required}"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.accommodation}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <div class="checkRadio-bg form-control" id="accommodation" th:classappend="${#fields.hasErrors('eventType')} ? 'is-invalid' : ''">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input required-input" type="radio" th:field="*{eventType}"  id="shaastraSaarang"
+                                   value="Shaastra/Saarang" required>
+                            <label class="form-check-label" for="shaastraSaarang" th:text="#{message.label.shaastra.saarang}"></label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input required-input" type="radio" th:field="*{eventType}" id="msOrPhd"
+                                   value="MS/PHD Interviews"
+                                   required>
+                            <label class="form-check-label" for="msOrPhd" th:text="#{message.label.ms.phd.interviews}"></label>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback backendErrors" th:errors="*{eventType}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.accommodation.required}"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="accountHead">
+                            <span th:text="#{message.label.account.head}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <select id="accountHead" class="selectpicker required-select-input" data-live-search="true" required th:field="*{acchead}"
+                                th:classappend="${#fields.hasErrors('acchead')} ? 'is-invalid' : ''">
+                            <option value="" th:text="#{message.label.select.account.head}"></option>
+                            <option th:each="accHead : ${accountHeadList}" th:value="${accHead.id.acchead}" th:text="${accHead.accname}"></option>
+                        </select>
+                        <div class="invalid-feedback backendErrors" th:errors="*{acchead}"></div>
+                        <div class="invalid-feedback-frontEnd" th:text="#{message.validation.select.account.head.required}"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

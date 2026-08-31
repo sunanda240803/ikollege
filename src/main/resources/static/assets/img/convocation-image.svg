@@ -1,0 +1,22 @@
+<!--?xml version="1.0" encoding="utf-8"?-->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xml:space="preserve">
+
+<style type="text/css">
+    .st0{fill:#FFFFFF;}
+</style>
+
+<g>
+    <!-- Graduation Cap -->
+    <path class="st0" d="M256 80L40 176l216 96 176-78v104h32V176l40-18L256 80z"></path>
+
+    <!-- Students -->
+    <path class="st0" d="M128 236v76c0 47 57 84 128 84s128-37 128-84v-76l-128 57-128-57z"></path>
+
+    <!-- Certificate -->
+    <path class="st0" d="M140 420c0-18 14-32 32-32h168c18 0 32 14 32 32s-14 32-32 32H172c-18 0-32-14-32-32z"></path>
+
+    <!-- Ribbon -->
+    <path class="st0" d="M236 452l20 40 20-40h-40z"></path>
+</g>
+
+</svg>

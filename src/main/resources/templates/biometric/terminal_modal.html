@@ -1,0 +1,24 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+    <div class="modal-content">
+        <form class="themeForm" method="post" th:object="${terminal}" th:action="@{/messDetails/updateTerminal}">
+            <div class="row mt-3">
+                <div class="col-12 mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="terminalIp" th:value="${terminal.terminalIp}"
+                               placeholder="Terminal IP 10.2.10.1" autocomplete="false">
+                        <input type="text" class="form-control" name="userName" th:value="${terminal.userName}" placeholder="Admin Username">
+                        <input type="password" class="form-control" name="password" th:value="${terminal.password}" placeholder="******" th:id="'password_' + ${terminal.terminalIp}">
+                        <button class="btn btn-outline-secondary" type="button" th:id="'toggle_' + ${terminal.terminalIp}" onclick="togglePassword(this)">
+                            <i class="fa fa-eye"></i> <!-- FontAwesome eye icon -->
+                        </button>
+                    </div>
+                    <input type="hidden" class="form-control-sm" name="terminalId" th:value="${terminal.terminalId}">
+                </div>
+                <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-secondary px-3" th:id="'cancel_'+${terminal.terminalIp}" onclick="closeDiv(this)">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-tmPrimary px-3">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</th:block>

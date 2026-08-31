@@ -1,0 +1,61 @@
+<th:block th:fragment="table">
+  <div class="deanDashboardList">
+      <div th:replace="~{common/template/left-right-table-scroll-arrows.html :: leftRightArrow()}"></div>
+    <div class="table-responsive themeTable" id="horizontalScrollContainer">
+      <table id="deanDashboardTable" class="table table-bordered nowrap w-100">
+        <thead>
+        <tr>
+          <th th:each="columnData : ${columnDto?.actionList}" th:text="${columnData.displayName}"></th>
+          <th class="text-center"  th:text="#{message.label.action}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${form.list != null }"
+            th:each="dean, iter: ${form.list}">
+            <td th:each="data : ${columnDto?.actionList}" class="text-wrap">
+                <th:block th:if="${#strings.endsWith(data.property, 'Status')}"
+                          th:include="common/template/approval-status-badge :: statusBadge(${@propertyAccessorUtil.getPropertyValue(dean, data.property)}, null)">
+                </th:block>
+                <th:block th:unless="${#strings.endsWith(data.property, 'Status')}"
+                      th:text="${@propertyAccessorUtil.getPropertyValue(dean, data.property)}">
+                </th:block>
+            </td>
+            <td class="text-center">
+                <th:block th:each="action, actIter : ${dean.actionList}">
+
+                    <th:block th:unless="${action.displayName eq 'CheckBox'}">
+                        <button th:classappend="'btn btn-sm ms-2 mb-2 ' + ${action.actionStyle}"
+                                data-bs-toggle="tooltip"
+                                th:data-note-required="${action.isNoteRequired}"
+                                th:data-bs-title="${action.displayName}"
+                                th:data-id="${iter.index+'_'+actIter.index}"
+                                th:id="${'id_'+iter.index+'_'+actIter.index}"
+                                th:data-url="${action.url}"
+                                th:onclick="handleActionClick(this)">
+                            <i th:classappend="${action.actionIcon}"></i>
+                        </button>
+                    </th:block>
+                    <th:block th:if="${action.displayName eq 'CheckBox'}">
+                        <input type="checkbox"
+                               th:classappend="'form-check-input ms-2 bulk-checkbox'"
+                               th:data-url="${action.url}"
+                               th:data-id="${iter.index+'_'+actIter.index}"
+                               th:id="${'checkbox_'+iter.index+'_'+actIter.index}">
+                    </th:block>
+
+                </th:block>
+            </td>
+        </tr>
+        <tr th:if="${form.list eq null}">
+          <td th:colspan="${1+columnDto.actionList.size()}" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+  </div>
+</th:block>
+<head>
+    <!-- Page-specific head elements -->
+<!--    <link rel="stylesheet" th:href="@{/assets/css/dean/dean-common-table-style.css}">-->
+</head>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="themeForm">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label class="form-label" for="messPeriod">
+                                    <span th:text="#{message.label.mess.period.radio}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <select id="messPeriod" class="form-select" required>
+                                    <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.allotted.list.period}"></option>
+                                    <option th:each="messPeriod : ${messPeriodList}"
+                                            th:value="${messPeriod.id}"
+                                            th:text="${#temporals.format(messPeriod.diningFromDate, #messages.msg('date.format'))} +' to ' +
+						               	 	${#temporals.format(messPeriod.diningToDate, #messages.msg('date.format'))}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" th:text="#{message.validation.mess.period.required}"></div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <label class="form-label" for="reportType">
+                                    <span th:text="#{message.label.report.type}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <select class="form-select" id="reportType" required>
+                                    <option th:text="#{message.label.select}" value=""></option>
+                                    <option value="FRR">Feed Back Raw Report</option>
+                                    <option value="FSR">Feed Back Sum Report</option>
+                                </select>
+                                <div class="invalid-feedback" th:text="#{message.validation.report.type.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3 pt-3">
+                                <button id="filterData" class="btn btn-lgtblue mt-3" type="button" onclick="generateReport()">
+                                    <i class="fa-solid fa-database"></i>
+                                    <span th:text="#{message.label.get.data}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/reports/student-mess-feedback-report.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.student.mess.feedback.report}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

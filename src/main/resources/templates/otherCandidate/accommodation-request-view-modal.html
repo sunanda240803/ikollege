@@ -1,0 +1,152 @@
+<!-- Form Module -->
+<div
+        th:replace="~{common/modal-template :: modal('accommodationRequestViewModal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+  <modalHeader>
+    <span th:text="#{message.label.accomadation.request.details}"></span>
+  </modalHeader>
+  <modalBody>
+    <form class="themeForm" th:with="dateFormat=#{date.format}" th:object="${accommodationRequestDetails}">
+      <div class="row mt-2">
+        <div class="col-lg-12">
+          <h2 class="tmsub-title">
+            <span th:text="#{message.label.appointment.details}"></span>
+          </h2>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-lg-6">
+          <label class="form-label" for="periodOfAppointmentFrom">
+            <span th:text="#{message.label.period.appointment}+' '+#{message.label.from}"></span>
+          </label>
+          <div class="form-control form-graybox" id="periodOfAppointmentFrom"
+               th:text="${#temporals.format(accommodationRequestDetails.candidateAppointmentRequestDto.appointmentFrom,dateFormat)}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="periodOfAppointmentTo">
+            <span th:text="#{message.label.period.appointment}+' '+#{message.label.To}"></span>
+          </label>
+          <div type="date" class="form-control form-graybox" id="periodOfAppointmentTo"
+               th:text="${#temporals.format(accommodationRequestDetails.candidateAppointmentRequestDto.appointmentTo,dateFormat)}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="periodOfAppointmentFrom">
+            <span th:text="#{message.label.period.stay.request}+' '+#{message.label.from}"></span>
+            
+          </label>
+          <div class="form-control form-graybox" id="periodOfStayFrom"
+               th:text="${#temporals.format(accommodationRequestDetails.candidateAppointmentRequestDto.stayFrom,dateFormat)}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="periodOfAppointmentTo">
+            <span th:text="#{message.label.period.stay.request}+' '+#{message.label.To}"></span>
+            
+          </label>
+          <div class="form-control form-graybox" id="periodOfStayTo"
+               th:text="${#temporals.format(accommodationRequestDetails.candidateAppointmentRequestDto.stayTo,dateFormat)}"></div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-lg-12">
+          <h2 class="tmsub-title"
+              th:text="#{message.label.other.details}"></h2>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <!--<div class="col-lg-6 mb-3">
+          <label class="form-label" for="stipendFellowshipPay">
+            <span th:text="#{message.label.stipend}"></span>
+            
+          </label>
+          <div class="form-control form-graybox" id="stipendFellowshipPay"
+               th:text="*{candidateAppointmentRequestDto.grossPay}"></div>
+        </div>-->
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.category}"></span>
+          </label>
+          <div class="form-control form-graybox" id="category" th:text="*{candidateAppointmentRequestDto.category}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="purpose">
+            <span th:text="#{message.label.purpose}"></span>
+            
+          </label>
+          <div class="form-control form-graybox"  id="purpose"
+               th:text="*{candidateAppointmentRequestDto.purpose}"></div>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-lg-12">
+          <h2 class="tmsub-title"
+              th:text="#{message.label.validating.authority}"></h2>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="authorityName">
+            <span th:text="#{message.label.authority.name}"></span>
+          </label>
+          <div class="form-control form-graybox" id="authorityName"
+               th:text="*{candidateAppointmentRequestDto.validatingAuthority} ne null ? *{candidateAppointmentRequestDto.validatingAuthority} : 'N/A'"></div>
+        </div>
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="authorityEmail">
+            <span th:text="#{message.label.authority.email}"></span>
+          </label>
+          <div class="form-control form-graybox" id="authorityEmail"
+               th:text="*{candidateAppointmentRequestDto.validatingAuthorityEmail} ne null ? *{candidateAppointmentRequestDto.validatingAuthorityEmail} : 'N/A'"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="table-responsive themeTable">
+          <table class="table table-bordered nowrap w-100">
+            <thead>
+            <tr>
+              <th th:text="#{message.label.approver.name}"></th>
+              <th th:text="#{message.label.approver.email}"></th>
+              <th th:text="#{message.label.approval.status}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="*{candidateWorkflowList ne null and !candidateWorkflowList.isEmpty()}"
+            th:each="workflow : *{candidateWorkflowList}">
+              <td th:text="${workflow.validatorName}"></td>
+              <td th:text="${workflow.email}"></td>
+              <td>
+                <th:block th:include="common/template/approval-status-badge ::
+                                                statusBadge(${workflow.status},null)"></th:block>
+              </td>
+            </tr>
+            <tr th:unless="*{candidateWorkflowList ne null and !candidateWorkflowList.isEmpty()}">
+              <td colspan="3" class="text-center"><span
+                      th:text="#{message.label.no.data.available}"></span></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <th:block
+              th:include="common/template/file-upload-template :: contents(${accommodationRequestDetails.candidateFilesInformationList})"></th:block>
+
+      <div class="col-lg-12 mb-3">
+        <span class="text-success"> <i class="fa fa-solid fa-check-circle"></i></span>
+        <span th:utext="#{message.lable.request.terms.1}"></span>
+      </div>
+      <div class="col-lg-12 mb-3 d-flex align-items-start">
+        <span class="text-success me-2"> <i class="fa fa-solid fa-check-circle"></i></span>
+        <span th:utext="#{message.lable.request.terms.2}"></span>
+      </div>
+
+    </form>
+  </modalBody>
+</div>

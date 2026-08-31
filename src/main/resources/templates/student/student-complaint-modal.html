@@ -1,0 +1,88 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('student-complaint-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.student.complaint}"></span>
+	</modalHeader>
+	<modalBody>
+	<form class="themeForm" id="studentComplaintForm" th:action="@{#{url.student.complaint.form}}" th:object="${studentComplaintDetailsDto}"  novalidate method="post" enctype="multipart/form-data"> 
+	<input type="hidden"  th:name="complaintId"  />
+			<div class="row">
+			<div class="col-lg-6 mb-3">
+					<label class="form-label" for="studentId"> <span
+						th:text="#{message.label.studentID}"></span>
+					</label> <input type="text" id="studentId" name="studentId"
+						class="form-control" th:readonly="true"
+						th:value="${#strings.toUpperCase(@securityCtxUtil.userName())}">
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="studentName"> <span
+						th:text="#{message.label.studentName}"></span>
+					</label> <input type="text" name="studentName" id="studentName"
+						class="form-control" th:readonly="true"
+						th:value="${@securityCtxUtil.studentFullName()}" />
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" style="white-space: nowrap;"><span th:text="#{message.label.complaint.type}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<div class="checkRadio-bg form-control" th:classappend="${#fields.hasErrors('stuComplaintType')} ? 'is-invalid' : ''">
+						<div class="form-check form-check-inline me-4">
+							<input class="form-check-input required-input" type="radio" th:field="*{stuComplaintType}" id="complaintTypeHostel"
+								value="hostel"  onclick="checkComplaintType('hostel')"  required>
+							<label class="form-check-label" for="complaintTypeHostel"><span th:text="#{message.label.hostel}"></span></label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input required-input" type="radio" th:field="*{stuComplaintType}" id="complaintTypeMess"
+								value="mess" onclick="checkComplaintType('mess')"
+									th:disabled="${messMasterList.messName == null}" required>
+							<label class="form-check-label" for="complaintTypeMess"><span th:text="#{message.label.mess}"></span></label>
+						</div>
+					</div>
+					 <div class="invalid-feedback backendErrors" th:errors="*{stuComplaintType}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.complaint.type.required}"></div>
+				</div>
+				
+			
+			<div class="col-lg-6 complaintDropdown d-none mb-3">
+				<label class="form-label"> <span
+					th:text="#{message.label.complaint.about}"></span> <th:block
+						th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+					<input type="hidden"  th:value="${studentComplaintDetailsDto.complaints}" id="complaintsHidden" />
+				 <select class="form-select required-input" id="complaintAbout"
+					th:field="*{complaints}"  th:classappend="${#fields.hasErrors('complaints')} ? 'is-invalid' : ''" required>
+					<option value="" th:text="#{message.label.select}"></option>
+					<option th:each="config : ${complaintConfigurations}" th:selected="${studentComplaintDetailsDto.complaints eq config.complaintName}"
+						data-type="hostel" th:value="${config.complaintName}"
+						th:text="${config.complaintName}"></option>
+					<option th:each="master : ${messMasterList}" data-type="mess" th:selected="${studentComplaintDetailsDto.complaints eq master.messName}"
+						th:value="${master.messName}" th:text="${master.messName}"></option>
+						
+				</select>
+				<div class="invalid-feedback backendErrors" th:errors="*{complaints}"></div>
+				<div class="invalid-feedback-frontEnd"
+					th:text="#{message.validation.complaint.about.required}"></div>
+			</div>
+
+			<div class="col-lg-6 complaint d-none mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.complaint.description}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>	
+					<textarea type="text" class="form-control required-input" rows="2" th:field="*{complaintDesc}"
+						id="description" th:placeholder="#{message.label.complaint.description}" th:classappend="${#fields.hasErrors('complaintDesc')} ? 'is-invalid' : ''" required ></textarea>
+					<div class="invalid-feedback backendErrors" th:errors="*{complaintDesc}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.complaint.description.required}"></div>
+				</div>
+				<div class="col-lg-6 complaint d-none">
+					 <label class="form-label" for="medicalProof">
+                                    <span th:text="#{message.label.upload.complaint.document}"></span>
+                                    </label>
+					<th:block th:replace="~{common/template/drag-drop-file-upload-template::contents('uploadFile', 'uploadedFileName', ${#messages.msg('message.accepted.file.types')}, 'uploadDoc', ${studentComplaintDetailsDto.fileUpload}, ${#messages.msg('message.drag.drop.complaintform.select')})}">
+				</th:block>
+				</div> 
+			</div>
+		</form>
+	</modalBody>
+</div>

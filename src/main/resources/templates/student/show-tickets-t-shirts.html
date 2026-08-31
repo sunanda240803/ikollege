@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <link th:href="@{/assets/css/student/show-tickets-t-shirts.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<header
+        th:replace="~{common/student-dashboard-header:: title(${headerForm},'Professional Shows Tickets and T-Shirts','Dashboard',null,null,null,'Back',null,#{url.dashboard}+#{url.student},null)}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" th:action="@{#{url.show.action}}" id="show-tickets-t-shirts-form" novalidate th:object="${showForm}" method="post">
+                        <input type="hidden" th:field="*{eventId}">
+                        <input type="hidden" th:field="*{totalPurchasedAmount}">
+                        <input type="hidden" th:field="*{creditLimit}">
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                            	<th:block th:replace="~{common/template/note :: noteContent('message.label.terms.conditions', null, ~{::noteContent})}">
+	                                <noteContent>
+		                                <ul>
+		                                    <li th:text="#{message.label.ticket.t-shirts.submit}"></li>
+		                                    <li>
+		                                        <span th:text="#{message.label.ticket.t-shirts.booking}"></span>
+		                                        <span class="currency" th:text="${showForm.showEventMasterDto.creditLimit}"></span>
+		                                        <span>/-</span>
+		                                    </li>
+		                                    <li th:text="#{message.ticket.non-transferable.non-refundable}"></li>
+		                                    <li th:text="#{message.ticket.t-shirts.collection}"></li>
+		                                    <li th:text="#{message.ticket.t-shirts.confirmation}"></li>
+		                                </ul>
+	                                </noteContent>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-9 col-md-8 col-sm-9" >
+                                <div class="row show-list">
+                                    <div class="col-lg-4 col-md-6 col-sm-6 mb-4" th:each="show,iter : ${showForm.showMasterDtoList}">
+                                        <input type="hidden" th:value="${show.id}" th:name="|showMasterDtoList[${iter.index}].id|"/>
+                                        <div class="card">
+                                            <div class="min-card">
+                                                <div class="card-header text-center">
+                                                    <h5 class="card-title" th:text="${show.showName}"></h5>
+                                                    <img alt="Image" th:data-default="@{/assets/img/poster.png}"
+                                                         th:src="@{#{url.file} + #{url.image} + '/show/'+ ${show.imageLocation}}"
+                                                         th:attr="onerror='this.src=\'' + @{/assets/img/poster.png} + '\''">
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-12 label-container d-flex justify-content-between align-items-center">
+                                                            <label class="form-label mb-0"><span th:text="#{message.label.options}"></span></label>
+                                                            <th:block th:if="${show.showDescr eq 'tshirt'}">
+                                                                <label class="form-label mb-0">
+                                                                    <a class="text-primary size-chart"
+                                                                       th:data-location="#{url.file}+ #{url.image} + '/show/'+${show.seatImageLocation}"
+                                                                       onclick="showChartModal('tshirt',this)">Size chart</a>
+                                                                </label>
+                                                            </th:block>
+
+                                                            <th:block th:if="${show.showDescr eq 'show'}">
+                                                                <label class="form-label mb-0">
+                                                                    <a class="text-primary oat-layout"
+                                                                       th:data-location="#{url.file}+ #{url.image} + '/show/'+${show.seatImageLocation}"
+                                                                       onclick="showChartModal('show', this)">OAT Layout</a>
+                                                                </label>
+                                                            </th:block>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="mb-2" >
+                                                                <div class="form-check left-right-text" th:each="seat,seatIter : ${show.showSeatDetails}">
+                                                                    <div class="overlay-text-image">
+                                                                        <!-- For radio buttons-->
+                                                                        <th:block th:if="${show.maxSeatCount ne null and show.maxSeatCount <= 1}">
+                                                                            <input class="form-check-input"
+                                                                                   th:value="${seat.id}"
+                                                                                   th:name="|showMasterDtoList[${iter.index}].showSeatDetailsDto.id|"
+                                                                                   type="radio"
+                                                                                   th:id="${seat.id}"
+                                                                                   th:show-id="${show.id}"
+                                                                                   th:seat-name="${seat.seatName}"
+                                                                                   th:seat-price="${seat.discountedAmount}"
+                                                                                   th:checked="${seat.isSeatBooked eq true}"
+                                                                                   th:disabled="${seat.isSeatBooked eq true || seat.isAvailable eq false || show.isShowBooked eq true}"
+                                                                                   onclick="addItemToCart(this)">
+
+                                                                            <input type="hidden" th:id="${'seatCount_'+seat.id}"
+                                                                                   th:value="${seat.purchaseCount}"
+                                                                                   th:name="|showMasterDtoList[${iter.index}].showSeatDetailsDto.purchaseCount|">
+                                                                        </th:block>
+
+                                                                        <!-- For checkboxes -->
+                                                                        <th:block th:if="${show.maxSeatCount ne null and show.maxSeatCount > 1}">
+                                                                            <input class="form-check-input"
+                                                                                   th:value="${seat.id}"
+                                                                                   th:name="|showMasterDtoList[${iter.index}].showSeatDetails[${seatIter.index}].id|"
+                                                                                   type="checkbox"
+                                                                                   th:id="${seat.id}"
+                                                                                   th:show-id="${show.id}"
+                                                                                   th:seat-name="${seat.seatName}"
+                                                                                   th:seat-price="${seat.discountedAmount ne null and seat.discountedAmount > 0 ?
+                                                                                                    seat.discountedAmount : seat.amount}"
+                                                                                   th:checked="${seat.isSeatBooked eq true}"
+                                                                                   th:seat-count="${show.maxSeatCount}"
+                                                                                   th:disabled="${seat.isSeatBooked eq true || seat.isAvailable eq false || show.isShowBooked eq true}"
+                                                                                   onclick="addItemToCart(this)">
+
+                                                                            <input type="hidden" th:id="${'seatCount_'+seat.id}"
+                                                                                   th:value="${seat.purchaseCount}"
+                                                                                   th:name="|showMasterDtoList[${iter.index}].showSeatDetails[${seatIter.index}].purchaseCount|">
+                                                                        </th:block>
+
+                                                                        <label class="form-check-label" th:for="${seat.id}" th:text="${seat.seatName}"></label>
+                                                                        <img th:if="${seat.isAvailable eq false}" th:src="@{/assets/img/sold-out.png}" class="" alt="...">
+                                                                        <i class="fa-solid fa-tag me-2 text-success" th:if="${seat.discountStatus ne null and seat.discountStatus.equals('Discount')}"></i>
+                                                                    </div>
+                                                                    <span>
+                                                                      <i class="fa-solid fa-indian-rupee-sign me-1"></i>
+                                                                      <span class="currency"
+                                                                            th:text="${seat.discountedAmount}"></span>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-9 mt-2"
+                                                                     th:if="${show.showSeatDetails ne null and !show.showSeatDetails.isEmpty() and
+                                                                     show.isNameType eq true && show.isShowBooked eq false}">
+                                                                    <label class="form-label">Name to printed:</label><br>
+                                                                    <input class="form-control" maxlength="10" type="text" th:name="|showMasterDtoList[${iter.index}].printName|"
+                                                                           placeholder="Enter maximum 10 characters">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- right panel starts here-->
+                            <div class="col-lg-3 col-md-4 col-sm-3" id="right-panel">
+                                <div class="card order-summary">
+                                    <div class="card-header">
+                                        <!-- Selected Items Section -->
+                                        <h5 class="card-title">Order Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="selected-items">
+                                            <!-- Example Item -->
+                                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                                                <div>
+                                                    <h6 class="mb-0">Item Name</h6>
+                                                    <small class="text-muted">₹ 100.00</small>
+                                                </div>
+                                                <div class="input-group justify-content-end">
+                                                    <button type="button" class="btn btn-outline-danger" data-for="qty_1"
+                                                            onclick="minusPlus(true, this)" id="minus_1" ><i class="fa fa-minus"></i></button>
+                                                    <input class="form-control form-control-sm qty-input" type="number" id="qty_1">
+                                                    <button type="button" class="btn btn-outline-success" data-for="qty_1"
+                                                            onclick="minusPlus(false, this)" id="plus_1" ><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <!-- Repeat this block dynamically for each selected item -->
+                                        </div>
+
+                                        <!-- Pickup or Delivery Section -->
+                                        <div class="mt-3">
+                                            <label class="float-label form-label">Delivery Options <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+                                            <div class="checkRadio-bg form-control mb-4" id="genderChecks">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input required-input" type="radio" value="PickUp" id="pickUp" th:field="*{deliveryType}" required>
+                                                    <label class="form-check-label" for="pickUp" th:text="#{message.label.pick.up}"></label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input required-input" type="radio" value="Delivery" id="delivery"
+                                                           th:field="*{deliveryType}" required>
+                                                    <label class="form-check-label" for="delivery" th:text="#{message.label.delivery}"></label>
+                                                </div>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                <span th:text="#{message.validation.pickup.delivery.required}"></span>
+                                            </div>
+
+                                            <!-- Address Section (Hidden by Default) -->
+                                            <div id="deliverySection" class="mt-3 d-none">
+
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label" for="name">
+                                                        <span th:text="#{message.label.name}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="name"
+                                                           th:field="*{name}" maxlength="64"
+                                                           th:placeholder="#{message.placeholder.name}" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.name.required}"></div>
+                                                </div>
+                                                <div class="float-label mb-4 mt-1">
+                                                    <label class="form-label" for="mobNumber">
+                                                        <span th:text="#{message.label.mobile.number}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-mob-num required-input delivery-required" th:field="*{contactNumber}"
+                                                           th:placeholder="#{message.placeholder.mobile.number}" required
+                                                           th:data-mask="${mobileNumberMask}">
+                                                    <div class="invalid-feedback" th:text="#{message.validation.mobile.number.required}"></div>
+                                                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.mobile.number.required}"></div>
+                                                    <div class="invalid-val-feedback d-none" th:text="#{message.validation.family.details.mob.no}"></div>
+                                                </div>
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label " for="doorNumber">
+                                                        <span th:text="#{message.label.door.number}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="doorNumber"
+                                                           th:field="*{doorNumber}" maxlength="32"
+                                                           th:placeholder="#{message.placeholder.door.number}" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.door.no.required}"></div>
+                                                </div>
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label " for="street">
+                                                        <span th:text="#{message.label.street}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="street"
+                                                           th:field="*{street}" maxlength="64"
+                                                           th:placeholder="#{message.placeholder.street}" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.street.required}"></div>
+                                                </div>
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label " for="city">
+                                                        <span th:text="#{message.label.city}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="city"
+                                                           th:field="*{city}" maxlength="32"
+                                                           th:placeholder="#{message.placeholder.city}" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.city.required}"></div>
+                                                </div>
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label " for="district">
+                                                        <span th:text="#{message.label.district}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="district" th:field="*{district}"
+                                                           th:placeholder="#{message.placeholder.district}" maxlength="32" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.district.required}"></div>
+                                                </div>
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label " for="state">
+                                                        <span th:text="#{message.label.state}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="state"
+                                                           th:field="*{state}" th:placeholder="#{message.placeholder.state}" maxlength="32" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.state.required}"></div>
+                                                </div>
+                                                <div class="float-label mb-4">
+                                                    <label class="form-label " for="pinCode">
+                                                        <span th:text="#{message.label.pin.code}"></span>
+                                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                                    </label>
+                                                    <input type="text" class="form-control required-input delivery-required" id="pinCode"
+                                                           th:field="*{pinCode}" oninput="validateNumberInput(this)" maxlength="15"
+                                                           th:placeholder="#{message.placeholder.pin.code}" required>
+                                                    <div class="invalid-feedback" th:text="#{message.validation.pin.code.required}"></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class=" mt-3">
+                                            <input type="checkbox" class="form-check-input mb-2 required-input"
+                                                   id="termsCondition" name="termsCondition" required>
+                                            <label class="form-check-label fw-bold" for="termsCondition" th:text="#{message.label.accept.terms.condition}"></label>
+                                            <div class="invalid-feedback" th:text="#{message.validation.terms.condition.required}"></div>
+                                        </div>
+                                        <!-- Total Amount -->
+                                        <div class="mt-3 total-amount">
+                                            <label>Total Amount:</label>
+                                            <span> ₹ <span id="total-amount">0.00</span></span>
+                                            <input type="hidden" th:field="*{totalCartAmount}" id="totalPurchaseAmount">
+                                        </div>
+
+                                        <!-- Purchase Button -->
+                                        <div class="text-center mt-3">
+                                            <button type="button" class="btn btn-primary w-100" id="purchase">Purchase</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="contact-info">
+                                            <div class="left-right-text">
+                                                <label>
+                                                    <span th:text="*{showEventMasterDto.contactUs}"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- right panel ends here-->
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+
+<th:block th:replace="~{common/modal/size-chart-modal ::
+   contents(text)}">
+</th:block>
+<th:block th:replace="~{common/modal/oat-layout-modal ::
+   contents(text)}">
+</th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+    <script th:src="@{/assets/js/student/show-tickets-t-shirts.js}"></script>
+    <script th:inline="javascript">
+        const error = [[${error}]];
+        if(error!==null) {
+            showErrorToast("Seat / T-shirts sold out", error);
+        }
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

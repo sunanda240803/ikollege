@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form th:action="@{#{url.hostel.guest.coupon.request}}" method="post" id="addCouponRequestForm"
+                          class="themeForm" th:object="${guestCouponRequestDTO}">
+                        <div class="row mb-4">
+                            <div th:class="*{requestId == null} ? 'col-lg-8' : 'col-lg-3'">
+                                <label class="form-label">
+                                	<span th:text="#{message.label.category}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+								<th:block th:if="*{requestId == null}">
+	                                <div class="checkRadio-bg form-control">
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="student"
+	                                               name="category" value="IITM Students"
+	                                               onclick="toggleDetails('IITM Students')" checked required>
+	                                        <label class="form-check-label" for="student"><span
+	                                                th:text="#{message.label.iitmstudent}"></span></label>
+	                                    </div>
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="faculty"
+	                                               name="category" value="IITM Faculty"
+	                                               onclick="toggleDetails('IITM Faculty')" required>
+	                                        <label class="form-check-label" for="faculty"><span
+	                                                th:text="#{message.label.iitmfaculty}"></span></label>
+	                                    </div>
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="projFaculty"
+	                                               name="category" value="Project Staff"
+	                                               onclick="toggleDetails('Project Staff')" required>
+	                                        <label class="form-check-label" for="projFaculty"><span
+	                                                th:text="#{message.label.proj.staff}"></span></label>
+	                                    </div>
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="hostelResidents"
+	                                               name="category" value="Hostel Residents"
+	                                               onclick="toggleDetails('Hostel Residents');" required>
+	                                        <label class="form-check-label" for="hostelResidents"><span
+	                                                th:text="#{message.label.hostel.residents}"></span></label>
+	                                    </div>
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="others"
+	                                               name="category" value="Others"
+	                                               onclick="toggleDetails('Others')" required>
+	                                        <label class="form-check-label" for="others"><span
+	                                                th:text="#{message.label.others}"></span></label>
+	                                    </div>
+	                                </div>
+                                	<div class="invalid-feedback-frontEnd"
+                                    	th:text="#{message.validation.category.required}"></div>
+                            	</th:block>
+								<th:block th:if="*{requestId != null}">
+									<div class="form-control form-graybox"><span th:text="*{category}"></span></div>
+                               		<input type="hidden" th:field="*{category}" id="category">
+                               		<input type="hidden" th:field="*{requestId}" id="requestId">
+								</th:block>
+                            </div>
+                            <div class="col-lg-4 mealType d-none">
+                                <label class="form-label">
+                                	<span th:text="#{message.label.meal.type}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <th:block th:if="*{requestId == null}">
+	                                <div class="checkRadio-bg form-control">
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="veg"
+	                                               name="vegOrNonVeg" value="Veg"
+                                                   onclick="toggleDetails('Hostel Residents');" checked required>
+	                                        <label class="form-check-label" for="veg"><span
+	                                                th:text="#{message.label.veg}"></span></label>
+	                                    </div>
+	                                    <div class="form-check form-check-inline me-4">
+	                                        <input class="form-check-input required-input" type="radio" id="nonVeg"
+	                                               name="vegOrNonVeg" value="NonVeg"
+                                                   onclick="toggleDetails('Hostel Residents');" required>
+	                                        <label class="form-check-label" for="nonVeg"><span
+	                                                th:text="#{message.label.non.veg}"></span></label>
+	                                    </div>
+	                                </div>
+	                            <div class="invalid-feedback backendErrors" th:errors="*{vegOrNonVeg}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.meal.type.required}"></div>
+                                </th:block>
+                            	<th:block th:if="*{requestId != null && (category == 'Hostel Residents' || category == 'Online Coupon') && vegOrNonVeg != null}">
+                            		<div class="form-control form-graybox"><span th:text="*{vegOrNonVeg}"></span></div>
+                            	</th:block>
+                            </div>
+                        </div>
+
+                        <div class="studentDetails">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.iitm.student.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3 mb-3">
+                                    <label for="studentId" class="form-label">
+                                        <span th:text="#{message.label.studentID}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="studentId"
+	                                    	th:placeholder="#{message.placeholder.student.id}" th:field="*{studentId}"
+	                                    	th:classappend="${#fields.hasErrors('studentId')} ? 'is-invalid' : null"
+	                                        onblur="getStudentDetails()">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{studentId}"></div>
+	                                    <div class="invalid-feedback-frontEnd"
+	                                         th:text="#{message.label.validation.student.id.is.required}"></div>
+	                                </th:block>
+	                            	<th:block th:if="*{requestId != null && (studCategory)}">
+	                            		<div class="form-control form-graybox"><span th:text="*{studentId}"></span></div>
+	                            	</th:block>
+                                </div>                                                               
+                                <div class="col-lg-3 mb-3">
+                                    <label for="studentName" class="form-label">
+                                        <span th:text="#{message.label.studentName}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="studentName" th:field="*{name}"
+	                                    	th:placeholder="#{message.placeholder.student.name}"
+	                                    	th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{name}"></div>
+	                                    <div class="invalid-feedback-frontEnd"
+	                                         th:text="#{message.validation.student.details.name}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && (studCategory)}">
+	                            		<div class="form-control form-graybox"><span th:text="*{name}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="hostel" class="form-label">
+                                        <span th:text="#{message.label.hostel}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <select class="form-select required-input" data-live-search="true" th:field="*{hostelId}"
+	                                            id="hostelName" th:classappend="${#fields.hasErrors('hostelId')} ? 'is-invalid' : ''">
+	                                        <option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+	                                        <option th:each="hostel: ${hostels}" th:value="${hostel.id}" th:text="${hostel.hostelName}"></option>
+	                                    </select>
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{hostelId}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.hostel.name.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && (studCategory)}">
+	                            		<div class="form-control form-graybox"><span th:text="*{hostelName}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="roomNo" class="form-label">
+                                        <span th:text="#{message.label.roomNo}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input numeric" id="roomNo" maxlength="7"
+	                                    	th:placeholder="#{message.placeholder.room.no}" th:field="*{roomNo}" 
+	                                    	th:classappend="${#fields.hasErrors('roomNo')} ? 'is-invalid' : ''">
+	                                   	<div class="invalid-feedback backendErrors" th:errors="*{roomNo}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.room.no.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && (studCategory)}">
+	                            		<div class="form-control form-graybox"><span th:text="*{roomNo}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="mobileNo" class="form-label">
+                                        <span th:text="#{message.label.mobile.number}"></span>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control numeric required-mob-num" id="mobileNo" th:field="*{mobileNo}"
+	                                    	th:data-mask="${mobileNumberMask}" th:placeholder="#{message.placeholder.mobile.number}">
+                                   	</th:block>
+	                            	<th:block th:if="*{requestId != null && (studCategory)}">
+	                            		<div class="form-control form-graybox"><span th:text="*{mobileNo != null ? mobileNo : '-'}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <input type="hidden" th:field="*{bfRatePerUnit}" id="bfRPU">
+                                <input type="hidden" th:field="*{lunchRatePerUnit}" id="lunchRPU">
+                                <input type="hidden" th:field="*{dinnerRatePerUnit}" id="dinnerRPU">
+                                <input type="hidden" th:field="*{snacksRatePerUnit}" id="snacksRPU">
+                                <input type="hidden" th:field="*{overallAmount}" id="totAmt">
+                                <input type="hidden" th:field="*{frequencyJson}" id="foodFrequency">
+                                <input type="hidden" th:field="*{configDiscountedAmount}" id="configDiscountedAmountId">
+                            </div>
+                        </div>
+
+                        <div class="facultyDetails d-none">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.iitmfaculty}+' '+#{message.label.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3 mb-3">
+                                    <label for="facultyName" class="form-label">
+                                        <span th:text="#{message.label.faculty.name}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="facultyName"
+	                                           th:placeholder="#{message.placeholder.faculty.name}"
+	                                           th:field="*{faculty.name}" th:classappend="${#fields.hasErrors('faculty.name')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{faculty.name}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.label.validation.faculty.name.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'IITM Faculty'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{faculty.name}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="department" class="form-label">
+                                        <span th:text="#{message.label.department.name}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="department"
+	                                           th:placeholder="#{message.placeholder.department.name}"
+	                                           th:field="*{faculty.deptName}" th:classappend="${#fields.hasErrors('faculty.deptName')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{faculty.deptName}"></div>
+	                                    <div class="invalid-feedback-frontEnd"
+	                                         th:text="#{message.validation.department.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'IITM Faculty'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{faculty.deptName}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="program" class="form-label">
+                                        <span th:text="#{message.label.program}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="program" 
+	                                    	th:placeholder="#{message.placeholder.program}"
+	                                           th:field="*{faculty.program}" th:classappend="${#fields.hasErrors('faculty.program')} ? 'is-invalid' : ''">
+	                                     <div class="invalid-feedback backendErrors" th:errors="*{faculty.program}"></div>
+	                                    <div class="invalid-feedback-frontEnd"
+	                                         th:text="#{message.validation.program.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'IITM Faculty'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{faculty.program}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="email" class="form-label">
+                                        <span th:text="#{message.label.email.id}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="email"
+	                                           th:placeholder="#{message.placeholder.email.id}"
+	                                           th:field="*{faculty.email}" th:classappend="${#fields.hasErrors('faculty.email')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{faculty.email}"></div>
+	                                    <div class="invalid-feedback-frontEnd"
+	                                         th:text="#{message.validation.email.id.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'IITM Faculty'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{faculty.email}"></span></div>
+	                            	</th:block>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="projectStaffDetails d-none">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.project.staff.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3 mb-3">
+                                    <label for="emailApplicationNo" class="form-label">
+                                        <span th:text="#{message.label.email.id}+' / '+#{message.label.application.no}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="emailApplicationNo"
+	                                           th:placeholder="#{message.placeholder.email.application}"
+	                                           th:field="*{staff.applicationId}" th:classappend="${#fields.hasErrors('staff.applicationId')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{staff.applicationId}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.email.application.no.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'Project Staff'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{staff.applicationId}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="staffName" class="form-label">
+                                        <span th:text="#{message.label.staff.name}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="staffName"
+	                                           th:placeholder="#{message.placeholder.staff.name}"
+	                                           th:field="*{staff.name}" th:classappend="${#fields.hasErrors('staff.name')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{staff.name}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.staff.name.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'Project Staff'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{staff.name}"></span></div>
+	                            	</th:block>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="othersDetails d-none">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.other.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3 mb-3">
+                                    <label for="otherName" class="form-label">
+                                        <span th:text="#{message.label.name}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="otherName"
+	                                           th:placeholder="#{message.placeholder.name}"
+	                                           th:field="*{others.name}" th:classappend="${#fields.hasErrors('others.name')} ? 'is-invalid' : ''">
+	                                    <div class="invalid-feedback backendErrors" th:errors="*{others.name}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.name.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'Others'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{others.name}"></span></div>
+	                            	</th:block>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="otherEmail" class="form-label">
+                                        <span th:text="#{message.label.email.id}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="otherEmail"
+	                                           th:placeholder="#{message.placeholder.email.id}"
+	                                           th:field="*{others.email}" th:classappend="${#fields.hasErrors('others.email')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback backendErrors" th:errors="*{others.email}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.email.id.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'Others'}">
+	                            		<div class="form-control form-graybox">
+	                            			<span th:text="*{others.email != null ? others.email : '-'}"></span>
+	                            		</div>
+	                            	</th:block>
+                                </div>
+
+                                <div class="col-lg-3 mb-3">
+                                    <label for="purpose" class="form-label">
+                                        <span th:text="#{message.label.purpose}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    </label>
+                                	<th:block th:if="*{requestId == null}">
+	                                    <input type="text" class="form-control required-input" id="purpose"
+	                                           th:placeholder="#{message.placeholder.purpose}"
+	                                           th:field="*{others.purpose}" th:classappend="${#fields.hasErrors('others.purpose')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback backendErrors" th:errors="*{others.purpose}"></div>
+	                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.stay.request.purpose.required}"></div>
+                                    </th:block>
+	                            	<th:block th:if="*{requestId != null && category == 'Others'}">
+	                            		<div class="form-control form-graybox"><span th:text="*{others.purpose}"></span></div>
+	                            	</th:block>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+						    <div class="col-lg-12">
+						        <h2 class="tmsub-title">
+						            <span th:text="#{message.label.coupon.details}"></span>
+						        </h2>
+						    </div>
+						</div>
+						<div class="row mb-3">
+						    <div class="col-lg-4 mb-3">
+						        <label for="messName" class="form-label">
+						            <span th:text="#{message.label.mess.name}"></span>
+						            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+						        </label>
+					           <th:block th:if="*{requestId == null}">
+						            <select class="form-select required-input" data-live-search="true" th:field="*{messId}"
+						                    id="messName" required th:classappend="${#fields.hasErrors('messId')} ? 'is-invalid' : ''">
+						                <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+						                <option th:each="mess: ${messes}" th:value="${mess.id}" th:text="${mess.messName}"></option>
+						            </select>
+						             <div class="invalid-feedback backendErrors" th:errors="*{messId}"></div>
+							    	 <div class="invalid-feedback-frontEnd" th:text="#{message.validation.mess.name.required}"></div>
+						    	</th:block>
+						       <th:block th:if="*{requestId != null}">
+						       		<div class="form-control form-graybox"><span th:text="*{messName != null ? messName : '-'}"></span></div>
+						       </th:block>
+						    </div>
+						    
+							<th:block th:replace="~{hostel/guest-coupon-dates}"></th:block>
+							 
+						   <th:block th:if="*{requestId == null}">
+								<div class="col-lg-3 mb-3 bulkCoupon d-none">
+									<label class="form-label">
+										<span th:text="#{message.label.bulk.coupon}"></span>
+									</label>
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" id="bulkCoupon" th:field="*{bulkCoupon}">
+									</div>
+								</div>
+							</th:block>
+						</div>
+						
+                        <th:block th:replace="~{hostel/guest-coupon-sessions}"></th:block>
+
+                        <!-- Summary Section -->
+                        <th:block th:replace="~{hostel/guest-coupon-nonveg-summary}"></th:block>
+                        
+                        <th:block th:if="*{requestId != null && category != 'Online Coupon'}">
+							<th:block th:replace="~{hostel/view-guest-coupon-payment-sec}"></th:block>
+						</th:block>
+
+                        <th:block th:if="*{requestId != null && category == 'Online Coupon'}">
+                            <th:block th:replace="~{hostel/view-online-coupon-payment-sec}"></th:block>
+                        </th:block>
+                        <div id="errorArraySpanId" style="display:none; text-align:center; margin-top:1rem;"></div>
+                        <!-- Button Section -->
+						<th:block th:replace="~{hostel/guest-coupon-buttons}"></th:block>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer-->
+	<th:block th:replace="~{hostel/guest-coupon-scripts :: guestCouponScripts(${footerForm})}"></th:block>
+
+<!-- Footer-->
+</body>
+</html>

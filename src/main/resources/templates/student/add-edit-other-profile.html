@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head th:replace="~{common/head :: common_header(~{::link})}"></head>
+   <body>
+   <header th:replace="~{common/header:: title(${headerForm})}"></header>
+   <!-- Main -->
+      <main id="main" class="main">
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="card main-card mt-4">
+                  <div class="card-body">
+                     <form class="themeForm" id="otherCandidateForm" th:action="@{#{url.other.candidate.user}}" method="post" 
+      					th:object="${profileDto}" enctype="multipart/form-data">
+      					<input type="hidden" th:name="id" 
+      						th:value="${(profileDto?.id != null and profileDto?.id != '') ? profileDto.id : 0}" />
+      					<input type="hidden" th:name="userId" 
+      						th:value="${(profileDto?.userId != null and profileDto?.userId != '') ? profileDto.userId : 0}" />
+      					
+                      <div class="row">
+                           <div class="col-lg-12">
+                              <label class="form-label">
+                                 <span th:text="#{message.label.post}"></span>
+                                 <th:block th:replace="~{common/template/mandatory-symbol}" />
+                              </label>
+                              <div class="checkRadio-bg other-candidate-post-checks" id="postChecks"
+                                   th:classappend="${#fields.hasErrors('postSelect')} ? 'is-invalid' : ''">
+	                              <th:block th:if="${profileDto?.postData != null}" th:each="entry, iter : ${profileDto?.postData}">
+								    <div class="form-check me-3 other-candidate-post-option">
+								        <input class="form-check-input required-input" type="radio" 
+								               th:name="postSelect" th:id="'post' + ${iter.index+1}" 
+								               th:value="${entry.key}" required 
+								               th:checked="${profileDto?.postSelect == entry.key}">
+								        <label class="form-check-label" th:for="'post' + ${iter.index+1}" 
+								               th:text="${entry.value}">
+								        </label>
+								    </div>
+								</th:block>
+                                 <div class="other-candidate-other-post">
+                                    <input type="text" id="otherPost" class="form-control"
+                                       placeholder="Specify Post" th:field="*{postOthers}"
+                                       th:classappend="${profileDto?.postSelect != 'others'} ? 'd-none' : ''">
+                                 </div>
+                                 <div class="text-danger otherPost d-none ms-2" th:text="#{message.validation.post.others.required}"></div>
+                              </div>
+                              <div class="invalid-feedback backendErrors" th:errors="*{postSelect}"></div>
+                              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.post.required}"></div>
+                           </div>
+                        </div>
+                        <hr>
+                        <!-- Row 1 (Profile Image and Form Fields) -->
+                        <div class="row mt-4">
+                           <!-- Profile Image Column (Left) -->
+                           <div class="col-lg-3 col-12">
+                              <div class="upload-box d-lg-block">
+                                 <div class="box text-center has-validation">
+                                    <span th:text="#{message.label.upload.documents.photo.2}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    <input type="hidden" id="imageName" th:field="*{imageName}">
+                                    <input type="file" id="studentPhoto"
+                                       class="inputfile inputfile-4" th:name="studentImg"
+                                       data-multiple-caption="{count} files selected"
+                                       data-width="300" data-height="400"
+                                       th:accept="#{message.accepted.image.types}">
+                                    <label for="studentPhoto"> 
+                                       <img class="img-fluid d-block mx-auto profile" id="studentProfileImage"
+                                       th:data-default="@{/assets/img/user-img1.png}" alt=""
+                                       th:src="@{#{url.file} + #{url.image} + '/CANDIDATE_PROFILE/'+ ${profileDto.imageName}}"
+									   th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''">
+                                    </label>
+                                    <div class="imageValidation text-danger d-none">
+                                       <span th:text="#{message.validation.upload.documents.picture}"></span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <!-- Form Fields Column (Right) -->
+                           <div class="col-lg-9 col-12">
+                              <!-- Row 2 (Post, Name, Gender, DOB, etc.) -->
+                              <div class="row mb-3">
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.first.name}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control required-input" id="firstName" pattern="[A-Za-z ]+" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+                                       th:placeholder="#{message.placeholder.first.name}" required
+                                       th:field="*{firstName}"
+                                       th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''">
+                                      <div class="invalid-feedback backendErrors" th:errors="*{firstName}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.first.name.required}"></div>
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.last.name}"></span>
+<!--                                       <th:block th:replace="~{common/template/mandatory-symbol}" />-->
+                                    </label>
+                                    <input type="text" id="lastName" class="form-control" pattern="[A-Za-z ]+" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+                                       th:placeholder="#{message.placeholder.last.name}"
+                                       th:field="*{lastName}">
+<!--                                    <div class="invalid-feedback backendErrors" th:errors="*{lastName}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.last.name.required}"></div>-->
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.gender}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <div class="checkRadio-bg form-control" id="genderChecks"
+                                         th:classappend="${#fields.hasErrors('gender')} ? 'is-invalid' : ''">
+                                       <div class="form-check form-check-inline">
+                                          <input class="form-check-input required-input" type="radio" th:name="gender"
+                                             id="male" th:value="m" required
+                                             th:checked="${profileDto?.gender == 'm'}">
+                                          <label class="form-check-label" for="male" th:text="#{message.label.male}"></label>
+                                       </div>
+                                       <div class="form-check form-check-inline">
+                                          <input class="form-check-input required-input" type="radio" th:name="gender"
+                                             id="female" th:value="f" required
+                                             th:checked="${profileDto?.gender == 'f'}">
+                                          <label class="form-check-label" for="female" th:text="#{message.label.female}"></label>
+                                       </div>
+                                    </div>
+                                    <div class="invalid-feedback backendErrors" th:errors="*{gender}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.gender.option.required}"></div>
+                                 </div>
+                              </div>
+
+                              <!-- Row 3 (DOB, Email, Address) -->
+                              <div class="row mb-3">
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.dob}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="date" class="form-control required-input" id="dob"
+                                       th:placeholder="#{message.placeholder.dob}" required
+                                       th:field="*{dob}" th:attr="max=${profileDto?.maxDate}"
+                                       th:classappend="${#fields.hasErrors('dob')} ? 'is-invalid' : ''"
+                                       onkeydown="return false;">
+                                       <div class="invalid-feedback backendErrors" th:errors="*{dob}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.date.of.birth.required}"></div>
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.email.id}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="hidden" th:field="*{email}">
+                                    <input type="email" class="form-control required-email" 
+                                       maxlength="64" id="emailAddress"
+                                       th:placeholder="#{message.placeholder.email.id}" required
+                                       th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                       th:disabled="${profileDto?.email != null and profileDto?.email != ''}">
+                                    <div class="form-text" th:text="#{message.label.email.note}"></div>
+                                    <div class="invalid-feedback backendErrors" th:errors="*{email}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.email.id.required}"></div>
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.address}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <textarea type="text" class="form-control required-input"
+                                       id="address" th:placeholder="#{message.placeholder.address}" required
+                                       th:field="*{address}"
+                                       th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"></textarea>
+                                    <div class="invalid-feedback backendErrors" th:errors="*{address}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.address.required}"></div>
+                                 </div>
+                              </div>
+
+                              <!-- Additional Fields (City, State, etc.) -->
+                              <div class="row mb-3">
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.city}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control required-input" id="city"
+                                       th:placeholder="#{message.placeholder.city}" required
+                                       th:field="*{city}"
+                                       th:classappend="${#fields.hasErrors('city')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback backendErrors" th:errors="*{city}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.city.required}"></div>
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.state}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control required-input" id="state"
+                                       th:placeholder="#{message.placeholder.state}" required
+                                       th:field="*{state}"
+                                       th:classappend="${#fields.hasErrors('state')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback backendErrors" th:errors="*{state}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.state.required}"></div>
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.pin.code}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control required-input numeric" id="pinCode"
+                                       th:placeholder="#{message.placeholder.pin.code}" required
+                                       th:field="*{pin}"
+                                       th:classappend="${#fields.hasErrors('pin')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback backendErrors" th:errors="*{pin}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.pin.code.required}"></div>
+                                 </div>
+                              </div>
+
+                              <!-- Row 4 (Mobile, Phone) -->
+                              <div class="row mb-3">
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.mobile.number}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control numeric required-mob-num"
+                                       id="mobileNumber" th:attr="placeholder=#{message.placeholder.mobile.number}"
+                                       th:data-mask="${mobileNumberMask}" required
+                                       th:field="*{mobileNumber}" onchange="validateMobilePhoneNumber();" onblur="validateMobileStart(this);"
+                                       th:classappend="${#fields.hasErrors('mobileNumber')} ? 'is-invalid' : ''">
+                                    <div class="form-text" th:text="#{message.label.mob.no.note}"></div>
+                                    <div class="invalid-feedback backendErrors" th:errors="*{mobileNumber}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.mobile.number.required}"></div>
+                                    <div class="text-danger mobileNo d-none" th:text="#{message.validation.family.details.mob.no}"></div>
+                                 </div>
+                                 <div class="col-lg-4">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.phone.number}"></span>
+                                    </label>
+                                    <input type="text" class="form-control numeric required-mob-num"
+                                       id="phoneNumber" th:attr="placeholder=#{message.label.phone.number}"
+                                       th:data-mask="${mobileNumberMask}" onchange="validateMobilePhoneNumber();" onblur="validateMobileStart(this);"
+                                       th:field="*{phoneNumber}">
+                                    <div class="text-danger phoneNo d-none" th:text="#{message.validation.other.candidate.phone.no}"></div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <!-- Button Section -->
+                   
+                        <div class="row text-end">
+                           <div class="col-lg-12">
+                              <button type="submit" class="btn btn-secondary px-4 me-3" id="cancel">
+                              <i class="fa-solid fa-circle-arrow-left me-1"></i>
+                              <span th:text="#{message.button.cancel}"></span>
+                              </button>
+                              <button type="button" class="btn btn-primary px-4" id="profileSave">
+                              <i class="fa-solid fa-floppy-disk me-1"></i>
+                              <span th:text="#{message.button.save}"></span>
+                              </button>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </main>
+      <!-- Footer -->
+      <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+         <script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+         <script th:src="@{/assets/js/collegeInfo/edit-profile.js}"></script>
+         <!--  <script th:src="@{/assets/js/student-registration.js}"></script> -->
+      </th:block>
+   </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="themeForm" th:action="@{#{url.mess.capacity}}" th:object="${messMasterDto}" th:method="post" id="messMasterConfig">
+                        <div class="mb-4">
+                            <div class="table-responsive themeTable" id="myTable">
+                                <table id="messMasterConfigTable" class="table table-bordered nowrap w-100">
+                                    <thead>
+                                    <tr>
+                                        <th><span th:text="#{message.label.mess.name}"></span></th>
+                                        <th class="text-center"><span th:text="#{message.label.total.capacity}"></span></th>
+                                        <th class="text-center"><span th:text="#{message.label.allocated.count}"></span></th>
+                                        <th class="text-center"><span th:text="#{message.label.vacancy.count}"></span></th>
+                                        <th  class="text-center"><span th:text="#{message.label.applicable.status}"></span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="messMasterConfig, iter : ${messMasterDto.messMasterConfigList}">
+                                        <td th:text="${messMasterConfig.messName}"></td>
+                                        <td class="text-center">
+                                            <input type="hidden" th:field="*{messMasterConfigList[__${iter.index}__].id}"/>
+                                            <input class="text-center" type="number" min="0" maxlength="5" th:onblur="'calculateVacancyCount(this.value, \'' + ${iter.index}+ '\');'"
+                                                   th:field="*{messMasterConfigList[__${iter.index}__].capacity}"
+                                                   th:placeholder="#{message.placeholder.total.capacity}" autocomplete="off"
+                                                   th:id="totalCapacity_+${iter.index}"/>
+                                        </td>
+                                        <td class="text-center" th:id="|allocatedCount_${iter.index}|" th:text="${messMasterConfig.allocatedCount}"></td>
+<!--                                        <td class="text-center">-->
+<!--                                            <input type="text" class="form-control-plaintext onMouseOver" readOnly th:id="|allocatedCount_${iter.index}|" th:value="${messMasterConfig.allocatedCount}"/></td>-->
+                                        <td class="text-center" th:id="|vacancyCount_${iter.index}|" th:text="${messMasterConfig.vacancyCount}"></td>
+
+<!--                                        <td class="justify-content-center">-->
+<!--                                            <input type="text" class="form-control-plaintext onMouseOver" readOnly th:id="|vacancyCount_${iter.index}|" th:value="${messMasterConfig.vacancyCount}"/></td>-->
+                                        <td class="text-center">
+                                            <input type="checkbox" class="form-check-input square-checkbox"
+                                                   th:field="*{messMasterConfigList[__${iter.index}__].applicableStatus}" />
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="modal-footer">
+                                <button type="submit" id="saveBtn" class="btn  btn-blue me-2">
+                                    <i class="fa-solid fa-rotate me-1"></i>
+                                    <span th:text="#{message.button.update}"></span>
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/mess/mess-master.js}"></script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

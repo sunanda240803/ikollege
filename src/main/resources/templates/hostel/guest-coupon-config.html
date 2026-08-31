@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body themeForm">
+					<form action="#" method="get">
+						<div class="row mb-3">
+							<div class="col-auto">
+								<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+									<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+									   data-bs-title="Enter Category/Description to search coupon"></i>
+								</label>
+								<input type="text" class="form-control" name="search" id="search"
+									   th:field="*{form.search}">
+							</div>
+							<div class="col-auto mt-3">
+								<button class="btn btn-secondary mt-4" type="submit">
+									<span th:text="#{message.label.search}"></span>
+								</button>
+							</div>
+						</div>
+					</form>
+					<div class="mb-4">
+						<div class="table-responsive themeTable">
+							<table id="guestCouponDataTable" class="table table-bordered nowrap w-100">
+								<thead>
+								<tr>
+									<th th:text="#{message.label.coupon.category}"></th>
+									<th th:text="#{message.label.effective.from}"></th>
+									<th th:text="#{message.label.valid.to}"></th>
+									<th th:text="#{message.label.validity}"></th>
+									<th th:text="#{message.label.description}"></th>
+									<th class="text-end" th:text="#{message.label.breakfast.amount} + ' (₹)'"></th>
+									<th class="text-end" th:text="#{message.label.lunch.amount} + ' (₹)'"></th>
+									<th class="text-end" th:text="#{message.label.dinner.amount} + ' (₹)'"></th>
+									<th class="text-end" th:text="#{message.label.snacks.amount} + ' (₹)'"></th>
+									<th class="text-center" th:text="#{message.label.action}"></th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr  th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+									 th:each="config : ${form.paginationList.getContent()}">
+									<td th:text="${config.category}"></td>
+									<td th:text="${#temporals.format(config.effectiveDate, #messages.msg('date.format'))}"></td>
+									<td th:text="${#temporals.format(config.validToDate, #messages.msg('date.format'))}"></td>
+									<td th:text="${config.validityDays}"></td>
+									<td th:text="${config.description}"></td>
+									<td class="text-end" th:text="${config.breakfastAmount}"></td>
+									<td class="text-end" th:text="${config.lunchAmount}"></td>
+									<td class="text-end" th:text="${config.dinnerAmount}"></td>
+									<td class="text-end" th:text="${config.snacksAmount}"></td>
+									<td class="text-center">
+										<div class="d-flex justify-content-center">
+											<button type="button" class="btn btn-outline-primary btn-sm me-2"
+													data-bs-toggle="tooltip" data-bs-title="Edit"
+													th:onclick="'openGuestCouponModal(' + ${config.id} + ');'">
+												<i class="fa-solid fa-pencil"></i>
+											</button>
+											<button type="button" class="btn btn-outline-danger btn-sm me-2"
+													data-bs-toggle="tooltip" data-bs-title="Delete"
+													th:id="${'deleteReq_'+config?.id}"
+													th:onclick="'deleteGuestCoupon(' + ${config.id} + ');'">
+												<i class="fa-solid fa-trash-can"></i>
+											</button>
+										</div>
+									</td>
+								</tr>
+								<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+									<td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<!-- Modal Placeholder -->
+<div th:id="modalDiv"></div>
+
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}"></th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/hostel/guest-coupon-config.js}"></script>
+	<script th:inline="javascript">
+		const baseURL = /*[[#{url.hostel.guest.coupon.config}]]*/ '';
+		var messages = {
+            successMessage: /*[[#{message.guest.coupon.success}]]*/ '',
+            deleteSuccessMessage: /*[[#{message.guest.coupon.delete.success}]]*/ '',
+            errorMessage: /*[[#{message.guest.coupon.error}]]*/ '',
+            errorLoadingModal: /*[[#{message.guest.coupon.error.loadingModal}]]*/ '',
+            deleteConfirm: /*[[#{message.guest.coupon.delete.confirm}]]*/ '',
+            invalidForm: /*[[#{message.guest.coupon.invalid.form}]]*/ '',
+            fromDateError: /*[[#{message.guest.coupon.fromDate.error}]]*/ '',
+            toDateError: /*[[#{message.guest.coupon.toDate.error}]]*/ '',
+            amountError: /*[[#{message.guest.coupon.amount.error}]]*/ ''
+        };
+	</script>
+
+</th:block>
+</body>
+</html>

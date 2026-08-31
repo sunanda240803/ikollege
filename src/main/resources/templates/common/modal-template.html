@@ -1,0 +1,45 @@
+<th:block xmlns:th="http://www.thymeleaf.org"
+	th:fragment="modal(id, header, body, needCancel, needClear, needSave, needDelete, size)">
+	<div class="themeModal modal fade" th:id="${id}" tabindex="-1" aria-hidden="true" data-backdrop="static">
+		<div th:class="|modal-dialog modal-dialog-centered modal-dialog-scrollable modal-${size}|">
+			<div class="modal-content">
+				<div th:class="${needDelete} != null ? 'modal-header bg-danger' : 'modal-header'">
+					<h1 class="modal-title fs-5" th:replace="${header}"></h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<th:block th:replace="${body}"></th:block>
+				</div>
+				<div class="modal-footer">
+					<span id="modalErrorSpan" class="text-danger"></span>
+					<button type="button" class="btn btn-secondary btn-sm me-2" th:id="${id + 'Cancel'}"
+						data-bs-dismiss="modal" th:if="${needCancel} != null">
+						<i class="fa-solid fa-circle-xmark me-1"></i>
+						<span th:text="${needCancel}"></span>
+					</button>
+					<button type="reset" class="btn btn-tmSecondary btn-sm" th:id="${id + 'Clear'}"
+						th:if="${needClear} != null">
+						<i class="fa-solid fa-ban me-1"></i>
+						<span th:text="${needClear}"></span>
+					</button>
+					<button type="button" class="btn btn-tmPrimary btn-sm me-2" th:id="${id + 'Save'}"
+						th:if="${needSave} != null">
+						<i class="fa-solid fa-floppy-disk me-1"></i>
+						<span th:text="${needSave}"></span>
+					</button>
+					<button type="button" class="btn btn-danger btn-sm" th:id="${id + 'Delete'}"
+						th:if="${needDelete} != null">
+						<i class="fa-solid fa-trash-can me-1"></i>
+						<span th:text="${needDelete}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$('.modal').modal({
+			backdrop: 'static',
+			keyboard: false
+		});
+	</script>
+</th:block>

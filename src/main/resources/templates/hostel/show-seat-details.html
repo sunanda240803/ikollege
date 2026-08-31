@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head th:replace="~{common/head :: common_header(~{::link})} ">
+	    <!--If you want to specify custom styling, create its own css page and link it here.-->
+	</head>
+
+	<body>
+		<header th:replace="~{common/header:: title(${headerForm})}"></header>
+		<!-- //Main-->
+		<main id="main" class="main">
+		   <!--School Info Section-->
+		   <div class="row">
+		      <div class="col-lg-12">
+		         <div class="card main-card mt-4">
+		            <div class="card-body themeForm">
+		               <th:block th:insert="~{common/show-wise-tabs::tabs(tabList='Show Seat Details', screen='#{url.show.seat.details}')}"></th:block>
+		               <form th:action="@{#{url.show.seat.details}}" method="get">
+		                  <div class="row mb-4">
+		                  	<div class="col-lg-3">
+				                <label class="form-label" for="eventId">
+				                    <span th:text="#{message.label.event.name}"></span>
+				                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+				                </label>
+				                 <select class="selectpicker required-select-input" data-live-search="true" th:name="showEventMaster.id" th:id="eventId"
+				                   	 	 th:value="${eventId}" onchange="getShowNameList('eventId','showName')">
+				                    <option value="" th:text="#{message.label.select}"></option>
+				                  	<option th:each="event:${eventList}"
+										th:value="${event.id}" th:text="${event.eventName}"
+										th:selected="${event.id.toString() == eventId}">
+									</option>
+				                </select>
+				                <div class="invalid-feedback" id="eventVal" th:text="#{message.validation.event.name.required}"></div>
+				            </div>
+				            <div class="col-lg-3">
+								<label for="showName" class="form-label">
+									<span th:text="#{message.label.show.name}"></span> 
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label>
+								<select class="selectpicker required-select-input" data-live-search="true" th:value="${showId}" id="showName">
+									<option value="" th:text="#{message.label.select}"></option>
+									 <option th:each="show : ${showList}" th:value="${show.id}"
+											th:text="${show.showName}+' - '+${show.showDescr}"
+											th:selected="${show.id.toString() == showId}"></option> 
+								</select>
+								<div class="invalid-feedback" th:text="#{message.validation.show.name.required}"></div>
+							</div>
+				            <div class="col-lg-2 margin-top-search" >
+								<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+								<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+								<button type="button" id="searchButton" class="btn btn-lgtblue"
+										onclick="return validateSearchFeild()"><i
+										class="fa-solid fa-database"></i> 
+										<span th:text="#{message.button.get.data}"></span>
+								</button>
+							</div>
+							<div class="col d-flex justify-content-end align-items-center">
+			                    <div class="col-auto me-3">
+		                     	  	<label for="search" class="form-label">
+			                          <span th:text="#{message.label.keyword}"></span>
+			                          <i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+			                             th:data-bs-title=" #{message.label.show.seat.title}">
+			                          </i>
+		                        	</label>
+			                        <input type="text" class="form-control" name="search" id="search" th:value="${form.search}">
+			                    </div>
+			                    <div class="col-auto mt-3">
+			                       <button class="btn btn-secondary mt-4" type="button" onclick="return validateSearchFeild();">
+			                          <span th:text="#{message.label.search}"></span>
+			                       </button>
+			                    </div>
+			                  </div>
+			                 </div>
+		               </form>
+		               <form class="themeForm g-3 needs-validation">
+						   <div th:replace="~{common/template/left-right-table-scroll-arrows.html :: leftRightArrow()}"></div>
+		                  <div class="table-responsive themeTable">
+		                     <table id="MyDataTable" class="table table-bordered  nowrap w-100">
+		                        <thead>
+		                           <tr>
+		                              <th th:text="#{message.label.seat.name}"></th>
+		                              <th class="text-end">
+		                                 <span th:text="#{message.label.discount.amount}"></span>
+		                                 <i class="fa-solid fa-indian-rupee-sign"></i>
+		                              </th>
+		                              <th class="text-center" th:text="#{message.label.currently.active}"></th>
+		                              <th class="text-center" th:text="#{message.label.is.available}"></th>
+		                              <th class="text-center" th:text="#{message.label.action}"></th>
+		                           </tr>
+		                        </thead>
+		                        <tbody>
+		                           <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											th:each="showWise, iter: ${form.paginationList.getContent()}">
+		                              <td th:text="${showWise.seatName}"></td>
+		                              <td class="text-end currency" th:text="${showWise.discountedAmount}"></td>
+		                              <td class="text-center" >
+		                              	<th:block th:if="${showWise.currentlyActive == 'Y'}">
+											<i class="fa-solid fa-check" style="color: green"></i>
+										</th:block>
+										<th:block th:if="${showWise.currentlyActive !='Y'}">
+											<i class="fa fa-times" aria-hidden="true" style="color: red"></i>
+										</th:block>	
+		                              </td>
+		                              <td class="text-center">
+		                              	<th:block th:if="${showWise.isAvailable == true}">
+											<i class="fa-solid fa-check" style="color: green"></i>
+										</th:block>
+										<th:block th:if="${showWise.isAvailable !=true}">
+											<i class="fa fa-times" aria-hidden="true" style="color: red"></i>
+										</th:block>	
+		                              </td>
+		                              <td class="text-center">
+		                                 <button type="button" class="btn btn-outline-primary btn-sm me-2"
+											data-bs-toggle="tooltip" th:data-seat-id="${showWise.id}"
+											onclick="editShowSeatDetails(this);" th:data-bs-title="#{message.label.edit}">
+											<i class="fa-solid fa-pencil"></i>
+										 </button>
+		                              </td>
+		                           </tr>
+		                           <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+									<td colspan="6" class="text-center">
+										<!-- <span th:text="#{message.label.show.seat.list.data}"></span> -->
+										<span th:if="${form.additionalParam.eventId == 0}" th:text="#{message.label.show.seat.list.data}"></span>
+										<span th:if="${form.additionalParam.eventId != 0}" th:text="#{message.label.no.data.available}"></span>
+									</td>
+								</tr>
+		                        </tbody>
+		                     </table>
+		                  </div>
+		               </form>
+		               <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+		            </div>
+		         </div>
+		      </div>
+		   </div>
+		</main>
+		
+		<!-- Modal-->
+		<div th:id="showWiseModalDiv"></div>
+		<div th:id="showSeatModalDiv"></div>
+		<!-- //Modal-->
+		
+		<!-- Footer-->
+		<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		   <script th:src="@{/assets/js/hostel/show-seat-details.js}"></script>
+		   <script th:inline="javascript">
+				const baseURL = /*[[#{url.show.seat.details}]]*/ '';
+				const getShowNameURL = /*[[#{url.show.name.list}]]*/ '';
+				const getURL = /*[[#{url.get}]]*/ '';
+				const selectShowNameMessage = /*[[${#messages.msg('message.label.select.show.name')}]]*/'';
+				const eventURL = /*[[#{url.hostel.event.master}]]*/ '';
+				const discountMessage = /*[[${#messages.msg('message.label.discount.amount.check')}]]*/'';
+		   </script>
+		</th:block>
+		<!-- //Footer-->
+	</body>
+</html>
+

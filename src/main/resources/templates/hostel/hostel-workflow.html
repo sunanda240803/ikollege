@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="hostelWorkflowTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+		                                    <th th:text="#{message.label.hostel.category}"></th>
+		                                    <th th:text="#{message.label.approval.level}"></th>
+		                                    <th th:text="#{message.label.authority.type}"></th>
+		                                    <th th:text="#{message.label.common.email}"></th>
+		                                    <th th:text="#{message.label.name}"></th>
+<!--                                    		<th class="text-center" th:text="#{message.label.enable.disable}"></th>-->
+                                    		<th class="text-center"  th:text="#{message.label.action}"></th>
+                                    	</tr>
+									</thead>
+									<tbody>
+									<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+										th:each="workflowMaster, iter: ${form.paginationList.getContent()}">
+										<td th:text="${workflowMaster.category}"></td>
+										<td th:text="${workflowMaster.approvalLevel}"></td>
+										<td th:text="${workflowMaster.authorityType}"></td>
+										<td th:text="${workflowMaster.email}"></td>
+										<td th:text="${workflowMaster.validatorName}"></td>
+<!--										<td class="text-center">-->
+<!--											<i class="fa-solid fa-check" style="color: green"></i>-->
+<!--											<th:block th:if="${roomInfo.isVacation ==true}">-->
+<!--                                                <i class="fa-solid fa-check" style="color: green"></i>-->
+<!--                                            </th:block>-->
+<!--                                            <th:block th:if="${roomInfo.isVacation !=true}">-->
+<!--                                                <i class="fa fa-times" aria-hidden="true" style="color: red"></i>-->
+<!--                                            </th:block>-->
+<!--										</td>-->
+										<td class="text-center">
+											<div class="d-flex justify-content-center">
+												<button type="button" class="btn btn-outline-danger btn-sm"
+														data-bs-toggle="tooltip" th:id="${'deleteEvent_'+workflowMaster.id}"
+														onclick="deleteWorkflowMaster(this);"
+														th:data-workflow-master-id="${workflowMaster.id}" th:data-bs-title="#{message.label.delete}">
+													<i class="fa-solid fa-trash-can"></i>
+												</button>
+											</div>
+										</td>
+									</tr>
+									<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+										<td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+<!-- Modal-->
+<div th:id="modalDiv"></div>
+<!-- //Modal-->
+
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/delete-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+</th:block>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/hostel/workflow.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.workflow.master}]]*/ '';
+			const getURL = /*[[#{url.get}]]*/ '';
+			const deleteURL = /*[[#{url.delete}]]*/ '';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

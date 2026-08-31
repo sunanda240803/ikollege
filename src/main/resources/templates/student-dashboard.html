@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+<link rel="stylesheet" th:href="@{/assets/css/student/student-dashboard.css}">
+<body>
+<!-- Header -->
+<header class="header fixed-top">
+	<nav class="navbar navbar-expand-lg p-0">
+		<div class="container-fluid justify-content-around p-0">
+			<div class="row w-100">
+				<div class="col-lg-5">
+					<!--Client Logo-->
+					<div class="header-logo d-flex align-items-center justify-content-between">
+						<a href="#" class="d-flex align-items-center">
+							<img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+							<span>
+									<span th:text="${institute.schoolName}"></span><br>
+									<span class="text-secondary" th:text="${institute.location}"></span>
+								</span>
+						</a>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+							<i class="fa-solid fa-outdent"></i>
+						</button>
+					</div>
+				</div>
+				<div class="col-lg-7 pe-lg-0">
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav ms-auto">
+
+							<li class="nav-item dropdown accountMenu">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class="ph-duotone ph-user-square"></i> My Account
+								</a>
+								<ul class="dropdown-menu dropdown-menu-arrow listMenu">
+									<li class="dropdown-header d-flex align-items-center ">
+										<img th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+											 th:src="@{#{url.file} + #{url.image} + '/profile/1'}" alt="Profile" class="rounded-circle">
+										<h6><span class="text-uppercase" th:text="${@securityCtxUtil.userName()}"></span></h6>
+									</li>
+									<li><a class="dropdown-item" th:href="@{#{url.logout}}"><i class="ph-duotone ph-power"></i> Logout	</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<!--Page Title-->
+	<div class="pagetitle">
+		<div class="row align-items-center">
+			<div class="col-lg-6">
+				<h1 class="text-tmPrimary"><span th:text="#{message.label.student.dashboard}"></span></h1>
+			</div>
+		</div>
+	</div>
+</header>
+<!-- //Header -->
+
+<!-- //Main-->
+<main id="main" class="main">
+
+<!-- Conditional Link Section -->
+<div class="container mb-3">
+    <div th:if="${bioDataFilledStatus != null}" class="d-flex justify-content-center">
+        <a href="#" class="btn btn-warning text-center py-2 px-4" onclick="viewBioData()">
+        	<span th:text="${bioDataFilledStatus}"></span>
+       	</a>
+    </div>
+</div>
+
+	<!--School Info Section-->
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-1">
+				<div class="card-body">
+					<div class="infoCard mb-4">
+						<div class="row">
+							<div class="col-lg-1 col-md-3 me-5">
+								<div class="avatar-img mb-3">
+									<!--<img
+										th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+										 th:src="@{#{url.file} + #{url.image} + '/student_Profile/1'}"
+										 class=" img-thumbnail">-->
+									<img
+										th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+										th:src="@{'data:image/jpeg;base64,' + ${studentProfile}}"
+										 class=" img-thumbnail">
+								</div>
+							</div>
+							<div class="col-lg-10 col-md-9 me-3">
+								<div class="row">
+									<div class="col-lg-4 col-md-9 mb-3">
+										<div class="userInfo">
+											<h6><span th:text="#{message.label.welcome} + ' ' + #{message.label.exclamation.mark}"></span></h6>
+											<h4><span class="text-uppercase" th:text="${@securityCtxUtil.studentFullName()}"></span></h4>
+											<div class="DateTime">
+												<i class="fa fa-calendar me-1"></i>
+												<span th:text="${#temporals.format(@securityCtxUtil.sessionStartTime(), #messages.msg('session.date.format'))}"
+													  id="currentDateTime">
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-2 col-md-4 mb-3">
+										<div><span th:text="#{message.label.roll.number}"></span></div>
+										<div class="fw-bold fs-5 text-uppercase" th:text="${@securityCtxUtil.userName()}"></div>
+									</div>
+									<div class="col-lg-2 col-md-4 mb-3">
+										<div><span th:text="#{message.label.hostel}"></span></div>
+										<div class="fw-bold fs-5" th:text="${@securityCtxUtil.hostelName()}"></div>
+									</div>
+									<div class="col-lg-2 col-md-4 mb-3">
+										<div><span th:text="#{message.label.roomNo}"></span></div>
+										<div class="fw-bold fs-5" th:text="${@securityCtxUtil.roomNumber()}"></div>
+									</div>
+									<div class="col-lg-2 col-md-4 mb-3">
+										<div><span th:text="#{message.label.mess}"></span></div>
+										<div class="fw-bold fs-5" th:text="${@securityCtxUtil.messName()}"></div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-3 col-md-3 d-flex justify-content-center mb-3" th:if="${bioDataID != null}">
+										<button class="btn btn-bluegray mb-1 form-control" onclick="viewBioData()">
+											<a th:href="@{#{url.student.registration} + #{url.get}}" class="text-decoration-none text-white">
+												<i class="fa-solid fa-eye"></i>
+												<span th:text="#{message.label.view.bio.data}"></span>
+											</a>
+										</button>
+									</div>
+									<div class="col-lg-3 col-md-3 d-flex justify-content-center mb-3" th:if="${bioDataID != null}">
+										<button class="btn btn-pink mb-1 form-control">
+											<a th:href="@{#{url.dashboard} + #{url.student} + #{url.pdf.download}}" class="text-decoration-none text-white">
+												<i class="fa-solid fa-file-arrow-down"></i>
+												<span th:text="#{message.label.download.bio.data}"></span>
+											</a>
+										</button>
+									</div>
+									<div class="col-lg-3 col-md-3 d-flex justify-content-center mb-3 d-none">
+										<button class="btn btn-aqua mb-1 form-control">
+											<a href="javascript:void(0);" class="text-decoration-none text-white">
+												<i class="fa fa-file-text me-1"></i>
+												<span th:text="#{message.label.view.user.manual}"></span>
+											</a>
+										</button>
+									</div>
+									<div class="col-lg-3 col-md-3 d-flex justify-content-center mb-3"
+										 th:if="${(@securityCtxUtil.roomNumber() != null && @securityCtxUtil.roomNumber() != '-')
+										 && (@securityCtxUtil.hostelName() != null && @securityCtxUtil.hostelName() != '-')}">
+										<button class="btn btn-tmPrimary mb-1 form-control" data-bs-toggle="modal" onclick="loadInventoryFragment()">
+											<i class="fa fa-desktop text-white me-1"></i>
+											<span th:text="#{message.label.view.inventory}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<th:block th:if="${!#lists.isEmpty(smWidgets)}">
+							<div class="col-lg-4 col-md-6 col-sm-12 mb-4 widget-parent" th:each="widget : ${smWidgets}"
+								 th:data-id="${widget.id}">
+								<div class="widget-child" th:id="'widget_' + ${widget.id}"
+									 th:attr="data-url=${widget.widgetUrl} + '/widget', data-id=${widget.id}">
+									<div class="col" th:id="${id}">
+										<div class="card shadow">
+											<div class="min-card">
+												<div class="card-header">
+													<h5 class="card-title">
+														<span th:text="${widget.getWidgetName()}"></span>
+													</h5>
+												</div>
+												<div class="card-body">
+													<div class="row">
+														<div class="col-12">
+															<div class="card-body d-flex justify-content-center align-items-center" style="min-height: 120px;">
+																<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="card-footer d-none"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- //Main-->
+<!-- <th:block th:replace="~{student/view-inventory :: viewInventory}"></th:block> -->
+<div th:id="modalDiv"></div>
+<th:block th:replace="~{common/modal/biodata-error-modal ::
+    contents(headerText=null, bodyText=#{message.label.guest.error.msg})}">
+</th:block>
+<div th:replace="~{common/modal-template :: modal('applicationNoModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Submit, null, 'sm')}">
+    <modalHeader th:text="#{message.label.check.biodata}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" th:action="@{#{url.guest.accomm.charges}}" method="post" th:object="${guestAccommodationDto}" id="guestAccommodationform">
+            <div class="row">
+            	<div class="col-lg-12 mb-3">
+            		<label class="form-label" for="applicationNumber">
+						<span th:text="#{message.label.application.no}"></span>
+					</label>
+					<input type="text" name="applicationNumber" id="applicationNumber"
+						   class="form-control uppercase required-input" th:placeholder="#{message.placeholder.application.no}"
+						   maxlength="12" required>
+					<div class="invalid-feedback">
+						<span th:text="#{message.validation.applicationNo}"></span>
+					</div>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>
+<!-- Footer-->
+<!--<footer class="fixed-bottom footer">-->
+<!--	<div class="container-fluid">-->
+<!--		<div class="row d-flex align-items-center">-->
+<!--			<div class="col-lg-6">-->
+<!--				<p class="mb-0"> V-<span th:text="${buildVersion}"></span>-->
+<!--			</div>-->
+<!--			<div class="col-lg-6  text-lg-end">-->
+<!--				<p class="mb-0">Copyright 2024 © Office of Hostel Management - IIT Madras </p>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+<!--</footer>-->
+<!-- //Footer-->
+<!--//-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/landing-page.js}"></script>
+	<script th:src="@{/assets/js/common/login-registration.js}"></script>
+	<script th:src="@{/assets/js/dashboard/dashboard.js}"></script>
+	<script th:src="@{/assets/js/dashboard/student/student-dashboard.js}"></script>
+	<script th:inline="javascript">
+		const baseURL = /*[[#{url.student.dashboard}]]*/ '';
+		const dashboardURL = /*[[#{url.dashboard}]]*/ '';
+		const studentURL = /*[[#{url.student}]]*/ '';
+		const getInventoryUrl = /*[[#{url.inventory.list}]]*/ '';
+		const rfidURL = /*[[#{url.user.rfid.pin.change.widget}]]*/ '';
+		const rfidByIdURL = /*[[#{url.user.rfid.pin.details.by.id}]]*/ '';
+		const rfidSaveURL = /*[[#{url.update.rfid.pin}]]*/ '';
+		const currentRfidPinURL = /*[[#{url.current.rfid.pin.no}]]*/ '';
+		const rollnoURL = /*[[#{url.roll.no.change.details}]]*/ '';
+		const rollnoPopupURL = /*[[#{url.user.roll.no.details}]]*/ '';
+		const rollnoSaveURL = /*[[#{url.change.roll.no}]]*/ '';
+		const validateRollNoURL = /*[[#{url.check.roll.no.exist}]]*/ '';
+		const validateApplicationNoURL = /*[[#{url.applicationNo.exists}]]*/ '';
+		const getPriorityURL = /*[[#{url.priority.mess.widget}]]*/ '';
+		const getTabURL = /*[[#{url.priority.get.tab}]]*/ '';
+		const getStudentRegistrationURL = /*[[#{url.student.registration}]]*/ '';
+		const getStudentRegistrationURLSuffix = /*[[#{url.get}]]*/ '';
+	</script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('student-room-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'xl')}">
+	<modalHeader>
+		<span th:text="#{message.label.payment.details}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.guest.accommodation.student}+#{url.guest.student.request.save}}"  method="post" id="studentRoomEditForm"
+			  th:object="${studentGuestAccomDTO}">
+			<div class="themeAccordion accordion mb-3" id="guestRoom">
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button ab-with-icon collapsed" type="button" data-bs-toggle="collapse"
+								data-bs-target="#studentDetails" aria-expanded="false" aria-controls="studentDetails">
+							<div><span th:text="#{message.label.student.details}"></span></div>
+						</button>
+					</h2>
+					<div id="studentDetails" class="accordion-collapse collapse" data-bs-parent="#guestRoom">
+						<div class="accordion-body">
+							<div class="row">
+								<div class="col-lg-2">
+									<div class="upload-box">
+										<div class="box text-center">
+											<label>
+												<img class="img-fluid d-block mx-auto" id="studentProfileImage" alt="Image"
+													 th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+													 th:src="@{#{url.file} + #{url.image} + '/STUDENT_IMAGE/' + ${studentGuestAccomDTO.studentInfo.studentId}}"
+												>
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-10">
+									<div class="row">
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.student.id}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.studentId}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.student.name}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.firstName + ' ' + studentGuestAccomDTO.studentInfo.lastName}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.hostel.name}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.hostelName} ?: #{message.label.na}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.room.no}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.roomNo} ?: #{message.label.na}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.guest.name}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.guestReqList[0].guestName}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.accommodation.type}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.accommodationType}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.request.from}"></span>
+											</label>
+											<div class="form-control form-graybox"
+												 th:text="${studentGuestAccomDTO.fromDate}">
+											</div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.request.to}"></span>
+											</label>
+											<div class="form-control form-graybox"
+												 th:text="${studentGuestAccomDTO.toDate}">
+											</div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.checkin.time}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.checkInTime}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.checkout.time}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.checkOutTime}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.no.of.days}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.noOfDays}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.no.of.person}"></span>
+											</label>
+											<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.noOfPersons}"></div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.calculated.amount}"></span>
+												<i class="fa-solid fa-indian-rupee-sign"></i>
+											</label>
+											<div class="form-control form-graybox currency" th:text="${studentGuestAccomDTO.paymentAmount}"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.payment.details}"></span>
+					</h2>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-lg-4 mb-3">
+					<input type="hidden"  th:name="studentId"  th:value="${studentGuestAccomDTO.studentId}" />
+					<input type="hidden"  th:name="requestId"   th:value="${studentGuestAccomDTO.requestId}" />
+					<label class="form-label">
+						<span th:text="#{message.label.payment.option}"></span>
+					</label>
+					<div class="checkRadio-bg form-control">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" th:name="paymentType" value="digital"
+								   th:checked="${studentGuestAccomDTO.paymentType == 'digital'}"  onclick="changeLabel('digital')" checked>
+							<label class="form-check-label"  th:text="#{message.label.digital}"></label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" th:name="paymentType" value="online"
+								   th:checked="${studentGuestAccomDTO.paymentType == 'online'}" onclick="changeLabel('online')">
+							<label class="form-check-label" th:text="#{message.label.online}"></label>
+						</div>
+					</div>
+
+					<div class="invalid-feedback" th:text="#{message.validation.payment.option.required}"></div>
+				</div>
+				<div class="col-lg-8 mb-3"></div>
+
+				<div class="col-lg-4 mb-4">
+					<label id="duNoLabel" class="form-label">
+						<span th:text="#{message.label.payment.referenceno}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control required-input"
+						   th:name="paymentReferenceNumber"  required
+						   th:value="${studentGuestAccomDTO.paymentReferenceNumber}">
+					<div class="invalid-feedback" id="paymentReferenceError"></div>
+				</div>
+
+				<div class="col-lg-4 mb-4">
+					<label class="form-label">
+						<span th:text="#{message.label.date}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="datetime-local" class="form-control required-input"
+						   th:name ="paymentDate"
+						   th:value="${studentGuestAccomDTO.paymentDate}"
+						   id="paymentDate" required>
+
+					<span id="checkInDateError" class="text-danger" style="display: none;"></span>
+					<div class="invalid-feedback" th:text="#{message.validation.payment.date.required}"></div>
+				</div>
+				<div class="col-lg-4 mb-4">
+					<label class="form-label">
+						<span th:text="#{message.label.amount}"></span>
+						<i class="fa-solid fa-indian-rupee-sign"></i>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control isNumberAndDot required-input"
+						   th:name="paymentAmount" id="amount" maxlength="10"
+						   th:value="${studentGuestAccomDTO.paymentAmount}"
+						   th:placeholder="#{message.placeholder.amount}" required>
+					<div class="invalid-feedback" th:text="#{message.validation.amount.required}"></div>
+				</div>
+				<div class="col-lg-12 my-3">
+					<th:block th:replace="~{common/template/note :: noteContent('message.label.note', null, ~{::noteContent})}">
+						<noteContent>
+							<ul>
+								<li th:each="note : ${wardenNotes}" th:text="${note}"></li>
+							</ul>
+						</noteContent>
+					</th:block>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

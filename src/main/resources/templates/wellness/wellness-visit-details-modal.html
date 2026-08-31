@@ -1,0 +1,126 @@
+<div th:replace="~{common/modal-template :: modal('wellness-visit-history-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Update, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.wellness.visit.history.add.edit}"></span></modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{student.wellness.archive}+#{wellness.visit.details}}" 
+			method="post" th:object="${studentWellnessFollowupDataDto}" id="wellnessVisitId">
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.interaction.details}"></span>
+					</h2>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-lg-4 mb-3">
+					<label class="form-label" for="visitDate">
+						<span th:text="#{message.label.visit.date}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label> 
+					<input type="date" class="form-control required-input" id="visitDate" th:field="*{visitDate}"
+                           th:classappend="${#fields.hasErrors('visitDate')} ? 'is-invalid' : ''" required>
+                    <div class="invalid-feedback backendErrors" th:errors="*{visitDate}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.visit.date.required}"></div>
+				</div>
+				<div class="col-lg-4 mb-3">
+					<label class="form-label" for="noOfVist">
+						<span th:text="#{message.label.no.of.visit}"></span>
+					</label> 
+					<div class="form-control form-graybox" th:text="*{noOfVisit}"></div>
+					<input type="hidden" th:field="*{noOfVisit}">
+				</div>
+				<div class="col-lg-4 mb-3">
+					<label class="form-label" for="interactionMode">
+						<span th:text="#{message.label.interaction.mode}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label> 
+					<select id="interactionMode" class="form-select required-input" th:field="*{interactionMode}"
+						th:classappend="${#fields.hasErrors('interactionMode')} ? 'is-invalid' : ''" required>
+						 <option value="" th:text="#{message.label.select}+' '+#{message.label.interaction.mode}"></option>
+						 <option th:each="interactionMode : ${interactionModeList}"
+				            th:value="${interactionMode}" th:text="${interactionMode}">
+				         </option>
+					</select>
+					<div class="invalid-feedback backendErrors" th:errors="*{interactionMode}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.interaction.mode.required}"></div>
+				</div>
+				<div class="col-lg-4 mb-3">
+					<label class="form-label" for="duration"><span th:text="#{message.label.duration}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<div class="input-group">
+					    <div class="me-2">
+					        <select id="hour" class="form-select custom-size">
+					            <option value="" selected th:text="#{message.label.hour}"></option>
+					            <option th:each="i : ${#numbers.sequence(0, 2)}"
+					                    th:value="${i}"
+					                    th:text="${i}"
+					                    th:selected="${duration != null and (duration / 60) == i}">
+					            </option>
+					        </select>
+					    </div>
+					    <div class="">
+					        <select id="minute" class="form-select">
+					            <option value="" selected th:text="#{message.label.minute}"></option>
+					            <option th:each="minute : ${#numbers.sequence(0, 3)}"
+					                    th:value="${#numbers.formatInteger(minute * 15, 2)}"
+					                    th:text="${#numbers.formatInteger(minute * 15, 2)}"
+					                    th:selected="${duration != null and (duration % 60) == (minute * 15)}">
+					            </option>
+					        </select>
+					    </div>
+					</div>
+					<input type="text" id="duration" class="d-none" th:field="*{duration}"
+						th:classappend="${#fields.hasErrors('duration')} ? 'is-invalid' : ''" required>
+					<div class="invalid-feedback backendErrors" th:errors="*{duration}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.duration.required}"></div>
+				</div>
+				<div class="col-lg-4 mb-3">
+					<label class="form-label" for="status">
+						<span th:text="#{message.label.status}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label> 
+					<select id="visitStatus" class="form-select required-input" th:field="*{visitStatus}"
+						th:classappend="${#fields.hasErrors('visitStatus')} ? 'is-invalid' : ''" required>
+						 <option value="" th:text="#{message.label.select}+' '+#{message.label.status}"></option>
+						 <option th:each="visitStatus : ${visitStatusList}"
+				            th:value="${visitStatus.id}" th:text="${visitStatus.value}">
+				         </option>
+					</select>
+					<div class="invalid-feedback backendErrors" th:errors="*{visitStatus}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.status.required}"></div>
+				</div>
+				<div class="col-lg-4 mb-3">
+					<label class="form-label" for="concernsDiscussed "> <span
+						th:text="#{message.label.concerns.discussed}"></span>
+					</label>
+					<textarea class="form-control" id="concernsDiscussed" th:field="*{concernsDiscussed}"
+						th:placeholder="#{message.label.placeholder.concerns.discussed}" maxlength='1000'></textarea>
+				</div>
+			</div>
+			<div class="row closed">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.future.interaction}"></span>
+					</h2>
+				</div>
+			</div>
+			<div class="row closed">
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="followUpDate">
+						<span th:text="#{message.label.follow.up.date}"></span>
+					</label> 
+					<input type="date" class="form-control" id="followUpDate" th:field="*{followUpDate}">
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="futureActionPlan "> <span
+						th:text="#{message.label.future.action.plan}"></span>
+					</label>
+					<textarea class="form-control" id="futureActionPlan" th:field="*{futureActionPlan}"
+						th:placeholder="#{message.label.placeholder.future.action.plan}" maxlength='1000'></textarea>
+				</div>
+			</div>
+			<input type="hidden" th:field="*{wellness.id}" id="wellnessId">
+			<input type="hidden" th:field="*{id}" id="id">
+		</form>
+	</modalBody>
+</div>

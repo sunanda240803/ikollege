@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <!--<th:block th:replace="~{tabs}"></th:block>-->
+                    <form id="scheduler-form" class="themeForm">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="tmsub-title">Cron Triggers</h2>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="col-lg-12">
+                                            <button type="button" class="btn btn-tmPrimary" onclick="pushRemove()">
+                                                Push Remove
+                                            </button>
+                                            <span id="pushRemoveStatus"> </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="col-lg-12">
+                                            <button type="button" class="btn btn-tmPrimary" onclick="pushNextSession()">
+                                                Push for Next Session
+                                            </button>
+                                            <span id="pushNextSessionStatus"> </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 card main-card">
+                                        <div class="card-body" style="min-height: 50px">
+                                            <div class="row">
+                                                <div class="col-lg-6 mb-3">
+                                                    <label class="form-label" for="dateFrom" th:text="#{message.label.from.date}"></label>
+                                                    <input type="date" class="form-control" id="dateFrom" th:value="${dateFrom}">
+                                                </div>
+                                                <div class="col-lg-6 mb-3">
+                                                    <label class="form-label" for="dateTo" th:text="#{message.label.to.date}"></label>
+                                                    <input type="date" class="form-control" id="dateTo" th:value="${dateTo}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mt-2 text-center">
+                                                <button type="button" class="btn btn-tmPrimary" onclick="collectDeviceLogs()">
+                                                    Collect Logs
+                                                </button>
+                                                <span id="collectDeviceLogsStatus"> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="col-lg-12">
+                                            <button type="button" class="btn btn-tmPrimary" onclick="clearDeviceLogs()">
+                                                Clear Logs
+                                            </button>
+                                            <span id="clearDeviceLogsStatus"> </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <h2 class="tmsub-title">Cron Log</h2>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <button type="button" class="btn btn-tmPrimary" onclick="getSchedulerLogs()">
+                                            Show Logs
+                                        </button>
+                                    </div>
+                                    <div class="col-lg-12 ms-4">
+                                        <span id="schedulerLogs"> </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <th:block th:replace="~{common/log-content::content('frScheduler')}"></th:block>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{common/biometric-footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/biometric/frScheduler.js}"></script>
+    <script th:src="@{/assets/js/biometric/log.js}"></script>
+</th:block>
+</body>
+</html>

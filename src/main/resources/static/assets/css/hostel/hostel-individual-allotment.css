@@ -1,0 +1,171 @@
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    table-layout: fixed;
+}
+
+.table-custom th,
+.table-custom td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.table-custom th.sticky-header {
+    font-size: 13px;
+}
+
+.table-custom td.sticky-first-column {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    font-weight: bold;
+    width: 120px;
+}
+
+.table-custom th.sticky-first-column {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    font-weight: bold;
+    width: 100px;
+}
+
+.table-custom .sticky-first-column .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.table-custom th:not(.sticky-header),
+.table-custom td:not(.sticky-first-column) {
+    width: 60px;
+    min-width: 40px;
+    max-width: 30px;
+    white-space: nowrap;
+}
+
+.square-button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+}
+
+.Occupied {
+    background: linear-gradient(to bottom, #999, #b0b0b0);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.Occupied:hover {
+    background: linear-gradient(to bottom, #5c5b5b, #818181)
+}
+
+.Occupied:active {
+    transform: translateY(2px);
+}
+
+.Vacant {
+    background: linear-gradient(to bottom, #51b377, #52bb7a);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.Vacant:hover {
+    background: linear-gradient(to bottom, #51b377, #058a37);
+}
+
+.Vacant:active {
+    transform: translateY(2px);
+}
+
+.Partially-occupied {
+    background: linear-gradient(to bottom, #ffdf9e, #fac660);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.Partially-occupied:hover {
+    background: linear-gradient(to bottom, #fbad0f, #fac660);
+}
+
+.Partially-occupied:active {
+    transform: translateY(2px);
+}
+
+.roomAllocationTable td {
+    vertical-align: middle;
+}
+
+.roomAllocationTable td button {
+    text-align: center;
+    margin: auto;
+    cursor: pointer;
+}
+
+thead .sticky-header {
+    margin-top: 250px !important;
+}
+/* Mobile View */
+@media (max-width: 1624px) {
+    .table-responsive {
+        overflow-x: scroll;
+    }
+
+    .table-custom {
+        table-layout: auto;
+    }
+
+    .table-custom td.sticky-first-column{
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        font-weight: bold;
+        width: 100px;
+    }
+
+    .table-custom th.sticky-first-column{
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        font-weight: bold;
+        width: 120px;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        font-size: 10px;
+        padding: 3px;
+    }
+
+    .square-button {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.occupant-body{
+    height: 160px!important;
+}
+
+.ellipsis {
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn-room-no, .btn-capacity {
+    border-radius: 10px;
+}

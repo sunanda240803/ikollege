@@ -1,0 +1,27 @@
+<th:block th:fragment="tabs(tabList, screen)">
+	<div class="row mb-4">
+		<div class="col-lg-12 themeTabs">
+			<ul class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link secondary-tab" th:classappend="${screen == '#{url.hostel.event.master}' ? ' active' : ''}"
+					th:href="@{#{url.hostel.event.master}}">
+						<span>Show Event Master</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link  secondary-tab" th:classappend="${screen == '#{url.show.wise.details}' ? ' active' : ''}"
+					 th:href="@{#{url.show.wise.details}}">
+						<span>Show Wise List</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link  secondary-tab" th:classappend="${screen == '#{url.show.seat.details}' ? ' active' : ''}"
+					th:href="@{#{url.show.seat.details}}">
+						<span>Show Seat List</span>
+					</a>
+				</li>
+			</ul>
+			<input type="hidden" id="screenURL" th:value="${screen}"/>
+		</div>
+	</div>
+</th:block>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form id="foodCourtPurchaseForm"
+                          th:action="@{#{url.food.court.purchase}}"
+                          th:object="${searchForm}" method="post" class="form-horizontal">
+
+                        <div class="row mb-4">
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="messPeriod">
+                                    <span th:text="#{message.label.mess.period.without.colon}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <select id="messPeriod" th:field="*{messPeriodId}" class="form-select required-input" required>
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                    <option th:each="period : ${messPeriods}"
+                                            th:value="${period.id}"
+                                            th:text="${period.messPeriod}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="messName" th:text="#{message.label.mess.name}"></label>
+                                <select id="messName" th:field="*{messId}" class="form-select">
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                    <option th:each="mess : ${messNames}"
+                                            th:value="${mess.id}"
+                                            th:text="${mess.messName}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="purchasedFromDate" th:text="#{message.label.purchased.from.date}"></label>
+                                <input type="date" id="purchasedFromDate" th:field="*{purchasedFromDate}" class="form-control">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="purchasedToDate" th:text="#{message.label.purchased.to.date}"></label>
+                                <input type="date" id="purchasedToDate" th:field="*{purchasedToDate}" class="form-control">
+                                <div id="toDateError" class="invalid-feedback" th:text="#{message.label.to.date.validation}" ></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="studentId" th:text="#{message.label.student.id}"></label>
+                                <input type="text" id="studentId" th:field="*{studentId}" class="form-control">
+                            </div>
+                            <div class="col-lg-3 row">
+                                <div class="col-lg-6">
+                                    <button id="searchButton" type="button" class="btn btn-primary mt-4"
+                                            onclick="validateForm()"><i class="fa-solid fa-database"></i>
+                                        <span th:text="#{message.label.get.data}"></span>
+                                    </button>
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <button type="button" id="downloadReport" class="btn btn-lgtblue mt-4" onclick="downloadRequestReport()">
+                                        <i class="fa-solid fa-file-excel"></i>
+                                        <span>Export</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 row">
+                                <div class="col-lg-6 mt-3">
+                                    <label class="form-label" th:text="#{message.mess.food.court.total.credit}"></label>
+                                    <span th:text="${#numbers.formatDecimal(totalCredit, 1, 2)}"
+                                          class="currency"></span>
+                                </div>
+                                <div class="col-lg-6 mt-3">
+                                <label class="form-label" th:text="#{message.mess.food.court.total.debit}"></label>
+                                    <span th:text="${#numbers.formatDecimal(totalDebit, 1, 2)}"
+                                          class="currency"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <!-- Results table -->
+                    <div class="mb-4" th:if="${showTable}">
+                        <div class="table-responsive themeTable">
+                            <table id="foodCourtPurchaseTable" class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.sl.no}"></th>
+                                    <th th:text="#{message.label.voucher.no}"></th>
+                                    <th th:text="#{message.label.purchase.date}"></th>
+                                    <th th:text="#{message.label.studentID}"></th>
+                                    <th th:text="#{message.label.mess.name}"></th>
+                                    <th th:text="#{message.label.dining.from.date}"></th>
+                                    <th th:text="#{message.label.dining.to.date}"></th>
+                                    <th class="text-right" th:text="#{message.label.credit.amount}"></th>
+                                    <th class="text-right" th:text="#{message.label.debit.amount}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="transaction,iterStat : ${form.paginationList}" th:id="'row_' + ${iterStat.index}">
+                                    <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${transaction.voucherNo}"></td>
+                                    <td th:text="${#temporals.format(transaction.purchaseDate, 'MMM dd, yyyy hh:mm a')}"></td>
+                                    <td th:text="${transaction.studentId}"></td>
+                                    <td th:text="${transaction.messName}"></td>
+                                    <td th:text="${#temporals.format(transaction.diningFromDate, 'MMM dd, yyyy')}"></td>
+                                    <td th:text="${#temporals.format(transaction.diningToDate, 'MMM dd, yyyy')}"></td>
+                                    <td th:text="${transaction.debitOrCredit eq 'c' ? #numbers.formatDecimal(transaction.amount, 1, 2) : ''}"
+                                        th:classappend="${transaction.debitOrCredit eq 'c' ? 'currency' : ''}"></td>
+                                    <td th:text="${transaction.debitOrCredit eq 'd' ? #numbers.formatDecimal(transaction.amount, 1, 2) : ''}"
+                                        th:classappend="${transaction.debitOrCredit eq 'd' ? 'currency' : ''}"></td>
+                                </tr>
+                                <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                    <td colspan="9" class="text-center">
+                                        <span th:text="#{message.label.no.data.available}"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/mess/food-court-purchase-list.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.student.bulk.upload}]]*/ '';
+        const excelDownloadUrl = /*[[#{url.food.court.purchase.excel.report.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>

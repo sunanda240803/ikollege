@@ -1,0 +1,4 @@
+.custom-size {
+    max-height: 150px; /* Set your desired height */
+    overflow-y: auto; /* Enable vertical scrolling */
+}

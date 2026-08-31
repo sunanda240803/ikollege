@@ -1,0 +1,30 @@
+  <div th:replace="~{common/modal-template ::
+   modal('faq-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader><span th:text="#{message.label.add.faq}"></span></modalHeader>
+    <modalBody>
+	  <form class="themeForm" th:action="@{#{url.faq}}" method="post" id="faqForm"
+		th:object="${faqDto}">
+		<input type="hidden" th:value="${faqDto.id}" th:name="id" th:id="faqId" />
+          <div class="row">
+            <div class="col-lg-12 mb-3">
+              <label class="form-label" for="question">
+              	<span th:text="#{message.label.question}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <textarea  class="form-control required-input" rows="3" th:field="*{question}" id="question" required
+              	maxlength="256" th:placeholder="#{message.placeholder.faq.question}"></textarea>
+              <div class="invalid-feedback" th:text="#{message.validation.question.required}"></div>
+            </div>
+            <div class="col-lg-12 mb-3">
+              <label class="form-label" for="answer">
+              	<span th:text="#{message.label.answer}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+             </label>
+              <textarea class="form-control required-input" rows="3" th:field="*{answer}" id="answer" required
+              	maxlength="512" th:placeholder="#{message.placeholder.faq.answer}"></textarea>
+              <div class="invalid-feedback" th:text="#{message.validation.answer.required}"></div>
+            </div>
+          </div>
+      </form>
+    </modalBody>
+  </div>

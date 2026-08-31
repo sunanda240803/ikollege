@@ -1,0 +1,30 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="scripts(scripts, footerForm)">
+    <!--JS FILES-->
+    <!-- <script src="/stact/assets/js/bootstrap.bundle.min.js"></script> -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Set the context path using Thymeleaf
+        const contextPath = '/' + (/*[[@{/}]]*/ '').replaceAll('/', '');
+        /*]]>*/
+    </script>
+    <script th:src="@{/assets/js/base/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/base/jquery.flip.js}"></script>
+    <script th:src="@{/assets/js/base/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/assets/js/base/bootstrap-select.min.js}"></script>
+    <script th:src="@{/assets/js/base/bs5-toast.js}"></script>
+    <script th:src="@{/assets/js/base/main.js}"></script>
+    <script th:src="@{/assets/js/common/common.js}"></script>
+    <script th:src="@{/assets/js/common/common-validation.js}"></script>
+    <script th:src="@{/assets/js/common/custom-toast.js}"></script>
+
+    <script th:src="@{/assets/js/particles-min.js}"></script>
+    <script th:src="@{/assets/js/particles-animation.js}"></script>
+    <script th:inline="javascript">
+        showLoader();
+    </script>
+    <script th:if="${footerForm} != null and ${footerForm.response} != null" th:inline="javascript">
+        showErrorToast([[${footerForm.response.status}]], [[${footerForm.response.message}]]);
+    </script>
+
+    <th:block th:replace="${scripts}"></th:block>
+</th:block>

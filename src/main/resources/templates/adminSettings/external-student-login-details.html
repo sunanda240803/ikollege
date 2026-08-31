@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head th:replace="~{common/head :: common_header(~{::link})} "></head>
+   <body>
+   <header th:replace="~{common/header:: title(${headerForm})}"></header>
+      <!-- //Main-->
+      <main id="main" class="main">
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="card main-card mt-4">
+                  <div class="card-body themeForm">
+                     <form action="#" method="get">
+                        <div class="row mb-3">
+                           <div class="col-auto">
+                              <label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+                              <i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+                                 th:data-bs-title="#{message.label.external.other.login.search.title}"></i>
+                              </label>
+                              <input type="text" class="form-control" name="search" id="search" th:value="${form.search}">
+                           </div>
+                           <div class="col-auto mt-3">
+                              <button class="btn btn-secondary mt-4" type="submit">
+                              <span th:text="#{message.label.search}"></span>
+                              </button>
+                           </div>
+                        </div>
+                     </form>
+                     <div class="mb-4">
+                        <div class="table-responsive themeTable">
+                           <table id="studentLoginTable" class="table table-bordered nowrap w-100">
+                              <thead>
+                                 <tr>
+                                    <th th:text="#{message.label.candidate.user.id}"></th>
+                                    <th th:text="#{message.label.candidate.name}"></th>
+                                    <th th:text="#{message.label.last.login}"></th>
+                                    <th th:text="#{message.label.login.status}"></th>
+                                    <th th:text="#{message.label.failed.attempts}"></th>
+                                    <th class="text-center"  th:text="#{message.label.action}"></th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                     th:each="detail, iter: ${form.paginationList.getContent()}">
+                                    <td th:text="${detail.userEmailId}"></td>
+                                    <td th:text="${detail.applicantName}"></td>
+                                    <td th:text="${detail.lastLoginTime}"></td>
+                                    <td class="text-danger" th:text="${detail.activeStatus}"></td>
+                                    <td th:text="${detail.noOfFailedAttempts}"></td>
+                                    <td class="text-center">
+                                       <button type="button" class="btn btn-outline-success btn-sm"
+                                               th:id="${'enableButton_'+iter.index}"
+                                          data-bs-toggle="tooltip" data-bs-title="Enable"
+                                          th:data-id = "${detail.userEmailId}" onclick="activateLogin(this)">
+                                       <i class="fa-solid fa-toggle-on"></i>
+                                       </button>
+                                    </td>
+                                 </tr>
+                                 <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                    <td colspan="11" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                        <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </main>
+      <th:block th:replace="~{common/modal/enable-modal ::
+         contents(headerText=#{message.label.confirmation},bodyText=#{message.label.login.status.enable})}"></th:block>
+      <!-- Footer-->
+      <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+         <script th:src="@{/assets/js/collegeInfo/other-candidate-login.js}"></script>
+         <script th:inline="javascript">
+            const baseURL = /*[[#{url.external.login.student}]]*/ '';
+         </script>
+      </th:block>
+
+      <!-- Footer-->
+   </body>
+</html>

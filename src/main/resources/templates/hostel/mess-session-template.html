@@ -1,0 +1,60 @@
+<th:block th:fragment="messSession(id, sessionType, status, type)">
+    <!-- Button for Type 'num' -->
+    <th:block th:if="${type == 'num'}">
+        <button type="button" 
+            class="btn btn-sm width-80" 
+            style="margin-right: 5px;"
+            th:classappend="' ' + 
+                (${sessionType == 'BF' ? 'btn-primary' 
+                : sessionType == 'LC' ? 'btn-warning'
+                : sessionType == 'DR' ? 'btn-pink' 
+                : sessionType == 'ET' ? 'btn-info'
+                : 'btn-outline-primary'})"
+            th:data-bs-toggle="tooltip"
+	        th:attr="data-bs-placement='top', 
+	            data-bs-title=(${sessionType == 'BF' ? 'Breakfast' 
+	            : sessionType == 'LC' ? 'Lunch' 
+	            : sessionType == 'DR' ? 'Dinner'
+	            : sessionType == 'ET' ? 'Snacks'
+	            : ''})">
+
+            <!-- Directly show sessionType for 'num' -->
+            <span th:text="${sessionType}"></span>
+
+            <!-- Show Badge with ID -->
+            <span style="margin-left: 10px;">
+                <span class="badge bg-light text-bg-light" th:text="${id}"></span>
+            </span>
+        </button>
+    </th:block>
+
+    <!-- Button for Type 'ico' -->
+    <th:block th:if="${type == 'ico'}" th:with="na = #{message.label.na}">
+		<button type="button" 
+	        class="btn btn-sm width-80" 
+	        style="margin-right: 5px;"
+	        th:classappend="' ' + 
+	            (${sessionType == 'BF' and id != null and id > 0 ? 'btn-primary' 
+	            : sessionType == 'LC' and id != null and id > 0 ? 'btn-warning'
+	            : sessionType == 'DR' and id != null and id > 0 ? 'btn-pink' 
+	            : sessionType == 'ET' and id != null and id > 0 ? 'btn-info'
+	            : 'btn-outline-primary'})"
+	        th:data-bs-toggle="${id != null and id > 0 ? 'tooltip' : ''}"
+	        th:attr="data-bs-placement='top', 
+	            data-bs-title=(${sessionType == 'BF' ? 'Breakfast' 
+	            : sessionType == 'LC' ? 'Lunch' 
+	            : sessionType == 'DR' ? 'Dinner'
+	            : sessionType == 'ET' ? 'Snacks'
+	            : ''}) + ' - ' + ${status}">
+	
+	        <span th:text="${id != null and id > 0 ? sessionType : na}"></span>
+
+            <span style="margin-left: 10px;">
+                <i class="fa-solid fa-thumbs-up" th:if="${status == 'Accepted'}"></i>
+                <i class="fa-solid fa-circle-exclamation" th:if="${status == 'Pending'}"></i>
+                <i class="fa-solid fa-check-to-slot" th:if="${status == 'Delivered'}"></i>
+                <i class="fa-solid fa-truck-fast" th:if="${status == 'OutForDelivery'}"></i>
+	        </span>
+	    </button>
+	</th:block>
+</th:block>

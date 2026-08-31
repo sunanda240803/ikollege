@@ -1,0 +1,66 @@
+<!-- Form Module -->
+<th:block th:fragment="RFIDPinChange">
+	<th:block th:replace="~{common/modal-template :: modal('rfid-pin-change-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'md')}">
+		<modalHeader>
+			<span th:text="#{message.label.rfid.pin.change}"></span>
+		</modalHeader>
+		<modalBody>
+		<form class="themeForm" th:object="${userFpCardDto}" id="pinChangeForm"> 
+				<div class="row">
+					<div class="col-lg-6 mb-3">
+						<label class="form-label" ><span th:text="#{message.label.access.card.pin.no}"></span></label>
+						<div class="form-control form-graybox" th:text="#{message.validation.configured}"></div>
+					</div>
+					<div class="col-lg-6 mb-3">
+						<label class="form-label" ><span th:text="#{message.label.access.card.block}"></span></label>
+						<div class=" form-check">
+							<input class="form-check-input" type="checkbox" id="cardStatus" th:checked="*{cardActiveStatus == 'N'}" value="N" >
+							<input type="hidden" id="cardActiveStatus" th:field="*{cardActiveStatus}">
+							<label class="form-check-label" for="cardStatus"></label>
+						</div>
+					</div>
+					<div class="col-lg-12 mb-3">
+						<div class="row">
+							<div class="col-lg-6">
+								<label class="form-label">
+									<span th:text="#{message.label.current.pin}"></span>
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label>	
+								<input type="password" class="form-control numeric required-input" th:attr="placeholder=#{message.placeholder.enter.current.pin}"
+									id="currentPin" maxlength="4" th:name="currentPin">
+								<div class="invalid-feedback" th:text="#{message.validation.currentpin.required}"></div>
+								<div class="invalid-req-feedback d-none" th:text="#{message.validation.currentpin.required}"></div>
+								<div class="invalid-mismatch-feedback d-none" th:text="#{message.validation.currentpin.mismatch}"></div>
+								<div class="invalid-pin-length-feedback d-none" th:text="#{message.validation.pin.length}"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 mb-3">
+						<label class="form-label">
+							<span th:text="#{message.label.new.pin}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" />
+						</label>	
+						<input type="password" class="form-control numeric required-input" th:attr="placeholder=#{message.placeholder.enter.new.pin}"
+							id="newPin" maxlength="4" th:name="pinNo">
+						<div class="invalid-feedback" th:text="#{message.validation.newpin.required}"></div>
+						<div class="invalid-req-feedback d-none" th:text="#{message.validation.newpin.required}"></div>
+						<div class="invalid-mismatch-feedback d-none" th:text="#{message.validation.new.pin.mismatch}"></div>
+						<div class="invalid-pin-length-feedback d-none" th:text="#{message.validation.pin.length}"></div>
+					</div>
+					<div class="col-lg-6 mb-3">
+						<label class="form-label">
+							<span th:text="#{message.label.retype.pin}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" />
+						</label>	
+						<input type="password" class="form-control numeric required-input" th:attr="placeholder=#{message.placeholder.enter.retype.pin}"
+							id="retypePin" maxlength="4" th:name="retypePinNo">
+						<div class="invalid-feedback" th:text="#{message.validation.retypepin.required}"></div>
+						<div class="invalid-req-feedback d-none" th:text="#{message.validation.retypepin.required}"></div>
+						<div class="invalid-mismatch-feedback d-none" th:text="#{message.validation.retype.pin.mismatch}"></div>
+						<div class="invalid-pin-length-feedback d-none" th:text="#{message.validation.pin.length}"></div>
+					</div>
+				</div>
+			</form>
+		</modalBody>
+	</th:block>
+</th:block>

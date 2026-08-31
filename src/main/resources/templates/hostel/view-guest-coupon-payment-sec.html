@@ -1,0 +1,121 @@
+<div class="row mt-2">
+    <div class="col-lg-12">
+        <h2 class="tmsub-title">
+            <span th:text="#{message.label.payment.details}"></span>
+        </h2>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-3 mb-3">
+        <label for="paymentType" class="form-label">
+            <span th:text="#{message.label.paymentType}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+        </label>
+	    <th:block th:if="*{paymentType == null}">
+	        <select class="form-select required-input" id="paymentType" th:field="*{paymentType}" required>
+				<option value="" th:text="#{message.label.select}+' '+#{message.label.paymentType}"></option>
+	           	<option th:each="paymentType : ${paymentTypeList}" 
+	           	 	th:value="${paymentType}" th:text="${paymentType}">
+	            </option>
+	        </select>
+	        <div class="invalid-feedback"
+	             th:text="#{message.validation.payment.type.required}"></div>
+        </th:block>
+	    <th:block th:if="*{paymentType != null}">
+	    	<div class="form-control form-graybox"><span th:text="*{paymentType}"></span></div>
+	    </th:block>
+    </div>
+
+    <div class="col-lg-3 mb-3">
+        <label for="otherEmail" class="form-label">
+            <span th:text="#{message.label.payment.date}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+        </label>
+	    <th:block th:if="*{paymentDate == null}">
+	        <input type="date" class="form-control required-input" id="paymentDate" th:field="*{paymentDate}" required>
+	        <div class="invalid-feedback"
+	             th:text="#{message.validation.payment.date.required}"></div>
+        </th:block>
+	    <th:block th:if="*{paymentDate != null}">
+	    	<div class="form-control form-graybox">						    			
+				<span th:text="*{#temporals.format(paymentDate, #messages.msg('date.format'))}"/>
+	    	</div>
+	    </th:block>
+    </div>
+
+    <div class="col-lg-3 mb-3">
+        <label for="purpose" class="form-label">
+            <span th:text="#{message.label.ref.number}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+        </label>
+	    <th:block th:if="*{paymentReferenceNo == null}">
+	        <input type="text" class="form-control required-input" id="paymentReferenceNo" th:field="*{paymentReferenceNo}"
+	        	th:placeholder="#{message.placeholder.ref.number}" required>
+	        <div class="invalid-feedback"
+	             th:text="#{message.validation.ref.no.required}"></div>
+        </th:block>
+	    <th:block th:if="*{paymentReferenceNo != null}">
+	    	<div class="form-control form-graybox"><span th:text="*{paymentReferenceNo}"></span></div>
+	    </th:block>
+    </div>
+
+    <div class="col-lg-3 mb-3">
+        <label for="purpose" class="form-label">
+            <span th:text="#{message.label.payment.amount}"></span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+        </label>
+	    <th:block th:if="*{paymentAmount == null}">
+	    	<div class="form-control form-graybox">
+	    		<span th:text="*{overallAmount}"></span>
+	    		 <input type="hidden" th:name="paymentAmount" th:value="*{overallAmount}">
+	    	</div>
+       	</th:block>
+	    <th:block th:if="*{paymentAmount != null}">
+	    	<div class="form-control form-graybox"><span th:text="*{paymentAmount}"></span></div>
+	    </th:block>
+    </div>
+
+    <div class="col-lg-3 mb-3">
+        <label for="paymentStatus" class="form-label">
+            <span th:text="#{message.label.payment.status}"></span>
+        </label>
+	    <th:block th:if="*{paymentStatus != 'Success'}">
+	   		<th:block th:if="*{category == 'IITM Faculty'}">
+		        <select class="form-select" id="paymentStatus" th:field="*{paymentStatus}">
+				    <option value="" th:text="#{message.label.select}+' '+#{message.label.payment.status}"></option>
+				    <option th:each="payment : ${paymentStatusList}"
+				            th:value="${payment.value}" 
+				            th:text="${payment.value}">
+				    </option>
+				</select>
+			</th:block>			
+	   		<th:block th:if="*{category != 'IITM Faculty'}">
+		        <select class="form-select" id="paymentStatus" th:field="*{paymentStatus}" disabled>
+				    <option th:value="'Success'" th:text="'Success'"></option>
+                    <input type="hidden" th:name="paymentStatus" value="Success">
+				</select>
+			</th:block>
+		</th:block>
+	    <th:block th:if="*{paymentStatus == 'Success'}">
+	    	<div class="form-control form-graybox"><span th:text="*{paymentStatus}"></span></div>
+	    </th:block>
+    </div>
+</div>
+
+<th:block th:if="*{paymentStatus != 'Success'}">
+	 <div class="col-lg-12 my-3 d-lg-flex align-items-lg-center justify-content-lg-end">
+	     <div class="d-flex align-items-center justify-content-center">
+			<a class="btn btn-secondary px-4 me-3"
+				th:href="@{#{url.hostel.guest.coupon.request}}"
+				id="cancelForm"> <i
+				class="fa-solid fa-xmark-circle me-1"></i> <span
+				th:text="#{message.button.cancel}"></span>
+			</a>
+	         <button type="button" class="btn btn-blue px-4 me-3" id="updatePaymentForm">
+	             <i class="fa-solid fa-rotate me-1"></i> 
+	             <span th:text="#{message.button.update}"></span>
+	         </button>
+	     </div>
+	</div>
+</th:block>

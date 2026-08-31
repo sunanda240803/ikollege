@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<th:block th:fragment="formInputs(filters)">
+								<form class="themeForm" id="sickFoodRequestListReport" method="get">
+									<input type="hidden" th:value="${excelUrl}" id="excelUrl">
+									<input type="hidden" id="pageVal" th:value="${form.pageVal}" />
+									<input type="hidden" id="sizeVal" th:value="${form.size}" />
+									<input type="hidden" th:value='${filters}' id="filters">
+									<input type="hidden" id="search" name="search">
+									<div class="row mb-3">
+										<div class="col-lg-2 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.request.fromdate}"></span>
+											</label>
+											<input type="date" class="form-control" th:name="requestFromDate"
+												id="requestFromDate" th:value="${filters.get('requestFromDate')}">
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.request.todate}"></span>
+											</label>
+											<input type="date" class="form-control" th:name="requestToDate"
+												id="requestToDate" th:value="${filters.get('requestToDate')}">
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label" for="catererStatus">
+												<span th:text="#{message.label.caterer.status}"></span>
+											</label>
+											<select class="form-select" id="catererStatusId" name="catererStatus"
+												onchange="">
+												<option value="" th:text="#{message.label.select}"></option>
+												<option th:each="entry : ${catererStatusMap}" th:value="${entry.key}"
+													th:text="${entry.value}"
+													th:selected="${filters.get('catererStatusId')} eq ${entry.key}">
+												</option>
+											</select>
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label" for="studentStatus">
+												<span th:text="#{message.label.student.status}"></span>
+											</label>
+											<select class="form-select" id="studentStatusId" name="studentStatus"
+												onchange="">
+												<option value="" th:text="#{message.label.select}"></option>
+												<option value="Delivered" th:text="#{message.delivery.confirmed}"
+													th:selected="${filters.get('studentStatusId')} eq 'Delivered' ">
+												</option>
+											</select>
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.student.name}"></span>
+											</label>
+											<input type="text" class="form-control" th:name="studentName"
+												id="studentName" th:value="${filters.get('studentName')}">
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.report.student.id}"></span>
+											</label>
+											<input type="text" class="form-control" th:name="studentId" id="studentId"
+												th:value="${filters.get('studentId')}">
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label" for="messSession">
+												<span th:text="#{message.label.mess.session}"></span>
+											</label>
+											<select class="form-select" id="messSession" name="messSession" onchange="">
+												<option value="" th:text="#{message.label.select}"></option>
+												<option th:each="entry : ${messSessionMap}" th:value="${entry.key}"
+													th:text="${entry.value}"
+													th:selected="${filters.get('messSession')} eq ${entry.key}">
+												</option>
+											</select>
+										</div>
+										<div class="col-lg-3">
+											<button type="button" id="getData" class="btn btn-lgtblue px-4"
+												style="margin-top: 38px" onclick="return checkAdvanceFilter();">
+												<i class="fa-solid fa-database"></i>
+												<span th:text="#{message.button.get.data}"></span>
+											</button>
+										</div>
+									</div>
+								</form>
+							</th:block>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<!-- reportList -->
+								<div class="table-responsive themeTable">
+									<table class="table table-bordered nowrap w-100">
+										<thead>
+											<tr>
+												<th class="text-center" th:text="#{message.label.sl.no}"></th>
+												<th class="text-center" th:text="#{message.label.request.date}"></th>
+												<th class="text-center" th:text="#{message.label.report.student.id}"></th>
+												<th class="text-center" th:text="#{message.label.student.name}"></th>
+												<th class="text-center" th:text="#{message.label.medical.reason}"></th>
+												<th class="text-center" th:text="#{message.label.mess.name}"></th>
+												<th class="text-center" th:text="#{message.label.mess.type}"></th>
+												<th class="text-center" th:text="#{message.label.mess.session}"></th>
+												<th class="text-center" th:text="#{message.label.caterer.status}"></th>
+												<th class="text-center" th:text="#{message.label.student.status}"></th>
+												<th class="text-center" th:text="#{message.label.mess.inspection.student.feedBack}"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+												th:each="sickFoodRequestList, iter : ${form.paginationList.getContent()}">
+
+												<td class="text-center" th:text="${form.paginationList.number * form.paginationList.size + iter.index + 1}"></td>												
+												<td class="text-center" th:text="${#temporals.format(sickFoodRequestList.sickFoodRequest.requestDate,#messages.msg('date.format'))}"></td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.studentId) ?  'N/A' : sickFoodRequestList.sickFoodRequest.studentId}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.studentName) ?  'N/A' : sickFoodRequestList.sickFoodRequest.studentName}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.medicalReason) ?  'N/A' : sickFoodRequestList.sickFoodRequest.medicalReason}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.messName) ?  'N/A' : sickFoodRequestList.sickFoodRequest.messName}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.messType) ?  'N/A' : sickFoodRequestList.sickFoodRequest.messType}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.messSession) ?  'N/A' : sickFoodRequestList.sickFoodRequest.messSession}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.sickFoodRequest.catererStatus) ?  'N/A' : sickFoodRequestList.sickFoodRequest.catererStatus}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.studentDeliveryStatus) ?  'N/A' : sickFoodRequestList.sickFoodRequest.studentDeliveryStatus}">
+												</td>
+												<td class="text-center"
+													th:text="${#strings.isEmpty(sickFoodRequestList.studentFeedback) ?  'N/A' : sickFoodRequestList.studentFeedback}">
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/reports/sick-food-request-list-report.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.sick.food.request.list.report}]]*/ '';
+			const excelURL = /*[[#{url.excel.report.download}]]*/ '';
+		</script>
+	</th:block>
+</body>
+
+</html>

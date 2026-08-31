@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <!--<th:block th:replace="~{tabs}"></th:block>-->
+                    <div class="themeForm">
+                        <div class="">
+                            <button th:id="'pushAll'"
+                                    type="button" class="btn btn-dark btn-sm me-2"
+                                    onclick="pushRemoveToAllMess(this, 'push')" data-bs-toggle="tooltip"
+                                    data-bs-title="Push all to all Mess">
+                                <i class="fa fa-arrow-up-from-bracket"></i>
+                                <span th:text="#{message.button.push.all}"></span>
+                            </button>
+                            <button th:id="'removeAll'"
+                                    type="button" class="btn btn-danger btn-sm me-2"
+                                    onclick="pushRemoveToAllMess(this, 'remove')" data-bs-toggle="tooltip"
+                                    data-bs-title="Remove all from all Mess">
+                                <i class="fa fa-trash"></i>
+                                <span th:text="#{message.button.remove.all}"></span>
+                            </button>
+                            <span id="resultAll">
+                                <span th:if="${status != null}" th:text="${status == 'success' ? 'Terminal Details updated Successfully.' :
+                                (status == 'ipExists' ? 'Terminal IP already exists.' : ('Unknow Error: ' + status))}"></span>
+                            </span>
+                        </div>
+                        <div class="table-responsive themeTable mt-3">
+                            <table class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.mess}"></th>
+                                    <th th:text="#{message.label.fr.terminals}"></th>
+                                    <th th:text="#{message.label.gender}"></th>
+                                    <th th:text="#{message.label.action}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="mess, index: ${messMasterList}">
+                                    <td th:text="${mess.getMessName()}"></td>
+                                    <td>
+                                        <span th:if="${mess.getTerminalIps() == 'null'}" th:text="'-'"></span>
+                                        <span th:if="${mess.getTerminalIps() != 'null'}">
+                                            <th:block th:each="ip, index2: ${mess.getTerminalIps()}">
+                                                <span th:text="' | '" th:if="${index2.index > 0}"></span>
+                                                <a th:if="${ip != 'null'}" href="javascript:void(0)" onclick="showTerminalDetails(this)"
+                                                   th:text="${ip.split('~')[1]}" th:data="${ip.split('~')[0]}" th:id="'terminal_' + ${index.index} + '_'+ ${index2.index}"></a>
+                                            </th:block>
+                                            <span th:id="'terminal_details_' + ${index.index}"></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <i th:if="${mess.getGenderOption() == 'G' || mess.getGenderOption() == 'BT'}"
+                                           class="fa fa-female" style="color: deeppink"></i>
+                                        <i th:if="${mess.getGenderOption() == 'M' || mess.getGenderOption() == 'BT'}"
+                                           class="fa fa-male" style="color: blue"></i>
+                                    </td>
+                                    <td>
+                                        <button th:id="'push_' + ${mess.getMessMasterId()}"
+                                                type="button" class="btn btn-outline-dark btn-sm me-2"
+                                                onclick="pushWithinMess(this, 'push')" data-bs-toggle="tooltip"
+                                                data-bs-title="Push all to mess"
+                                                th:data-config-id="${mess.getMessMasterId()}">
+                                            <i class="fa fa-arrow-up-from-bracket"></i>
+                                        </button>
+                                        <button th:id="'remove_' + ${mess.getMessMasterId()}"
+                                                type="button" class="btn btn-outline-danger btn-sm me-2"
+                                                onclick="pushWithinMess(this, 'remove')" data-bs-toggle="tooltip"
+                                                data-bs-title="Remove all from Mess"
+                                                th:data-config-id="${mess.getMessMasterId()}">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                        <span th:id="'result_' + ${mess.getMessMasterId()}"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="terminal_update_div"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{common/biometric-footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/biometric/updateStatus.js}"></script>
+</th:block>
+</body>
+</html>

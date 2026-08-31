@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+
+<body>
+	<header th:replace="~{common/student-dashboard-header:: title(${headerForm}, 'Online Mess Coupon',
+	 	'Dashboard', null, null, null, 'Back', null,#{url.dashboard}+#{url.student}, null)}">
+	</header>
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form th:action="@{#{url.hostel.guest.coupon.request}}" method="post" id="addCouponRequestForm"
+							class="themeForm" th:object="${guestCouponRequestDTO}">
+							<div class="row mb-3">
+								<div class="col-lg-12">
+									<th:block
+										th:replace="~{common/template/note :: noteContent('message.label.rules.regulation', ${rules}, null)}">
+									</th:block>
+								</div>
+							</div>
+							<div class="row mb-4">
+								<div class="d-none">
+									<label class="form-label">
+										<span th:text="#{message.label.category}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control">
+										<div class="form-check form-check-inline me-4">
+											<input class="form-check-input required-input" type="radio"
+												id="onlineCoupon" name="category" value="Online Coupon" checked required>
+										</div>
+									</div>
+								</div>
+
+                                    <input type="hidden" id="requestId" th:value="*{requestId}" />
+                                    <input type="hidden" id="category" th:value="*{category}" />
+                                    <input type="hidden" id="studentId" th:value="${@securityCtxUtil.userName()}" />
+<!--                                    <input type="hidden" id="vegMessIds" th:value="${vegMessIds}" />-->
+<!--                                    <input type="hidden" id="nonVegMessIds" th:value="${nonVegMessIds}" />-->
+                                    <input type="hidden" th:field="*{bfRatePerUnit}" id="bfRPU">
+                                    <input type="hidden" th:field="*{lunchRatePerUnit}" id="lunchRPU">
+                                    <input type="hidden" th:field="*{dinnerRatePerUnit}" id="dinnerRPU">
+                                    <input type="hidden" th:field="*{overallAmount}" id="totAmt" value>
+                                    <input type="hidden" th:field="*{frequencyJson}" id="foodFrequency">
+                                    <input type="hidden" th:field="*{configDiscountedAmount}" id="configDiscountedAmountId">
+
+                                <div class="col-lg-4 col-md-4 col-sm-12 mealType">
+									<label class="form-label">
+										<span th:text="#{message.label.meal.type}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									 <th:block th:if="*{requestId == null}">
+										<div class="checkRadio-bg form-control" th:classappend="${#fields.hasErrors('vegOrNonVeg')} ? 'is-invalid' : ''">
+											<div class="form-check form-check-inline me-4">
+												<input class="form-check-input required-input" type="radio" id="veg"
+                                                       th:checked="*{vegOrNonVeg ne null and !vegOrNonVeg.isEmpty() and vegOrNonVeg.equalsIgnoreCase('Veg')}"
+													name="vegOrNonVeg" value="Veg" onclick="toggleDetails('Online Coupon');filterMessOptions()" required>
+												<label class="form-check-label" for="veg"><span
+														th:text="#{message.label.veg}"></span></label>
+											</div>
+											<div class="form-check form-check-inline me-4">
+												<input class="form-check-input required-input" type="radio" id="nonVeg"
+                                                       th:checked="*{vegOrNonVeg ne null and !vegOrNonVeg.isEmpty() and vegOrNonVeg.equalsIgnoreCase('NonVeg')}"
+													name="vegOrNonVeg" value="NonVeg" onclick="toggleDetails('Online Coupon');filterMessOptions()"
+													required>
+												<label class="form-check-label" for="nonVeg"><span
+														th:text="#{message.label.non.veg}"></span></label>
+											</div>
+										</div>
+                                         <div class="invalid-feedback backendErrors" th:errors="*{vegOrNonVeg}"></div>
+                                         <div class="invalid-feedback-frontEnd" th:text="#{message.validation.meal.type.required}"></div>
+									</th:block>
+									<th:block th:if="*{requestId>0}">
+	                            		<div class="form-control form-graybox"><span th:text="*{vegOrNonVeg}"></span></div>
+	                            	</th:block>
+									
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-lg-4 mb-3">
+									<label for="messName" class="form-label">
+										<span th:text="#{message.label.mess.name}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									
+									<th:block th:if="*{requestId == null}">
+							            <select class="form-select required-input" data-live-search="true" th:field="*{messId}"
+							                    id="messName" required th:classappend="${#fields.hasErrors('messId')} ? 'is-invalid' : ''">
+							                <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+							                <!--<option th:each="mess: ${messes}" th:value="${mess.id}" th:text="${mess.messName}"></option>-->
+							            </select>
+							            <!--<select class="form-select required-input" data-live-search="true" th:field="*{messName}"
+	                                	id="messName" th:attr="data-mess-options=${messes}" required>
+									     <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+									</select>-->
+										<div class="invalid-feedback backendErrors" th:errors="*{messId}"></div>
+								    	 <div class="invalid-feedback-frontEnd" th:text="#{message.validation.mess.name.required}"></div>
+							    	</th:block>
+							       <th:block th:if="*{requestId != null}">
+							       		<div class="form-control form-graybox"><span th:text="*{messName != null ? messName : '-'}"></span></div>
+							       </th:block>
+								</div>
+
+								<th:block th:replace="~{hostel/guest-coupon-dates}"></th:block>
+							</div>
+
+							<th:block th:replace="~{hostel/guest-coupon-sessions}"></th:block>
+                            <!-- Summary Section -->
+                            <th:block th:replace="~{hostel/guest-coupon-nonveg-summary}"></th:block>
+                            <!-- Error Section -->
+                            <div id="errorArraySpanId" style="display:none; text-align:center; margin-top:1rem;"></div>
+
+                            <th:block th:replace="~{hostel/view-online-coupon-payment-sec}"></th:block>
+
+                            <th:block th:replace="~{hostel/guest-coupon-buttons}"></th:block>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Footer -->
+		<th:block th:replace="~{hostel/guest-coupon-scripts :: guestCouponScripts(${footerForm})}"></th:block>
+	<!-- Footer -->
+
+</body>
+
+</html>

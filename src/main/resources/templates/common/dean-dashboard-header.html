@@ -1,0 +1,53 @@
+<!--<th:block>-->
+ <th:block th:fragment="tabs(url)">
+<!--    <div class="row mb-3">-->
+<!--        <div class="col-lg-12 themeTabs">-->
+<!--            <ul class="nav nav-tabs">-->
+<!--            	 <li class="nav-item" th:each="tab : ${headerForm?.tabList}">-->
+<!--			        <a class="nav-link" th:id="'tab_' + ${tab.menuId}"-->
+<!--			        	th:href="@{${tab.urlPath}}" th:data-url="${headerForm.currentURL}"-->
+<!--			        	th:classappend="${('/' + tab.urlPath) == headerForm.currentURL} ? 'active' : ''">-->
+<!--			            <span th:text="${tab.menuHeading}"></span>-->
+<!--			        </a>-->
+<!--			    </li>-->
+<!--               <li class="nav-item">-->
+<!--                    <a class="nav-link"-->
+<!--                       th:href="@{/studentVacating}"-->
+<!--                       th:classappend="${url == '/hosteldine/studentVacating'} ? 'active' : ''">-->
+<!--                        <span th:text="'IITM Vacating Students'"></span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link"-->
+<!--                       th:href="@{/guestAccommodationRequest/type/student-room}"-->
+<!--                       th:classappend="${url == '/hosteldine/guestAccommodationRequest/type/student-room'} ? 'active' : ''">-->
+<!--                       	<span th:text="'Guest Accommodation Request- Student Room'"></span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link"-->
+<!--                       th:href="@{/guestAccommodationRequest/type/guest-room}"-->
+<!--                       th:classappend="${url == '/hosteldine/guestAccommodationRequest/type/guest-room'} ? 'active' : ''">-->
+<!--                        <span th:text="'Guest Accommodation Request- Guest Room'"></span>-->
+<!--                    </a>-->
+<!--                </li>-->
+				<!--
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/dev/mess-rebate-request}"
+                       th:classappend="${url == '/hosteldine/dev/mess-rebate-request'} ? 'active' : ''">
+                        <span th:text="'Mess Rebate Request'"></span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/dev/student-approval}"
+                       th:classappend="${url == '/hosteldine/dev/student-approval'} ? 'active' : ''">
+                        <span th:text="'IITM Students'"></span>
+                    </a>
+                </li> -->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+</th:block>

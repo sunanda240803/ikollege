@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+<body>
+	<header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Stay Extension Request','Dashboard', null,null,null,back,null,#{url.dashboard}+#{url.student},null)}">
+</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body">
+					<form class="themeForm needs-validation" id="guestRequestForm" th:object="${guestRequestDto}"
+						th:action="@{#{url.guest.accommodation.request}}" method="post" enctype="multipart/form-data" >
+						<input type="hidden" th:name="id" th:value="${guestRequestDto.id}"/>
+						<input type="hidden" th:name="encryptedRequestId" th:value="${guestRequestDto.encryptedRequestId}"/>
+						<input type="hidden" id="previousToDate" th:value="${stayPeriods.toDate}" />
+                        <input type="hidden" id="previousCheckoutTime" th:value="${stayPeriods.checkoutTime}" />
+                        <input type="hidden" id="maximumDays" th:value="${maxNoDays}" />
+						<div class="row">
+							<div class="col-lg-3 mb-3">
+					            <label class="form-label">
+					                <span th:text="#{message.label.previous.to.date.time}"></span>
+					            </label>
+					            <div class="form-control form-graybox">
+					                <span th:text="${#temporals.format(stayPeriods.toDate, #messages.msg('date.format')) + ' : ' + stayPeriods.checkoutTime}"></span>
+					            </div>
+				        	</div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="stayToDate">
+                                	<span th:text="#{message.label.stay.extension.upto}"></span>
+                                	<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+                                </label>
+                                <input type="datetime-local" id="stayToDate" class="form-control required-input" th:name="stayToDate" required >
+                                <div class="invalid-feedback" th:text="#{message.validation.stay.to.date.required}"></div>
+                                <div class="invalid-value-feedback d-none text-danger" th:text="#{message.validation.stay.maximum.date.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" >
+									<span th:text="#{message.label.accommodation.type}"></span>
+								</label>
+								<div class="form-control form-graybox" ><span th:text="${guestRequestDto.accommodationType}"></span></div>
+                            </div>
+                        </div>
+						<div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.guest.details}"></h2>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-12">
+                            	<div class="row">
+                            		<span class="mb-2" th:text="#{message.label.select.guest.name}"></span>
+								    <th:block th:each="guest, index : ${guestList}">
+								    <div class="col-auto mb-3 RadioCheckToggle">
+								        <!-- Checkbox input -->
+								        <input type="checkbox" class="btn-check" 
+								               th:name="|guestList[${index.index}].selected|" 
+								               th:id="'CheckToggle_'+ ${index.index}+ '_'+ ${guest.guestId}"
+								               autocomplete="off" value="true">
+								               
+								        <!-- Label for the checkbox -->
+								        <label class="btn btn-outline-tmPrimary text-start" 
+								               th:for="'CheckToggle_'+ ${index.index}+ '_'+ ${guest.guestId}">
+								            <span class="fw-bold" th:text="${guest.guestName}"></span><br>
+								            <span class="fw-normal" th:text="'Relation: ' + ${guest.relationOfGuest}"></span><br>
+								            <span class="fw-normal" 
+								                  th:if="${guest.relationOfGuest == #messages.msg('message.relation.father') || guest.relationOfGuest == #messages.msg('message.relation.brother') || guest.relationOfGuest == #messages.msg('message.relation.husband')}" 
+								                  th:text="'Gender: ' + #{message.gender.male}">
+								            </span>
+								            <span class="fw-normal" 
+								                  th:if="${guest.relationOfGuest == #messages.msg('message.relation.mother') || guest.relationOfGuest == #messages.msg('message.relation.sister') || guest.relationOfGuest == #messages.msg('message.relation.wife')}" 
+								                  th:text="'Gender: ' + #{message.gender.female}">
+								            </span>
+								        </label>
+								        
+								        <!-- Hidden fields to pass guest details -->
+								        <input type="hidden" th:name="|guestList[${index.index}].guestName|" 
+								               th:value="${guest.guestName}">
+								        <input type="hidden" th:name="|guestList[${index.index}].relationOfGuest|" 
+								               th:value="${guest.relationOfGuest}">
+								        <input type="hidden" th:name="|guestList[${index.index}].guestId|" 
+								               th:value="${guest.guestId}">
+								        <input type="hidden" th:name="|guestList[${index.index}].guestGender|" 
+								               th:value="${guest.guestGender}">
+								    </div>
+								</th:block>
+								</div>
+                             </div>
+                            </div>
+                            <input type="hidden" id="gender" th:value="${studentDetailsInfoDto.gender}" />
+							<hr>
+							<div class="row text-end">
+								<div class="col-lg-12 mt-2 mb-4">
+									<div class="d-flex align-items-center justify-content-end">
+										<a th:href="@{#{url.guest.accommodation.request}}" type="button" class="btn btn-secondary px-4 me-3" id="cancel" >
+											<i class="fa-solid fa-circle-arrow-left me-1"></i>
+											<span th:text="#{message.button.cancel}"></span>
+										</a>
+										<button type="button" class="btn btn-aqua px-4" id="extensionSave" >
+											<i class="fa-solid fa-floppy-disk me-1"></i>
+											<span th:text="#{message.button.save}"></span>
+										</button>
+									</div>
+									
+								</div>
+							</div>
+						</form>
+						
+						
+						<div class="row mt-3 themeForm">
+						    <div th:if="${!guestRequestDto.stayExtensionList.isEmpty()}">
+						            <!-- List of Stay Extensions -->
+						            <div th:each="extension, iterStat : ${guestRequestDto.stayExtensionList}">
+									    <div class="row mt-3">
+									        <div class="col-lg-12">
+									            <h2 class="tmsub-title" >
+												    <span th:if="${iterStat.index == 0}" th:text="#{message.label.accommodation.details}"></span>
+												    <span th:if="${iterStat.index != 0}" 
+												          th:text="#{message.label.stay.extension.details}"></span>
+												</h2>
+									        </div>
+						                    <div class="col-lg-3 mb-3">
+						                        <label class="form-label">
+						                            <span th:text="#{message.label.stay.periods}"></span>
+						                        </label>
+						                        <div class="form-control form-graybox">
+						                            <span th:text="${#temporals.format(extension.fromDate, #messages.msg('date.format')) + ' - ' + #temporals.format(extension.toDate, #messages.msg('date.format'))}"></span>
+						                        </div>
+						                    </div>
+						                    <div class="col-lg-3 mb-3">
+						                        <label class="form-label">
+						                            <span th:text="#{message.label.noOfDays}"></span>
+						                        </label>
+						                        <div class="form-control form-graybox">
+						                            <span th:text="${extension.noOfDays}"></span>
+						                        </div>
+						                    </div>
+						                    <div class="col-lg-3 mb-3">
+						                        <label class="form-label">
+						                            <span th:text="#{message.label.accommodation.type}"></span>
+						                        </label>
+						                        <div class="form-control form-graybox">
+						                            <span th:text="${extension.accommodationType}"></span>
+						                        </div>
+						                    </div>
+						                    <div class="col-lg-3 mb-3">
+						                        <label class="form-label">
+						                            <span th:text="#{message.label.paid.amount}"></span>
+						                            <i class="fa-solid fa-indian-rupee-sign"></i>
+						                        </label>
+						                        <div class="form-control form-graybox">
+						                            <span th:text="${extension.paymentAmount != null ? extension.paymentAmount : 0}"></span>
+						                        </div>
+						                    </div>
+											<div class="col-lg-3 mb-3">
+						                        <label class="form-label">
+						                            <span th:text="#{message.label.guest.details}"></span>
+						                        </label>
+						                    </div>
+						                    <div class="row mb-5">
+												<th:block th:each="guest, index : ${extension.guestList}">
+												    <div class="col-auto mb-3 RadioCheckToggle">
+												        <!-- Read-only checkbox -->
+												        <input type="checkbox" class="btn-check" 
+												               th:disabled="true" checked
+												               th:id="'CheckToggle_'+ ${index.index}+ '_'+ ${guest.guestId}" 
+												               autocomplete="off">
+												
+												        <!-- Label for the read-only checkbox -->
+												        <label class="btn btn-outline-tmPrimary text-start" 
+												               th:for="'CheckToggle_'+ ${index.index}+ '_'+ ${guest.guestId}">
+												            <span class="fw-bold" th:text="${guest.guestName}"></span><br>
+												            <span class="fw-normal" th:text="'Relation: ' + ${guest.relationOfGuest}"></span><br>
+												            <span class="fw-normal" 
+												                  th:if="${guest.relationOfGuest == #messages.msg('message.relation.father') || 
+												                         guest.relationOfGuest == #messages.msg('message.relation.brother') || 
+												                         guest.relationOfGuest == #messages.msg('message.relation.husband')}" 
+												                  th:text="'Gender: ' + #{message.gender.male}">
+												            </span>
+												            <span class="fw-normal" 
+												                  th:if="${guest.relationOfGuest == #messages.msg('message.relation.mother') || 
+												                         guest.relationOfGuest == #messages.msg('message.relation.sister') || 
+												                         guest.relationOfGuest == #messages.msg('message.relation.wife')}" 
+												                  th:text="'Gender: ' + #{message.gender.female}">
+												            </span>
+												        </label>
+												    </div>
+												</th:block>
+											</div>
+
+						                    <div class="row mt-2" th:if="${(guestRequestDto.uploadFileList != null && !guestRequestDto.uploadFileList.isEmpty()) || (guestRequestDto.familyDetails != null && !guestRequestDto.familyDetails.isEmpty()) && iterStat.index == 0}">
+									            <div class="col-lg-12">
+									                <h2 class="tmsub-title" th:text="#{message.label.uploaded.documents}"></h2>
+									            </div>
+									         </div> 
+						                    <div class="col-lg-12" th:if="${guestRequestDto.uploadFileList != null && !guestRequestDto.uploadFileList.isEmpty() && iterStat.index == 0}">
+				 								<div class="row mb-3">
+								                    <div class="col-lg-6 mb-3" th:each="file : ${guestRequestDto.uploadFileList}">
+													    <ul class="list-group">
+													        <li class="list-group-item">
+															    <div class="d-flex justify-content-between align-items-center">
+															        
+															        <span th:text="${file.filename.length() > 25 ? 
+															                        file.filename.substring(0, 23) + '.....' + file.filename.substring(file.filename.lastIndexOf('.')) : 
+															                        file.filename}" 
+															              data-bs-toggle="tooltip" 
+															              data-bs-placement="top" 
+															              th:attr="title=${file.filename}">
+															        </span>
+															
+															        <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+															                data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+															                th:attr="data-bs-title=#{message.label.download.document}"
+															                th:data-filename="${file.filename}" th:onclick="triggerDownload(this)">
+															            <i class="fa fa-download pdf text-white"></i>
+															        </button>
+															    </div>
+															</li>
+													    </ul>
+													</div>
+												</div>
+											</div>
+											<!-- student biodata file upload -->
+											<div class="col-lg-12" th:if="${guestRequestDto.familyDetails != null && !guestRequestDto.familyDetails.isEmpty() && iterStat.index == 0}">
+											 	<div class="row">
+									            	<div class="col-lg-6 mb-3" th:each="file : ${guestRequestDto.familyDetails}">
+													    <ul class="list-group">
+													        <li class="list-group-item" >
+															    <div class="d-flex justify-content-between align-items-center">
+															        
+															        <span th:text="${file.proofFileName.length() > 25 ? 
+															                        file.proofFileName.substring(0, 23) + '.....' + file.proofFileName.substring(file.proofFileName.lastIndexOf('.')) : 
+															                        file.proofFileName}" 
+															              data-bs-toggle="tooltip" 
+															              data-bs-placement="top" 
+															              th:attr="title=${file.proofFileName}">
+															        </span>
+															
+															        <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+															                data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+															                th:attr="data-bs-title=#{message.label.download.document}"
+															                th:data-filename="${file.proofFileName}" th:onclick="triggerDownload(this)">
+															            <i class="fa fa-download pdf text-white"></i>
+															        </button>
+															
+															        <input type="hidden" id="fileName" th:value="${file.proofFileName}">
+															    </div>
+															</li>
+													    </ul>
+													  </div>
+											    </div>
+											</div>
+											<!--  -->
+											<div class="row">
+									            <div class="col-lg-12">
+									                <h2 class="tmsub-title" th:text="#{message.label.approval.status}"></h2>
+									            </div>
+									         </div>
+									         
+											<div th:if="${extension != null && extension.approvalList != null && !extension.approvalList.isEmpty()}">
+											    <div class="table-responsive themeTable">
+											        <table class="table table-bordered nowrap w-100">
+											            <thead>
+											                <tr>
+											                    <th th:text="#{message.label.approver.name}"></th>
+											                    <th th:text="#{message.label.approver.email}"></th>
+											                    <th th:text="#{message.label.approval.status}"></th>
+											                </tr>
+											            </thead>
+											            <tbody>
+											                <tr th:each="approval : ${extension.approvalList}">
+											                    <td th:text="${approval.wardenName}"></td>
+											                    <td th:text="${approval.wardenEmail}"></td>
+											                    <td>
+											                    	<span th:if="${extension.wardenApprovalStatus == #messages.msg('message.status.wardenapprovecomplete') and extension.accommodationType == 'Individual Guest Room'}">
+													                    <span th:text="#{message.status.vice.chairman}"></span>
+													                </span>
+													                <span th:if="${extension.wardenApprovalStatus == #messages.msg('message.status.approved') and extension.accommodationType == 'Individual Guest Room' and extension.arName != null}">
+													                    <span th:text="${extension.arName}"></span> - <span th:text="#{message.status.approved}"></span>
+													                </span>
+												                    <span th:if="${extension.wardenApprovalStatus == #messages.msg('message.status.wardenapprovecomplete')}">
+												                     	<span th:text="#{message.status.approved}"></span>
+												                     </span>
+													                <span th:if="${extension.wardenApprovalStatus == #messages.msg('message.status.approved')}">
+													                	<span th:text="#{message.status.approved}"></span>
+													                </span>
+													                <span th:if="${extension.wardenApprovalStatus == #messages.msg('message.status.overrideandapproved')}">
+													                    <span th:text="#{message.status.ccw.approve}"></span>
+													                </span>
+													                <span th:if="${extension.wardenApprovalStatus != #messages.msg('message.status.wardenapprovecomplete')
+																	              and extension.wardenApprovalStatus != #messages.msg('message.status.approved') 
+																	              and extension.wardenApprovalStatus != #messages.msg('message.status.overrideandapproved')}" 
+																	      th:text="${extension.wardenApprovalStatus}">
+																	</span>
+											                     </td>
+											                </tr>
+											            </tbody>
+											        </table>
+											    </div>
+											</div>
+											<div th:if="${extension != null && extension.approvalList == null}">
+											    <div class="col-lg-6 mb-3">
+											    	<th:block th:include="common/template/approval-status-badge :: statusBadge(${extension.wardenApprovalStatus},null)"></th:block>
+											    </div>
+											</div>
+						                </div>
+						            </div>
+						        </div>
+						    </div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</main>
+	
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/mess/stay-extension-request.js}"></script>
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.guest.accommodation.request}]]*/ '';
+			const father = /*[[${#messages.msg('message.relation.father')}]]*/'';
+			const mother = /*[[${#messages.msg('message.relation.mother')}]]*/'';
+			const brother = /*[[${#messages.msg('message.relation.brother')}]]*/'';
+			const sister = /*[[${#messages.msg('message.relation.sister')}]]*/'';
+			const wife = /*[[${#messages.msg('message.relation.wife')}]]*/'';
+			const husband = /*[[${#messages.msg('message.relation.husband')}]]*/'';
+			const guestSelectionMsg = /*[[${#messages.msg('message.validation.guest.selection')}]]*/'';
+			const  guestSelectionLimitMessage = /*[[${#messages.msg('message.guest.selection.limit')}]]*/'';
+			const checkindateInvalidMsg= /*[[${#messages.msg('message.checkin.date.greater')}]]*/'';
+			const uploadFileMsg = /*[[${#messages.msg('message.validation.guest.upload.file')}]]*/'';
+			const femaleShortForm = /*[[${#messages.msg('messages.gender.female.shortform')}]]*/'';
+			const maleShortForm = /*[[${#messages.msg('messages.gender.male.shortform')}]]*/'';
+			const downloadURL = /*[[#{url.download}]]*/ '';
+			const stayToDateLimit = /*[[${#messages.msg('message.stay.to.date.limit',maxNoDays)}]]*/'';
+        </script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

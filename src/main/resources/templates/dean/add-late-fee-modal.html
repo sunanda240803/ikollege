@@ -1,0 +1,62 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('late-fee-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader>
+        <span th:text="#{message.add.late.fee}"></span>
+    </modalHeader>
+    <modalBody>
+        <form class="themeForm" id="lateFeeForm" th:action="@{#{url.dean.hostel.enrollment}+#{url.late.fee.enrollment}}" th:object="${studentHostelPaymentLateFeeDetailDto}" th:method="post">
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.studentID}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input"
+                           th:field="*{studentId}" th:classappend="${#fields.hasErrors('studentId')} ? 'is-invalid' : ''" required>
+                    <div class="invalid-feedback backendErrors" th:errors="*{studentId}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.label.validation.student.id.is.required}"></div>
+                </div>
+
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.date}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input"
+                           th:field="*{dueDate}" th:classappend="${#fields.hasErrors('dueDate')} ? 'is-invalid' : ''" required>
+                    <div class="invalid-feedback backendErrors" th:errors="*{dueDate}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.label.validation.date.required}"></div>
+                </div>
+
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.hostel}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select class="form-select" th:field="*{hostelId}" th:classappend="${#fields.hasErrors('hostelId')} ? 'is-invalid' : ''" required>
+                        <option value="" th:text="#{message.label.select}"></option>
+                        <option th:each="hostelOrWardenList : ${hostelOrWardenList}" th:value="${hostelOrWardenList.id}"
+                                th:text="${hostelOrWardenList.hostelName}">
+                        </option>
+                    </select>
+                    <div class="invalid-feedback backendErrors" th:errors="*{hostelId}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.hostel.name.required}"></div>
+                </div>
+
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.description}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+
+                    <textarea class="form-control required-input" th:field="*{description}"
+                              th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" required>
+                    </textarea>
+                    <div class="invalid-feedback backendErrors" th:errors="*{description}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.description.required}"></div>
+                </div>
+
+            </div>
+        </form>
+    </modalBody>
+</div>

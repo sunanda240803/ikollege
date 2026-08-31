@@ -1,0 +1,5 @@
+.accountHead {
+    max-height: 200px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}

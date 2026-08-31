@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}">
+<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					 <div class="card-body themeForm">
+					 	<th:block th:if="${studentHostelRoomVacatingRequestDto != null}">						
+							<form class="themeForm">
+								<div class="row">
+									<div class="col-lg-12">
+										<h2 class="tmsub-title">
+											<span th:text="#{message.label.student.details}"></span>
+										</h2>
+									</div>
+								</div>
+								<div class="row" style="padding-left: 20px;">
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.student.id}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.studentId) ?  'N/A' : studentHostelRoomVacatingRequestDto.studentId}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.student.name}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.studentName) ?  'N/A' : studentHostelRoomVacatingRequestDto.studentName}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.gender}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.gender) ?  'N/A' : studentHostelRoomVacatingRequestDto.gender}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.dob}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.dob) ?  'N/A' : studentHostelRoomVacatingRequestDto.dob}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.hostel.name}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.hostelName) ?  'N/A' : studentHostelRoomVacatingRequestDto.hostelName}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.room.no}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${studentHostelRoomVacatingRequestDto.roomNo != null && studentHostelRoomVacatingRequestDto.roomNo != 0 ?  studentHostelRoomVacatingRequestDto.roomNo : 'N/A'}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12">
+										<h2 class="tmsub-title">
+											<span th:text="#{message.label.vacating.request.details}"></span>
+										</h2>
+									</div>
+								</div>
+								<div class="row" style="padding-left: 20px;">
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.vacating.date}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.vacatingDateStr) ?  'N/A' : studentHostelRoomVacatingRequestDto.vacatingDateStr}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.vacating.reason}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.vacatingReason) ?  'N/A' : studentHostelRoomVacatingRequestDto.vacatingReason}"></span>
+										</div>
+									</div>
+									<th:block th:if="${not #strings.isEmpty(studentHostelRoomVacatingRequestDto.exchangeProgPeriodFromDateStr)}">
+										<div class="col-lg-4 mb-3">
+											<label class="form-label"> <span
+													th:text="#{message.label.exchange.from.date}"> </span>
+											</label>
+											<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${studentHostelRoomVacatingRequestDto.exchangeProgPeriodFromDateStr}"></span>
+											</div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label"> <span
+													th:text="#{message.label.exchange.to.date}"> </span>
+											</label>
+											<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.exchangeProgPeriodToDateStr) ?  'N/A' : studentHostelRoomVacatingRequestDto.exchangeProgPeriodToDateStr}"></span>
+											</div>
+										</div>
+									</th:block>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.contact.number}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${studentHostelRoomVacatingRequestDto.mobileNo != null && studentHostelRoomVacatingRequestDto.mobileNo != 0 ?  studentHostelRoomVacatingRequestDto.mobileNo : 'N/A'}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span
+												th:text="#{message.label.email.id}"> </span>
+										</label>
+										<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.emailId) ?  'N/A' : studentHostelRoomVacatingRequestDto.emailId}"></span>
+										</div>
+									</div>
+									<th:block th:if="${studentHostelRoomVacatingRequestDto.donationAmount != null && studentHostelRoomVacatingRequestDto.donationAmount != 0 }">
+										<div class="col-lg-4 mb-3">
+											<label class="form-label"> <span
+													th:text="#{message.label.donation.amount}"> </span>
+											</label>
+											<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${studentHostelRoomVacatingRequestDto.donationAmount}"></span>
+											</div>
+										</div>
+										<div class="col-lg-4 mb-3">
+											<label class="form-label"> <span
+													th:text="#{message.label.donated.to}"> </span>
+											</label>
+											<div class="form-control form-graybox">
+													<span class="normal-font"
+														  th:text="${#strings.isEmpty(studentHostelRoomVacatingRequestDto.donatorType) ? 'N/A' : studentHostelRoomVacatingRequestDto.donatorType}"></span>
+											</div>
+										</div>
+									</th:block>
+								</div>
+								<div class="row">
+		                            <div class="col-lg-12">
+		                                <h2 class="tmsub-title">
+		                                    <span th:text="#{message.label.approval.status.details}"></span>
+		                                </h2>
+		                            </div>
+		                        </div>
+		                        <div class="row" style="padding-left: 20px;">
+		                            <div class="col-lg-6 mb-3">
+		                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+		                                	<span class="normal-font" th:utext="${studentHostelRoomVacatingRequestDto.approvalStatusDetails != null ? studentHostelRoomVacatingRequestDto.approvalStatusDetails : '-'}"></span>
+		                            	</div>
+		                            </div>
+		                        </div>
+		                        <div th:if="${studentHostelRoomVacatingRequestDto.inventoryDtoList != null && studentHostelRoomVacatingRequestDto.inventoryDtoList.size() > 0}" >
+			                        <div class="row">
+			                            <div class="col-lg-12">
+			                                <h2 class="tmsub-title">
+			                                    <span th:text="#{message.label.inventory.details}"></span>
+			                                </h2>
+			                            </div>
+			                        </div>
+			                        <div class="row" style="padding-left: 20px;padding-right: 20px">
+			                            <div class="table-responsive themeTable">
+			                                <table class="table table-bordered nowrap w-100">
+			                                    <thead>
+			                                        <tr>
+			                                            <th th:text="#{message.label.inventory.asset.code}"></th>                                            
+			                                            <th th:text="#{message.label.inventory.asset.category}"></th>
+			                                            <th th:text="#{message.label.inventory.asset.name}"></th>
+			                                            <th th:text="#{message.label.inventory.asset.condition}"></th>
+			                                            <th th:text="#{message.label.penalty.amount}"></th>
+			                                            <th th:text="#{message.label.penalty.description}"></th>
+			                                        </tr>
+			                                    </thead>
+			                                    <tbody>
+			                                        <tr class="inventory-row normal-font" th:each="inventoryDto, iter : ${studentHostelRoomVacatingRequestDto.inventoryDtoList}">
+			                                            <td th:text="${inventoryDto.assetCode}"></td>
+			                                            <td th:text="${inventoryDto.assetCategory}"></td>
+			                                            <td th:text="${inventoryDto.assetName}"></td>
+			                                            <td>
+			                                            	 <!-- <div class="checkRadio-bg form-control" id="penaltyCost">
+			                                            		<div class="form-check form-check-inline">
+															        <input class="form-check-input required-input" onclick="getCost(this);" type="radio" th:name="${inventoryDto.assetCode}" 
+															        	th:value="#{message.label.condition.good}" th:checked="${inventoryDto.assetCondition == 'Good'}" th:id="'good_' + ${iter.index}" />
+															        <label th:text="#{message.label.condition.good}" th:for="'good_' + ${iter.index}"></label>
+															    </div>
+															    <div class="form-check form-check-inline">
+															        <input class="form-check-input required-input" onclick="getCost(this);" type="radio" th:name="${inventoryDto.assetCode}" 
+															        	th:value="#{message.label.replacement}" th:checked="${inventoryDto.assetCondition == 'Replacement'}" th:id="'replacement_' + ${iter.index}" />
+															        <label th:text="#{message.label.replacement}" th:for="'replacement_' + ${iter.index}"></label>
+															    </div>
+															    <div class="form-check form-check-inline">
+															        <input class="form-check-input required-input" onclick="getCost(this);" type="radio" th:name="${inventoryDto.assetCode}" 
+															        	th:value="#{message.label.minor.repair}" th:checked="${inventoryDto.assetCondition == 'Minor Repair'}" th:id="'minor_repair_' + ${iter.index}"/>
+															        <label th:text="#{message.label.minor.repair}" th:for="'minor_repair_' + ${iter.index}"></label>
+															    </div>
+															    <div class="form-check form-check-inline">
+															        <input class="form-check-input required-input" onclick="getCost(this);" type="radio" th:name="${inventoryDto.assetCode}" 
+															        	th:value="#{message.label.major.repair}" th:checked="${inventoryDto.assetCondition == 'Major Repair'}" th:id="'major_repair_' + ${iter.index}" />
+															        <label th:text="#{message.label.major.repair}" th:for="'major_repair_' + ${iter.index}"></label>
+															    </div>
+			                                            	</div>	  -->
+			                                            	<div class="penaltyCost">
+															    <select class="form-select required-input"
+															            th:name="inventoryDtoList[__${iter.index}__].assetCondition"
+															            th:id="'asset_condition_' + ${iter.index}"
+															            onchange="getCost(this);">
+															
+															        <option value="">-- Select Condition --</option>
+															
+															        <option value="Good"
+															                th:selected="${inventoryDto.assetCondition == 'Good'}">Good</option>
+															
+															        <option value="Replacement"
+															                th:selected="${inventoryDto.assetCondition == 'Replacement'}">Replacement</option>
+															
+															        <option value="Minor Repair"
+															                th:selected="${inventoryDto.assetCondition == 'Minor Repair'}">Minor Repair</option>
+															
+															        <option value="Major Repair"
+															                th:selected="${inventoryDto.assetCondition == 'Major Repair'}">Major Repair</option>
+															
+															    </select>
+															    <input type="hidden"
+															           th:name="inventoryDtoList[__${iter.index}__].assetCode"
+															           th:value="${inventoryDto.assetCode}" />
+															</div>
+														</td>
+														<td>
+														    <input id="penaltyAmount" class="form-control penalty-amount" th:value="${inventoryDto.penaltyAmount}" readonly />
+														</td>
+														<td>
+														    <input id="penaltyReason" class="form-control" th:value="${inventoryDto.penaltyReason}" 
+														           th:disabled="${inventoryDto.assetCondition == 'Good'}" 
+														           th:required="${inventoryDto.assetCondition != 'Good'}" />
+														    <div class="invalid-feedback">
+														        <span th:text="#{message.validation.penalty.description}"></span>
+														    </div>
+														</td>
+														<input type="hidden" id="assetId" th:value="${inventoryDto.assetId}" />												
+			                                        </tr>
+			                                    </tbody>
+			                                </table>
+			                            </div>
+			                        </div>		                        
+			                	</div>
+			                	<div id="verificationId"  style="margin-top:20px;display:block;">
+			                		<div class="row">
+			                            <div class="col-lg-12">
+			                                <h2 class="tmsub-title">
+			                                    <span th:text="#{message.label.verification.details}"></span>
+			                                </h2>
+			                            </div>
+			                        </div>
+			                        <div class="row" style="padding-left: 20px;">
+			                        	<div class="col-lg-4 mb-3">
+			                                 <input class="form-check-input required-input" onclick="toggleRoomPenaltyAmount(this);" type="radio" th:name="condition" 
+			                                 	th:value="${T(com.iitm.hosteldine.constant.dean.AssetCategory).GOOD_CONDITION.value}" id="good"
+								           		th:checked="${studentHostelRoomVacatingRequestDto.roomCondition == T(com.iitm.hosteldine.constant.dean.AssetCategory).GOOD_CONDITION.value}"/>
+								        	<label th:text="#{message.label.verification.details.good}" for="good"></label>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <input class="form-check-input required-input" onclick="toggleRoomPenaltyAmount(this);" type="radio" th:name="condition" 
+			                                	th:value="${T(com.iitm.hosteldine.constant.dean.AssetCategory).BAD_CONDITION.value}" id="bad"
+									        	th:checked="${studentHostelRoomVacatingRequestDto.roomCondition == T(com.iitm.hosteldine.constant.dean.AssetCategory).BAD_CONDITION.value}"/>
+									        <label th:text="#{message.label.verification.details.bad}" for="bad"></label>
+			                            </div>
+			                            <div id="roomPenaltyAmount" class="col-lg-4 mb-3" style="display:none;">
+			                            	<div>
+												<label class="form-label"> 
+													<span th:text="#{message.label.painting.type}"></span>
+												</label>
+												<select class="form-select" id="paintingType" name="paintingType" onchange="updatePenaltyCharges(this);">
+													<option value="" th:text="#{message.label.select}"></option>
+													<option th:each="status : ${paintingTypeMap}" th:value="${status.key}" 
+														th:text="${status.value}"
+														th:selected="${status.key == studentHostelRoomVacatingRequestDto.roomPaintingType}"></option>
+												</select>
+												<div class="invalid-feedback">
+											        <span th:text="#{message.validation.check.paintingType}"></span>
+											    </div>							
+											</div>
+											<div>
+												<label class="form-label"> 
+													<span th:text="#{message.label.penalty.charges}"></span>
+												</label> 
+												<input id="penaltyCharges" class="form-control penalty-amount" th:value="${studentHostelRoomVacatingRequestDto.penaltyAmount}" readonly/> 										
+											</div>
+											<div>
+												<label class="form-label"> 
+													<span th:text="#{message.label.penalty.reason}"></span>
+												</label> 
+												<input id="penaltyDescription" class="form-control" th:value="${studentHostelRoomVacatingRequestDto.penaltyReason}" disabled/> 
+												<div class="invalid-feedback">
+											        <span th:text="#{message.validation.penalty.reason}"></span>
+											    </div>										
+											</div>	                            
+			                            </div>
+			                        </div>
+			                	</div>		                	
+		                        <div class="row" style="padding-left: 20px;">
+		                            <div class="col-lg-4 mb-3">
+		                                <label class="form-label"> 
+											<span th:text="#{message.label.cerified.and.checked.by.name}"></span>
+										</label> 
+										<input id="checkedBy" class="form-control" th:value="${studentHostelRoomVacatingRequestDto.checkedBy}"/>
+										<div class="invalid-feedback">
+									        <span th:text="#{message.validation.check.checkedBy}"></span>
+									    </div>
+		                            </div>
+		                            <div class="col-lg-4 mb-3">
+		                                <label class="form-label"> 
+											<span th:text="#{message.label.employee.id}"></span>
+										</label> 
+										<input id="employeeId" class="form-control" th:value="${studentHostelRoomVacatingRequestDto.employeeId}"/> 
+										<div class="invalid-feedback">
+									        <span th:text="#{message.validation.invalid.employee}"></span>
+									    </div>
+		                            </div>
+		                            <div id="totalAmountdiv" class="col-lg-4 mb-3">
+		                                <label class="form-label"> 
+											<span th:text="#{message.label.total.penalty.amount}"></span>
+										</label>
+										<input id="totalAmount" type="text" class="form-control" th:value="${studentHostelRoomVacatingRequestDto.totalAmount}" readonly/> 
+		                            </div>	                            
+		                        </div>
+		                        <div class="row" style="padding-left: 20px;">
+		                        	<div class="col-lg-4 mb-3">
+		                                <label class="form-label"> 
+											<span th:text="#{message.label.recommended.by}"></span>
+										</label> 
+										 <input id="recommendedBy" class="form-control" th:value="${studentHostelRoomVacatingRequestDto.recommendedBy}"  />
+										 <div class="invalid-feedback">
+									        <span th:text="#{message.validation.check.recommededBy}"></span>
+									    </div>
+		                            </div>
+		                        </div>
+		                        <div th:if="${studentHostelRoomVacatingRequestDto.status == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status}">
+		                        	<div class="row" style="padding-right: 20px;">
+									    <div class="col-lg-12 mb-3 text-end" 
+									         th:if="${#strings.equalsIgnoreCase(studentHostelRoomVacatingRequestDto.authorityType, T(com.iitm.hosteldine.util.RoleEnum).CCW_DEAN.value)}">
+									        <button type="button" class="btn btn-success" name="action" id="approveBtn"
+									                value="Approve" onclick="updateStudentDtoFromForm();">
+												<i class="fa-solid fa-check-circle me-1"></i>
+												<span th:text="#{message.button.approve}"></span>
+									        </button>
+									    </div>
+									
+									    <div class="col-lg-12 mb-3 text-end" 
+									         th:if="${#strings.equalsIgnoreCase(studentHostelRoomVacatingRequestDto.authorityType, T(com.iitm.hosteldine.util.RoleEnum).HOSTEL_CHECK_IN.value) 
+									                || #strings.equalsIgnoreCase(studentHostelRoomVacatingRequestDto.authorityType, T(com.iitm.hosteldine.util.RoleEnum).HM_OFFICE.value)}">
+									        <button type="button" class="btn btn-success" name="action" id="recommendApproveBtn"
+									                value="Approve" onclick="updateStudentDtoFromForm();">
+												<i class="fa-solid fa-check-circle me-1"></i>
+												<span th:text="#{message.button.recommend.and.approve}"></span>
+									        </button>
+									    </div>
+									</div>
+		                        </div>	                        
+							</form>
+						</th:block>
+					 </div>					
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- //Main-->
+
+	<!-- Footer-->
+	<th:block
+		th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dean/dean-dashboard.js}"></script>
+		<script th:src="@{/assets/js/dean/vacating-students.js}"></script>
+		<script th:inline="javascript">
+			window.studentHostelRoomVacatingRequestDto = /*[[${studentHostelRoomVacatingRequestDto}]]*/ {};
+			const vacatingStudentURL = /*[[#{url.student.vacating}]]*/ '';
+			const updateStatusURL = /*[[#{url.student.vacating.update.status}]]*/ '';	
+			const assetCostURL = /*[[#{url.asset.cost}]]*/ '';
+			const checkFacultyURL = /*[[#{url.faculty.check}]]*/ '';
+    	</script>
+	</th:block>
+	<!-- //Footer-->
+</body>
+</html>

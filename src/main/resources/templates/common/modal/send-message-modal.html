@@ -1,0 +1,36 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText)">
+  <div th:replace="~{common/modal/simple-modal-required-template :: modal('sendMessageModal', ~{::modalHeader}, ~{::modalBody},
+		'warning','fa-solid fa-paper-plane', #{message.label.confirm},true)}">
+    <modalHeader>
+      <th:block th:text="${headerText}"></th:block>!
+    </modalHeader>
+    <modalBody>
+      <input id="dynamicId" type="hidden">
+      <div class="col-lg-12 mb-3">
+        <form class="themeForm" id="sendMessageForm" th:object="${sendMessageDto}" method="post">
+
+          <div class="row">
+            <div class="col-md-12">
+              <label style="float:left" class="form-label" for="sendMessageRecipient"  th:text="#{message.label.to}"></label>
+              <input type="text" name="recipient" id="sendMessageRecipient" class="form-control" th:name="recipient"  th:placeholder="#{message.label.to}" disabled></input>
+            </div>
+            <div class="col-md-12" style="margin-top: 2em;">
+              <label style="float:left" class="form-label" for="sendMessageSubject">
+                <span th:text="#{message.label.mail.subject}"/>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" name="subject" id="sendMessageSubject" class="form-control" th:name="subject" th:placeholder="#{message.label.mail.subject}"></input>
+              <div class="invalid-feedback" style="text-align: left;"th:text="#{message.validation.mail.subject.required}"></div>
+            </div>
+            <div class="col-md-12" style="margin-top: 2em;">
+              <label style="float:left" class="form-label" for="sendMessageMessage"  th:text="#{message.label.mail.message}">Message <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+              <textarea name="message" id="sendMessageMessage" class="form-control" th:name="message" th:placeholder="#{message.label.mail.message}"
+                        rows="4"></textarea>
+              <div class="invalid-feedback" style="text-align: left;"th:text="#{message.validation.mail.content.required}"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </modalBody>
+  </div>
+</th:block>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form action="#" method="get" th:object="${messCardAmountTransferDto}"
+							th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+							<div class="row mb-3">
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.request.status}"></span>
+									</label>
+									<select class="form-select" id="requestStatus" th:field="*{requestedStatus}">
+										<option value="0" th:text="#{message.label.select}+' '+#{message.label.request.status}"></option>
+                                        <option th:value="${workflow.APPROVED.status}" th:text="${workflow.APPROVED.status}"></option>
+										<option th:value="${workflow.PENDING.status}" th:text="${workflow.PENDING.status}"></option>
+										<option th:value="${workflow.REJECTED.status}" th:text="${workflow.REJECTED.status}"></option>
+										<option th:value="${workflow.TRANSFERRED.status}" th:text="${workflow.TRANSFERRED.status}"></option>
+
+									</select>
+								</div>
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.request.date}"></span>
+									</label>
+									<input type="date" class="form-control" th:field="*{requestDate}"
+										id="requestDate">
+								</div>
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.transfer.date}"></span>
+									</label>
+									<input type="date" class="form-control" th:field="*{transferredDate}"
+										id="transferDate">
+								</div>
+								<div class="col-lg-2">
+									<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+									<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+									<button type="submit" id="getData" class="btn btn-lgtblue px-4" style="margin-top: 38px"
+										onclick="return getMessCardRequestListValidate()">
+										<i class="fa-solid fa-database"></i>
+										<span th:text="#{message.button.get.data}"></span>
+									</button>
+								</div>
+								<div class="col d-flex justify-content-end align-items-center">
+									<div class="col-auto me-3 mb-3">
+			        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+			        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+	        									data-bs-title="Use Student ID and Student Name to search"></i>
+			        					</label>
+		                            	<input type="text" class="form-control" name="search" id="search"
+		                                   th:value="${form.search}" th:placeholder="#{message.label.keyword}">
+	                             	</div>
+		                             <div class="col-auto mt-1 ">
+		                            	<button class="btn btn-secondary mt-3" type="submit">
+		                            		<span th:text="#{message.label.search}"></span>
+		                            	</button>
+		                            </div>
+								</div>
+							</div>
+						</form>
+						<form th:action="@{#{url.mess.card.request}+#{url.download.all.mess.card.request.view.report}}" method="get" 
+									th:object="${messCardAmountTransferDto}" id="excelDownloadForm">
+									<input type="hidden" id="requestedStatus" th:name="requestedStatus"> 
+									<input type="hidden" id="requestedDate" th:name="requestDate"> 
+									<input type="hidden" id="transferredDate" th:name="transferredDate">
+									<input type="hidden" id="searchData" th:name="search">
+						</form>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="table-responsive themeTable">
+								<form th:action="@{#{url.mess.card.request}+#{url.transfer.amount}}" method="post" 
+									th:object="${messCardAmountTransferDto}" id="transferAmountForm">
+									<input type="hidden" id="studentIdData" th:name="studentIdData"> 
+									<input type="hidden" id="transferAmountData" th:name="transferAmountData"> 
+									<input type="hidden" id="messCardIdData" th:name="messCardIdData"> 
+									<table id="messToCardTableId" class="table table-bordered nowrap w-100"
+										th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+										<thead>
+											<tr>
+			                                    <th th:text="#{message.label.ref}"></th>
+			                                    <th th:text="#{message.label.request.date}"></th>
+			                                    <th th:text="#{message.label.student.id}"></th>
+			                                    <th th:text="#{message.label.student.name}"></th>
+			                                    <th class="text-end"><span th:text="#{message.label.current.balance}"></span> 
+													<i class="fa-solid fa-indian-rupee-sign"></i>
+			                                    </th>
+			                                    <th class="text-end"><span th:text="#{message.label.transfer.amount}"></span> 
+													<i class="fa-solid fa-indian-rupee-sign"></i>
+			                                    </th>
+	                                    		<th th:text="#{message.label.status}"></th>
+	                                    		<th th:text="#{message.label.transferred.date}"></th>
+	                                    		<th class="text-center" th:text="#{message.label.action}"></th>
+	                                    		<th class="text-center" th:text="#{message.label.transfer.amount}"></th>
+	                                    	</tr>
+										</thead>
+										<tbody th:with="dateFormat=#{date.format}">
+											<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}" 
+												th:each="messCard, iter: ${form.paginationList.getContent()}">
+												<td th:text="${messCard.messtocardId}"></td>
+												<td th:text="${#temporals.format(messCard.requestDate,dateFormat)}"></td>
+												<td th:text="${messCard.studentId}"></td>
+												<td th:text="${messCard.studentName}"></td>
+												<td class="text-end currency" th:text="${messCard.netBalance}"></td>
+												<td class="text-end currency" th:text="${messCard.transferAmount}"></td>
+												<td th:text="${messCard.requestedStatus}"></td>
+												<td th:text="${#temporals.format(messCard.transferredDate,dateFormat)}"></td>
+												<td class="text-center">
+													<button type="button" class="btn btn-sm btn-bluegray me-2"
+														data-bs-toggle="tooltip" data-bs-title="View Ledger"
+														th:id="${messCard.studentId}" th:data-id="${workflow.MS.status}"
+														onclick="viewLedger(this);">
+														<i class="fa-solid fa-eye"></i>
+													</button>
+													<button type="button" class="btn btn-sm btn-success me-2" 
+														data-bs-toggle="tooltip" th:data-bs-title="${workflow.APPROVED.status}" 
+														onclick="messCardRequestApproval(this)"
+														th:if="${messCard.requestedStatus eq workflow.PENDING.status}"
+														th:id="${messCard.messtocardId}">
+														<i class="fa-solid fa-check"></i>
+													</button>
+													<button type="button" onclick="messCardRequestReject(this)" class="btn btn-sm btn-danger"
+														data-bs-toggle="tooltip" th:data-bs-title="${workflow.REJECTED.status}" 
+														th:id="${messCard.messtocardId}"
+														th:if="${messCard.requestedStatus eq workflow.PENDING.status}">
+														 <i class="fa-solid fa-times"></i>
+													</button>
+												</td>
+												<td class="text-center" th:if="${messCard.requestedStatus eq workflow.PENDING.status or messCard.requestedStatus eq workflow.APPROVED.status}">
+													<input class="form-check-input" type="checkbox" th:id="${messCard.studentId}"
+													th:data-id="${messCard.messtocardId}"
+														th:disabled="${messCard.requestedStatus eq workflow.PENDING.status}">
+												</td>
+												<td class="text-center" th:if="${messCard.requestedStatus ne workflow.PENDING.status and messCard.requestedStatus ne workflow.APPROVED.status}">
+													-
+												</td>
+											</tr>
+									    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="12" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>
+										</tbody>
+									</table>
+									</form>
+								</div>
+								<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+							</div>
+							<div class="col-lg-12 d-lg-flex align-items-lg-center justify-content-lg-end">
+								<div class="d-flex align-items-center justify-content-center mb-3">
+									<button type="button" class="btn btn-blue px-4 me-3"
+										id="saveForm" onclick="transferAmount()">
+										<i class="fa-solid fa-right-left me-1"></i> <span
+											th:text="#{message.button.transfer}"></span>
+									</button>
+								</div>
+							</div>
+                            <form id="ledgerForm" th:action="@{#{url.noc.vacation.payment.report}}" method="post" class="d-none">
+                                <input type="hidden" name="studentID">
+                                <input type="hidden" name="selectedCriteria">
+                            </form>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+	<th:block th:replace="~{common/modal/info-modal :: contents(id = null,headerText=#{message.label.confirmation},bodyText=#{message.label.approve.account.transfer})}"></th:block>
+	<th:block th:replace="~{student/mess-to-card-request-list-reject-modal}"></th:block>
+
+
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/hostel/mess-to-card-request-list.js}"></script>
+		 <script th:inline="javascript">
+        const baseURL = /*[[#{url.mess.card.request}]]*/ '';
+        const ledgerURL = /*[[#{url.noc.vacation.payment.report}]]*/ '';
+        const downloadURL = /*[[#{url.download.all.mess.card.request.view.report}]]*/ '';
+        const approveRejectRequest = /*[[#{url.approve.reject}]]*/ '';
+        const transferMsg = /*[[${#messages.msg('message.label.amount.transfer.description')}]]*/ '';
+    </script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

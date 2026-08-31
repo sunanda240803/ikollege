@@ -1,0 +1,121 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('mess-inspection-view-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'xl')}">
+	<modalHeader>
+		<span th:text="#{message.label.mess.inspection.details}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm"  id="messInspectionViewPage"
+			  th:object="${messInspectionDto}">
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.mess.inspection.details}"></span>
+					</h2>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-lg-4 mb-4">
+					<label id="wardenName" class="form-label">
+						<span th:text="#{message.label.mess.inspection.warden.name}"></span>
+					</label>
+					<input type="text" class="form-control "
+						   th:name="wardenName"
+						   th:value="${messInspectionDto.wardenName}" disabled>
+				</div>
+
+				<div class="col-lg-4 mb-4">
+					<label id="messName" class="form-label">
+						<span th:text="#{message.label.mess.inspection.mess.name}"></span>
+					</label>
+					<input type="text" class="form-control "
+						   th:name="messName"
+						   th:value="${messInspectionDto.messName}" disabled>
+				</div>
+
+				<!-- Kitchen Cleanliness -->
+				<div class="col-lg-4 mb-4">
+					<label id="cleanlinessKitchen" class="form-label">
+						<span th:text="#{message.label.mess.inspection.kitchen.cleanliness}"></span>
+					</label>
+					<textarea class="form-control " rows="3" th:name="cleanlinessKitchen" th:text="${messInspectionDto.cleanlinessKitchen}" disabled></textarea>
+				</div>
+
+				<!-- Plate Cleanliness -->
+				<div class="col-lg-4 mb-4">
+					<label id="cleanlinessPlate" class="form-label">
+						<span th:text="#{message.label.mess.inspection.plate.cleanliness}"></span>
+					</label>
+					<textarea class="form-control " rows="3" th:name="cleanlinessPlate" th:text="${messInspectionDto.cleanlinessPlate}" disabled></textarea>
+				</div>
+
+				<!-- Mess Hygiene -->
+				<div class="col-lg-4 mb-4">
+					<label id="hygieneMess" class="form-label">
+						<span th:text="#{message.label.mess.inspection.mess.hygiene}"></span>
+					</label>
+					<textarea type="text" class="form-control " rows="3" th:name="hygieneMess" th:text="${messInspectionDto.hygieneMess}" disabled></textarea>
+				</div>
+
+				<!-- Queue Maintenance -->
+				<div class="col-lg-4 mb-4">
+					<label id="queueMaintainance" class="form-label">
+						<span th:text="#{message.label.mess.inspection.queue.maintenance}"></span>
+					</label>
+					<textarea class="form-control " rows="3" th:name="queueMaintainance" th:text="${messInspectionDto.queueMaintainance}" disabled></textarea>
+				</div>
+
+				<!-- Food Availability -->
+				<div class="col-lg-4 mb-4">
+					<label id="availabilityFood" class="form-label">
+						<span th:text="#{message.label.mess.inspection.food.availability}"></span>
+					</label>
+					<textarea class="form-control " rows="3" th:name="availabilityFood" th:text="${messInspectionDto.availabilityFood}" disabled></textarea>
+				</div>
+
+				<!-- Student Feedback -->
+				<div class="col-lg-4 mb-4">
+					<label id="feedbackStudent" class="form-label">
+						<span th:text="#{message.label.mess.inspection.student.feedBack}"></span>
+					</label>
+					<textarea class="form-control " rows="3" th:name="feedbackStudent" th:text="${messInspectionDto.feedbackStudent}" disabled></textarea>
+				</div>
+
+				<!-- Any Other Item -->
+				<div class="col-lg-4 mb-4">
+					<label id="otherItem" class="form-label">
+						<span th:text="#{message.label.mess.inspection.any.other.item}"></span>
+					</label>
+					<textarea class="form-control " rows="3" th:name="otherItem" th:text="${messInspectionDto.otherItem}" disabled></textarea>
+				</div>
+
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.uploaded.documents}"></span>
+					</h2>
+				</div>
+				<div class="col-lg-12 mt-2 mb-4">
+					<div class="row mb-4">
+						<div class="col-lg-6">
+							<ul class="list-group">
+								<li class="list-group-item">
+									<div class="d-flex justify-content-between align-items-center">
+										<div class="text-truncate" th:text="${messInspectionDto.fileName}"></div>
+										<button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+												data-bs-placement="top"
+												data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+												th:file-name="${messInspectionDto.fileName}"
+												onclick="downloadMessInspectionFile(this);"
+												th:attr="data-bs-title=${messInspectionDto.fileName}">
+											<i class="fa fa-download pdf text-white"></i>
+										</button>
+										<input type="hidden" th:value="${messInspectionDto.fileName}">
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

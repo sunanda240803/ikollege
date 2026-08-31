@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <!--School Info Section-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <div class="mb-4">
+                        <form class="themeForm" id="convocationReportForm" method="get">
+                            <div class="row mb-3">
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="fromDate" th:text="#{message.label.from.date}"></label>
+                                    <input type="date" class="form-control" name="fromDate" id="fromDate" >
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="toDate" th:text="#{message.label.to.date}"></label>
+                                    <input type="date" class="form-control" name="toDate" id="toDate">
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label" for="paymentStatus" th:text="#{message.label.payment.status}"></label>
+                                    <select class="form-select" id="paymentStatus">
+                                        <option value="" th:text="#{message.label.select}+' '+#{message.label.payment.status}"></option>
+                                        <option th:each="status : ${paymentStatusList}" th:value="${status}" th:text="${status}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-auto" style="margin-top: 38px">
+                                    <button id="filterData" class="btn btn-lgtblue" type="button" onclick="downloadExcelReport();">
+                                        <i class="fa-solid fa-file-excel"></i>
+                                        <span th:text="#{message.button.export}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <!-- Datad Table JS FILES -->
+    <script th:src="@{/assets/js/student/accommodation-mess-during-convocation.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.accommodation.mess.convocation}]]*/ '';
+        const downloadExcelURL = /*[[#{url.excel.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+
+</html>

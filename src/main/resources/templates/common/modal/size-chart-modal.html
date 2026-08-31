@@ -1,0 +1,13 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(text)">
+  <div th:replace="~{common/modal-template ::
+   modal('size-chart-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+    <modalHeader th:text="#{message.label.layout.image.size.chart}"></modalHeader>
+    <modalBody>
+      <form class="themeForm" id="size-chart-form">
+        <div class="row">
+          <img id="sizeChart" th:src="@{/assets/img/student/img_3.png}" alt="">
+        </div>
+      </form>
+    </modalBody>
+  </div>
+</th:block>

@@ -1,0 +1,269 @@
+<th:block th:fragment="title(headerForm,pagetitle,pageModule,addNew,update,back,pageId)">
+	<script th:src="@{/assets/js/common/mask-constant.js}" th:inline="javascript"></script>
+	<div class="page-loading mt-2" id="loader">
+		<div role="status">
+			<img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+			<h4 th:text="#{message.label.loading}"></h4>
+		</div>
+	</div>
+	<!-- Header -->
+	<header class="header fixed-top">
+		<nav class="navbar navbar-expand-lg p-0">
+			<div class="container-fluid justify-content-around p-0">
+				<div class="row w-100">
+					<div class="col-lg-5">
+						<!--Client Logo-->
+						<div class="header-logo d-flex align-items-center justify-content-between">
+							<a href="#" class="d-flex align-items-center">
+								<img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+								<span>
+									<th:block th:text="${institute.schoolName}"></th:block>
+									<br><th:block th:text="${institute.location}"></th:block>
+								</span>
+							</a>
+							<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+									data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+									aria-expanded="false" aria-label="Toggle navigation">
+								<i class="fa-solid fa-outdent"></i>
+							</button>
+						</div>
+					</div>
+					<div class="col-lg-7 pe-lg-0">
+						<div class="collapse navbar-collapse" id="navbarSupportedContent">
+							<ul class="navbar-nav ms-auto">
+								<li class="nav-item">
+									<a class="nav-link" th:href="@{/index}" role="button">
+										<i class="ph-duotone ph-house-line"></i> Home
+									</a>
+									<!--									<ul class="dropdown-menu dropdown-menu-arrow listMenu">-->
+									<!--										<li><a class="dropdown-item" href="/hosteldine/index"><i class="fa-solid fa-gauge"></i>-->
+									<!--												Dashboard</a></li>-->
+									<!--									</ul>-->
+								</li>
+								<!--MegaMenu-->
+								<li class="nav-item dropdown position-static" >
+									<a class="nav-link dropdown-toggle" href="#" role="button"
+									   data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="ph-duotone ph-diamonds-four"></i> Modules
+									</a>
+									<ul class="dropdown-menu megaMenu">
+										<div class="container-fluid">
+											<!--Modules Search Row-->
+											<div class="row mt-2 mb-3">
+												<div class="col-lg-6 mx-auto">
+													<div class="input-group search-module">
+														<input type="text" class="form-control  form-control-sm"
+															   placeholder="Search Module Menu"
+															   id="dynamic-search-input"
+															   aria-label="Search Module Menu"
+															   aria-describedby="search-module">
+														<button class="btn btn-sm btn-tmPrimary" type="button"
+																id="search-module">
+															<i class="fas fa-search me-1"></i>
+														</button>
+													</div>
+												</div>
+											</div>
+											<!--Menu Row-->
+											<div class="row mb-3"  id="dynamic-mega-menu">
+												<div class="col-lg-2 menu-section">
+													<ul>
+														<h3 class="title"><i class="ph-duotone ph-devices"></i> Admin Settings</h3>
+
+														<li>
+															<a th:href="@{#{url.course.master}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Course Master
+															</a>
+														</li>
+													</ul>
+												</div>
+												<div class="col-lg-2 menu-section">
+													<ul>
+														<h3 class="title"><i class="ph-duotone ph-user"></i> Caterer Information</h3>
+														<li>
+															<a th:href="@{#{url.mess.vendor.master} + #{url.list}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Vendor Master
+															</a>
+														</li>
+													</ul>
+												</div>
+												<div class="col-lg-2 menu-section">
+													<ul>
+														<h3 class="title"><i class="ph-duotone ph-user-circle"></i> Staff Information</h3>
+
+														<li>
+															<a th:href="@{#{url.staff.search}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Staff Search
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.staff.details} + '/new'}">
+																<i class="ph-duotone ph-caret-double-right"></i> New Staff
+															</a>
+														</li>
+													</ul>
+												</div>
+												<div class="col-lg-2 menu-section">
+													<ul>
+														<h3 class="title"><i class="ph-duotone ph-student"></i> Student Information</h3>
+
+														<li>
+															<a th:href="@{#{url.student.bulk.upload}}">
+																<i class="ph-duotone ph-caret-double-right"></i>Student Bulk upload
+															</a>
+														</li>
+													</ul>
+												</div>
+												<!--											<div class="col-lg-2">-->
+												<!--												<ul>-->
+												<!--													<h3 class="title"><i class="fas fa-briefcase"></i> Asset</h3>-->
+												<!--												</ul>-->
+												<!--											</div>-->
+												<div class="col-lg-2 menu-section">
+													<ul>
+														<h3 class="title"><i class="ph-duotone ph-buildings"></i> Hostel Information</h3>
+														<li>
+															<a th:href="@{#{url.hostel.master}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Hostel Master
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.floor.master}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Floor Master
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.hostel.room.info}+#{url.list}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Room Configuration
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.hostel.bulk.room.config}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Bulk Room Configuration
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.hostel.enrollment.config}}" onclick="showHostelEnrollConfig(this)">
+																<i class="ph-duotone ph-caret-double-right"></i> Hostel Enrollment Configuration
+															</a>
+														</li>
+
+														<li>
+															<a th:href="@{#{url.room.inventory}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Room Inventory
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.bulk.room.inventory}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Bulk Room Inventory
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.hostel.user.mapping} + #{url.list}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Hostel User Mapping
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.asset.configuration} + #{url.list}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Asset Configuration
+															</a>
+														</li>
+
+														<li>
+															<a th:href="@{#{url.hostel.guest.coupon.config}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Guest Coupon Configuration
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.hostel.tab-privilege}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Tab Privileges
+															</a>
+														</li>
+													</ul>
+												</div>
+												<div class="col-lg-2 menu-section">
+													<ul>
+														<h3 class="title"><i class="ph-duotone ph-fork-knife"></i> Mess Information</h3>
+														<li>
+															<a th:href="@{#{url.mess.master}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Mess Master
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.mess.session}}">
+																<i class="ph-duotone ph-caret-double-right"></i>Mess Session
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.mess.terminal}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Mess Terminal
+															</a>
+														</li>
+														<li>
+															<a th:href="@{#{url.mess.capacity}}">
+																<i class="ph-duotone ph-caret-double-right"></i> Mess Capacity Settings
+															</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</ul>
+								</li>
+								<!--//MegaMenu-->
+
+								<li class="nav-item dropdown accountMenu">
+									<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+									   aria-expanded="false">
+										<i class="ph-duotone ph-user-square"></i> My Account
+									</a>
+									<ul class="dropdown-menu dropdown-menu-arrow listMenu">
+										<li class="dropdown-header d-flex align-items-center ">
+											<img th:src="@{/assets/img/user-img1.png}" alt="Profile" class="rounded-circle">
+											<span>
+												<h6><span th:text="${@securityCtxUtil.userName()}"></span></h6>
+												Software Admin
+											</span>
+										</li>
+										<li><a class="dropdown-item" onclick="clearFormElements('resetForm');"data-bs-target="#resetPassword" data-bs-toggle="modal"  href="#"> <i class="ph-duotone ph-lock-key-open"></i>
+											Change Password</a></li>
+										<li><a class="dropdown-item" th:href="@{#{url.logout}}"> <i class="ph-duotone ph-power"></i> Logout </a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<!--Page Title-->
+		<div class="pagetitle">
+			<div class="row align-items-center">
+				<div class="col-lg-6">
+					<h1 th:text="${pagetitle}"></h1>
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#" th:text="${pageModule}"></a></li>
+							<li class="breadcrumb-item"><a href="#" th:text="${pagetitle}"></a></li>
+						</ol>
+					</nav>
+				</div>
+				<div class="col-lg-6 text-lg-end" >
+					<button  type="button" class="btn btn-success btn-sm" id="addNewId" data-bs-toggle="modal" th:data-bs-target="${'#'+pageId}" th:if="${addNew != null}">
+						<i class="fa-solid fa-circle-plus me-1"></i> <span th:text="${addNew}"></span>
+					</button>
+					<button  type="button" class="btn btn-pink btn-sm" id="downloadButtonId" data-bs-toggle="modal" th:if="${update != null}">
+						<i class="fa-solid fa-download me-1"></i> <span th:text="${update}"></span>
+					</button>
+<!--					<button type="button" class="btn  btn-blue btn-sm" id="updateId" th:if="${update != null}">-->
+<!--						<i class="fa-solid fa-rotate me-1"></i> <span th:text="#{message.button.update}"></span>-->
+<!--					</button>-->
+					<button type="button" id="cancelButton" onclick="window.history.back();" class="btn btn-secondary btn-sm" th:if="${back != null}">
+						<i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- //Header -->
+</th:block>

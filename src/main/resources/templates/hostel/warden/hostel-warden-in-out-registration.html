@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+  <header th:replace="~{common/header:: title(${headerForm})}"></header>
+  <!-- //Main-->
+  <main id="main" class="main">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card main-card mt-4">
+          <div class="card-body">
+            <div class="mb-4">
+            <div class="row">
+				<div class="col-lg-6 mx-auto">
+					<div class="card mb-3">
+						<div class="card-header bg-primary text-bg-primary p-2 fw-bold text-center">
+							<span th:text="#{message.label.warden.details}"></span>
+						</div>
+						<div class="checkin-card-body mt-3 text-center">
+							<div class="row">
+								<div class="col-6 mb-2">
+									<span th:text="#{message.label.mess.inspection.warden.name}"></span><br>
+									<span class="fw-bold text-tmPrimary" th:text="${wardenInfoDto.wardenName}"></span>
+								</div>
+								<div class="col-6 mb-2">
+									<span th:text="#{message.label.warden.email}"></span><br>
+									<span class="fw-bold text-tmPrimary" th:text="${wardenInfoDto.wardenEmail}"></span>
+								</div>
+								<div class="col-6 mb-2">
+									<span th:text="#{message.label.warden.phone.no}"></span><br>
+									<span class="fw-bold text-tmPrimary" th:text="${wardenInfoDto.phoneNumber}"></span>
+								</div>
+								<div class="col-6 mb-2">
+									<span th:text="#{message.label.warden.office.no}"></span><br>
+									<span class="fw-bold text-tmPrimary" th:text="${wardenInfoDto.officeNo}"></span>
+								</div>
+								<div class="col-12 mb-2 text-center">
+									<span th:text="#{message.label.hostel.name}"></span><br>
+									<span class="fw-bold text-tmPrimary" th:text="${wardenInfoDto.hostelName}"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+              <div class="table-responsive themeTable">
+                <table id="hostelWardenInOutTable" class="table table-bordered nowrap w-100">
+                  <thead>
+                    <tr>
+                        <th th:text="#{message.label.si.no}"></th>
+                        <th th:text="#{message.label.warden.away.from}"></th>
+                        <th th:text="#{message.label.warden.away.to}"></th>
+                        <th th:text="#{message.label.away.description}"></th>
+                        <th th:text="#{message.label.incharge.name}"></th>
+                        <th th:text="#{message.label.incharge.email}"></th>
+                        <th th:text="#{message.label.incharge.no}"></th>
+                        <th class="text-center" th:text="#{message.label.action}"></th>
+                    </tr>
+	                </thead>
+	                <tbody id="wardenHostelDetailsTableBody" th:with="dateFormat=#{date.format}">
+                    <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}" 
+						th:each="warden, iter: ${form.paginationList.getContent()}">
+						<td th:text="${iter.count}"></td>
+						<td th:text="${#temporals.format(warden.awayFrom,dateFormat)}"></td>
+						<td th:text="${#temporals.format(warden.awayTo,dateFormat)}"></td>
+						<td th:text="${warden.awayDescription}"></td>
+						<td th:text="${warden.inchargeName}"></td>
+						<td th:text="${warden.inchargeEmail}"></td>
+						<td th:text="${warden.inchargePhone}"></td>
+						<td class="text-center">
+							<button type="button" class="btn btn-outline-primary btn-sm me-2"
+									data-bs-toggle="tooltip" th:data-warden-id="${warden.id}"
+									 data-bs-title="Edit" onclick="editWardenDetails(this);">
+									<i class="fa-solid fa-pencil"></i>
+							</button>	
+						</td>
+					</tr>
+			    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+						<td colspan="12" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+					</tr>
+                  </tbody>
+                </table>
+              </div>
+              <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:id="modalDiv"></div>
+  <th:block th:replace="~{hostel/warden/hostel-warden-in-out-registration-modal}"></th:block>
+
+  <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/hostel-warden-in-out.js}"></script>
+    <script th:inline="javascript">
+		const baseURL = /*[[#{url.warden.in.out.registration}]]*/ '';
+		const inchargeUrl = /*[[#{url.warden.incharge.details}]]*/ '';
+		const messages = {
+            checkAwayDate: /*[[${#messages.msg('message.validation.away.from.away.to.date')}]]*/ ''
+        };
+	</script>
+  </th:block>
+</body>
+
+</html>

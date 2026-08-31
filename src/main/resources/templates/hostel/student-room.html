@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.bootstrap5.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/staterestore/1.4.3/css/stateRestore.bootstrap5.css">
+</head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<!-- //Main-->
+<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body themeForm">
+					<div class="row">
+						<form class="themeForm" id="studentRequestFilterForm" th:action="@{#{url.guest.accommodation.student}}"  method="post"
+							  th:object="${studentRoomRequestForm}">
+                            <input type="hidden" name="" id="userRole" th:value="${@securityCtxUtil.userRole()}"/>
+							<div class="row">
+								<!-- Approval Status -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.approval.status}"></span>
+									</label>
+
+									<select class="form-select" id="approvalStatus" th:name="approvalStatus" th:value="${studentRoomRequestForm.approvalStatus}">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.approval.status}"></option>
+
+										<!-- Define the enum values using th:with -->
+										<th:block th:with="
+											validating = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).VALIDATING},
+											approved = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).APPROVED},
+											alloted = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).ALLOTTED},
+											rejected = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).REJECTED},
+											cancelled = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).CANCELLED}  ">
+
+											<option th:value="${validating.status}"
+													th:text="${validating.status}"
+													th:selected="${studentRoomRequestForm.approvalStatus == validating.status}"></option>
+											<option th:value="${approved.status}"
+													th:text="${approved.status}"
+													th:selected="${studentRoomRequestForm.approvalStatus == approved.status}"></option>
+											<option th:value="${alloted.status}"
+													th:text="${alloted.status}"
+													th:selected="${studentRoomRequestForm.approvalStatus == alloted.status}"></option>
+											<option th:value="${rejected.status}"
+													th:text="${rejected.status}"
+													th:selected="${studentRoomRequestForm.approvalStatus == rejected.status}"></option>
+											<option th:value="${cancelled.status}"
+													th:text="${cancelled.status}"
+													th:selected="${studentRoomRequestForm.approvalStatus == cancelled.status}"></option>
+										</th:block>
+									</select>
+
+
+								</div>
+
+								<!-- Payment Status -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.payment.status}"></span>
+									</label>
+									<select class="form-select" id="paymentStatus" th:name="paymentApprovalStatus" th:value="${studentRoomRequestForm.paymentApprovalStatus}">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.payment.status}"></option>
+										<option value="Pending" th:selected="${studentRoomRequestForm.paymentApprovalStatus == 'Pending'}">Pending</option>
+										<option value="Paid" th:selected="${studentRoomRequestForm.paymentApprovalStatus == 'Paid'}">Paid</option>
+									</select>
+								</div>
+
+								<!-- Approval From Date -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.approval}+' '+#{message.label.from.date}"></span>
+									</label>
+									<input type="date" class="form-control" th:name="approvalFromDate" th:value="${studentRoomRequestForm.approvalFromDate}">
+								</div>
+
+								<!-- Approval To Date -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.approval}+' '+#{message.label.to.date}"></span>
+									</label>
+									<input type="date" class="form-control" th:name="approvalToDate" th:value="${studentRoomRequestForm.approvalToDate}">
+								</div>
+
+								<!-- Submitted From Date -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.submitted}+' '+#{message.label.from.date}"></span>
+									</label>
+									<input type="date" class="form-control" th:name="submittedFromDate" th:value="${studentRoomRequestForm.submittedFromDate}">
+								</div>
+
+								<!-- Submitted To Date -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.submitted}+' '+#{message.label.to.date}"></span>
+									</label>
+									<input type="date" class="form-control" th:name="submittedToDate" th:value="${studentRoomRequestForm.submittedToDate}">
+								</div>
+
+								<!-- Student Name -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.student.name}"></span>
+									</label>
+									<input type="text" class="form-control" th:name="studentFullName" th:value="${studentRoomRequestForm.studentFullName}"
+										   th:placeholder="#{message.placeholder.student.name}">
+								</div>
+
+								<!-- Student ID -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.student.id}"></span>
+									</label>
+									<input type="text" class="form-control" th:name="studentID" th:value="${studentRoomRequestForm.studentID}"
+										   th:placeholder="#{message.placeholder.student.id}"  oninput="this.value = this.value.toUpperCase();">
+								</div>
+
+								<!-- Hostel Name -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.hostel.name}"></span>
+									</label>
+									<select class="form-select" id="hostelName" th:name="hostelId">
+										<option value="0" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+										<option th:each="hostel : ${hostelList}" th:value="${hostel.id}" th:text="${hostel.hostelName}"
+												th:selected="${studentRoomRequestForm.hostelId == hostel.id}"></option>
+									</select>
+								</div>
+
+								<!-- Stay Type -->
+								<div class="col-lg-2 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.stay.type}"></span>
+									</label>
+									<select class="form-select" id="stayType" name="stayType">
+										<option value="" th:text="#{message.label.select}"></option>
+										<option value="app" th:text="#{message.label.accommodation.request}" th:selected="${studentRoomRequestForm.stayType == 'app'}"></option>
+										<option value="stay" th:text="#{message.label.stay.extension}" th:selected="${studentRoomRequestForm.stayType == 'stay'}"></option>
+										<option value="both" th:text="#{message.label.both}" th:selected="${studentRoomRequestForm.stayType == 'both'}"></option>
+									</select>
+								</div>
+
+								<div class="col-lg-2 row">
+									<div class="">
+										<button type="button" id="student-room-get-data" class="btn btn-lgtblue px-4" style="margin-top: 38px"
+												onclick="submitFilterForm()">
+											<i class="fa-solid fa-database" ></i>
+											<span th:text="#{message.button.get.data}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+
+
+
+						<div class="col-lg-12">
+							<div class="table-responsive themeTable">
+								<table id="deanDashboardTable" class="table table-bordered nowrap w-100"
+									   th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+									<thead>
+									<tr>
+										<th th:text="#{message.label.sl.no}"></th>
+										<th th:text="#{message.label.submitted}+' '+#{message.label.date}"></th>
+										<th th:text="#{message.label.student.id}"></th>
+										<th:block th:unless="${showAllotmentOption}" >
+										<th th:text="#{message.label.hostel.name}"></th>
+										<th th:text="#{message.label.room.no}"></th>
+										</th:block>
+										<th th:text="#{message.label.from.date}"></th>
+										<th th:text="#{message.label.to.date}"></th>
+										<th th:text="#{message.label.guest.accom.type}"></th>
+										<th th:text="#{message.label.approval.status}"></th>
+										<th th:text="#{message.label.payment.status}"></th>
+										<th:block th:if="${showAllotmentOption}" >
+											<th th:text="#{message.label.guest.gender}"></th>
+											<th th:text="#{message.label.allotted.hostel}"></th>
+											<th th:text="#{message.label.allotted.room}"></th>
+											<th th:text="#{message.label.allot}"></th>
+										</th:block>
+										<th class="text-center" th:text="#{message.label.action}"></th>
+									</tr>
+									</thead>
+									<tbody>
+									<!-- Loop through the list of StudentRoomDTO objects -->
+									<tr th:each="room,iterStat : ${form.list}" th:id="'row_' + ${iterStat.index}">
+										<td th:text="${room.requestId}"></td>
+										<td th:text="${#temporals.format(room.submittedDate, #messages.msg('date.format'))}"></td>
+										<td th:text="${room.studentId}"></td>
+										<th:block th:unless="${showAllotmentOption}" >
+										<td th:text="${room.hostelName} ?: #{message.label.na}"></td>
+										<td th:text="${room.roomNo} ?: #{message.label.na}"></td>
+										</th:block>
+										<td th:text="${#temporals.format(room.fromDate, #messages.msg('date.format'))}"></td>
+										<td th:text="${#temporals.format(room.toDate, #messages.msg('date.format'))}"></td>
+										<td th:text="${room.accommodationType}"></td>
+										<td>
+											<th:block th:include="common/template/approval-status-badge :: statusBadge(${room.wardenApprovalStatus},null)"></th:block>
+										</td>
+										<td>
+											<th:block th:include="common/template/approval-status-badge :: statusBadge(null, ${room.paymentStatus})"></th:block>
+										</td>
+										<th:block th:if="${showAllotmentOption}"
+										th:with="showAllotment=${room.wardenApprovalStatus != null
+													&& ( room.wardenApprovalStatus == workflow.WARDEN_APPROVAL_STATUS_COMPLETE.status  ||
+													 	 room.wardenApprovalStatus == workflow.OVERRIDE_AND_APPROVED.status ||
+															room.wardenApprovalStatus == workflow.APPROVED.status )
+													&& room.paymentStatus == workflow.PAID.status  }">
+											<td th:text="${room.guestGender}"></td>
+											<td>
+												<!-- Hostel Name -->
+												<th:block th:if="${showAllotment && room.accommodationType!='Stay Along with Student'}">
+													<th:block th:if="${room.allottedHostelName != null}">
+														<span th:id="'hostelText_' + ${iterStat.index}" th:text="${room.allottedHostelName}"></span>
+														<select th:id="'hostelDropdown_' + ${iterStat.index}" class="form-select form-select-sm"
+																style="display: none;" onchange="fetchRoomNumbers(this)"
+																th:data-fromdate="${room.fromDate}"
+																th:data-todate="${room.toDate}"
+																th:data-requestId="${room.requestId}">
+															<option value="" th:text="#{message.option.select.hostel}"></option>
+															<option th:each="hostel : ${room.hostelListGenderBased}"
+																	th:value="${hostel.id}"
+																	th:text="${hostel.hostelName}"
+																	th:selected="${hostel.hostelName == room.allottedHostelName}"></option>
+														</select>
+													</th:block>
+													<th:block th:unless="${room.allottedHostelName != null}">
+														<select th:id="'hostelDropdown_' + ${iterStat.index}" class="form-select form-select-sm"
+																onchange="fetchRoomNumbers(this)"
+																th:data-fromdate="${room.fromDate}"
+																th:data-todate="${room.toDate}"
+																th:data-requestId="${room.requestId}">
+															<option value="" th:text="#{message.option.select.hostel}"></option>
+															<option th:each="hostel : ${room.hostelListGenderBased}"
+																	th:value="${hostel.id}"
+																	th:text="${hostel.hostelName}"></option>
+														</select>
+													</th:block>
+												</th:block>
+                                                <th:block th:if="${room.allottedHostelName == 'Stay Along with Student'}" th:text="'-'"></th:block>
+											</td>
+
+											<td>
+											<!-- Room Number -->
+												<th:block th:if="${showAllotment && room.accommodationType!='Stay Along with Student'}">
+													<th:block th:if="${room.allottedRoomNo != null}">
+														<span th:id="'roomText_' + ${iterStat.index}" th:text="${room.allottedRoomNo}"></span>
+														<select th:id="'roomDropdown_' + ${iterStat.index}" class="form-select form-select-sm" style="display: none;" onchange="enableSaveButton(this)">
+															<option value="" th:text="#{message.option.select.room}"></option>
+														</select>
+														<!-- Loader (spinner) -->
+														<div th:id="'roomLoader_' + ${iterStat.index}" class="spinner-border spinner-border-sm" role="status" style="display: none;margin-left: 42%;">
+															<span class="visually-hidden"></span>
+														</div>
+													</th:block>
+													<th:block th:unless="${room.allottedRoomNo != null}">
+														<select th:id="'roomDropdown_' + ${iterStat.index}" class="form-select form-select-sm" onchange="enableSaveButton(this)">
+															<option value="" th:text="#{message.option.select.room}"></option>
+														</select>
+														<!-- Loader (spinner) -->
+														<div th:id="'roomLoader_' + ${iterStat.index}" class="spinner-border spinner-border-sm" role="status" style="display: none;margin-left: 42%;">
+															<span class="visually-hidden"></span>
+														</div>
+													</th:block>
+												</th:block>
+                                                <th:block th:if="${room.allottedHostelName == 'Stay Along with Student'}" th:text="'-'"></th:block>
+											</td>
+
+											<td>
+												<th:block th:if="${showAllotment && room.accommodationType!='Stay Along with Student'}">
+													<div class="d-flex justify-content-center">
+														<th:block th:if="${room.allottedHostelName == null}">
+															<button type="button" class="btn btn-outline-success btn-sm me-2"
+																	th:data-url2="${room.studentDetailString}"
+																	th:id="'saveButton_' + ${iterStat.index}"
+																	th:data-index="${iterStat.index}"
+																	th:data-guestId="${room.guestId}"
+																	onclick="saveRoomAllotment(this)"
+																	data-bs-toggle="tooltip" data-bs-title="Allot" disabled>
+																<i class="fa-solid fa-bed"></i>
+															</button>
+														</th:block>
+														<th:block th:if="${room.allottedHostelName != null}">
+															<button type="button" class="btn btn-outline-primary btn-sm me-2"
+																	th:data-index="${iterStat.index}"
+																	onclick="editRoomAllotment(this)"
+																	data-bs-toggle="tooltip" data-bs-title="Edit"
+																	th:id="'editButton_' + ${iterStat.index}">
+																<i class="fa-solid fa-pencil"></i>
+															</button>
+															<button type="button" class="btn btn-outline-success btn-sm me-2"
+																	th:data-index="${iterStat.index}"
+																	th:data-guestId="${room.guestId}"
+																	onclick="saveRoomAllotment(this)"
+																	data-bs-toggle="tooltip" data-bs-title="Allot"
+																	th:id="'allotButton_' + ${iterStat.index}" style="display: none;">
+																<i class="fa-solid fa-bed"></i>
+															</button>
+															<button type="button" class="btn btn-outline-danger btn-sm me-2"
+																	th:data-index="${iterStat.index}"
+																	th:data-guestId="${room.guestId}"
+																	onclick="retainRoomAllotment(this)"
+																	data-bs-toggle="tooltip" data-bs-title="De-allot"
+																	th:id="'deAllotButton_' + ${iterStat.index}" style="display: none;">
+																<i class="fa-solid fa-times"></i>
+															</button>
+														</th:block>
+													</div>
+												</th:block>
+                                                <th:block th:if="${room.allottedHostelName == 'Stay Along with Student'}" th:text="'-'">-</th:block>
+											</td>
+										</th:block>
+
+										<td>
+											<div class="d-flex justify-content-center">
+												<button type="button" class="btn btn-sm btn-bluegray me-2"
+														th:data-url="${room.studentDetailString}"
+														onclick="redirectToStudentView(this)"
+														data-bs-toggle="tooltip" data-bs-title="View">
+													<i class="fa-solid fa-eye"></i>
+												</button>
+
+												<button th:if="${room.wardenApprovalStatus != null
+													&& ( room.wardenApprovalStatus == workflow.WARDEN_APPROVAL_STATUS_COMPLETE.status ||
+													 	 room.wardenApprovalStatus == workflow.OVERRIDE_AND_APPROVED.status ||
+															room.wardenApprovalStatus == workflow.APPROVED.status)}"
+														type="button" class="btn btn-outline-primary btn-sm me-2"
+														th:data-url2="${room.studentDetailString}"
+														onclick="openEditStudentRoomModal(this)"
+														data-bs-toggle="tooltip" data-bs-title="Edit Payment">
+													<i class="fa-solid fa-pencil"></i>
+												</button>
+												<a th:if="${room.wardenApprovalStatus != null
+													&& ( room.wardenApprovalStatus == workflow.WARDEN_APPROVAL_STATUS_COMPLETE.status ||
+													 	 room.wardenApprovalStatus == workflow.OVERRIDE_AND_APPROVED.status ||
+															room.wardenApprovalStatus == workflow.APPROVED.status)
+													&& room.paymentStatus == workflow.PAID.status}"
+												   class="btn btn-sm btn-outline-pink" data-bs-toggle="tooltip"
+												   th:href="@{#{url.guest.accommodation.student} + #{url.guest.student.pdf.download}+ '/' + ${room.requestId}}"
+												   th:title="#{message.label.print}" target="_blank">
+													<i class="fa-solid fa-print"></i>
+												</a>
+											</div>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<style>
+		.highlight-row {
+            background-color: #f0f8ff; /* Light blue background */
+            border: 2px solid #add8e6; /* Light blue border */
+        }
+	</style>
+</main>
+<div th:id="modalDiv"></div>
+
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.js"></script>
+	<script src="https://cdn.datatables.net/staterestore/1.4.3/js/dataTables.stateRestore.js"></script>
+	<script src="https://cdn.datatables.net/staterestore/1.4.3/js/stateRestore.bootstrap5.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.bootstrap5.js"></script>
+	<script th:src="@{/assets/js/data-table-common.js}"></script>
+	<script th:inline="javascript">
+		const guestGUIUrl = /*[[#{url.guest.allotment.gui}]]*/ '';
+		const duNumbLabel = /*[[#{message.label.du.no}]]*/ '';
+        const voucherNoLabel = /*[[#{message.label.voucher.no}]]*/'';
+        const paymentRefNoLabel = /*[[#{message.label.payment.referenceno}]]*/'';
+        const billNoLabel = /*[[#{message.placeholder.bill.no}]]*/ '';
+        const isRequiredLabel = /*[[#{message.validation.is.required}]]*/ '';
+        const maxDateDiff = /*[[${GUEST_MAILVIEW_MAX_TODATE}]]*/ '5';
+
+        const checkInDateRequired = /*[[#{message.check-in.date.required}]]*/ '';
+        const checkOutDateRequired = /*[[#{message.check-out.date.required}]]*/ '';
+        const toDateGreaterThanFromDate = /*[[#{message.to.date.greater.than.from.date}]]*/ '';
+        const fromDateFutureOrCurrent = /*[[#{message.from.date.future.or.current}]]*/ '';
+        const toDateWithinRange = /*[[#{message.to.date.within.range}]]*/ '';
+        const requestRejectedConfirmation = /*[[#{message.request.rejected.confirmation}]]*/ '';
+        const formSubmissionError = /*[[#{message.form.submission.error}]]*/ '';
+
+        const paymentTypeIcollect = /*[[#{message.label.IFPP}]]*/ '';
+        const paymentTypePosMachine = /*[[#{payment.type.pos.machine}]]*/ '';
+        const paymentTypeCash = /*[[#{payment.type.cash}]]*/ '';
+        const paymentTypeDigital = /*[[#{payment.type.digital}]]*/ '';
+        const paymentTypeOnline = /*[[#{payment.type.online}]]*/ '';
+
+        const showAdvanceFilter = /*[[#{show.advance.filter}]]*/ '';
+        const hideAdvanceFilter = /*[[#{hide.advance.filter}]]*/ '';
+
+		const baseUrl = /*[[#{url.guest.accommodation.student}]]*/ '';
+        const studentViewUrl = /*[[#{url.guest.student.view}]]*/ '';
+        const studentEditUrl = /*[[#{url.guest.student.edit}]]*/ '';
+        const excelDownloadUrl = /*[[#{url.guest.student.excel.report.download}]]*/ '';
+        const stayType = '';
+
+        const roomByHostelUrl = /*[[#{url.room.list}]]*/ '';
+        const guestRoomsByHostel = /*[[#{url.guest.room.list}]]*/ '';
+        const roomAllotmentUrl = /*[[#{url.guest.student.room.allot}]]*/ '';
+        const roomAllotmentRetainUrl = /*[[#{url.guest.student.room.retain}]]*/ '';
+
+	</script>
+	<script th:src="@{/assets/js/dean/student-room.js}"></script>
+	<script th:src="@{/assets/js/dean/dean-dashboard.js}"></script>
+</th:block>
+
+<!-- Footer-->
+</body>
+</html>

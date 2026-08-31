@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <div class="row mb-2">
+                        <div class="col-lg-12 themeTabs">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span th:text="#{message.label.select} + ' ' + #{message.label.criteria}"></span></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <form class="themeForm g-3 needs-validation novalidate mb-4" th:action="${isReport} ? @{#{url.mess.ledger.report}} : @{#{url.noc.vacation.payment.report}}" id="ledger-form"
+                              method="post" th:object="${selectForm}">
+                            <div class="row mb-3 justify-content-start">
+                                <!-- Student ID -->
+                                <div class="mb-3" th:classappend="${isReport} ? 'col-lg-2' : 'col-lg-3'">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.student.id}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control" th:name="studentID" th:id="'studentId'" th:field="*{studentID}"
+                                           oninput="this.value = this.value.toUpperCase()" th:placeholder="#{message.placeholder.student.id}" required>
+                                    <div class="invalid-feedback"><span th:text="#{message.label.validation.student.id.is.required}"></span></div>
+                                </div>
+                                <div class="mb-3" th:classappend="${isReport} ? 'col-lg-2' : 'col-lg-3'">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.select.book.type}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <div class="checkRadio-bg">
+                                        <div class="form-check form-check-inline me-4">
+                                            <input class="form-check-input" type="radio" id="mess" value="Mess" name="selectedCriteria" required
+                                                   th:field="*{selectedCriteria}">
+                                            <label class="form-check-label" for="mess"><span th:text="#{message.label.mess}"></span></label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" id="card" value="Card" name="selectedCriteria" required
+                                                   th:field="*{selectedCriteria}">
+                                            <label class="form-check-label" for="card"><span th:text="#{message.label.card}"></span></label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback"><span th:text="#{message.label.validation.select.type.is.required}"></span></div>
+                                </div>
+                                <th:block th:if="${isReport}">
+                                    <div class="col-lg-2 mb-3">
+                                        <label for="fromDateId" class="form-label" th:text="#{message.label.from.date}"></label>
+                                        <input type="date" id="fromDateId" class="form-control" th:field="*{fromDate}">
+                                        <div class="invalid-feedback" th:text="#{message.label.from.date} + ' ' + #{message.validation.is.required}"></div>
+                                    </div>
+                                    <div class="col-lg-2 mb-3">
+                                        <label for="toDateId" class="form-label" th:text="#{message.label.to.date}"></label>
+                                        <input type="date" id="toDateId" class="form-control" th:field="*{toDate}">
+                                        <div class="invalid-feedback" th:text="#{message.label.to.date} + ' ' + #{message.validation.is.required}"></div>
+                                        <div class="invalid-req-feedback d-none" th:text="#{message.label.to.date} + ' ' + #{message.validation.is.required}"></div>
+                                        <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.from.to.date.range}"></div>
+                                    </div>
+                                </th:block>
+                                <div class="col-auto mt-3">
+                                    <button id="searchButton" type="button" class="btn btn-lgtblue mt-4"
+                                            onclick="validateForm()"><i class="fa-solid fa-database"></i>
+                                        <span th:text="#{message.label.get.data}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="row"
+                             th:if="${(selectForm ne null and selectForm.selectedCriteria ne null and !selectForm.selectedCriteria.isEmpty())
+                             and (ledgerReport eq null or ledgerReport.isEmpty())}">
+                            <div class="col-lg-12">
+                                <span class="text-danger" th:text="#{message.label.no.ledger.found}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Details-->
+                        <div id="transactionDetails" th:if="${ledgerReport ne null and !ledgerReport.isEmpty()}">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <h2 class="tmsub-title"><span th:text="#{message.label.transaction.details}"></span></h2>
+                                </div>
+                                <div class="col-lg-3 text-lg-end">
+                                    <span class="fw-bold" th:text="#{message.label.opening.balance}"></span>
+                                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    <span class="fw-bold">: </span>
+                                    <span class="currency" th:text="${openingBal}"></span>
+                                    <span th:text="#{message.label.dr}"></span>
+                                </div>
+                            </div>
+
+                            <!-- Student Charges Details -->
+                            <div class="row" th:if="${studentChargesDto != null}"  th:with="notApplicable=#{message.label.na}">
+                                <!-- Row 1 -->
+                                    <!-- Student ID -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.student.id}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox">
+                                            <span th:text="${studentChargesDto.studentID  ne null ? studentChargesDto.studentID : notApplicable}"></span>
+                                            <span class="text-danger fw-bold" th:if="${studentChargesDto.allocationStatus == 'Y'}" th:text="'(' + #{message.label.days.scholar} + ')'"></span>
+                                        </div>
+                                    </div>
+
+                                <!-- Current Student ID -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label" th:text="#{message.label.current.student.id}"></label>
+                                        <div class="form-control form-graybox" th:text="${studentIds ne null and !studentIds.isEmpty() ? studentIds : notApplicable}"></div>
+                                    </div>
+
+                                    <!-- Student Name -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.student.name}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="${studentChargesDto.studentName  ne null ? studentChargesDto.studentName : notApplicable}"></div>
+                                    </div>
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.student}+' '+#{message.label.previous.id}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox"
+                                             th:text="${studentChargesDto.studentPreviousID  ne null && !studentChargesDto.studentPreviousID.isEmpty() ? studentChargesDto.studentPreviousID : notApplicable}"></div>
+                                    </div>
+
+                                    <!-- Penalty Charges Amount -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.penalty.charges.amount}"></span>
+                                        </label>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-9">
+                                                <div class="form-control form-graybox me-2" th:text="${studentChargesDto.penaltyChargesAmount ne null ? studentChargesDto.penaltyChargesAmount : notApplicable}"></div>
+                                            </div>
+                                            <div class="col-md-3" th:if="${!isReport and @securityCtxUtil.userRole().equals('SoftwareAdmin')}">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" th:data-bs-student-id="${studentChargesDto.studentID}"
+                                                        th:data-bs-amount="${studentChargesDto.penaltyChargesAmount}"
+                                                        th:data-bs-type="penaltyClaim" th:if="${studentChargesDto.penaltyChargesAmount > 0 and studentChargesDto.isSettlementEligible}" onclick="proceedTransaction(this)">
+                                                    <span th:text="#{message.label.button.claim}"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Donation Amount -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.donation.amount}"></span>
+                                        </label>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-9">
+                                                <div class="form-control form-graybox me-2" th:text="${studentChargesDto.donationAmount ne null ? studentChargesDto.donationAmount : notApplicable}"></div>
+                                            </div>
+                                            <div class="col-md-3" th:if="${!isReport and @securityCtxUtil.userRole().equals('SoftwareAdmin')}">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" th:data-bs-student-id="${studentChargesDto.studentID}"
+                                                        th:data-bs-amount="${studentChargesDto.donationAmount}"
+                                                        th:data-bs-type="donateClaim" th:if="${studentChargesDto.donationAmount > 0 and studentChargesDto.isSettlementEligible}" onclick="proceedTransaction(this)">
+                                                    <span th:text="#{message.label.button.claim}"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- Row 2 -->
+                                    <!-- Hostel Name -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.hostel.name}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="${studentChargesDto.hostelName  ne null ? studentChargesDto.hostelName : notApplicable}"></div>
+                                    </div>
+
+                                    <!-- Room No -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.room.no}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="${studentChargesDto.roomNo  ne null ? studentChargesDto.roomNo : notApplicable}"></div>
+                                    </div>
+
+
+                                    <!-- Hostel deposit refund -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.hostel.deposit}"></span>
+                                        </label>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-9">
+                                                <div class="form-control form-graybox me-2" th:text="${studentChargesDto.leadAmount  ne null ? studentChargesDto.leadAmount : notApplicable}"></div>
+                                            </div>
+                                            <div class="col-md-3" th:if="${!isReport and @securityCtxUtil.userRole().equals('SoftwareAdmin')}">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" th:data-bs-student-id="${studentChargesDto.studentID}"
+                                                        th:data-bs-amount="${studentChargesDto.leadAmount}"
+                                                        th:data-bs-type="hostelDepositRefund" th:if="${studentChargesDto.leadAmount > 0 and studentChargesDto.isSettlementEligible}" onclick="proceedTransaction(this)">
+                                                    <span th:text="#{message.label.button.refund}"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card Amount -->
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.card.amount}"></span>
+                                        </label>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-9">
+                                                <div class="form-control form-graybox me-2" th:text="${studentChargesDto.cardAmount  ne null ? studentChargesDto.cardAmount : notApplicable}"></div>
+                                            </div>
+                                            <div class="col-md-3" th:if="${!isReport and @securityCtxUtil.userRole().equals('SoftwareAdmin')}">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" th:data-bs-student-id="${studentChargesDto.studentID}"
+                                                        th:data-bs-amount="${studentChargesDto.cardAmount}"
+                                                        th:data-bs-type="cardAmountTransfer" th:if="${studentChargesDto.cardAmount > 0 and studentChargesDto.isSettlementEligible}" onclick="proceedTransaction(this)">
+                                                    <span th:text="#{message.label.button.transfer}"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <!-- Purchase Amount -->
+                                <div class="col-lg-4 mb-3" th:if="${studentChargesDto.eventList != null
+                                        and !#lists.isEmpty(studentChargesDto.eventList)}">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.purchase.amount}"></span>
+                                    </label>
+
+                                    <!-- Loop events -->
+                                    <div th:each="event : ${studentChargesDto.eventList}"
+                                         class="row d-flex align-items-center mb-2">
+                                        <!-- Event Name + Amount -->
+                                        <div class="col-md-9">
+                                            <div class="form-control form-graybox me-2">
+                                                <span class="event-ellipsis" th:text="${event.eventName}"
+                                                      th:title="${event.eventName}"></span>
+                                                :
+                                                <strong th:text="${event.PurchaseAmount ne null ? event.PurchaseAmount : notApplicable}"></strong>
+                                            </div>
+                                        </div>
+                                        <!-- Claim Button -->
+                                        <div class="col-md-3" th:if="${!isReport and @securityCtxUtil.userRole().equals('SoftwareAdmin')}">
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                    th:data-bs-student-id="${studentChargesDto.studentID}"
+                                                    th:data-bs-amount="${event.PurchaseAmount}"
+                                                    th:data-bs-type="purchaseAmountDeduct"
+                                                    th:data-bs-event-id="${event.eventId}"
+                                                    th:if="${event.PurchaseAmount > 0 and studentChargesDto.isSettlementEligible}"
+                                                    onclick="proceedTransaction(this)">
+                                                <span th:text="#{message.label.button.claim}"></span>
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- HDC Amount -->
+                                <div class="col-lg-3 mb-3" th:if="${studentChargesDto.hdcList != null
+                                        and !#lists.isEmpty(studentChargesDto.hdcList)}">
+                                    <label class="form-label text-danger">
+                                        <span th:text="#{message.label.hdc.amount}"></span>
+                                    </label>
+
+                                    <!-- Loop events -->
+                                    <div th:each="hdc : ${studentChargesDto.hdcList}"
+                                         class="row d-flex align-items-center mb-2">
+                                        <!-- Hdc Id + Amount -->
+                                        <div class="col-md-9">
+                                            <div class="form-control form-graybox me-2 text-danger">
+                                                <span class="event-ellipsis" th:text="#{message.label.id} + ' ' + ${hdc.hdcId}"
+                                                      th:title="${hdc.hdcId}"></span>
+                                                :
+                                                <strong th:text="${hdc.hdcAmount ne null ? hdc.hdcAmount : notApplicable}"></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <th:block th:if="${isReport}">
+                                    <div class="col-lg-3 mb-3">
+                                        <label class="form-label" th:text="#{message.label.select} + ' ' + #{message.label.view}"></label>
+                                        <div class="checkRadio-bg">
+                                            <div class="form-check form-check-inline me-4">
+                                                <input class="form-check-input" type="radio" id="collapse" value="collapseView" name="view" checked>
+                                                <label class="form-check-label" for="collapse"><span th:text="#{message.label.collapsed.view}"></span></label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="expand" value="expandView" name="view">
+                                                <label class="form-check-label" for="expand"><span th:text="#{message.label.full.expanded.view}"></span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 mt-3">
+                                        <button id="excelButton" type="button" class="btn btn-success mt-4" onclick="downloadExcel()">
+                                            <i class="fa-solid fa-file-excel"></i>
+                                            <span th:text="#{message.label.download.excel}"></span>
+                                        </button>
+                                    </div>
+                                </th:block>
+                            </div>
+
+                            <!-- Accordian Start -->
+                            <div class="row mb-5" id="collapseAccordion">
+                                <div class="col-lg-12">
+                                    <div class="themeAccordion accordion" id="ledgerAccordion">
+                                        <div class="accordion-item" th:each="ledger, ledgerStat : ${ledgerReport}">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button ab-with-icon d-flex justify-content-between align-items-center"
+                                                        type="button" data-bs-toggle="collapse"
+                                                        th:classappend="${ledgerReport.size() ne ledgerStat.index+1}?'collapsed':''"
+                                                        th:data-bs-target="'#collapseSection'+${ledgerStat.index}"
+                                                        th:attr="data-ledger-key=${ledger.key}"
+                                                        aria-expanded="false" th:aria-controls="'collapseSection'+${ledgerStat.index}">
+                                                    <div th:text="${ledger.key}"></div>
+                                                    <div class="ms-auto" th:text="${ledger.value.totalOpeningClosingBalance}"></div>
+                                                </button>
+                                            </h2>
+                                            <div th:class="'accordion-collapse collapse'"
+                                                 th:classappend="${ledgerReport.size() eq ledgerStat.index+1}?'show':''"
+                                                 th:id="'collapseSection'+${ledgerStat.index}"
+                                                 data-bs-parent="#ledgerAccordion">
+                                                <div class="accordion-body">
+                                                    <table class="table table-bordered now1rap w-100">
+                                                        <thead>
+                                                        <tr>
+                                                            <th><span th:text="#{message.label.voucher.no}"></span></th>
+                                                            <th><span th:text="#{message.label.voucher.date}"></span></th>
+                                                            <th><span th:text="#{message.label.description}"></span></th>
+                                                            <th><span th:text="#{message.label.ref.no}"></span></th>
+                                                            <th class="text-end">
+                                                                <span th:text="#{message.label.credit.amount}+#{message.label.cr}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            </th>
+                                                            <th class="text-end">
+                                                                <span th:text="#{message.label.debit.amount}+#{message.label.dr}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            </th>
+                                                            <th class="text-end">
+                                                                <span th:text="#{message.label.closing.balance}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr th:each="entry : ${ledger.value.data}">
+                                                            <td th:text="${entry.voucherNo}"></td>
+                                                            <td th:with="dateFormat=#{date.format}"
+                                                                th:text="${#temporals.format(entry.voucherDate, dateFormat)}"></td>
+                                                            <td th:text="${entry.description}"></td>
+                                                            <td th:text="${entry.refNo}"></td>
+                                                            <td class="text-end" th:classappend="${entry.debitOrCredit eq 'c' ? 'currency' : ''}"
+                                                                th:text="${entry.debitOrCredit eq 'c' ? entry.amount : ''}"></td>
+                                                            <td class="text-end" th:classappend="${entry.debitOrCredit eq 'd' ? 'currency' : ''}"
+                                                                th:text="${entry.debitOrCredit eq 'd' ? entry.amount : ''}"></td>
+                                                            <td class="text-end" th:text="${entry.formattedClosingBalance}"></td>
+                                                            <th:block th:if="${@securityCtxUtil.userRole().equals('SoftwareAdmin')}">
+                                                                <th:block th:if="${isReport}">
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-outline-danger btn-sm" th:data-bs-title="#{message.label.delete}"
+                                                                                th:data-voucher="${entry.voucherNo}"
+                                                                                th:data-studentId="${studentChargesDto != null ? studentChargesDto.studentID : selectForm.studentID}"
+                                                                                th:data-slNo="${entry.slNo}"
+                                                                                data-bs-toggle="tooltip" th:id="${'deleteLedgerEntry_'+entry.voucherNo}"
+                                                                                onclick="deleteLedgerEntry(this);">
+                                                                            <i class="fa-solid fa-trash-can"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </th:block>
+                                                            </th:block>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold text-end" colspan="4">
+                                                                <span th:text="#{message.label.total}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                                <span> :</span>
+                                                            </td>
+                                                            <td class="currency text-end fw-bold" th:text="${ledger.value.totalCredit}"></td>
+                                                            <td class="currency text-end fw-bold" th:text="${ledger.value.totalDebit}"></td>
+                                                            <td class="text-end fw-bold">
+                                                                <span th:text="${ledger.value.totalClosingBalance}" class="currency"></span>
+                                                                <span th:text="' (' + ${ledgerSummaryTotals.closingDirection} + ')'"></span>
+                                                            </td>
+
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer mt-3">
+                                        <div class="fw-bold">
+                                            <span th:text="#{message.label.final} + ' ' + #{message.label.balance}"></span>:
+                                            <span th:text="${ledgerSummaryTotals.closingBalance}" class="currency"></span>
+                                            <span th:text="${' (' + ledgerSummaryTotals.closingDirection} + ')'"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive themeTable d-none" id="expandTable" th:if="${isReport}">
+                                <table class="table table-bordered now1rap w-100">
+                                    <thead>
+                                    <tr>
+                                        <th><span th:text="#{message.label.voucher.no}"></span></th>
+                                        <th><span th:text="#{message.label.voucher.date}"></span></th>
+                                        <th><span th:text="#{message.label.description}"></span></th>
+                                        <th><span th:text="#{message.label.ref.no}"></span></th>
+                                        <th class="text-end">
+                                            <span th:text="#{message.label.credit.amount}+#{message.label.cr}"></span>
+                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        </th>
+                                        <th class="text-end">
+                                            <span th:text="#{message.label.debit.amount}+#{message.label.dr}"></span>
+                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        </th>
+                                        <th class="text-end">
+                                            <span th:text="#{message.label.closing.balance}"></span>
+                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="entry : ${ledgerReportList}">
+                                        <td th:text="${entry.voucherNo}"></td>
+                                        <td th:with="dateFormat=#{date.format}"
+                                            th:text="${#temporals.format(entry.voucherDate, dateFormat)}"></td>
+                                        <td th:text="${entry.description}"></td>
+                                        <td th:text="${entry.refNo}"></td>
+                                        <td class="text-end" th:classappend="${entry.debitOrCredit eq 'c' ? 'currency' : ''}"
+                                            th:text="${entry.debitOrCredit eq 'c' ? entry.amount : ''}"></td>
+                                        <td class="text-end" th:classappend="${entry.debitOrCredit eq 'd' ? 'currency' : ''}"
+                                            th:text="${entry.debitOrCredit eq 'd' ? entry.amount : ''}"></td>
+                                        <td class="text-end" th:text="${entry.formattedClosingBalance}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-end" colspan="4">
+                                            <span th:text="#{message.label.total}"></span>
+                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                            <span> :</span>
+                                        </td>
+                                        <td class="currency text-end fw-bold" th:text="${ledgerSummaryTotals.totalCreditAmount}"></td>
+                                        <td class="currency text-end fw-bold" th:text="${ledgerSummaryTotals.totalPurchaseAmount}"></td>
+                                        <td class="text-end fw-bold">
+                                            <span th:text="${ledgerSummaryTotals.closingBalance}" class="currency"></span>
+                                            <span th:text="${' (' + ledgerSummaryTotals.closingDirection} + ')'"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="modal-footer">
+                                    <div class="fw-bold">
+                                        <span th:text="#{message.label.final} + ' ' + #{message.label.balance}"></span>:
+                                        <span th:text="${ledgerSummaryTotals.closingBalance}" class="currency"></span>
+                                        <span th:text="${' (' + ledgerSummaryTotals.closingDirection} + ')'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Settlement Amount -->
+                            <div class="row d-flex align-items-center" style="float: right;" th:if="${!isReport}">
+                                <div class="col-md-3" th:if="${studentChargesDto.isSettlementEligible}">
+                                    <button type="button" class="btn btn-outline-danger btn-pink btn-revert" th:data-bs-student-id="${studentChargesDto.studentID}"
+                                            th:data-bs-amount="${studentChargesDto.openingBalance}"
+                                            th:if="${studentChargesDto.isSettlementEligible and studentChargesDto.openingBalance >= 0
+                                             and ledgerSummaryTotals.closingDirection == 'Dr'}"
+                                            onclick="openSettlementModal(this)" th:text="#{message.label.button.settlement}">
+                                    </button>
+                                </div>
+                                <div class="col-md-3" th:if="${studentChargesDto.isUndoSettlementEligible}">
+                                    <button type="button" class="btn btn-outline-danger btn-pink btn-revert" th:data-bs-student-id="${studentChargesDto.studentID}"
+                                            onclick="undoSettlement(this)" th:text="#{message.label.button.undo.settlement}">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{common/modal/transaction-confirmation-modal :: contents(id = transactionConfirmation,headerText=#{message.label.confirmation},
+bodyText=#{message.label.approve.penalty.claim})}"></th:block>
+
+<!-- Modal Placeholder -->
+<div th:id="modalDiv"></div>
+
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/delete-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+</th:block>
+
+<th:block th:replace="~{common/modal/info-modal ::
+   contents(id=undoSettlement,headerText=#{message.label.confirmation},bodyText=#{message.label.confirmation.undo.settlement})}">
+</th:block>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/noc-vacation-payment.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.noc.vacation.payment.report}]]*/ '';
+        const messLedgerBaseURL = /*[[#{url.mess.ledger.report}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/'';
+        const transactionUrl = /*[[#{url.noc.vacation.payment.report.transaction}]]*/ '';
+        const settlementUrl = /*[[#{url.noc.vacation.payment.report.settlement}]]*/ '';
+        const claimText = /*[[#{message.label.approve.penalty.claim}]]*/ '';
+        const donateText = /*[[#{message.label.approve.penalty.donate}]]*/ '';
+        const refundText = /*[[#{message.label.approve.penalty.refund}]]*/ '';
+        const transferText = /*[[#{message.label.approve.penalty.transfer}]]*/ '';
+        const purchaseText = /*[[#{message.label.approve.purchase.transfer}]]*/ '';
+        const savedError = /*[[#{message.student.save.error}]]*/ '';
+        const deleteURL = /*[[#{url.delete}]]*/ '';
+        const undoSettlementUrl = /*[[#{url.noc.undo.settlement}]]*/ '';
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

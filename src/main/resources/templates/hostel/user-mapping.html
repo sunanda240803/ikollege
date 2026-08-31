@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+	<link rel="stylesheet" th:href="@{/assets/css/hostel-user-mapping.css}">
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body">
+							<div class="row">
+								<div class="col-lg-4">
+									<form class="themeForm g-3 needs-validation"
+											th:action="@{#{url.hostel.user.mapping}+#{url.save}}" method="post" id="userMappingForm"
+											th:object="${userMappingInfo}">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title" th:text="#{message.label.hostel.name.user.name}"></h2>
+										</div>
+									</div>
+									<span class="form-text mb-3" th:text="#{message.label.hostel.name.user.name.note}"></span>
+										<div class="col-lg-6 mb-3">
+											<label for="userName" class="form-label"><span th:text="#{message.label.username}"></span>
+												<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+											<div class="input-group mb-3">
+												<input type="text" class="form-control hostel-username-validation" th:field="*{id.user}"
+													   id="userName" list="names" th:placeholder="#{message.placeholder.username}">
+												<datalist id="names">
+													<option th:each="user : ${userList}" th:text="${user.id.username}"></option>
+												</datalist>
+												<div class="invalid-feedback" id="validateError" th:text="#{message.validation.enter.usernme}"></div>
+											</div>
+										</div>
+										<div class="col-lg-6 mb-3">
+											<label class="form-label" for="searchHostelName"><span th:text="#{message.label.hostel.name}"></span>
+												<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+											<input type="text" class="form-control"
+												   id="searchHostelName" th:placeholder="#{message.placeholder.search.hostel.name}">
+											<div class="hostelname">
+												<div class="form-check mb-2" id="searchAllCheck">
+													<input class="form-check-input required-input" type="checkbox" value=""
+														   id="selectAllHostels">
+													<label class="form-label" for="selectAllHostels" th:text="#{message.label.select.all.hostel}"></label>
+												</div>
+												<div class="searchHostel">
+													<div class="form-check "
+														 th:each="hostel, iter: ${userMappingInfo.hostelMasterList}">
+														<input type="checkbox"
+															   th:field="*{hostelMasterList[__${iter.index}__].status}"
+															   class="form-check-input hostelCheckbox"
+															   th:id="${'hostelid_'+iter.index}">
+														<input type="hidden"
+															   th:field="*{hostelMasterList[__${iter.index}__].id}">
+														<label class="form-check-label"
+															   th:for="${'hostelid_'+iter.index}"><span
+																th:text="${hostel.hostelName}"></span></label>
+													</div>
+												</div>
+											</div>
+											<div class="invalid-feedback" th:text="#{message.validation.choose.hostel.name}"></div>
+										</div>
+
+										<div class="modal-footer col-lg-6 mt-2">
+											<button type="submit" id="searchButton" class="btn btn-aqua"
+													onclick="return validateHostelSelection()"><i
+													class="fa-solid fa-save"></i> <span th:text="#{message.button.save}"></span></button>
+										</div>
+									</form>
+								</div>
+								<div class="col-lg-8">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title" th:text="#{message.label.hostel.user.mapping.list}"></h2>
+										</div>
+									</div>
+									<form action="#" method="get">
+				                        <div class="row mb-3">
+					        				<div class="col-auto">
+					        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+					        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+					        							data-bs-title="Use Hostel Name and User Name to search"></i>
+					        					</label>
+				                            	<input type="text" class="form-control" name="search" id="search"
+				                                   th:value="${form.search}">
+				                             </div>
+				                             <div class="col-auto mt-3">
+				                            	<button class="btn btn-secondary mt-3" type="submit">
+				                            		<span th:text="#{message.label.search}"></span>
+				                            	</button>
+				                            </div>
+				                        </div>
+			                   		</form>
+									<div class="table-responsive themeTable" id="myTable">
+										<table id="userMappingTable" class="table table-bordered nowrap w-100">
+											<thead>
+												<tr>
+													<th th:text="#{message.label.username}"></th>
+													<th th:text="#{message.label.hostel.name}"></th>
+													<th class="text-center" th:text="#{message.label.action}"></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+													th:each="userMapping, iter: ${form.paginationList.getContent()}">
+													<td th:text="${userMapping.id.user}"></td>
+													<td th:text="${userMapping.id.hostel.hostelName}"></td>
+													<td class="text-center">
+														<div class="d-flex justify-content-center">
+															<button type="button" class="btn btn-outline-danger btn-sm"
+																data-bs-toggle="tooltip"
+																th:id="${'deleteReq_'+iter.index}"
+																th:data-user-id="${userMapping.id.user}"
+																th:data-hostel-id="${userMapping.id.hostel.id}"
+																onclick="deleteMapping(this);" data-bs-title="Delete">
+																<i class="fa-solid fa-trash-can"></i>
+															</button>
+														</div>
+													</td>
+												</tr>
+												<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+													<td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+
+
+
+	<div th:id="modalDiv"></div>
+
+	<th:block
+		th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+	</th:block>
+
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/hostel/user-mapping.js}"></script>
+		
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.hostel.user.mapping}]]*/ '';
+			const deleteURL = /*[[#{url.delete}]]*/ '';
+			const getURL = /*[[#{url.get}]]*/ '';			
+		</script>
+
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

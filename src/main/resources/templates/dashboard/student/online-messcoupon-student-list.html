@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header
+		th:replace="~{common/student-dashboard-header:: title(${headerForm}, 'Online Mess Coupon',
+	 	'Dashboard', 'Add New', null, null, 'Back', null,#{url.dashboard}+#{url.student}, null)}">
+	</header>
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeTable">
+						<div class="mb-4">
+							<div class="d-flex justify-content-center mb-4">
+								<div class="alert alert-info text-center fw-semibold shadow-sm"
+									 style="max-width: 900px;">
+									<i class="fa-solid fa-circle-info me-2"></i>
+									After completing the payment, please wait
+									<strong>10 minutes</strong> for the status to update.<br>
+									If the status is not updated after that time, kindly retry the payment.
+								</div>
+							</div>
+							<div class="table-responsive themeTable">
+								<table id="onlineMessCoupon"
+									class="table table-bordered nowrap w-100"
+									th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+									<thead>
+										<tr>
+											<th th:text="#{message.label.submitted.date}"></th>
+											<th th:text="#{message.label.dining.from}"></th>
+											<th th:text="#{message.label.dining.to}"></th>
+											<th th:text="#{message.label.mess.session}"></th>
+											<th class="text-end"><span
+												th:text="#{label.total.amount}"></span> </th>
+											<th th:text="#{message.label.payment.status}"></th>
+											<th class="text-center" th:text="#{message.label.action}"></th>
+										</tr>
+									</thead>
+									<tbody th:if="${form.getList() != null}">
+										<tr th:each="coupon : ${form.getList()}"
+											th:if="${coupon.activeFlag == 'Y'}">
+											<td th:attr="data-order=${coupon.createdAt != null ? coupon.createdAt : ''}">
+												<span th:text="${#temporals.format(coupon.createdAt.toLocalDateTime(), #messages.msg('date.format'))}">
+											</td>
+											<td>
+												<span th:text="${#temporals.format(coupon.diningFrom.toLocalDate(), #messages.msg('date.format'))}">
+											</td>
+											<td>
+												<span th:text="${#temporals.format(coupon.diningTo.toLocalDate(), #messages.msg('date.format'))}">
+											</td>
+											<td>
+												<div style="display: flex; justify-content: space-between;">
+													<th:block
+														th:replace="hostel/mess-session-template :: messSession(${coupon.numOfBreakfast}, 'BF', null, 'num')"></th:block>
+													<th:block
+														th:replace="hostel/mess-session-template :: messSession(${coupon.numOfLunch}, 'LC', null, 'num')"></th:block>
+													<th:block
+														th:replace="hostel/mess-session-template :: messSession(${coupon.numOfDinner}, 'DR', null, 'num')"></th:block>
+                                                    <th:block
+                                                            th:replace="hostel/mess-session-template :: messSession(${coupon.numOfSnacks}, 'ET', null, 'num')"></th:block>
+												</div>
+											</td>
+											<td class="text-end currency" th:text="${coupon.totalAmount}"></td>
+											<td><th:block
+													th:include="common/template/approval-status-badge :: statusBadge(null, ${coupon.paymentStatus})"></th:block>
+											</td>
+											
+											<td>
+												<div class="d-flex justify-content-center">
+													<div th:unless="${coupon.paymentStatus eq workflow.SUCCESS.status}">
+														<a th:href="@{#{url.hostel.guest.coupon.request} + #{url.initiate} + '/' + ${coupon.encryReqIdPdf}}"
+														   class="btn btn-outline-primary btn-sm me-2"
+														   id="payButton" role="button"
+														   onclick="return confirmPayment();"
+														   data-bs-toggle="tooltip" th:data-bs-title="#{message.label.pay.now}">
+														    <i class="fa-solid fa-indian-rupee-sign"></i>
+														</a>
+												    </div>
+													<button id="viewButton" type="button"
+														class="btn btn-outline-bluegray btn-sm edit me-2"
+														th:data-request-id="${coupon.encryReqIdView}"
+														data-bs-toggle="tooltip" data-bs-title="View"
+														onclick="viewGuestCoupon(this)">
+														<i class="fa-solid fa-eye"></i>
+													</button>
+													
+													<div th:if="${coupon.paymentStatus eq workflow.SUCCESS.status}">
+														<button id="printButton" type="button"
+															class="btn btn-outline-pink btn-sm delete me-2" data-bs-toggle="tooltip"
+															th:data-bs-title="#{message.label.download.guest.coupons.pdf}"
+															th:data-request-id="${coupon.encryReqIdPdf}"
+															onclick="checkLdapAuthentication(this)">
+															<i class="fa-solid fa-print"></i>
+														</button>
+													</div>
+													<div th:if="${coupon.paymentStatus eq workflow.PENDING.status}">
+														<button id="deleteButton" type="button"
+															class="btn btn-outline-danger btn-sm delete me-2"
+															th:data-request-id="${coupon.requestId}"
+															th:id="${'deleteReq_'+coupon.requestId}"
+															data-bs-toggle="tooltip" title="Delete"
+															onclick="deleteGuestCouponDetails(this)">
+															<i class="fa-solid fa-trash-can"></i>
+														</button>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div
+								th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	<th:block
+		th:replace="~{common/modal/delete-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+	</th:block>
+
+	<!-- Footer-->
+	<th:block
+		th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/data-table-common.js}"></script>
+		<script th:src="@{/assets/js/guest/guest-coupon-request.js}"></script>
+		<script th:inline="javascript">
+			const dateFormat = /*[[#{date.format}]]*/'';
+			const baseURL = /*[[#{url.hostel.guest.coupon.request}]]*/'';
+			const pdfDownloadURL = /*[[#{url.pdf.download}]]*/'';
+			const viewURL = /*[[#{url.view}]]*/ '';
+			const authenticationURL = /*[[#{url.ldap.authentication}]]*/ '';
+            const deleteStatus = [[${deleteStatus} ?: true]];
+		</script>
+        <script th:inline="javascript" th:if="${errorStatus != null}">
+            const errorStatus = /*[[${errorStatus}]]*/ '';
+            showToast("Error", errorStatus);
+        </script>
+        <script th:inline="javascript" th:if="${errorList != null}">
+            const errorList = /*[[${errorList}]]*/ [];
+
+            if (errorList.length > 0) {
+                // Build a single message with all errors
+                let combinedMessage =
+                    "There is No Mess availability on the following dates and session(s):<br/><br/>" +
+                    errorList.map(item =>
+                        "Coupon Type: " + item.couponType + ", Dining To: " + item.diningTo
+                    ).join("<br/>");
+
+                showToast("Error", combinedMessage);
+            }
+        </script>
+
+        <script type="application/json" id="messOptionsData" th:utext="${messesJson}"></script>
+	</th:block>
+	<th:block th:replace="~{hostel/ldap-authentication-modal}"></th:block>
+	<!-- Footer-->
+</body>
+</html>

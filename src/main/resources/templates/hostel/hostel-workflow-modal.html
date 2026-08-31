@@ -1,0 +1,71 @@
+  <div th:replace="~{common/modal-template ::
+   modal('hostel-workflow-model', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader><span th:text="#{message.label.hostel.work.flow.add}"></span></modalHeader>
+    <modalBody>
+      <form class="themeForm" id="hostel-workflow-form" th:object="${workflowMasterDto}" novalidate method="post" th:action="@{#{url.workflow.master}+#{url.save}}">
+          <div class="row">
+              <div class="col-lg-6 mb-3">
+                  <label class="form-label" for="category">
+                      <span th:text="#{message.label.hostel.category}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                  </label>
+                  <select id="category" th:field="*{category}" class="form-select required-input" th:classappend="${#fields.hasErrors('category')} ? 'is-invalid' : ''" required>
+                      <option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.category}"></option>
+                      <option th:each="workflowCategory : ${workflowCategory}"
+                              th:value="${workflowCategory.value}"
+                              th:text="${workflowCategory.value}">
+                      </option>
+                  </select>
+                  <div class="invalid-feedback backendErrors" th:errors="*{category}"></div>
+                  <div class="invalid-feedback-frontEnd" th:text="#{message.validation.category.required}"></div>
+                  <div class="invalid-req-feedback d-none" th:text="#{message.validation.category.required}"></div>
+              </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="level">
+              	<span th:text="#{message.label.approval.level}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="number" class="form-control required-input" th:field="*{approvalLevel}" th:classappend="${#fields.hasErrors('approvalLevel')} ? 'is-invalid' : ''"
+                     id="level" max="9999" oninput="this.value=this.value.slice(0,4)" th:placeholder="#{message.placeholder.approval.level}" required>
+                <div class="invalid-feedback backendErrors" th:errors="*{approvalLevel}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.level.required}"></div>
+              <div class="invalid-req-feedback d-none" th:text="#{message.validation.level.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="authorityType">
+              	<span th:text="#{message.label.authority.type}"></span>
+              	<th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <select id="authorityType" class="form-select required-input" th:field="*{authorityType}" required
+                      th:classappend="${#fields.hasErrors('authorityType')} ? 'is-invalid' : ''">
+                 <option value="" th:text="#{message.label.select}+' '+#{message.label.authority.type}"></option>
+                  <option th:each="workflowAuthorityType : ${workflowAuthorityType}"
+                          th:value="${workflowAuthorityType.value}"
+                          th:text="${workflowAuthorityType.value}">
+                  </option>
+			  </select>
+                <div class="invalid-feedback backendErrors" th:errors="*{authorityType}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.authority.type.required}"></div>
+              <div class="invalid-req-feedback d-none" th:text="#{message.validation.authority.type.required}"></div>
+            </div>
+              <div class="col-lg-6 mb-3">
+                  <label class="form-label" for="email">
+                      <span th:text="#{message.label.email.id}"></span>
+                  </label>
+                  <input type="text" class="form-control" th:field="*{email}" id="email" maxlength="100"
+                         th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" oninput="trimSpaces(this)" th:placeholder="#{message.placeholder.email.id}">
+                  <div class="invalid-feedback backendErrors" th:errors="*{email}"></div>
+                  <div class="invalid-feedback-frontEnd"><span th:text="#{message.validation.local.guardian.details.email}"></span></div>
+                  <div class="invalid-valid-feedback d-none" th:text="#{message.validation.local.guardian.details.email}"></div>
+              </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="validatorName">
+              	<span th:text="#{message.label.name}"></span>
+              </label>
+              <input type="text" class="form-control" th:field="*{validatorName}" id="validatorName" maxlength="60" oninput="trimSpaces(this)" th:placeholder="#{message.placeholder.name}">
+            </div>
+          </div>
+      </form>
+    </modalBody>
+  </div>
+  

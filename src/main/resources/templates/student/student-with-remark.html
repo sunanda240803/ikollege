@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}">
+</header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form th:action="@{#{url.student.with.remarks}+#{url.student.remark.upload.save}}" method="post"
+                              enctype="multipart/form-data" th:object="${studentBlackListDetailDto}" id="studentRemarkUploadForm">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2 class="tmsub-title"><span
+                                                th:text="#{message.label.bulk.upload.file.header}"></span></h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8 mb-3" id="documentUploadSection">
+                                        <th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+										                'uploadFile' + 1, 'file', '.xls,.xlsx',
+										                'uploadDoc', null, ${#messages.msg('message.drag.drop.here.document')})}">
+                                        </th:block>
+                                        <div class="invalid-feedback" th:text="#{message.validation.complaint.type.required}"></div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <button type="button" id="uploadFileButton" class="btn btn-purple px-4 me-2">
+                                            <i class="fa fa-upload" aria-hidden="true"></i> <span th:text="#{message.button.upload.file}"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="text-danger d-flex align-items-center" th:if="${excelErrorList != null && !excelErrorList.isEmpty()}">
+                                    <div class="invalid-feedback"></div>
+                                    <ul>
+                                        <li th:each="error : ${excelErrorList}">
+                                            <span th:text="${error}"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2 class="tmsub-title"><span
+                                                th:text="#{message.label.bulk.upload.download}"></span></h2>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mb-3 d-flex align-items-center">
+									<span class="fs-5">
+										<u class="text-tmPrimary">
+											<a th:href="@{#{url.student.with.remarks}+#{url.student.remark.template.download}}"
+                                               th:text="#{message.label.click.here.caps}"></a>
+										</u>
+										<span th:text="' '+#{message.button.download.excel.template}"></span>
+									</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form action="#" method="get">
+                        <div class="row mb-3">
+                            <div class="col-auto">
+                                <label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+                                    <i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+                                       th:data-bs-title="#{message.label.student.with.remarks.search.key}"></i>
+                                </label>
+                                <input type="text" class="form-control" name="search" id="search" th:value="${form.search}">
+                            </div>
+                            <div class="col-auto mt-3">
+                                <button class="btn btn-secondary mt-4" type="submit">
+                                    <span th:text="#{message.label.search}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="mb-4">
+                        <div class="table-responsive themeTable">
+                            <table id="studentLoginTable" class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.submitted.date}"></th>
+                                    <th th:text="#{message.label.student.id}"></th>
+                                    <th th:text="#{message.label.student.name}"></th>
+                                    <th th:text="#{message.label.from.date}"></th>
+                                    <th th:text="#{message.label.to.date}"></th>
+                                    <th th:text="#{message.label.revoked.status}"></th>
+                                    <th th:text="#{message.label.revoked.date}"></th>
+                                    <th class="text-center" th:text="#{message.label.action}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                    th:each="studentWithRemarksList, iter: ${form.paginationList.getContent()}">
+                                    <td th:text="${#temporals.format(studentWithRemarksList.createdAt, #messages.msgOrNull('date.format'))}"></td>
+                                    <td th:text="${studentWithRemarksList.studentId}"></td>
+                                    <td th:text="${studentWithRemarksList.firstName}+' '+${studentWithRemarksList.lastName}"></td>
+                                    <td th:text="${#temporals.format(studentWithRemarksList.fromDate, #messages.msgOrNull('date.format'))}"></td>
+                                    <td th:text="${#temporals.format(studentWithRemarksList.toDate, #messages.msgOrNull('date.format'))}"></td>
+                                    <td th:text="${studentWithRemarksList.currentlyActive}"></td>
+                                    <td th:text="${#temporals.format(studentWithRemarksList.currentlyActiveDate, #messages.msgOrNull('date.format'))}"></td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <button type="button" class="btn btn-outline-primary btn-sm me-2"
+                                                    data-bs-toggle="tooltip" th:data-student-remark-id="${studentWithRemarksList.id}"
+                                                    th:data-currently-active="${studentWithRemarksList.currentlyActive}"
+                                                    th:data-currently-active-date="${studentWithRemarksList.currentlyActiveDate}"
+                                                    onclick="editStudentWithRemarkDetails(this);" th:data-bs-title="#{message.label.edit}">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm me-2"
+                                                    data-bs-toggle="tooltip" th:id="${'deleteStudentRemark_'+studentWithRemarksList.id}"
+                                                    onclick="deleteStudentWithRemark(this);"
+                                                    th:data-student-remark-id="${studentWithRemarksList.id}" th:data-bs-title="#{message.label.delete}">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                            <button type="button" th:if="${studentWithRemarksList.currentlyActive == 'Active'}" class="btn btn-outline-secondary btn-sm"
+                                                    data-bs-toggle="tooltip" th:id="${'revokedStudentRemark_'+studentWithRemarksList.id}"
+                                                    onclick=" revokeBlackListing(this);"
+                                                    th:data-student-remark-id="${studentWithRemarksList.id}" th:data-bs-title="#{message.label.revoke.blacklisting}"
+                                                    id="revokeBlackListButton">
+                                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+
+<div th:id="modalDiv"></div>
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/delete-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}"></th:block>
+<th:block th:replace="~{common/modal/warning-modal ::
+   contents(id = null, headerText=#{message.label.confirmation},bodyText=#{message.label.revoke.blasklist})}"></th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/student/student-with-remark.js}"></script>
+    <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.student.with.remarks}]]*/ '';
+        const getURL = /*[[#{url.get}]]*/ '';
+        const deleteURL = /*[[#{url.delete}]]*/ '';
+        const revokeURL = /*[[#{url.revoke.blacklist}]]*/ '';
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

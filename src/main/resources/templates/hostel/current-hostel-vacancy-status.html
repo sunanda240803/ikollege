@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form action="#" method="get" id="currentHostelVacancyStatusId">
+							<div class="mb-4">
+								<div class="table-responsive themeTable">
+									<table id="currentHostelVacancyStatusTable"
+										class="table table-bordered nowrap w-100">
+										<thead>
+											<tr>
+												<th th:text="#{message.label.hostel.name}"></th>
+												<th th:text="#{message.label.total.capacity}"></th>
+												<th th:text="#{message.label.occupied.count}"></th>
+												<th th:text="#{message.label.vacant.count}"></th>
+												<th th:text="#{message.label.exact.vacant.count}"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+												th:each="hostelVacancy, iter : ${form.paginationList.getContent()}">
+												<td>
+													<a href="javascript:void(0)" th:data-hostel-id="${hostelVacancy.hostelId}"
+													   onclick="viewHostelGUI(this);" th:text="${hostelVacancy.hostelName}">
+													</a>
+												</td>
+												<td>
+													<span th:text="${hostelVacancy.totalCapacity}"></span>
+												</td>
+												<td>
+													<a href="javascript:void(0)" th:data-hostel-id="${hostelVacancy.hostelId}"
+														data-status="Occupied" onclick="viewStatusGUI(this);" 
+														th:text="${hostelVacancy.occupied}">
+													</a>
+												</td>
+												<td>
+													<span th:text="${hostelVacancy.totalVacantSeats}"></span>
+												</td>
+												<td>
+													<a href="javascript:void(0)" th:data-hostel-id="${hostelVacancy.hostelId}"
+														data-status="Vacant" onclick="viewStatusGUI(this);" 
+														th:text="${hostelVacancy.vacCapacity}">
+													</a>
+												</td>
+											</tr>
+									    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="5" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer -->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/hostel/current-hostel-vacancy-status.js}"></script> 
+		<script th:inline="javascript">
+            const baseURL = /*[[#{url.hostel.individual.allotment}]]*/ '';
+        </script>
+	</th:block>
+	<!-- Footer -->
+</body>
+</html>

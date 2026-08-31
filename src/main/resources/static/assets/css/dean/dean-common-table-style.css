@@ -1,0 +1,14 @@
+td {
+  width: auto;
+  min-width: 80px;
+  max-width: 400px;
+  word-wrap: break-word; /* Wrap long words */
+}
+.highlight-row {
+    background-color: #f0f8ff !important;
+}
+.highlight-row td, .highlight-row th {
+    background-color: #f0f8ff !important;
+    border: 1px solid #3498db !important;
+    transition: all 0.5s ease;
+}

@@ -1,0 +1,81 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="scripts(scripts, footerForm)">
+<!-- Reset Password Modal -->
+<div th:id="resetPasswordDiv"></div>
+<!-- Hostel Enrollment Date Configuration Modal -->
+<div th:id="enrollmentModalDiv"></div>
+<th:block th:replace="~{common/modal/success-modal :: contents(headerText=#{message.label.confirmation}, bodyText=#{message.label.reset.password.success})}"></th:block>
+    <!-- Footer-->
+    <footer class="footer custom-footer">
+        <div class="container-fluid">
+            <div class="row d-flex align-items-center">
+                <div class="col-3">
+                    <p class="mb-0"> V-<th:block th:text="${buildVersion}"></th:block>
+<!--                    <p class="mb-0"> V-0.6.1</p>-->
+                </div>
+                <div class="col-9 text-end">
+                    <p class="mb-0" th:text="#{message.label.footer.note(${#dates.format(#dates.createNow(), 'yyyy')}, ${institute.schoolName}, ${institute.location})}"></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- //Footer-->
+    <!--//-->
+    <!--JS FILES-->
+    <script th:src="@{/assets/js/base/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/base/jquery.flip.js}"></script>
+    <script th:src="@{/assets/js/base/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/assets/js/base/bootstrap-select.min.js}"></script>
+    <script th:src="@{/assets/js/base/bs5-toast.js}"></script>
+    <script th:src="@{/assets/js/base/main.js}"></script>
+    <script th:src="@{/assets/js/date-fns.js}"></script>
+    <script th:src="@{/assets/js/common/common.js}"></script>
+    <script th:src="@{/assets/js/common/common-validation.js}"></script>
+    <script th:src="@{/assets/js/common/custom-toast.js}"></script>
+    <script th:src="@{/assets/js/common/nicEdit-latest.js}"></script>
+    <script th:src="@{/assets/js/common/header.js}"></script>
+    <script th:src="@{/assets/js/common/footer.js}"></script>
+    <script th:src="@{/assets/js/common/reset-password.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Set the context path using Thymeleaf
+        //  const contextPath = /*[[@{/}]]*/ '';
+        const contextPath = '/' + (/*[[@{/}]]*/ '').replaceAll('/', '');
+        const noDataInTableLabel = /*[[#{message.label.no.data.in.table}]]*/ '';
+        const resetPasswordURL = /*[[#{url.reset.password}]]*/ '';
+    	const hostetEntrollmentURL = /*[[#{url.hostel.enrollment.config}]]*/ '';
+        const logoutURL = /*[[#{url.logout}]]*/ '';
+        /*]]>*/
+    </script>
+    <script>
+        document.addEventListener('show.bs.modal', (event) => {
+            const modal = event.target;
+            if (modal && modal.classList.contains('modal')) {
+                $(function () {
+                    $('[data-bs-toggle="tooltip"]').tooltip();
+                })
+            }
+        });
+    </script>
+
+     <script th:if="${footerForm} != null and ${footerForm.response} != null" th:inline="javascript">
+        showErrorToast([[${footerForm.response.status}]], [[${footerForm.response.message}]]);
+
+    </script>
+    
+    
+
+    <script th:inline="javascript">
+        // show Error modal
+        const modalError = [[${modalError}]];
+    </script>
+
+
+    <th:block th:replace="${scripts}"></th:block>
+
+    <!-- ✅ OPTIONAL: DataTables JS -->
+    <th:block th:if="${USE_DATATABLES}">
+        <th:block th:replace="~{common/common-dt-js :: datatables-js}"></th:block>
+    </th:block>
+
+
+</th:block>

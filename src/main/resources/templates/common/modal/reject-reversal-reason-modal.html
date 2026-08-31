@@ -1,0 +1,19 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+    <div th:replace="~{common/modal/simple-modal-template :: modal('rejectReversalWithReasonModal', ~{::modalHeader}, ~{::modalBody},
+		'warning','fa-solid fa-refresh', #{message.label.confirm},true)}">
+        <modalHeader>
+            <th:block th:text="${headerText}"></th:block>
+        </modalHeader>
+        <modalBody>
+            <span th:text="${bodyText}"></span>
+            <div class="col-lg-12 mb-3">
+                <form class="themeForm" id="rejectReversalWithReasonForm" th:object="${statusUpdateDto}" method="post">
+                    <label style="float:left" class="form-label"><span th:text="#{message.label.bulk.accommodation.request.details.reject.reason}" /></label>
+                    <textarea name="approvalNotes" id="approvalNotesId" class="form-control" th:name="approvalNotes"
+                              th:placeholder="#{message.label.bulk.accommodation.request.details.reject.reason}"  rows="4"></textarea>
+                    <div class="invalid-feedback d-none" th:text="#{message.label.approval.notes} + ' ' + #{message.label.required}"></div>
+                </form>
+            </div>
+        </modalBody>
+    </div>
+</th:block>

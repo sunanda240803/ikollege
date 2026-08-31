@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+    <link th:href="@{/assets/css/animation-style.css}" rel="stylesheet"/>
+</head>
+<body>
+<!-- Login Page-->
+<section class="login-page-wrapper pt-5">
+    <div th:replace="~{common/template/login-page-wrapper:: title(${loginPageWrapper})}"></div>
+    <!-- Login Page Content -->
+    <div class="login-page-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-9 col-lg-8 col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="logo mb-4">
+                                <div th:replace="common/template/app-logo-name :: title(logoAndName)"></div>
+                                <div class="col-lg-12">
+                                    <div th:if="${loginRole.equals('Student')}">
+                                            <h5 class="text-tmPrimary fw-bold text-uppercase" th:text="#{message.label.student.login}"></h5>
+                                        <span class="form-text" th:text="#{message.label.ldap.uname.password.note}"></span>
+                                    </div>
+                                    <div th:if="${loginRole.equals('Faculty')}">
+                                            <h5 class="text-tmPrimary fw-bold text-uppercase" th:text="#{message.label.faculty.login}"></h5>
+                                        <span class="form-text" th:text="#{message.label.ldap.uname.password.note}"></span>
+                                    </div>
+                                    <div th:if="${loginRole.equals('Office')}">
+                                            <h5 class="text-tmPrimary fw-bold text-uppercase" th:text="#{message.label.ohm.office.login}"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <form th:action="@{#{url.login} + #{url.authenticate}}" method="post" id="loginForm"
+                                  th:object="${loginForm}" class="mx-auto">
+                                <div class="float-label mb-4">
+                                    <label class="form-label" for="id">
+                                        <span th:text="#{message.label.username}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control required-input" name="id" id="id" th:placeholder="#{message.placeholder.username}">
+                                    <input type="hidden" class="form-control" name="loginType" id="loginType" th:value="${loginType}">
+                                    <input type="hidden" class="form-control" name="userName" id="userName">
+                                    <div class="invalid-feedback" th:text="#{message.validation.uname.required}"></div>
+                                </div>
+                                <div class="float-label mb-4">
+                                    <label class="form-label" for="password">
+                                        <span th:text="#{message.label.password}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input class="form-control login-password-validation" type="password" name="password" id="password" th:placeholder="#{message.placeholder.password}">
+                                    <div class="invalid-feedback" th:text="#{message.validation.password.required}"></div>
+                                    <div class="invalid-length-feedback d-none" th:text="#{message.validation.password.length}"></div>
+                                </div>
+                                <div class="mb-4 text-danger" th:if="${param.error!=null}" id="failureText" th:text="#{message.validation.invalid.other.credentials}"></div>
+                                <div class="text-danger mb-4 d-none" id="error-message" th:text="#{message.validation.invalid.credentials}"></div>
+                                <div th:replace="common/template/register-login-button :: buttons('loginLogic', 'loginIcon', 'loginText')"></div>
+                            </form>
+                            <div th:replace="common/template/login-bottom :: title('login')"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div th:replace="~{common/template/footer:: title(${footer})}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hostel Fee Payment Module -->
+<div th:replace="~{common/modal/hostel-fee-model:: title(${hostelFeeModel})}"></div>
+<!-- Security Notice Info -->
+<th:block th:replace="~{common/modal/info-modal :: contents(id = null, headerText=#{message.label.security.notice},bodyText=#{message.label.security.notice.note})}"></th:block>
+<!-- //Login Page-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, null)}">
+    <script th:src="@{/assets/js/landing-page.js}"></script>
+    <script th:src="@{/assets/js/common/login-registration.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#infoModal').modal('show');
+            $('#infoModalCancel').addClass(displayNone);
+        });
+    </script>
+</th:block>
+</body>
+</html>

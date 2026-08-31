@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form action="#" method="get" id="wellnessDetailsId" th:object="${wellnessDetailsDto}">
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										 <span th:text="#{message.label.wellness.data}+' '+*{dayScholar}"></span>
+									</h2>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.student.id}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="*{studentId}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.student.name}"></span>
+									</label>
+									<th:block th:if="*{category == 'Students'}">
+										<div class="form-control form-graybox text-wrap"
+											style="overflow: auto;"
+											th:text="*{studentDetails.studentName}">
+										</div>
+									</th:block>
+									<th:block th:if="*{category == 'Others'}">
+										<div class="form-control form-graybox text-wrap"
+											style="overflow: auto;"
+											th:text="*{otherStudName}">
+										</div>
+									</th:block>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.hostel.name}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										th:text="*{studentDetails != null && studentDetails.hostelName != null ? 
+										studentDetails.hostelName : '-'}">
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.room.no}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										th:text="*{studentDetails != null && studentDetails.roomNumber != null ? 
+										studentDetails.roomNumber : '-'}">
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.course}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										th:text="*{studentDetails != null && studentDetails.deptName != null ? 
+										studentDetails.deptName : '-'}">
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.gender}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										th:text="*{studentDetails != null && studentDetails.gender != null ? 
+										(studentDetails.gender == 'M' ? 'Male' : 'Female') : '-'}">
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.email}"></span>
+									</label>
+									<th:block th:if="*{category == 'Students'}">
+										<div class="form-control form-graybox"
+											style="overflow: auto;"
+											th:text="*{studentDetails.emailId}">
+										</div>
+									</th:block>
+									<th:block th:if="*{category == 'Others'}">
+										<div class="form-control form-graybox"
+											style="overflow: auto;"
+											th:text="*{otherStudEmail}">
+										</div>
+									</th:block>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.mobile.number}"></span>
+									</label>
+									<th:block th:if="*{category == 'Students'}">
+										<div class="form-control form-graybox"
+											style="overflow: auto;"
+											th:text="*{studentDetails.studentMobile}">
+										</div>
+									</th:block>
+									<th:block th:if="*{category == 'Others'}">
+										<div class="form-control form-graybox"
+											style="overflow: auto;"
+											th:text="*{otherStudPhone}">
+										</div>
+									</th:block>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.referral.date}"></span>
+									</label>
+									<div class="form-control form-graybox" 
+										th:text="*{#temporals.format(referralDate, #messages.msg('date.format'))}">
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.referral.type}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										style="overflow: auto;"
+										th:text="*{referralType}">
+									</div>
+								</div>
+								<th:block th:if="*{referralType == 'Faculty' || referralType == 'Student Body' 
+									|| referralType == 'Others'}">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.referred.by}"></span>
+										</label>
+										<div class="form-control form-graybox" th:text="*{referralBy}"></div>
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.referrer}+' '+#{message.label.phone.number}"></span>
+										</label>
+										<div class="form-control form-graybox"
+											th:text="*{referralPhone != null ? referralPhone : '-'}">
+										</div>
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.referrer}+' '+#{message.label.email}"></span>
+										</label>
+										<div class="form-control form-graybox"
+											th:text="*{referralEmail != null ? referralEmail : '-'}">
+										</div>
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.referrer}+' '+#{message.label.landline.number}"></span>
+										</label>
+										<div class="form-control form-graybox"
+											th:text="*{referralLandlineNum != null ? referralLandlineNum : '-'}">
+										</div>
+									</div>
+								</th:block>
+								<th:block th:if="*{referralType == 'Others'}">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.referral.type}+' '+#{message.label.description}"></span>
+										</label>
+										<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;"
+											th:text="*{referralOthersDescription}">
+										</div>
+									</div>
+								</th:block>
+								
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.coordinator.name}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="*{coordinatedName}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.coordinator.email}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="*{coordinatedEmail}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.concern.type}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="*{concernType}"></div>
+								</div>
+								<th:block th:if="*{concernType == 'Others'}">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.concern.description}"></span>
+										</label>
+										<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;"
+											th:text="*{concernOthersDescription}">
+										</div>
+									</div>
+								</th:block>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.self.harm}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										 th:text="*{selfHarm == true} ? #{message.label.yes} : #{message.label.no}">
+									</div>
+								</div>
+								<th:block th:if="*{selfHarm == true}">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.self.harm.type}"></span>
+										</label>
+										<div class="form-control form-graybox" th:text="*{selfHarmType}"></div>
+									</div>
+								</th:block>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.psychiatric.consultation}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										th:text="*{psychiatricConsultation == true} ? #{message.label.yes} : #{message.label.no}">
+									</div>
+								</div>
+								<th:block th:if="*{psychiatricConsultation == true}">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" >
+											<span th:text="#{message.label.psychiatric.name}"></span>
+										</label>
+										<div class="form-control form-graybox" th:text="*{psychiatricName}"></div>
+									</div>
+								</th:block>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label" >
+										<span th:text="#{message.label.additional.details}"></span>
+									</label>
+									<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;"
+									     th:text="*{additionalDetails != null ? additionalDetails : '-'}">
+									</div>
+								</div>
+								<input type="hidden" id="wellnessId" th:value="*{id}">
+							</div>
+							<hr class="my-4">
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.wellness.visit.history}"></span>
+									</h2>
+								</div>
+							</div>
+	                        <!--<div class="row mb-3">
+		        				<div class="col-auto">
+		        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+		        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+		        							data-bs-title="Use No of Visit, Interaction Mode and Status to search"></i>
+		        					</label>
+	                            	<input type="text" class="form-control" name="search" id="search" th:field="${form.search}">
+	                             </div>
+	                             <div class="col-auto mt-3">
+	                            	<button class="btn btn-secondary mt-4" type="submit">
+	                            		<span th:text="#{message.label.search}"></span>
+	                            	</button>
+	                            </div>
+	                        </div>-->
+							<div class="table-responsive themeTable">
+								<table id="hostelWorkflowTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+		                                    <th th:text="#{message.label.visit.date}"></th>
+		                                    <th th:text="#{message.label.no.of.visit}"></th>
+		                                    <th th:text="#{message.label.interaction.mode}"></th>
+		                                    <th th:text="#{message.label.duration}"></th>
+		                                    <th th:text="#{message.label.follow.up.date}"></th>
+		                                    <th th:text="#{message.label.status}"></th>
+	                                   		<th class="text-center" th:text="#{message.label.action}"></th>
+	                                   	</tr>
+									</thead>
+									<tbody th:if="${form.list != null and !#lists.isEmpty(form.list)}">
+								    	<tr th:each="visit, iter : ${form.list}">
+											<td>
+												<span th:text="${#temporals.format(visit.visitDate, #messages.msg('date.format'))}"></span>
+											</td>
+											<td><span th:text="${visit.noOfVisit}"></span></td>
+											<td><span th:text="${visit.interactionMode}"></span></td>
+											<td><span th:text="${visit.duration}+' '+#{message.label.mins}"></span></td>
+											<td>
+											    <span th:if="${visit.followUpDate != null}" th:text="${#temporals.format(visit.followUpDate, #messages.msg('date.format'))}"></span>
+											    <span th:unless="${visit.followUpDate != null}">-</span>
+											</td>
+											<td>
+												<span th:text="${visit.visitStatus == 'ongoing' ? 'On Going' :
+								                   (visit.visitStatus == 'referred' ? 'Referred and ongoing' :
+								                   (visit.visitStatus == 'closed' ? 'Closed' :
+								                   (visit.visitStatus == 'longTerm' ? 'Long term' : '-')))}">
+											    </span>
+											</td>
+											<td class="text-center">
+											    <button id="editButton" type="button" class="btn btn-outline-primary btn-sm me-2"
+											    	onclick="editVisitHistoryDetails(this);" 
+													th:data-id="${visit.id}" data-bs-toggle="tooltip" 
+											        th:data-bs-title="#{message.label.edit}">
+											        <i class="fa-solid fa-pencil"></i>
+											    </button>
+											</td>
+								    	</tr>
+								    	<!--<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="7" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>-->
+									</tbody>
+								</table>
+							</div>
+<!--							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>-->
+							<div th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+						</form>
+						<input type="hidden" th:value="${saveButton}" id=saveButton>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	<div th:id="modalDiv"></div>
+
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/student/student-wellness-archive.js}"></script>
+		<script th:src="@{/assets/js/data-table-common.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{student.wellness.archive}]]*/ '';
+			const wellnessVisitDetailsURL = /*[[#{wellness.visit.details}]]*/'';
+		</script>	
+	</th:block>
+</body>
+
+</html>

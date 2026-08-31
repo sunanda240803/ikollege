@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+	<main id="main" class="main">
+		<div class="card main-card mt-4">
+			<div class="card-body themeForm">
+				<form class="themeForm" th:action="@{#{url.staff.details}}" method="post" th:object="${staffDetailsDto}"
+					id="staffDetailsForm" enctype="multipart/form-data">
+					<input type="hidden" th:field="*{facultyId}" id="facultyId">
+					<input type="hidden" th:field="*{employeeId}" id="employeeId">
+					<div class="row">
+						<div class="col-lg-12">
+							<h2 class="tmsub-title"><span th:text="#{message.label.personal.details}"></span></h2>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="employeeId">
+								<span th:text="#{message.label.employee.id}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input th:if="*{facultyId == '' || facultyId == null}" type="text" class="form-control isAlphanumeric required-input" th:field="*{newFacultyId}" th:value="*{facultyId}"
+								id="newFacultyId" th:attr="placeholder=#{message.placeholder.employee.id}"
+								maxlength="25" required >
+							<div th:if="*{facultyId != null && facultyId != ''}" class="form-control form-graybox" th:text="*{facultyId}"></div>
+							<div class="invalid-feedback" th:text="#{message.validation.employee.id.required}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="firstName">
+								<span th:text="#{message.label.first.name}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input type="text" class="form-control isAlphaAndSpace required-input" th:field="*{firstName}"
+								id="firstName" th:attr="placeholder=#{message.placeholder.first.name}"
+								maxlength="32" required >
+							<div class="invalid-feedback" th:text="#{message.validation.first.name.required}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="lastName">
+								<span th:text="#{message.label.last.name}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input type="text" class="form-control isAlphaAndSpace required-input" th:field="*{lastName}"
+								id="lastName" th:attr="placeholder=#{message.placeholder.last.name}"
+								maxlength="32" required>
+							<div class="invalid-feedback" th:text="#{message.validation.last.name.required}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label">
+								<span th:text="#{message.label.dob}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input type="date" class="form-control no-future-date required-input" min="1900-01-01" onkeydown="return false" th:field="*{dateOfBirth}"
+								id="dateOfBirth" th:attr="placeholder=#{message.placeholder.dob}">
+							<div class="invalid-feedback" th:text="#{message.validation.date.of.birth.required}"></div>
+							<div class="invalid-req-feedback d-none" th:text="#{message.validation.date.of.birth.required}"></div>
+							<div class="invalid-age-limit-teaching-feedback d-none" th:text="#{message.validation.date.of.birth.teaching}"></div>
+							<div class="invalid-age-limit-non-teaching-feedback d-none" th:text="#{message.validation.date.of.birth.non.teaching}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="birthPlace" th:text="#{message.label.birth.place}"></label>
+							<input type="text" class="form-control isAlphaAndSpace" th:field="*{birthPlace}"
+								id="birthPlace" th:attr="placeholder=#{message.placeholder.birth.place}"
+								maxlength="64">
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label">
+								<span th:text="#{message.label.gender}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<div class="checkRadio-bg form-control ">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input required-input" type="radio" name="gender"
+										th:field="*{gender}" id="genderType1" th:checked="*{gender == 'M'}"
+										th:value="M" required>
+									<label class="form-check-label" for="genderType1" th:text="#{message.label.male}"></label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input required-input" type="radio" name="gender"
+										th:field="*{gender}" id="genderType2" th:checked="*{gender == 'F'}"
+										th:value="F" required>
+									<label class="form-check-label" for="genderType2" th:text="#{message.label.female}"></label>
+								</div>
+							</div>
+							<div class="invalid-feedback" th:text="#{message.validation.student.details.gender}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label">
+								<span th:text="#{message.label.staff.type}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<div class="checkRadio-bg form-control teaching">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input required-input" type="radio" name="teachingOrNonTeaching"
+										id="staffType1" value="Teaching Staff" required
+										th:checked="*{teachingOrNonTeaching == 'Teaching Staff'}">
+									<label class="form-check-label" for="staffType1"
+										th:text="#{message.label.teaching}"></label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input required-input" type="radio" name="teachingOrNonTeaching"
+										id="staffType2" th:checked="*{teachingOrNonTeaching == 'Non-Teaching Staff'}"
+										value="Non-Teaching Staff" required>
+									<label class="form-check-label" for="staffType2" th:text="#{message.label.non.teaching}"></label>
+								</div>
+							</div>
+							<div class="invalid-feedback" th:text="#{message.validation.staff.type.required}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="emailAddress">
+								<span th:text="#{message.label.email.id}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input type="email" class="form-control required-email" th:field="*{emailAddress}" maxlength="64"
+								id="emailAddress" th:attr="placeholder=#{message.placeholder.email.id}" required>
+							<div class="form-text" th:text="#{message.label.email.note}"></div>
+							<div class="invalid-feedback" th:text="#{message.validation.email.id.required}"></div>
+							<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+							<div class="invalid-valid-feedback d-none" th:text="#{message.validation.family.details.email}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="mobileNumber">
+								<span th:text="#{message.label.mobile.number}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input type="text" class="form-control numeric required-mob-num" th:field="*{mobileNumber}" id="mobileNumber"
+								th:attr="placeholder=#{message.placeholder.mobile.number}" th:data-mask="${mobileNumberMask}" onblur="validateMobileStart(this)">
+							<div class="form-text" th:text="#{message.label.mob.no.note}"></div>
+							<div class="invalid-feedback" th:text="#{message.validation.mobile.number.required}"></div>
+							<div class="invalid-req-feedback d-none" th:text="#{message.validation.mobile.number.required}"></div>
+							<div class="invalid-val-feedback d-none" th:text="#{message.validation.family.details.mob.no}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="contactNumber" th:text="#{message.label.alternate.numbers}"></label>
+							<input type="text" class="form-control" th:field="*{contactNumber}"
+								id="contactNumber" data-template="true"
+								th:attr="placeholder=#{message.placeholder.alternate.numbers}"
+								onblur="validateMobileNumberPatternDOM(this, false);validateMobileNum(this,false);validateMobileStart(this);">
+							<div class="form-text" th:text="#{message.label.alternate.numbers.note}"></div>
+							<div class="invalid-feedback" th:text="#{message.validation.family.details.mob.no}"></div>
+							<div class="invalid-val-feedback d-none" th:text="#{message.validation.family.details.mob.no}"></div>
+						</div>
+						<div class="col-lg-3 mb-3">
+							<label class="form-label" for="dateOfJoining">
+								<span th:text="#{message.label.joining.date}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<input type="date" class="form-control required-input" id="dateOfJoining" onkeydown="return false" min="1900-01-01" th:placeholder="#{message.placeholder.joining.date}"
+								   th:field="*{dateOfJoining}" required>
+							<div class="invalid-feedback" th:text="#{message.validation.date.of.joining.required}"></div>
+						</div>
+						<!--//-->
+						<div class="col-lg-6 col-12 mb-3">
+							<div class="row">
+								<div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'">
+									<label class="form-label" for="address">
+										<span th:text="#{message.label.address}"></span>
+									</label>
+									<textarea class="form-control addressForm" th:field="*{addressOne}" id="address" maxlength="300"
+										th:text="${staffDetailsDto.addressOne}" th:placeholder="#{message.placeholder.address}"></textarea>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-lg-12">
+								<h2 class="tmsub-title" th:text="#{message.label.account.details}"></h2>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-3 mb-3">
+								<label class="form-label" th:text="#{message.label.staff.account}"></label>
+								<div class="checkRadio-bg form-control">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" id="activate"
+											onclick="createStaffUserName()"
+											th:checked="*{accountCreationStatus == 'on'}"
+											th:field="*{accountCreationStatus}" value="on">
+
+										<input type="hidden" name="_accountCreationStatus" value="on">
+										<label class="form-check-label" for="activate" th:text="#{message.label.activate}"></label>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3 mb-3">
+								<label class="form-label" th:text="#{message.label.staff.username}"></label>
+								<div class="form-control form-graybox" id="userName"></div>
+								<input type="hidden" th:id="userName1" th:field="*{userName}">
+							</div>
+							<div class="col-lg-3 mb-3">
+								<label class="form-label" for="roleId">
+									<span th:text="#{message.label.assign.role}"></span>
+								</label>
+								<select class="form-select required-select-input" data-live-search="true" id="roleId" th:field="*{roleId}">
+									<option value="" th:text="#{message.label.select}+' '+#{message.label.assign.role}"></option>
+									<option th:if="${rolesList != null && rolesList.size() gt 0}"
+										th:each="roleList: ${rolesList}" th:value="${roleList.roleId}"
+										th:text="${roleList.roleName}" >
+									</option>
+								</select>
+								<div class="invalid-feedback select-picker-validation" th:text="#{message.validation.role.required}"></div>
+							</div>
+							<div class="col-lg-3 mb-3">
+								<label class="form-label" for="secondaryRoleId">
+									<span th:text="#{message.label.secondary.role}"></span>
+								</label>
+								<select class="form-select" id="secondaryRoleId" th:field="*{secondaryRoleId}">
+									<option value="" th:text="#{message.label.select}+' '+#{message.label.secondary.role}"></option>
+									<option th:if="${rolesList != null && rolesList.size() gt 0}"
+										th:each="roleList: ${rolesList}" th:value="${roleList.roleId}"
+										th:text="${roleList.roleName}" >
+									</option>
+								</select>
+								<div class="invalid-feedback select-picker-validation" th:text="#{message.validation.role.required}"></div>
+							</div>
+						</div>
+						<hr class="my-4">
+						<div class="row text-end">
+							<div class="col-lg-12">
+								<input hidden id="formErrors">
+								<div class="invalid-feedback" th:text="#{message.validation.form.errors}"></div>
+							</div>
+							<div class="col-lg-12">
+								<div class="d-flex align-items-center  justify-content-end">
+									<button type="submit" id="saveButton" onclick="return validateForm();"
+										class="btn btn-aqua px-4">
+										<i class="fa-solid fa-floppy-disk me-1"></i>
+										<span th:text="#{message.button.save}"></span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</main>
+
+	<div th:id="modalDiv"></div>
+	<th:block
+		th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.designation})}">
+	</th:block>
+
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+		<script th:src="@{/assets/js/staff/staff-details.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.staff.details}]]*/ '';
+			const usernameURL = /*[[#{url.username}]]*/ '';
+            const designationMaster = /*[[#{url.designation.master}]]*/ '';
+            const designationNameExist = /*[[#{url.designation.name.exist}]]*/ '';
+			
+			let phNumMaskElementArray=	['#mobileNumber'];
+			inputMask(phNumMaskElementArray);
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

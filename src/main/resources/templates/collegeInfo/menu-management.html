@@ -1,0 +1,124 @@
+<div
+	th:replace="~{common/modal-template :: modal('menu-management', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+
+	<modalHeader>
+		<span th:text="'Menu Master Add / Edit '"></span>
+	</modalHeader>
+
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.menu.master}}"
+			  method="post" th:object="${menu}" id="menuMasterForm">
+			<input type="hidden" th:value="${menu?.menuId}" th:name="menuId" id="menuId" />
+
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="menuName">
+						<span th:text="#{message.label.menu.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" th:value="${menu?.menuHeading}" class="form-control required-input" id="menuName"
+						   th:placeholder="#{message.label.menu.name}" th:field="*{menuHeading}" maxlength="75" required>
+					<div class="invalid-feedback" th:text="#{message.validation.menu.name}"></div>
+				</div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label"><span th:text="#{message.label.menu.menuType}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select class="selectpicker required-select-input" data-live-search="true" th:field="*{menuType}"
+                            id="menuType" required>
+                        <option value="" th:text="#{message.label.select}+' '+#{message.label.menu.menuType}"></option>
+                        <option th:each="menuType: ${menuTypes}" th:value="${menuType}" th:text="${menuType}"></option>
+                    </select>
+                    <div class="invalid-feedback" id="menuTypeValue" th:text="#{message.validation.menu.menuType.required}"></div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <label class="form-label" for="menuURL">
+                        <span th:text="#{message.label.menu.url}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" th:value="${menu?.urlPath}" class="form-control required-input" id="menuURL"
+                           th:placeholder="#{message.label.menu.url}" th:field="*{urlPath}" maxlength="250" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.menu.url}"></div>
+                </div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="menuOrder">
+						<span th:text="#{message.label.menu.order}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" th:value="${menu?.menuOrder}" class="form-control required-input" id="menuOrder"
+						   th:placeholder="#{message.label.menu.order}" th:field="*{menuOrder}" maxlength="3" required
+						   oninput="validateIntergerNumberInput(this)">
+					<div class="invalid-feedback" th:text="#{message.validation.menu.order}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="mainMenuOrder">
+						<span th:text="#{message.label.menu.mainMenuOrder}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" th:value="${menu?.mainMenuOrder}" class="form-control required-input"
+						   id="mainMenuOrder" th:placeholder="#{message.label.menu.mainMenuOrder}" maxlength="3"
+						   th:field="*{mainMenuOrder}" oninput="validateIntergerNumberInput(this)" required>
+					<div class="invalid-feedback" th:text="#{message.validation.menu.mainMenuOrder}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="subMenuOrder">
+						<span th:text="#{message.label.menu.subMenuOrder}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" th:value="${menu?.subMenuOrder}" class="form-control required-input" maxlength="3"
+						   id="subMenuOrder" th:placeholder="#{message.label.menu.subMenuOrder}" th:field="*{subMenuOrder}"
+						   oninput="validateIntergerNumberInput(this)" required>
+					<div class="invalid-feedback" th:text="#{message.validation.menu.subMenuOrder}"></div>
+				</div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="subSubMenuOrder">
+                        <span th:text="#{message.label.menu.subSubMenu}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" th:value="${menu?.subSubMenuOrder}" class="form-control required-input"
+                           id="subSubMenuOrder" th:placeholder="#{message.label.menu.subSubMenu}" maxlength="3"
+                           th:field="*{subSubMenuOrder}" oninput="validateIntergerNumberInput(this)" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.menu.subSubMenu}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="imageName">
+                        <span th:text="#{message.label.menu.image.name}"></span>
+                    </label>
+                    <input type="text" th:value="${menu?.imageName}" class="form-control" id="imageName"
+                           th:placeholder="#{message.label.menu.image.name}" th:field="*{imageName}">
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="iconName">
+                        <span th:text="#{message.label.menu.icon.name}"></span>
+                    </label>
+                    <input type="text" th:value="${menu?.iconName}" class="form-control" id="iconName"
+                           th:placeholder="#{message.label.menu.icon.name}" th:field="*{iconName}">
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="bannerName">
+                        <span th:text="#{message.label.menu.banner.name}"></span>
+                    </label>
+                    <input type="text" th:value="${menu?.bannerName}" class="form-control" id="bannerName"
+                           th:placeholder="#{message.label.menu.banner.name}" th:field="*{bannerName}">
+                </div>
+				<div class="col-lg-6 mb-3 RadioCheckToggle">
+					<label class="form-label" for="activeFlag">
+						<span th:text="#{message.label.menu.active}"></span>
+					</label>
+					<div class=" form-check">
+						<input th:class="form-check-input" type="checkbox" id="activeFlag" th:name="activeFlag"
+							   th:checked="${menu?.activeFlag == 'Y'}"
+							   th:value="${menu?.activeFlag == 'Y' ? 'Y' : 'N'}"
+							   onclick="updateCheckboxValue(this)">
+						<label class="form-check-label" for="activeFlag"><span
+								th:text="#{message.label.manage.isActive}"></span></label>
+					</div>
+				</div>
+
+
+			</div>
+		</form>
+	</modalBody>
+</div>

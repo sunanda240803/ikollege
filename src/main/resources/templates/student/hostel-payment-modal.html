@@ -1,0 +1,165 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('hostel-payment-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.payment.details}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" id="hostelPaymentForm" th:object="${hostelPaymentDto}" th:method="post">
+		    <div class="row g-3">
+		        <label class="form-label"><span th:text="#{message.label.fee.paid}"></span></label>
+		        <div class="checkRadio-bg form-control">
+		            <div class="form-check form-check-inline me-4">
+		                <input class="form-check-input required-input" type="radio" id="icollect" th:name="|paymentType|" value="ICOLLECT"
+							   onclick="checkFeePaymentOption('ICOLLECT')"
+							   th:checked="*{paymentType eq null or paymentType.value.equals('icollect')}">
+		                <label class="form-check-label" for="icollect"><span th:text="#{message.label.icollect}"></span></label>
+		            </div>
+		            <div class="form-check form-check-inline">
+		                <input class="form-check-input required-input" type="radio" id="dd" th:name="|paymentType|" value="DD"
+							   onclick="checkFeePaymentOption('DD')"
+							   th:checked="*{paymentType ne null and paymentType.value.equals('dd')}">
+		                <label class="form-check-label" for="dd"><span th:text="#{message.label.DD}"></span></label>
+		            </div>
+		            <div class="form-check form-check-inline">
+		                <input class="form-check-input required-input" type="radio" id="bankLoan" th:name="|paymentType|" value="BANK_LOAN"
+							   onclick="checkFeePaymentOption('BANK_LOAN')"
+							   th:checked="*{paymentType ne null and paymentType.value.equals('bankLoan')}">
+		                <label class="form-check-label" for="bankLoan"><span th:text="#{message.label.bankloan}"></span></label>
+		            </div>
+		            <!--<div class="form-check form-check-inline">
+		                <input class="form-check-input required-input" type="radio" id="positive" th:name="|paymentType|" value="ALREADY_PAID"
+							   onclick="checkFeePaymentOption('ALREADY_PAID')">
+		                <label class="form-check-label" for="positive"><span
+								th:text="#{message.label.positive.balance}+' ('+${enrollment.startDate}+')'"></span></label>
+		            </div>-->
+		        </div>
+		        <hr>
+		        <div class="col-lg-6 common" th:classappend="*{paymentType eq null or (paymentType ne null and !paymentType.value.equals('alreadyPaid'))} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.payment.date}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		           </label>
+		            <input type="date" class="form-control required-input" th:field="*{paymentDate}" onclick="this.blur();"
+						   th:oninput="validatePaymentDate(this,[[${enrollment.fromDate}]],[[${enrollment.toDate}]])"
+						   th:classappend="${#fields.hasErrors('paymentDate')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors" th:errors="*{paymentDate}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.payment.date.required}"></div>
+		            <div class="invalid-feedback-req d-none" th:text="#{message.validation.payment.date.required}"></div>
+		            <div class="invalid-feedback-invalid-date d-none" th:with="dateFormat=#{date.format}"
+						 th:text="${'Payment date should be between '+#temporals.format(enrollment.fromDate,dateFormat)+' and '+#temporals.format(enrollment.toDate,dateFormat)}"></div>
+		        </div>
+
+		        <div class="col-lg-6 common"
+					 th:classappend="*{paymentType eq null or (paymentType ne null and !paymentType.value.equals('alreadyPaid'))} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.payment.amount}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" maxlength="9" class="form-control required-input" oninput="validateNumberInput(this)"
+						   th:field="*{paymentAmount}" th:classappend="${#fields.hasErrors('paymentAmount')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors" th:errors="*{paymentAmount}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.payment.amount.required}"></div>
+		        </div>
+
+		        <div class="col-lg-6 icollect"
+					 th:classappend="*{paymentType eq null or (paymentType ne null and paymentType.value.equals('icollect'))} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.ref.number}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" maxlength="64" oninput="allowOnlyAlphabetsAndNumbers(this)"
+						   id = "duNumber" th:field="*{paymentReferenceNo}"
+						   th:classappend="${hostelPaymentDto.paymentType ne null and hostelPaymentDto.paymentType.value.equals('icollect') and #fields.hasErrors('paymentReferenceNo')} ? 'is-invalid' : ''"
+						   th:disabled="*{paymentType ne null and !paymentType.value.equals('icollect')}">
+					<div th:if="*{paymentType eq null or paymentType.value.equals('icollect')}" class="invalid-feedback backendErrors" th:errors="*{paymentReferenceNo}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.ref.no.required}"></div>
+		        </div>
+
+		        <div class="col-lg-6 icollect" th:classappend="*{paymentType eq null or (paymentType ne null and paymentType.value.equals('icollect'))} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.retyp.ref.no}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" id="confirmDunumber" maxlength="64" oninput="allowOnlyAlphabetsAndNumbers(this)">
+		            <div class="invalid-feedback" th:text="#{message.validation.retype.ref.no.required}"></div>
+		            <div class="invalid-feedback-req d-none" th:text="#{message.validation.retype.ref.no.required}"></div>
+		            <div class="invalid-feedback-duNumber d-none" th:text="#{message.validation.ref.no.match}"></div>
+		        </div>
+
+		        <div class="col-lg-6 dd"
+					 th:classappend="*{paymentType ne null and paymentType.value.equals('dd')} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.ddnumber}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" maxlength="64" oninput="allowOnlyAlphabetsAndNumbers(this)"
+						   id = "ddNumber" th:field="*{paymentReferenceNo}"
+						   th:classappend="${hostelPaymentDto.paymentType ne null and hostelPaymentDto.paymentType.value.equals('dd') and #fields.hasErrors('paymentReferenceNo')} ? 'is-invalid' : ''"
+						   th:disabled="*{paymentType eq null or !paymentType.value.equals('dd')}">
+					<div  th:if="*{paymentType ne null and paymentType.value.equals('dd')}" class="invalid-feedback backendErrors"
+						  th:errors="*{paymentReferenceNo}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.ddNumber.required}"></div>
+		        </div>
+		        
+		        <!-- DD -->
+		        <div class="col-lg-6 dd" th:classappend="*{paymentType ne null and paymentType.value.equals('dd')} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.ifsc.code}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" th:field="*{ifscCode}" maxlength="64"
+						   onblur="validateAndCheckIfscCode(this,'')"
+						   th:classappend="${#fields.hasErrors('ifscCode')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors" th:errors="*{ifscCode}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.ifsc.required}"></div>
+					<div class="invalid-feedback-req d-none" th:text="#{message.validation.ifsc.required}"></div>
+					<div class="invalid-feedback-invalid-code d-none" th:text="#{message.invalid.ifsc.code}"></div>
+		        </div>
+
+		        <div class="col-lg-6 bank"
+					 th:classappend="*{paymentType ne null and paymentType.value.equals('bankLoan')} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.UTRLoanNo}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" maxlength="19" oninput="validateNumberInput(this)" th:field="*{loanAccNo}"
+						   th:classappend="${#fields.hasErrors('loanAccNo')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors" th:errors="*{loanAccNo}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.utr.loan.required}"></div>
+		        </div>
+
+		        <div class="col-lg-6 dd bank"
+					 th:classappend="*{paymentType ne null and (paymentType.value.equals('bankLoan') or paymentType.value.equals('dd'))} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.bankName}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" maxlength="128" th:field="*{bankName}"
+						   th:readonly="*{paymentType ne null and paymentType.value.equals('dd')}" oninput="allowOnlyAlphabetsAndNumbers(this)"
+						   th:classappend="${#fields.hasErrors('bankName')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors" th:errors="*{bankName}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.bank.name.required}"></div>
+		        </div>
+
+		        <div class="col-lg-6 dd bank"
+					 th:classappend="*{paymentType ne null and (paymentType.value.equals('bankLoan') or paymentType.value.equals('dd'))} ? '':'d-none'">
+		            <label class="form-label">
+		            	<span th:text="#{message.label.branchName}"></span>
+		            	<th:block th:replace="~{common/template/mandatory-symbol}" />
+		            </label>
+		            <input type="text" class="form-control required-input" maxlength="128" th:field="*{branchName}"
+						   th:readonly="*{paymentType ne null and paymentType.value.equals('dd')}" oninput="allowOnlyAlphabetsAndNumbers(this)"
+						   th:classappend="${#fields.hasErrors('branchName')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors" th:errors="*{branchName}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.branch.name.required}"></div>
+		        </div>
+
+				<div class="col-lg-12 positive d-none">
+					<p class="text-primary"
+					   th:text="#{message.hostel.payment.positive.1}+${enrollment.startDate}+#{message.hostel.payment.positive.2}">
+					</p>
+				</div>
+		    </div>
+		</form>
+	</modalBody>
+</div>

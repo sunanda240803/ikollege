@@ -1,0 +1,40 @@
+<th:block th:fragment="address(form, idSuffix, formPrefix, size)">
+	<th:block th:with="colLgSize=${size == 'full' ? 12 : size == 'half' ? 6 : size == 'medium' ? 3 : size == 'small' ? 2 : 4}
+				, colMdSize=${size == 'full' ? 12 : size == 'half' ? 6 : size == 'medium' ? 3 : size == 'small' ? 2 : 4}">
+	<div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'">
+		<label class="form-label">
+			<span th:text="#{message.label.address}"></span>
+			<th:block th:replace="~{common/template/mandatory-symbol}" />
+		</label>
+		<textarea class="form-control" th:id="'address' + ${idSuffix}" th:name="${formPrefix} + .address"
+			th:text="${form.address}" th:attr="placeholder=#{message.label.address}"></textarea>
+		<div class="invalid-feedback addressReq" th:text="#{message.validation.address.required}"></div>
+		<div class="invalid-feedback addressLn d-none" th:text="#{message.validation.address.length}"></div>
+	</div>
+	<th:block
+		th:replace="~{common/country-state-city-template::select(${form.countrySelectForm}, ${idSuffix}, ${formPrefix} + '.countrySelectForm', size)}" />
+	<div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'">
+		<label class="form-label" th:text="#{message.label.taluk}"></label>
+		<input type="text" class="form-control" th:name="${formPrefix} + .taluk"
+			th:attr="placeholder=#{message.label.taluk}" th:id="'taluk' + ${idSuffix}" th:value="${form.taluk}">
+		<div class="invalid-feedback talukReq d-none" th:text="#{message.validation.taluk.required}"></div>
+		<div class="invalid-feedback talukPattern d-none" th:text="#{message.validation.taluk.pattern}"></div>
+	</div>
+	<div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'">
+		<label class="form-label" th:text="#{message.label.district}"></label>
+		<input type="text" class="form-control" th:name="${formPrefix} + .district"
+			th:attr="placeholder=#{message.label.district}" th:id="'district' + ${idSuffix}"
+			th:value="${form.district}">
+		<div class="invalid-feedback districtReq d-none" th:text="#{message.validation.district.required}"></div>
+		<div class="invalid-feedback districtPattern d-none" th:text="#{message.validation.district.pattern}"></div>
+	</div>
+	<div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'">
+		<label class="form-label" th:text="#{message.label.zip.code}"></label>
+		<input type="text" class="form-control" th:name="${formPrefix} + .zipcode"
+			th:attr="placeholder=#{message.label.zip.code}" th:id="'zipCode' + ${idSuffix}"
+			th:value="${form.zipcode}" oninput="validateZipCode(this)">
+		<div class="invalid-feedback zipcodeReq d-none" th:text="#{message.validation.zip.code.required}"></div>
+		<div class="invalid-feedback zipcodePattern d-none" th:text="#{message.validation.zip.code.pattern}"></div>
+	</div>
+	</th:block>
+</th:block>

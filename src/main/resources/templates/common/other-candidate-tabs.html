@@ -1,0 +1,29 @@
+<th:block th:fragment="tabs(tabList, screen)">
+	<div class="row mb-4">
+		<div class="col-lg-12 themeTabs">
+			<ul class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link secondary-tab" th:classappend="${screen == '#{url.hostel.accomodation.request.details}' ? ' active' : ''}"
+					th:href="@{#{url.accommodation.request}}">
+						<span th:text="#{message.label.request.details}"></span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link  secondary-tab" th:classappend="${screen == '#{url.hostel.accomodation.payment.details}' ? ' active' : ''}"
+					 th:href="@{#{url.other.candidate.payment}}">
+						<span th:text="#{message.label.payment.details}"></span>
+					</a>
+				</li>
+				<th:block th:if="${screen == '#{url.hostel.accomodation.request.details}'}">
+					<li class="nav-item ms-auto">
+						<button type="button" class="btn btn-bluegray me-2"
+								data-bs-toggle="modal" data-bs-target="#statusDescriptionModal">
+							<span th:text="#{message.label.view.status.description}"></span>
+						</button>
+					</li>
+				</<th:block>
+			</ul>
+			<input type="hidden" id="screenURL"/>
+		</div>
+	</div>
+</th:block>

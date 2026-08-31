@@ -1,0 +1,3 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="hostelFeeNote(model)">
+    <h6 th:classappend="${model} == null ? 'text-tmSecondary fw-bold':'form-text hostel-fee-note fw-bold'" th:text="#{message.label.hostel.fee.payment.instruction}"></h6>
+</th:block>

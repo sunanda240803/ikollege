@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+<body>
+	<!-- <header th:replace="~{common/header:: title(${headerForm})}"></header> -->
+	<header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Mess Registration','Dashboard', null,null,null,'Back',null,#{url.dashboard}+#{url.student},null)}">
+	</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body">
+						<th:block th:insert="~{common/priority-mess-tabs::tabs(feedback='Disable',studentEditStatus=false,messId=${messId})}"></th:block>
+						<form class="themeForm " id="priorityMessRegistrationForm" th:action="@{#{url.priority.mess.widget}+#{url.priority.mess.save}}" method="POST" 
+							th:object="${messRegistrationList}" onsubmit="return validateMessSelection()">
+							<div class="row mt-4">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.mess.details}"></span>
+									</h2>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-4">
+									<label class="form-label">
+										<span th:text="#{message.label.current.mess.name}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${currentMessName != null ? currentMessName : '-'}"></div>
+								</div>
+									<div class="col-lg-4">
+									<label class="form-label">
+										<span th:text="#{message.label.mess.period}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${dinningFromDate} + ' to ' + ${dinningToDate}"></div>
+								</div>
+							</div>
+
+    						<div class="row mt-5">
+								<div class="col-lg-12 mb-3">
+									<h2 class="tmsub-title"><span th:text="#{message.label.choose.preference}"></span>
+									</h2>
+								</div>
+							</div>
+
+							<div class="row mb-5">
+								<th:block th:each="registration, index : ${messRegistrationList}">
+									<div class="col-lg-4 col-md-4 mb-3 RadioCheckToggle" th:each="mess, iterStat : ${registration.messList}">
+										<!-- Radio input -->
+										<input type="radio" class="btn-check"
+											   th:id="'CheckToggle_'+ ${index.index}+ '_'+ ${mess.id}"
+											   th:name="|id.priorityMessId|" th:checked="${mess.check}"
+											   autocomplete="off" th:value="${mess.id}">
+										<!-- Label for the radio input -->
+										<label th:classappend="${mess.messName.contains('Protien')} ? 'btn-outline-orange btn-blink-orange' : 'btn-outline-tmPrimary'" class="btn text-start d-flex flex-column hover-fill"
+											   th:for="'CheckToggle_'+ ${index.index}+ '_'+ ${mess.id}">
+											<span class="fw-bold" th:text="${mess.messName}"></span>
+											<span class="mt-1 small" th:text="${mess.description}"></span>
+										</label>
+									</div>
+								</th:block>
+							</div>
+
+
+							<!--Button Section-->
+							<div class="row text-end ">
+								<div class="col-lg-12 mb-4">
+									<div class="d-flex align-items-center justify-content-end">
+										<a type="button" class="btn btn-secondary px-4 me-3" id="cancel" th:href="@{#{url.dashboard} + #{url.student}}">
+											<i class="fa-solid fa-circle-arrow-left me-1"></i>
+											<span th:text="#{message.button.cancel}"></span>
+										</a>
+										<button type="submit" class="btn btn-aqua px-4" id="priorityMessSave" >
+											<i class="fa-solid fa-floppy-disk me-1"></i>
+											<span th:text="#{message.button.save}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<th:block th:replace="~{common/modal/info-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.information})}"></th:block>
+
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dashboard/student/student-priority-mess-reg.js}"></script>
+	    <script th:inline="javascript">
+	    	const messValidationMsg = /*[[${#messages.msg('message.validation.mess.preference')}]]*/'';
+	    	const bioDataFilledMsg = /*[[${#messages.msg('message.validation.bio.data.filled')}]]*/'';
+	    	const feedBackSubmittedMsg = /*[[${#messages.msg('message.validation.feedback.submitted.message')}]]*/'';
+	    	const feedBackNotSubmittedMsg = /*[[${#messages.msg('message.validation.feedback.not.message')}]]*/'';
+            const baseUrl = /*[[#{url.priority.mess.widget}]]*/ '';
+            const checkMessPeriod = /*[[#{url.get.mess.period}]]*/ '';
+            const getMessFeedback = /*[[#{url.get.feedback.details}]]*/ '';
+	    </script>
+	</th:block>	
+	<!-- Footer-->
+</body>
+
+</html>

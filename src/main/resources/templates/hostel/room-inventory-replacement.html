@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<form class="themeForm">
+								<div class="row mb-4" id="inventory">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.hostel.name}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+										<select class="selectpicker required-select-input" data-live-search="true" th:value="${hostelId}"
+												id="hostelName">
+											<option value="0" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+											<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+													th:text="${hostelList.hostelName}"
+													th:selected="*{hostelId} == ${hostelList.id}">
+											</option>
+										</select>
+										<div class="invalid-feedback" th:text="#{message.validation.hostel.name.required}">
+										</div>
+									</div>
+									<div class="col-auto" style="margin-top: 38px">
+										<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+										<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+										<button type="button" id="searchButton" class="btn btn-lgtblue" onclick="return getRoomInventoryListValidate()">
+											<i class="fa-solid fa-database"></i>
+											<span th:text="#{message.button.get.data}"></span>
+										</button>
+									</div>
+									 <div class="col d-flex justify-content-end align-items-center">
+										<div class="col-auto me-3">
+				        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+				        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+		        									th:data-bs-title="#{message.label.inventory.replacement.search}"></i>
+				        					</label>
+			                            	<input type="text" class="form-control" name="search" id="search">
+		                             	</div>
+			                             <div class="col-auto mt-3 ">
+			                            	<button class="btn btn-secondary mt-3" type="button" onclick="return getRoomInventoryListValidate();">
+			                            		<span th:text="#{message.label.search}"></span>
+			                            	</button>
+			                            </div>
+									</div>
+								</div>
+							</form>
+							<div th:if="${form.paginationList != null && form.paginationList.getContent() != null}" class="table-responsive themeTable">
+								<table id="accountHeadTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+		                                    <th th:text="#{message.label.inventory.code}"></th>
+		                                    <th th:text="#{message.label.inventory.name}"></th>
+		                                    <th th:text="#{message.label.hostel.name}"></th>
+		                                    <th th:text="#{message.label.room.no}"></th>
+		                                    <th th:text="#{message.label.inventory.condition}"></th>
+		                                    <th th:text="#{message.label.action}" class="text-center"></th>
+                                    	</tr>
+									</thead>
+									<tbody>
+									<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+										th:each="roomInventory, iter: ${form.paginationList.getContent()}">
+										<td th:text="${roomInventory.assetCode}"></td>
+										<td th:text="${roomInventory.assetName}"></td>
+										<td th:text="${roomInventory.hostelName}"></td>
+										<td th:text="${roomInventory.roomNo}"></td>
+										<td th:text="${roomInventory.assetCondition}"></td>
+										<td class="text-center">
+											<button type="button" th:id="${'replacedOrRepairedStatus_'+roomInventory.getAssetCategoryId()}"
+													class="btn btn-outline-primary btn-sm me-2"
+													data-bs-toggle="tooltip"
+													onclick="replacedOrRepaired(this);"
+													th:data-category-id="${roomInventory.getAssetCategoryId()}"
+													th:data-bs-title="#{message.label.replaced.or.repaired}">
+												<i class="fa-solid fa-screwdriver-wrench"></i>
+											</button>
+										</td>
+									</tr>
+									<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+										<td colspan="11" class="text-center" th:text="#{message.label.no.data.available}"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<th:block th:replace="~{common/modal/warning-modal :: contents(id = null, headerText=#{message.label.confirmation},bodyText=#{message.label.inventory.replacement.status})}"></th:block>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/hostel/inventory-replacement.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.room.inventory.replacement}]]*/ '';
+			const replacedOrRepairedURL = /*[[#{url.room.inventory.replaced.or.repaired}]]*/ '';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

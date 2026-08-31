@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+  <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+<body>
+<header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Hostel Room Vacating Form','Dashboard', null,null,'Submit','Back',null,#{url.dashboard}+#{url.student},null)}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card main-card mt-4">
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-lg-12">
+		       <th:block th:replace="~{common/template/note :: noteContent('message.label.note', 'message.label.hostel.vacating.form.note', null)}"></th:block>
+            </div>
+          </div>
+          <form class="themeForm needs-validation" id="vacatingForm" method="post" th:action="@{#{url.hostel.room.vacating.form}+#{url.save}}"
+                th:object="${studentHostelRoomVacatingRequestDto}" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}" id="vacatingId">
+            <div class="row mt-2">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title"><span th:text="#{message.label.student.details}"></span>
+                </h2>
+              </div>
+            </div>
+            <div class="row mb-5">
+              <div class="col-lg-12">
+                <div class="row">
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="studentName">
+                      <span th:text="#{message.label.student.name}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" id="studentName" th:field="*{acountName}" class="form-control required-input"
+                           th:placeholder="#{message.placeholder.student.name}"
+                           maxlength="60" required >
+                    <div class="form-text" th:text="#{message.label.bank.student.name.note}"></div>
+                    <div class="invalid-feedback" th:text="#{message.validation.student.details.name}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="mobileNumber">
+                      <span th:text="#{message.label.mobile.number}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control numeric required-mob-num"  id="mobileNumber"
+                           th:attr="placeholder=#{message.placeholder.mobile.number}" th:field="*{mobileNo}" th:data-mask="${mobileNumberMask}" required>
+                    <div class="form-text" th:text="#{message.label.mob.no.note}"></div>
+                    <div class="invalid-feedback"><span
+                            th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+                    <div class="invalid-req-feedback d-none"><span
+                            th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+                    <div class="invalid-val-feedback d-none"><span
+                            th:text="#{message.validation.student.details.mob.no}"></span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="email">
+                      <span th:text="#{message.label.email.id}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="email" id="email" class="form-control required-email" maxlength="60" th:field="*{emailId}" th:placeholder="#{message.placeholder.email.id}" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.email.id.required}"></div>
+                    <div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+                    <div class="invalid-valid-feedback d-none" th:text="#{message.validation.local.guardian.details.email}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="address">
+                      <span th:text="#{message.label.address.communication}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea type="text" id="address" rows="2" class="form-control required-input" th:field="*{studentAddress}"
+                              th:placeholder="#{message.placeholder.address.communication}" maxlength="320" required></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.address.required}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="vacatingHotelDate">
+                      <span th:text="#{message.label.vacating.hostel.date}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" id="vacatingHotelDate" th:field="*{vacatingDate}" onkeydown="return false" class="form-control required-input" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.date.of.vacatinghostel}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="reasonSelect">
+                      <span th:text="#{message.label.reason.for.vacating}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select name="vacatingReason" class="form-control required-input" th:field="*{vacatingReason}" id="reasonSelect" required>
+                      <option value="" th:text="#{message.label.select}" selected></option>
+                      <option th:each="reasonForVacation : ${reasonForVacationList}"
+                              th:value="${reasonForVacation.value}"
+                              th:text="${reasonForVacation.value}">
+                      </option>
+                    </select>
+                    <div class="invalid-feedback" th:text="#{message.validation.reason.vacating.required}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3 d-none" id="otherReasonContainer">
+                    <label class="form-label" for="otherReason">
+                      <span th:text="#{message.label.other.reason}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" id="otherReason" maxlength="60" class="form-control required-input" th:field="*{othersVacatingReason}"
+                           th:placeholder="#{message.placeholder.other.reason}" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.other.reason.required}"></div>
+                  </div>
+                </div>
+                <div class="row bankAndDonationContainer" id="bankDetails">
+                  <div class="row mt-2">
+                    <div class="col-lg-12">
+                      <h2 class="tmsub-title" th:text="#{message.label.bank.details}"></h2>
+                    </div>
+                  </div>
+                  <div class="form-text fs-6 mb-3" th:text="#{message.label.bank.details.note}"></div>
+                  <div class="col-lg-4 dd mb-3">
+                    <label class="form-label" for="ifscCode">
+                      <span th:text="#{message.label.ifsc.code}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" id="ifscCode" class="form-control required-input" th:field="*{ifsCodeOne}"
+                           onblur="validateAndCheckIfscCode(this,'')" oninput="validateAlphaNumericInput(this);" maxlength="11"
+                           th:placeholder="#{message.placeholder.ifsc.code}" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.ifsc.required}"></div>
+                    <div class="invalid-feedback-req d-none" th:text="#{message.validation.ifsc.required}"></div>
+                    <div class="invalid-feedback-invalid-code d-none" th:text="#{message.invalid.ifsc.code}"></div>
+                  </div>
+                  <div class="col-lg-4" id="bankNameContainer">
+                    <label class="form-label" for="bankName">
+                      <span th:text="#{message.label.bankName}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control" id="bankName" maxlength="128" th:field="*{bankNameOne}"
+                            oninput="allowOnlyAlphabetsAndNumbers(this)" readonly>
+                  </div>
+                  <div class="col-lg-4" id="branchNameContainer">
+                    <label class="form-label" for="branchName">
+                      <span th:text="#{message.label.branchName}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" id="branchName" class="form-control" maxlength="128" th:field="*{branchNameOne}" oninput="allowOnlyAlphabetsAndNumbers(this)" readonly>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="bankAccNo">
+                      <span th:text="#{message.label.bank.account.no}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" id="bankAccNo" class="form-control required-input numeric"
+                           th:field="*{bankAccountNoOne}" th:placeholder="#{message.placeholder.bank.acc.no}"
+                           maxlength="17" required oncopy="return false;" onpaste="return false;" oncut="return false;">
+                    <div class="invalid-feedback" th:text="#{message.validation.bank.accountno.required}"></div>
+                  </div>
+                </div>
+                <div class="d-none row" id="periodOfAbsence">
+                  <div class="row mt-2">
+                    <div class="col-lg-12">
+                      <h2 class="tmsub-title" th:text="#{message.label.period.of.absence}"></h2>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="exchangeProgFromDateId">
+                      <span th:text="#{message.label.from.date}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" id="exchangeProgFromDateId" onkeydown="return false"
+                           th:field="*{exchangeProgPeriodFromDate}" name="exchangeProgFromDate" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.exc.prog.from.date.required}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="exchangeProgToDateId">
+                      <span th:text="#{message.label.to.date}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" id="exchangeProgToDateId" th:field="*{exchangeProgPeriodToDate}"
+                           name="exchangeProgToDate" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.exc.prog.to.date.required}"></div>
+                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.exc.prog.to.date.required}"></div>
+                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.from.to.date.range}"></div>
+                  </div>
+                  <div class="col-lg-4 mb-3">
+                    <label class="form-label">
+                      <span th:text="#{message.label.place.of.visit}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" name="placeOfVisit" class="form-control required-input" id="placeId" th:field="*{placeOfVisit}"
+                           th:placeholder="#{message.placeholder.place.of.visit}" maxlength="32" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.place.of.visit.required}"></div>
+                  </div>
+                </div>
+                  <div class="col-lg-4 mb-3 bankAndDonationContainer">
+                    <label class="form-label">
+                      <span th:text="#{message.label.donate.amount}"></span>
+                      <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <div class="checkRadio-bg form-control " id="donationOption">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input required-input" type="radio" id="yes" th:field="*{donationStatus}"
+                               th:checked="*{donationStatus == true}" th:value="true" name="donation" required>
+                        <label class="form-check-label" for="yes"><span th:text="#{message.label.yes}"></span></label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input required-input" id="no" type="radio" th:field="*{donationStatus}"
+                               th:checked="*{donationStatus == false}"  th:value="false" name="donation" required>
+                        <label class="form-check-label" for="no"><span th:text="#{message.label.no}"></span></label>
+                      </div>
+                    </div>
+                    <div class="invalid-feedback" th:text="#{message.validation.donate.amount.required}"></div>
+                  </div>
+                  <div class="d-none row" id="donationContainer">
+                    <div class="col-lg-4 mb-3">
+                      <label class="form-label">
+                        <span th:text="#{message.label.to.whom}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                      </label>
+                      <select class="form-select required-input" id="toWhom" th:field="*{donatorType}" required>
+                        <option value="" th:text="#{message.label.select}" ></option>
+                        <option th:each="donationType : ${donationTypeList}" th:value="${donationType}" th:text="${donationType}"></option>
+                      </select>
+                      <div class="invalid-feedback" th:text="#{message.validation.whom.required}"></div>
+                    </div>
+                    <div class="col-lg-4 mb-3 d-none" id="descriptionContainer">
+                      <label class="form-label" for="description">
+                        <span th:text="#{message.label.description}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                      </label>
+                      <textarea type="text" id="description" class="form-control required-input" th:field="*{othersDescription}"
+                                th:placeholder="#{message.placeholder.description}" maxlength="320" required></textarea>
+                      <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+                    </div>
+                    <div class="col-lg-4 mb-3 d-none" id="hostelNameContainer">
+                      <label class="form-label" for="hostelName">
+                        <span th:text="#{message.label.hostel.name}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                      </label>
+                      <select class="selectpicker required-select-input" data-live-search="true" th:field="*{donatedHostel}" id="hostelName" required>
+                        <option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+                        <option th:each="hostelList : ${hostelList}" th:value="${hostelList.hostelName}"
+                                th:text="${hostelList.hostelName}"></option>
+                      </select>
+                      <div class="invalid-feedback" id="hostelInputVal" th:text="#{message.validation.hostel.name.required}"></div>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                      <label class="form-label" for="donationAmount">
+                        <span th:text="#{message.label.donation.amount}"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                      </label>
+                      <input type="text" id="donationAmount" th:field="*{donationAmount}" maxlength="8" th:placeholder="#{message.placeholder.donation.amount}"
+                             class="form-control required-input" oninput="validateNumberInput(this)" required>
+                      <div class="invalid-feedback" th:text="#{message.validation.donation.amount.required}"></div>
+                    </div>
+                  </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input required-input" id="handOver" th:field="*{roomConditionDeclaration}"
+                         th:value="${roomConditionDeclaration == null ? false : true}" type="checkbox" required>
+                  <label class="form-check-label" for="handOver">
+                    <span th:text="#{message.label.handed.over}"></span>
+                  </label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input required-input" id="belongings" th:field="*{recollectDeclaration}"
+                         th:value="${recollectDeclaration == null ? false : true}" type="checkbox" required>
+                  <label class="form-check-label" for="belongings">
+                    <span th:text="#{message.label.belongings}"></span>
+                  </label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input required-input" id="dues" th:field="*{recoveryDuesDeclaration}"
+                         th:value="${recoveryDuesDeclaration == null ? false : true}" type="checkbox" required>
+                  <label class="form-check-label" for="dues">
+                    <span th:text="#{message.label.dues}"></span>
+                  </label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input required-input" id="bicycle" type="checkbox" th:field="*{bicycleDeclaration}"
+                         th:value="${bicycleDeclaration == null ? false : true}" required>
+                  <label class="form-check-label" for="bicycle">
+                    <span th:text="#{message.label.bicycle}"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!--Button Section-->
+            <hr class="my-4">
+            <div class="row text-end">
+              <div class="col-lg-12 mt-2 mb-4">
+                <div class="d-flex align-items-center justify-content-end">
+                  <button type="submit" onclick="window.history.back();" class="btn btn-secondary px-4 me-3" id="cancel" >
+                    <i class="fa-solid fa-ban me-1"></i>
+                    <span th:text="#{message.button.cancel}"></span>
+                  </button>
+                  <button type="button" class="btn btn-aqua px-4" id="hostelVacatingSave">
+                    <i class="fa-solid fa-floppy-disk me-1"></i>
+                    <span th:text="#{message.button.save}"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- //Main-->
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+  <script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+  <script th:src="@{/assets/js/hostel/hostel-vacating.js}"></script>
+  <script th:inline="javascript">
+    const baseURL = /*[[#{url.hostel.room.vacating.form}]]*/ '';
+    const getURL = /*[[#{url.get.form}]]*/ '';
+    const ifscURL = /*[[#{url.ifsc}]]*/ '';
+    let phNumMaskElementArray=	['#mobileNumber'];
+    inputMask(phNumMaskElementArray);
+  </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

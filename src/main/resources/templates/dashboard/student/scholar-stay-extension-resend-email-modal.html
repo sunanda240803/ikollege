@@ -1,0 +1,12 @@
+<div th:replace="~{common/modal-template ::
+   modal('scholars-stay-extension-resend-email-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+    <modalHeader th:text="#{message.label.scholars.stay.extension.add}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="scholars-stay-extension-resend-email-form" th:action="@{#{url.scholars.stay.extension}+#{url.resend.email}}"
+              th:object="${scholarsStayExtensionDto}" novalidate method="post">
+            <div class="row">
+                <input type="hidden" th:field="*{id}">
+            </div>
+        </form>
+    </modalBody>
+</div>

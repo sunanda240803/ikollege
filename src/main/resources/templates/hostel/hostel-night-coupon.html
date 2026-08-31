@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+<header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Hostel Night Coupon','Dashboard', null,null,null,'Back',null,#{url.dashboard}+#{url.student},null)}"></header>
+
+</header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="themeForm" th:action="@{#{url.hostel.night.coupon}}" id="hostelNightCouponForm" th:object="${hostelNightCouponForm}" method="post">
+                        <input type="hidden" id="maxCoupon" th:value="${maxCoupon}" autocomplete="off">
+                        <input type="hidden" id="vegRate" th:value="${hostel.vegAmount != null ? hostel.vegAmount : 0.0}" autocomplete="off">
+                        <input type="hidden" id="nonVegRate" th:value="${hostel.nonVegAmount != null ? hostel.nonVegAmount : 0.0}" autocomplete="off">
+                        <input type="hidden" id="totalAmountId" name="overallTotal" autocomplete="off">
+                        <input type="hidden" id="ledgerBalance" th:value="${ledgerBalance}">
+                        <input type="hidden" id="noOfCouponsTotal" th:value="${totalNumberOfCoupons}" autocomplete="off">
+
+                        <div class="row">
+                            <div class="col-lg-12 mb-4">
+                                <th:block th:replace="~{common/template/note :: noteContent('message.label.notes', null, ~{::noteContent})}">
+                                    <noteContent>
+                                        <ul>
+                                            <li th:text="#{message.maximum.no.of.coupons.purchased}+${maxCoupon}"></li>
+                                            <li th:text="#{message.coupon.amout.calculation}"></li>
+                                        </ul>
+                                    </noteContent>
+                                </th:block>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Left Side - Request List -->
+                            <div class="col-md-6">
+                                <div class="card p-4 shadow-sm text-center">
+                                    <h5 class="mb-2" th:text="#{message.label.requested.list}"></h5>
+                                    <div class="table-responsive themeTable" th:if="${hostelNightPaymentTransactions != null && !hostelNightPaymentTransactions.isEmpty()}">
+                                        <table id="eventMasterTable" class="table table-bordered  nowrap w-100">
+                                            <thead>
+                                            <tr>
+                                                <th th:text="#{message.label.date}"></th>
+                                                <th th:text="#{message.label.mode.of.payment}"></th>
+                                                <th th:text="#{message.label.no.of.veg}"></th>
+                                                <th th:text="#{message.label.no.of.non.veg}"></th>
+                                                <th class="text-end" th:text="#{message.label.total.amount}"></th>
+                                                <th th:text="#{message.label.payment.status}"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="trans, iter: ${hostelNightPaymentTransactions}">
+                                                <td th:text="${@utility.dateFormatter(trans.createdAt)}"></td>
+                                                <td th:text="${trans.payBy}"></td>
+                                                <td th:text="${trans.noOfVegCoupon}"></td>
+                                                <td th:text="${trans.noOfNonvegCoupon}"></td>
+                                                <td class="text-end currency" th:text="${trans.totalAmount}"></td>
+                                                <td th:text="${trans.paymentStatus}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="table-responsive" th:if="${hostelNightPaymentTransactions  == null || hostelNightPaymentTransactions.isEmpty()}">
+                                        <p class="text-center text-muted mt-3" th:text="#{message.label.no.requests.found}"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side - Coupon Request Form -->
+                            <div class="col-md-6">
+                                <!-- Coupon Rate Card -->
+                                <div class="card p-4 mt-3 shadow-sm text-center">
+                                    <h5 class="mb-2" th:text="#{message.label.hostel.coupon}+' '+#{message.label.hostel}+' '+${hostel.hostelName}"></h5>
+                                    <p class="fw-bolder text-danger">
+                                        <span class="me-3" th:text="#{message.label.veg}+' - ₹'"></span><span class="currency" th:text="${hostel.vegAmount}"></span> |
+                                        <span class="ms-3" th:text="#{message.label.non.veg}+' - ₹'"></span><span class="currency" th:text="${hostel.nonVegAmount}"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Coupon Selection -->
+                                <div class="card p-4 mt-3 shadow-sm">
+                                    <h5 class="mb-3" th:text="#{message.label.select.coupons}"></h5>
+
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-end">
+                                            <span class="fw-bold">
+                                                <i class="fas fa-leaf text-success"></i>
+                                                <span th:text="#{message.label.veg}"></span>
+                                            </span>
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="number" id="vegCount" name="noOfVegCoupon" class="form-control text-center" min="0" th:field="*{vegCount}"
+                                                   oninput="calculateTotal()" autocomplete="off">
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="fw-bold text-primary" id="vegTotal">₹0</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-end">
+                                            <span class="fw-bold">
+                                                <i class="fas fa-drumstick-bite text-danger"></i>
+                                                <span th:text="#{message.label.non.veg}"></span>
+                                            </span>
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="number" id="nonVegCount" name="noOfNonVegCoupon" class="form-control text-center" min="0" th:field="*{nonVegCount}"
+                                                   oninput="calculateTotal()" autocomplete="off">
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="fw-bold text-primary" id="nonVegTotal">₹0</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-3" style="font-size: 1.8rem; font-weight: bold;">
+                                        Total: <span id="overallTotal" class="text-primary">₹0</span>
+                                    </div>
+
+                                    <!-- Ledger Balance Checkbox -->
+                                    <div class="mt-3 mb-2 text-center">
+                                        <input type="checkbox" class="form-check-input" id="useLedgerBalance" name="useLedgerBalance" th:field="*{isLedger}"
+                                               autocomplete="off">
+                                        <label class="form-check-label" for="useLedgerBalance" th:text="#{message.label.use.existing.ledger.balalnce}"></label>
+                                        <p id="ledgerBalanceInfo" class="text-success mt-2 d-none" th:text="#{message.label.available.ledger.balance}+' ₹'+${ledgerBalance}"></p>
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="text-center mt-2">
+                                        <button id="saveButton" class="btn btn-success px-4 mb-4 d-none" th:text="#{message.label.pay.by.mess.account}"></button>
+                                        <button id="payButton" class="btn btn-primary px-4" th:text="#{message.label.pay.by.online}" disabled></button>
+                                    </div>
+                                    <div class="text-center mt-1">
+                                        <span class="errorfont text-danger mb-4" id="errorSpanId"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/hostel-night-coupon.js}"></script>
+</th:block>
+<!-- Footer -->
+</body>
+
+</html>

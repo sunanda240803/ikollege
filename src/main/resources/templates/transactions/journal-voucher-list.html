@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body" th:if="${param.voucher_no == null}">
+                    <form id="journalVoucherForm" action="" method="get" class="themeForm" name="journalVoucherForm"
+                          enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <div class="col-lg-4 mb-3">
+                                <label for="voucherNo" class="form-label me-2">
+                                    <span th:text="#{message.label.voucher.no}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input id="voucherNo" type="text" class="form-control me-3 required-input" name="voucher_no" required>
+                                <div class="invalid-feedback" th:text="#{message.validation.voucher.no.required}"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3 pt-2">
+                                <button id="getData" class="btn btn-lgtblue mt-4" type="button"
+                                        onclick="getDetailsByVoucherNo()">
+                                    <i class="fa-solid fa-database"></i>
+                                    <span th:text="#{message.label.get.data}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body" th:if="${param.voucher_no != null}">
+                    <form action="#" method="get" class="form-journal-voucher" id="journalVoucherListForm" name="journalVoucherListForm"
+                          enctype="multipart/form-data">
+
+                        <div class="row mb-4 d-flex justify-content-end">
+                            <div class="col-lg-6 d-flex justify-content-end">
+                                <div class="col-6 px-2">
+                                    <label for="voucher_no" class="form-label me-2" th:text="#{message.label.voucher.no}"></label>
+                                    <input id="voucher_no" type="text" class="form-control me-3" value="JV000193" readonly disabled>
+                                </div>
+                                <div class="col-6 px-2">
+                                    <label for="voucher_date" class="form-label me-2" th:text="#{message.label.voucher.date}"></label>
+                                    <input id="voucher_date" type="date" class="form-control" th:value="${#dates.format(voucherDate, 'yyyy-MM-dd')}" required>
+                                    <p class="invalid-feedback" th:text="#{message.label.voucher.date} + ' ' + #{message.validation.is.required}"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="table-responsive themeTable">
+                                <table id="journalVoucherListTable" class="table table-bordered nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th th:text="#{message.label.ledger.account}">Ledger Account</th>
+                                        <th th:text="#{message.label.ledger.sub.account}">Ledger Sub Account</th>
+                                        <th th:text="#{message.label.ledger.ref.no}">Ledger Ref No.</th>
+                                        <th th:text="#{message.label.description}">Description</th>
+                                        <th th:text="#{message.label.dr.cr}">Dr/Cr</th>
+                                        <th class="text-end" th:text="#{message.label.amount}">Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <select name="ledger_account" class="form-select" disabled>
+                                                <option value=""><span th:text="#{message.label.select}"></span></option>
+                                                <option value="ESTB" selected>ESTB</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="ledger_sub_account" class="form-select" disabled>
+                                                <option value=""><span th:text="#{message.label.select}"></span></option>
+                                                <option value="Sub1" selected>-</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="ledger_ref_no" class="form-control" value="ESTB">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="description" class="form-control" value="Towards Establishment B Charges">
+                                        </td>
+                                        <td>
+                                            <select name="debit_credit" class="form-select" disabled>
+                                                <option value="Debit" selected>Debit</option>
+                                                <option value="Credit">Credit</option>
+                                            </select>
+                                        </td>
+                                        <td class="text-end">
+                                            <input type="text" name="amount" class="form-control text-end currency isNumberAndDot" value="1000.00">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select name="ledger_account" class="form-select" disabled>
+                                                <option value="">Select</option>
+                                                <option value="ESTB" selected>ESTB</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="ledger_sub_account" class="form-select" disabled>
+                                                <option value="">Select</option>
+                                                <option value="Sub1" selected>Sub Account 1</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" name="ledger_ref_no" class="form-control" value="ESTB"></td>
+                                        <td><input type="text" name="description" class="form-control" value="Towards Establishment B Charges"></td>
+                                        <td>
+                                            <select name="debit_credit" class="form-select" disabled>
+                                                <option value="Debit">Debit</option>
+                                                <option value="Credit" selected>Credit</option>
+                                            </select>
+                                        </td>
+                                        <td class="text-end">
+                                            <input type="text" name="amount" class="form-control text-end currency isNumberAndDot" value="1000.00">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Total Credit:</strong></td>
+                                        <td colspan="2" class="text-end">
+                                            <div class="form-greybox totalCredit currency p-2"></div>
+                                            <input type="hidden" id="totalCredit" name="totalCredit" class="totalCredit form-control text-end currency" readonly>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Total Debit:</strong></td>
+                                        <td colspan="2" class="text-end">
+                                            <div class="form-greybox totalDebit currency p-2"></div>
+                                            <input type="hidden" id="totalDebit" name="totalDebit" class="totalDebit form-control text-end currency" readonly>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:id="modalDiv"></div>
+<!--<th:block th:replace="~{mess/mess-add-form-modal}"></th:block>-->
+
+<!--<div class="alignleft padLeft10px">-->
+<!--    <a href="javascript:void(0);" onclick="addRowToJournalTable()" title="Add Journal Items" class="addNewStyle">Add-->
+<!--        Detail</a>-->
+<!--</div>-->
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/journal-voucher-list.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.journal.voucher}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

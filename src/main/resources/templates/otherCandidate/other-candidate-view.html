@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="themeForm" th:object="${accommodationRequestForm}"
+                          th:action="@{#{url.dean.other.candidate.requests}}"
+                          method="post"
+                          th:with="categoryEnum = ${T(com.iitm.hosteldine.constant.CategoryEnum)},roleEnum = ${T(com.iitm.hosteldine.util.RoleEnum)},
+                          constant = ${T(com.iitm.hosteldine.constant.ModelConstants)},
+                          category = ${accommodationRequestForm.candidateAppointmentRequestDto.id ne null and accommodationRequestForm.candidateAppointmentRequestDto.id >0 ?
+                           accommodationRequestForm.candidateAppointmentRequestDto.category : accommodationRequestForm.candidateProfileDto.postSelect}">
+                        <input type="hidden" id="occupancy" th:value="*{candidateAppointmentRequestDto.occupancy}">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.candidate.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 mb-3">
+                                <div class="upload-box">
+                                    <div class="box text-center">
+                                        <label>
+                                            <img class="img-fluid d-block mx-auto profile" id="studentProfileImage"
+                                                 th:data-default="@{/assets/img/user-img1.png}" alt=""
+                                                 th:src="@{#{url.file} + #{url.image} + '/CANDIDATE_IMAGE/'+ ${accommodationRequestForm.candidateProfileDto.imageName}}"
+                                                 th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''">
+<!--                                            <img class="img-fluid d-block mx-auto" id="studentProfileImage"-->
+<!--                                                 alt="Image"-->
+<!--                                                 th:src="@{/assets/img/user-img1.png}">-->
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-10 mb-3">
+                                <div class="row">
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.first.name}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox"
+                                             th:text="*{candidateProfileDto.firstName}"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.last.name}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox"
+                                             th:text="*{candidateProfileDto.lastName}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.dob}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="*{#temporals.format(candidateProfileDto.dob, #messages.msg('date.format'))}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.gender}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="*{candidateProfileDto.gender}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.city.or.town}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="*{candidateProfileDto.city}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.state}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="*{candidateProfileDto.state}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.pin.code}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="*{candidateProfileDto.pin}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.phone.number}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox"
+                                             th:text="*{candidateProfileDto.phoneNumber}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.mobile.number}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox"
+                                             th:text="*{candidateProfileDto.mobileNumber}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.email.address}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox" th:text="*{candidateProfileDto.email}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.post}">
+												</span>
+                                        </label>
+                                        <div class="form-control form-graybox"
+                                             th:text="*{candidateProfileDto.postSelect}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.address}+'1'">
+												</span>
+                                        </label>
+                                        <textarea class="form-control" th:text="*{candidateProfileDto.address}"
+                                                  disabled></textarea>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label">
+												<span th:text="#{message.label.address}+'2'">
+												</span>
+                                        </label>
+                                        <textarea class="form-control" th:text="*{candidateProfileDto.address2}"
+                                                  disabled></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.appointment.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.appointment.from}">
+												</span>
+                                </label>
+                                <div class="form-control form-graybox"
+                                     th:text="*{#temporals.format(candidateAppointmentRequestDto.appointmentFrom, #messages.msg('date.format'))}">
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.appointment.to}">
+												</span>
+                                </label>
+                                <div class="form-control form-graybox"
+                                     th:text="*{#temporals.format(candidateAppointmentRequestDto.appointmentTo, #messages.msg('date.format'))}">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.stay.from}">
+												</span>
+                                </label>
+                                <input type="date" class="form-control" id="stayFrom"
+                                       th:value="*{candidateAppointmentRequestDto.stayFrom}"
+                                       th:disabled="*{stayExtensionRequestForm ne null}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.stay.to}">
+												</span>
+                                </label>
+                                <input type="date" class="form-control" id="stayTo"
+                                       th:value="*{candidateAppointmentRequestDto.stayTo}"
+                                       th:disabled="*{stayExtensionRequestForm ne null}">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.validating.authority.name}">
+												</span>
+                                </label>
+                                <div class="form-control form-graybox"
+                                     th:text="*{candidateAppointmentRequestDto.validatingAuthority}">
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 mb-3"
+                                 th:if="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.application.no}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <div class="form-control form-graybox"
+                                     th:text="*{candidateAppointmentRequestDto.applicationNo}">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3"
+                                 th:if="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label" for="proDept">
+                                    <span th:text="#{message.label.program.department}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <div class="form-control form-graybox" id="proDept"
+                                     th:text="*{candidateAppointmentRequestDto.programDept}">
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.email}">
+												</span>
+                                </label>
+                                <div class="form-control form-graybox"
+                                     th:text="*{candidateAppointmentRequestDto.validatingAuthorityEmail}">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.category}">
+												</span>
+                                </label>
+                                <input type="hidden" id="category"
+                                       th:value="*{candidateAppointmentRequestDto.category}">
+                                <div class="form-control form-graybox"
+                                     th:text="${accommodationRequestForm.candidateAppointmentRequestDto.id eq null or accommodationRequestForm.candidateAppointmentRequestDto.id <= 0 ? accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.INTERVIEWS.value) ? 'MS/PHD Interview':
+                                       accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.PROJECT_STAFF.value) ? 'ICSR' : accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.INTERNSHIP.value) ?
+                                       'Internship with IITM Faculty' : accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.SASTHRA.value) ? 'Sasthra / Saarang' :
+                                        accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.OTHERS.value) ? accommodationRequestForm.candidateProfileDto.postSelect +' - ('+accommodationRequestForm.candidateProfileDto.postOthers+')'
+                                        : accommodationRequestForm.candidateProfileDto.postSelect
+                                       : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value) ? 'MS/PHD Interview':
+                                       accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.PROJECT_STAFF.value) ? 'ICSR'
+                                       : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.INTERNSHIP.value) ?
+                                       'Internship with IITM Faculty' : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.SASTHRA.value) ?
+                                       'Sasthra / Saarang' : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.OTHERS.value) ?
+                                       accommodationRequestForm.candidateAppointmentRequestDto.category+' - ('+accommodationRequestForm.candidateAppointmentRequestDto.categoryOthers+')'
+                                       : accommodationRequestForm.candidateAppointmentRequestDto.category}">
+                                </div>
+                            </div>
+							<div class="col-lg-3 mb-3">
+								<div class="row">
+									<div class="col-lg-9 catChange" style="margin-top: 38px"
+										th:if="*{stayExtensionRequestForm eq null and (emailStatus ne null and !emailStatus.equalsIgnoreCase('FROM_EMAIL'))}">
+										<button type="button" id="changeCatBtn" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+											data-bs-placement="bottom" title="Change Category">
+											<i class="fa-solid fa-rotate me-1"></i> Change Category
+										</button>
+									</div>
+									<div class="col-lg-9 mb-3 catNew d-none">
+										<label class="form-label">
+											<span th:text="#{message.label.new}+' '+#{message.label.category}"></span>
+										</label>
+									    <select class="form-select" id="newCategory">
+											<option th:text="#{message.label.select}" value=""></option>
+									        <option th:each="entry, iter : ${accommodationRequestForm.candidateProfileDto.postData}"
+									                th:text="${entry.value}" th:value="${entry.key}"></option>
+									    </select>
+										<div id="categoryOthersContainer" class="mt-3 d-none">
+										    <input type="text" class="form-control required-input" th:placeholder="#{message.placeholder.other.category}" id="categoryOthers">
+										    <div class="invalid-feedback" th:text="#{message.validation.category.others.required}"></div>
+										</div>
+									</div>
+									<div class="col-lg-3 catNew d-none" style="margin-top: 38px">
+										<button type="button" id="cancelCatButton" class="btn btn-sm btn-danger"
+												data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cancel">
+											<i class="fa-solid fa-xmark fa-lg"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3 mb-3">
+							    <label class="form-label">
+									<span th:text="#{message.label.purpose}"></span>
+							    </label>
+							    <textarea class="form-control" th:text="*{candidateAppointmentRequestDto.purpose}"
+							              disabled>
+							    </textarea>
+							</div>
+                        </div>
+                        <div class="row">
+                            <th:block
+                                    th:include="common/template/file-upload-template :: contents(${accommodationRequestForm.candidateFilesInformationList})"></th:block>
+                        </div>
+
+                        <div class="row" th:if="*{stayExtensionRequestForm ne null}">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span
+                                        th:text="#{message.label.previous} +' '+#{message.label.stay.extension} +' '+#{message.label.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="*{stayExtensionRequestForm ne null}">
+                            <div class="table-responsive themeTable">
+                                <table class="table table-bordered nowrap w-100">
+                                    <thead>
+                                    <tr>
+                                        <td th:text="#{message.label.stay.from}"></td>
+                                        <td th:text="#{message.label.stay.to}"></td>
+                                        <td th:text="#{message.label.approval.date}"></td>
+                                        <td th:text="#{message.label.mess.option}"></td>
+                                        <td th:text="#{message.label.hostel.name}"></td>
+                                        <td th:text="#{message.label.room.no}"></td>
+                                        <td th:text="#{message.label.approval.notes}"></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody th:with="date=#{date.format}">
+                                    <tr th:if="*{previousStayExtensionDetailsList ne null and !previousStayExtensionDetailsList.isEmpty()}"
+                                        th:each="prev : *{previousStayExtensionDetailsList}">
+                                        <td th:text="${#temporals.format(prev.stayFrom(),date)}"></td>
+                                        <td th:text="${#temporals.format(prev.stayTo(),date)}"></td>
+                                        <td th:text="${#temporals.format(prev.approvalDate(),date)}"></td>
+                                        <td th:text="${prev.messOption()}"></td>
+                                        <td th:text="${prev.hostelName()}"></td>
+                                        <td th:text="${prev.roomNo()}"></td>
+                                        <td th:text="${prev.approvalNotes()}"></td>
+                                    </tr>
+
+                                    <tr th:unless="*{previousStayExtensionDetailsList ne null and !previousStayExtensionDetailsList.isEmpty()}">
+                                        <td colspan="7" class="text-center" th:text="#{message.label.na}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row" th:classappend="*{stayExtensionRequestForm ne null ? '':'d-none'}">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span
+                                        th:text="#{message.label.current} +' '+#{message.label.stay.extension} +' '+#{message.label.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row" th:classappend="*{stayExtensionRequestForm ne null ? '':'d-none'}">
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.stay.from}">
+												</span>
+                                </label>
+                                <input type="date" class="form-control" id="currentStayFrom" th:value="*{currentStayExtensionDetails ne null?
+                                currentStayExtensionDetails.stayFrom() : ''}">
+                            </div>
+
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.stay.to}">
+												</span>
+                                </label>
+                                <input type="date" class="form-control" id="currentStayTo" th:value="*{currentStayExtensionDetails ne null ?
+                                currentStayExtensionDetails.stayTo() : ''}">
+                            </div>
+
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label">
+												<span th:text="#{message.label.mess.option}">
+												</span>
+                                </label>
+                                <div class="form-control form-graybox"
+                                     th:text="*{currentStayExtensionDetails ne null ? currentStayExtensionDetails.messOption() : ''}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span
+                                        th:text="#{message.label.candidate.status.details}"></span></h2>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12 mb-3">
+                                <div class="text-center">
+                                    <div class="row mt-2">
+                                        <div class="col-lg-6"
+                                             th:if="*{candidateWorkflowList ne null and !candidateWorkflowList.isEmpty()}"
+                                             th:each="status :  *{candidateWorkflowList}">
+                                            <div class="card mt-3">
+                                                <div class="lex-grow-1 p-3 text-body">
+                                                    <div th:text="${status.validatorName} + ' (' + ${status.email} + ')'"></div>
+                                                    <th:block
+                                                            th:include="common/template/approval-status-badge :: statusBadge(${status.status},null)"></th:block>
+                                                    <div th:if="${status.status} != 'Pending'"
+                                                         th:text="' (' + ${#temporals.format(status.modifiedAt, #messages.msgOrNull('session.date.format'))} + ')'"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div th:if="*{stayExtensionRequestForm ne null and stayExtensionRequestForm.workflowList ne null and !stayExtensionRequestForm.workflowList.isEmpty()}">
+                                        <div class="col-lg-6" th:each="status :  *{stayExtensionRequestForm.workflowList}">
+                                            <div class="card mt-3">
+                                                <div class="lex-grow-1 p-3 text-body">
+                                                    <div th:text="${status.validatorName} + ' (' + ${status.validatorEmail} + ')'"></div>
+                                                    <th:block
+                                                            th:include="common/template/approval-status-badge :: statusBadge(${status.approvalStatus},null)"></th:block>
+                                                    <div th:if="${status.approvalStatus} != 'Pending'"
+                                                         th:text="' (' + ${#temporals.format(status.modifiedAt, #messages.msgOrNull('session.date.format'))} + ')'"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.others}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4"
+                                 th:if="*{emailStatus ne null and !emailStatus.equalsIgnoreCase('FROM_EMAIL')}">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.priority.for.applicant}"></span>
+                                </label>
+                                <select class="form-select" id="accomPriority">
+                                    <option value="" th:text="#{message.label.select}"></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.note}"></span>
+                                </label>
+                                <textarea class="form-control" rows="3" id="notes" th:text="${accommodationRequestForm.candidateAppointmentRequestDto.notes}">
+
+                                </textarea>
+                            </div>
+                            <input type="hidden" id="type" th:name="|otherCandidateRequestDto.type|" value="approve"/>
+                        </div>
+                        <hr>
+                        <div class="row text-end" th:with="role=${@securityCtxUtil.userRole()}">
+                            <div class="col-lg-12 mt-2 mb-4" th:if="${(role ne null and !role.isEmpty()) and !role.endsWith(roleEnum.OFFICE.value) and
+                                !role.equalsIgnoreCase(roleEnum.HOSTEL_CHECK_IN.value) and !role.equalsIgnoreCase(roleEnum.WARDEN.value)}">
+
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <button type="button" id="overrideAndApproveButton" onclick="approveRequest(this);"
+                                            class="btn btn-success px-4 me-2"
+                                            th:if="*{approvalStatus ne null and approvalStatus.equalsIgnoreCase('v')}"
+                                            th:data-status="'OverrideApproved'">
+                                        <i class="fa-solid fa-check-circle me-1"></i>
+                                        <span th:text="#{message.button.override.approve}"></span>
+                                    </button>
+                                    <button type="button" id="approveButton" onclick="approveRequest(this);"
+                                            class="btn btn-success px-4 me-2"
+                                            th:if="*{approvalStatus ne null and approvalStatus.equalsIgnoreCase('p')}"
+                                            th:data-status="'Approved'">
+                                        <i class="fa-solid fa-check-circle me-1"></i>
+                                        <span th:text="#{message.button.approve}"></span>
+                                    </button>
+                                    <button type="button" id="rejectButton" onclick="rejectRequest(this, '');"
+                                            class="btn btn-danger px-4 me-2"
+                                            th:if="*{approvalStatus ne null and approvalStatus.equalsIgnoreCase('p') or approvalStatus.equalsIgnoreCase('v')}"
+                                            th:data-status="'Rejected'">
+                                        <i class="fa-solid fa-times-circle me-1"></i>
+                                        <span th:text="#{message.button.reject}"></span>
+                                    </button>
+                                    <button type="button" id="saveButton" onclick="saveRequest(this);"
+                                            class="btn btn-aqua px-4"
+                                            th:if="*{approvalStatus ne null and approvalStatus.equalsIgnoreCase('c')}"
+                                            th:data-student="'Student'" th:data-status="'CandidateSave'">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                                        <span th:text="#{message.button.save}"></span>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row text-end">
+                            <div class="col-lg-12 mb-3" th:if="*{approvalStatus ne null and approvalStatus.equalsIgnoreCase('r')}">
+                                <div class="text-danger">
+                                    <span th:text="'If you want to approve the request, Please '"></span>
+                                    <a href="#" th:text="#{message.label.click.here}" id="reverseApproved"
+                                       th:data-status="'Approved'" onclick="reverseApprovalStatusRequest(this);"></a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12 mb-3"
+                                 th:if="*{approvalStatus ne null and approvalStatus.equalsIgnoreCase('c')}">
+                                <div class="text-danger">
+                                    <span th:text="'If you want to reject the request, Please '"></span>
+                                    <a href="#" th:text="#{message.label.click.here}" id="reverseRejection"
+                                       th:data-status="'Rejected'"
+                                       onclick="reverseApprovalStatusRequest(this);"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</main>
+<!-- Footer-->
+
+<th:block
+        th:replace="~{common/modal/info-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+<th:block
+        th:replace="~{common/modal/delete-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/othersLogin/dean-approve-reject-request.js}"></script>
+    <script th:src="@{/assets/js/othersLogin/accommadation-request.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.dean.other.candidate.requests}]]*/ '';
+        const interviewURL = /*[[#{url.interview}]]*/ '';
+        const download = /*[[#{url.download}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+        const saveURL = /*[[#{url.save}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+</body>
+</html>

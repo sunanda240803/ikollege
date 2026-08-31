@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<th:block th:replace="~{common/head :: common_header(~{link})}">
+	<link th:href="@{/assets/css/other-candidate.css}" rel="stylesheet"/>
+
+</th:block>
+<body>
+<!-- Header -->
+<header class="header fixed-top">
+	<nav class="navbar navbar-expand-lg p-0">
+		<div class="container-fluid justify-content-around p-0">
+			<div class="row w-100">
+				<div class="col-lg-5">
+					<!--Client Logo-->
+					<div class="header-logo d-flex align-items-center justify-content-between">
+						<a href="#" class="d-flex align-items-center">
+							<img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+							<span>
+									<span th:text="${institute.schoolName}"></span><br>
+									<span class="text-secondary" th:text="${institute.location}"></span>
+								</span>
+						</a>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+								data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+								aria-expanded="false" aria-label="Toggle navigation">
+							<i class="fa-solid fa-outdent"></i>
+						</button>
+					</div>
+				</div>
+				<div class="col-lg-7 pe-lg-0">
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav ms-auto">
+
+							<li class="nav-item dropdown accountMenu">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class="ph-duotone ph-user-square"></i> My Account
+								</a>
+								<ul class="dropdown-menu dropdown-menu-arrow listMenu">
+									<li class="dropdown-header d-flex align-items-center ">
+										<img class="rounded-circle" id="studentProfileImage"
+											 th:data-default="@{/assets/img/user-img1.png}" alt=""
+											 th:src="@{#{url.file} + #{url.image} + '/CANDIDATE_PROFILE/'+ ${imageName}}"
+											 th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''">
+<!--										<img th:src="@{assets/img/user-img1.png}" alt="Profile" class="rounded-circle">-->
+										<h6><span th:text="${@securityCtxUtil.userName()}"></span></h6>
+									</li>
+									<li><a class="dropdown-item" onclick="clearFormElements('resetForm');" data-bs-target="#resetPassword" data-bs-toggle="modal"  href="#">
+										<i class="ph-duotone ph-lock-key-open"></i>
+                                        <span th:text="#{message.label.change} + ' ' + #{message.label.password}"></span></a></li>
+									<li><a class="dropdown-item" th:href="@{#{url.logout}}">
+										<i class="ph-duotone ph-power"></i>
+										<span th:text="#{message.label.logout}"></span>
+									</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<!--Page Title-->
+	<div class="pagetitle">
+		<div class="row align-items-center">
+			<div class="col-lg-6">
+				<h1 class="text-tmPrimary" th:text="#{message.lable.other.candidate.dashboard}"></h1>
+			</div>
+		</div>
+	</div>
+</header>
+<!-- //Header -->
+<!-- //Main-->
+	<main id="main" class="main">
+		<!--Module Section-->
+		<div class="row d-none">
+			<div class="col-lg-12">
+				<div class="card main-card mt-3">
+					<div class="card-body">
+						<div class="d-flex justify-content-center align-items-center vh-100">
+						<input type="hidden" th:value="${userId}" id="userId">
+							<button type="button" data-bs-toggle="tooltip" th:data-bs-title="#{message.edit.other.candidate.profile}" 
+								class="btn btn-bluegray btn-lg me-4 py-4"
+								onclick="otherCandidateDetails();">
+								<span th:text="#{message.edit.other.candidate.profile}"></span>
+							</button>
+							<button type="button" data-bs-toggle="tooltip" th:data-bs-title="#{message.accommodation.request}" 
+								class="btn btn-bluegray btn-lg py-4"
+								onclick="accomodationRequest();">
+								<span th:text="#{message.accommodation.request}"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container py-5">
+			<div class="row justify-content-center g-4">
+				<!-- Edit Profile Card -->
+				<div class="col-md-5">
+					<div class="card option-card text-center p-4" onclick="otherCandidateDetails()">
+						<div class="option-icon icon-edit">
+							<i class="fas fa-user-edit"></i>
+						</div>
+						<div class="card-body">
+							<h5>Edit Profile</h5>
+							<p>Update your name, email, preferences and more.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Accommodation Request Card -->
+				<div class="col-md-5">
+					<div class="card option-card text-center p-4" onclick="accomodationRequest()">
+						<div class="option-icon icon-accommodation">
+							<i class="fas fa-bed"></i>
+						</div>
+						<div class="card-body">
+							<h5>Accommodation Request</h5>
+							<p>Submit your accommodation preferences and requirements.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+
+<!-- Footer-->
+<footer class="fixed-bottom footer">
+	<div class="container-fluid">
+		<div class="row d-flex align-items-center">
+			<div class="col-lg-6">
+				<p class="mb-0"> V-<span th:text="${buildVersion}"></span>
+			</div>
+			<div class="col-lg-6  text-lg-end">
+				<p class="mb-0">Copyright 2024 © Office of Hostel Management - IIT Madras </p>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- //Footer-->
+<!--//-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, null)}">
+	<script th:inline="javascript">
+		const profileURL = /*[[#{url.other.candidate.user}]]*/ '';
+		const accommodationURL = /*[[#{url.accommodation.request}]]*/ '';
+		const requestKey = [[${requestKey}]];
+	</script>
+	<script th:src="@{/assets/js/common/reset-password.js}"></script>
+</th:block>
+
+<!-- //Main-->
+<!-- Reset Password Modal -->
+<th:block th:replace="~{reset-password-modal}"></th:block>
+<!-- Info Modal -->
+<th:block th:replace="~{common/modal/success-modal :: contents(headerText=#{message.label.confirmation}, bodyText=#{message.label.reset.password.success})}"></th:block>
+<!--//-->
+</body>
+</html>

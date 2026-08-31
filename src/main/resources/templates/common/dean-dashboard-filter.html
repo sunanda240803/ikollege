@@ -1,0 +1,393 @@
+<th:block th:fragment="formInputs(filters)">
+	<form action="#" method="get" id="deanDashboardFilterForm"
+		th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+		<input type="hidden" th:value='${filters}' id="filters">
+		<input type="hidden" id="search" name="search">
+		<div class="row mb-3">
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('validationStatus') and filters.get('validationStatus')!=null}">
+				<label class="form-label"> 
+				<span th:text="#{message.label.validation.status}"></span>
+				</label> 
+				<select class="form-select" id="validationStatus" name="validationStatus" th:value="${filters.get('validationStatus')}">
+					<option value="" th:selected="${filters.get('validationStatus') == null or filters.get('validationStatus')==''}"
+						th:text="#{message.label.select}"></option>
+					<option th:each="status : ${validationStatusList}" th:value="${status}" th:text="${status}"
+						th:selected="${status == filters.get('validationStatus')}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('complaintFromDate') and filters.get('complaintFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.complaint}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="complaintFromDate" name="complaintFromDate"
+					th:value="${filters.get('complaintFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('complaintToDate') and filters.get('complaintToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.complaint}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="complaintToDate" name="complaintToDate"
+					th:value="${filters.get('complaintToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('category') and filters.get('category')!=null}">
+				<label class="form-label"> 
+					<span th:text="#{message.label.category}"></span>
+				</label> 
+				<select class="form-select" id="category" name="category" th:value="${filters.get('category')}">
+					<option value="" th:selected="${filters.get('category') == null or filters.get('category')==''}"
+						th:text="#{message.label.select}"></option>
+					<option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.value}"
+						th:selected="${category.id == filters.get('category')}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('approvalStatus') and filters.get('approvalStatus')!=null}">
+				<label class="form-label"> 
+				<span th:text="#{message.label.approval.status.colon}"></span>
+				</label> 				
+				<select class="form-select" id="approvalStatus" name="approvalStatus" th:value="${filters.get('approvalStatus')}">
+				    <option value="" th:selected="${filters.get('approvalStatus') == null or filters.get('approvalStatus') == ''}"
+				        th:text="#{message.label.select}"></option>
+				    <option th:each="status : ${approvalStatusList}" th:value="${status}" th:text="${status}"
+				        th:selected="${status == filters.get('approvalStatus')}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('paymentStatus') and filters.get('paymentStatus')!=null}">
+				<label class="form-label"> 
+				<span th:text="#{message.label.payment.status}"></span>
+				</label> 
+				<select class="form-select" id="paymentStatus">
+					<option value=""
+						th:text="#{message.label.select}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('vacatingReason') and filters.get('vacatingReason')!=null}">
+				<label class="form-label"> 
+				<span th:text="#{message.label.reason.for.vacating.colon}"></span>
+				</label> 
+				<select class="form-select" id="vacatingReason" name="vacatingReason" th:value="${filters.get('vacatingReason')}">
+					<option value="" th:selected="${filters.get('vacatingReason') == null or filters.get('vacatingReason')==''}"
+						th:text="#{message.label.select}"></option>
+					<option th:each="status : ${reasonForVacatingList}" th:value="${status}" th:text="${status}"
+						th:selected="${status == filters.get('vacatingReason')}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('approvalFromDate') and filters.get('approvalFromDate')!=null}">
+				<label class="form-label"> 
+					<span th:text="#{message.label.approval}+' '+#{message.label.from.date}"></span>
+				</label>
+				<input type="date" class="form-control" id="approvalFromDate" name="approvalFromDate"
+					th:value="${filters.get('approvalFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('approvalToDate') and filters.get('approvalToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.approval}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="approvalToDate" name="approvalToDate"
+					th:value="${filters.get('approvalToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('submittedFromDate') and filters.get('submittedFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.submitted}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="submittedFromDate" name="submittedFromDate"
+					th:value="${filters.get('submittedFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('submittedToDate') and filters.get('submittedToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.submitted}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="submittedToDate" name="submittedToDate"
+					th:value="${filters.get('submittedToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('appointmentFromDate') and filters.get('appointmentFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.appointment}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="appointmentFromDate" name="appointmentFromDate"
+					th:value="${filters.get('appointmentFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('appointmentToDate') and filters.get('appointmentToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.appointment}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="appointmentToDate" name="appointmentToDate"
+					th:value="${filters.get('appointmentToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('rebateFromDate') and filters.get('rebateFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.rebate}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="rebateFromDate" name="rebateFromDate"
+					th:value="${filters.get('rebateFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('rebateToDate') and filters.get('rebateToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.rebate}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="rebateToDate" name="rebateToDate"
+					th:value="${filters.get('rebateToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('stayFromDate') and filters.get('stayFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.stay}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="stayFromDate" name="stayFromDate"
+					th:value="${filters.get('stayFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('stayToDate') and filters.get('stayToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.stay}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="stayToDate" name="stayToDate"
+					th:value="${filters.get('stayToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('vacatingFromDate') and filters.get('vacatingFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.vacating}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="vacatingFromDate" name="vacatingFromDate"
+					th:value="${filters.get('vacatingFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('vacatingToDate') and filters.get('vacatingToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.vacating}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="vacatingToDate" name="vacatingToDate"
+					th:value="${filters.get('vacatingToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('inspectionFromDate') and filters.get('inspectionFromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.inspection}+' '+#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="inspectionFromDate" name="inspectionFromDate"
+					th:value="${filters.get('inspectionFromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('inspectionToDate') and filters.get('inspectionToDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.inspection}+' '+#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="inspectionToDate" name="inspectionToDate"
+					th:value="${filters.get('inspectionToDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('candidateName') and filters.get('candidateName')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.candidate.name}"></span>
+				</label> 
+				<input type="text" class="form-control" id="candidateName" name="candidateName"
+					th:value="${filters.get('candidateName')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('candidateEmail') and filters.get('candidateEmail')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.candidate.email}"></span>
+				</label> 
+				<input type="text" class="form-control" id="candidateEmail" name="candidateEmail"
+					th:value="${filters.get('candidateEmail')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('hostelName') and filters.get('hostelName')!=null}">
+				<label class="form-label"> 
+				<span th:text="#{message.label.hostel.name}"></span>
+				</label> 
+				<select class="form-select" id="hostelName" name="hostelName">
+					<option value="" th:text="#{message.label.select}"></option>
+					<option th:each="hostelOrWardenList : ${hostelOrWardenList}" th:value="${hostelOrWardenList.id}"
+							th:text="${hostelOrWardenList.hostelName}"
+							th:selected="${hostelName} eq ${hostelOrWardenList.id}">
+					</option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('hostelNameMandatory') and filters.get('hostelNameMandatory')!=null}">
+				<label class="form-label"> 
+					<span th:text="#{message.label.hostel.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label> 
+				<select class="form-select" id="hostelNameMandatory" name="hostelNameMandatory" required>
+					<option value="" th:text="#{message.label.select}"></option>
+					<option th:each="hostelOrWardenList : ${hostelOrWardenList}" th:value="${hostelOrWardenList.id}"
+							th:text="${hostelOrWardenList.hostelName}"
+							th:selected="${hostelNameMandatory} eq ${hostelOrWardenList.id}">
+					</option>
+				</select>
+				<div class="invalid-feedback" th:text="#{message.validation.hostel.name.required}"></div>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('stayType') and filters.get('stayType')!=null}">
+				<label class="form-label">
+				<span th:text="#{message.label.stay.type}"></span>
+				</label>
+
+				<select class="form-select" id="stayType" name="stayType">
+					<option value="" th:text="#{message.label.select}"></option>
+					<option value="app" th:text="#{message.label.accommodation.request}"></option>
+					<option value="stay" th:text="#{message.label.stay.extension}"></option>
+					<option value="both" th:text="#{message.label.both}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('studentName') and filters.get('studentName')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.student.name}"></span>
+				</label> 
+				<input type="text" class="form-control" id="studentName" name="studentName"
+					th:value="${filters.get('studentName')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('studentId') and filters.get('studentId')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.student.id}"></span>
+				</label> 
+				<input type="text" class="form-control" id="studentId" name="studentId"
+					th:value="${filters.get('studentId')}" oninput="this.value = this.value.toUpperCase();">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('hodName') and filters.get('hodName')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.hod.name}"></span>
+				</label> 
+				<input type="text" class="form-control" id="hodName" name="hodName"
+					th:value="${filters.get('hodName')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('hodEmail') and filters.get('hodEmail')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.hod.email}"></span>
+				</label> 
+				<input type="text" class="form-control" id="hodEmail" name="hodEmail"
+					th:value="${filters.get('hodEmail')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('siNoFrom') and filters.get('siNoFrom')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.lable.si.no.from}"></span>
+				</label> 
+				<input type="text" class="form-control" id="siNoFrom" name="siNoFrom"
+					th:value="${filters.get('siNoFrom')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('siNoTo') and filters.get('siNoTo')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.lable.si.no.to}"></span>
+				</label> 
+				<input type="text" class="form-control" id="siNoTo" name="siNoTo"
+					th:value="${filters.get('siNoTo')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('messName') and filters.get('messName')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.mess.name}"></span>
+				</label> 
+				<div th:if="${messMasterList == null or messMasterList.empty}">
+					<input type="text" class="form-control" id="messName" name="messName"
+					th:value="${filters.get('messName')}">
+				</div>
+				<div th:unless="${messMasterList == null or messMasterList.empty}">
+					<select class="form-select" id="messName" name="messName" th:value="${filters.get('messName')}">
+						<option value="" th:selected="${filters.get('messName') == null or filters.get('messName')==''}"
+								th:text="#{message.label.select}"></option>
+						<option th:each="mess : ${messMasterList}" th:value="${mess.id}" th:text="${mess.messName}"
+								th:selected="${#strings.toString(mess.id) == filters.get('messName')}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('wardenName') and filters.get('wardenName')!=null}">
+				<label class="form-label"> <span
+						th:text="#{message.label.warden.user.name}"></span>
+				</label>
+				<div th:if="${wardenDetailsList == null or wardenDetailsList.empty}">
+					<input type="text" class="form-control" id="wardenName" name="wardenName"
+						   th:value="${filters.get('wardenName')}">
+				</div>
+				<div th:unless="${wardenDetailsList == null or wardenDetailsList.empty}">
+					<select class="form-select" id="wardenName" name="wardenName" th:value="${filters.get('wardenName')}">
+						<option value="" th:selected="${filters.get('wardenName') == null or filters.get('wardenName')==''}"
+								th:text="#{message.label.select}"></option>
+						<option th:each="warden : ${wardenDetailsList}" th:value="${warden.id}" th:text="${warden.wardenName}"
+								th:selected="${#strings.toString(warden.id) == filters.get('wardenName')}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('year') and filters.get('year')!=null}">
+				<input type="hidden" id="yearId" th:value=${filters.get('year')} />
+				<label class="form-label"> 
+				<span th:text="#{message.label.year.to.colon}"></span>
+				</label> 
+				<select class="form-select" id="year" name="year-dropdown" th:value="${filters.get('year')}">
+					<option value="" th:selected="${filters.get('year') == null or filters.get('year')==''}"
+						th:text="#{message.label.select}"></option>
+				</select>
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('fromDate') and filters.get('fromDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.from.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="fromDate" name="fromDate"
+					th:value="${filters.get('fromDate')}">
+			</div>
+			<div class="col-lg-2 mb-3" th:if="${filters.containsKey('toDate') and filters.get('toDate')!=null}">
+				<label class="form-label"> <span
+					th:text="#{message.label.to.date}"></span>
+				</label> 
+				<input type="date" class="form-control" id="toDate" name="toDate"
+					th:value="${filters.get('toDate')}">
+			</div>
+            <div class="col-lg-2 mb-3" th:if="${filters.containsKey('requestFromDate') and filters.get('requestFromDate')!=null}">
+                <label class="form-label"> <span
+                        th:text="#{message.label.request.fromdate}"></span>
+                </label>
+                <input type="date" class="form-control" id="requestFromDate" name="requestFromDate"
+                       th:value="${filters.get('requestFromDate')}">
+            </div>
+            <div class="col-lg-2 mb-3" th:if="${filters.containsKey('requestToDate') and filters.get('requestToDate')!=null}">
+                <label class="form-label"> <span
+                        th:text="#{message.label.request.todate}"></span>
+                </label>
+                <input type="date" class="form-control" id="requestToDate" name="requestToDate"
+                       th:value="${filters.get('requestToDate')}">
+            </div>
+            <div class="col-lg-2 mb-3" th:if="${filters.containsKey('catererStatus') and filters.get('catererStatus')!=null}">
+                <label class="form-label"> <span
+                        th:text="#{message.label.caterer.status}"></span>
+                </label>
+                <select class="form-select" id="catererStatus" name="catererStatus" th:value="${filters.get('catererStatus')}">
+                    <option value="" th:selected="${filters.get('catererStatus') == null or filters.get('catererStatus')==''}"
+                            th:text="#{message.label.select}"></option>
+                    <option th:each="entry : ${catererStatusMap}" th:value="${entry.key}"
+                            th:text="${entry.value}"
+                            th:selected="${filters.get('catererStatus')} eq ${entry.key}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-lg-2 mb-3" th:if="${filters.containsKey('studentStatus') and filters.get('studentStatus')!=null}">
+                <label class="form-label"> <span
+                        th:text="#{message.label.student.status}"></span>
+                </label>
+                <select class="form-select" id="studentStatus" name="studentStatus" th:value="${filters.get('studentStatus')}">
+                    <option value="" th:selected="${filters.get('studentStatus') == null or filters.get('studentStatus')==''}"
+                            th:text="#{message.label.select}"></option>
+                    <option th:each="warden : ${wardenDetailsList}" th:value="${warden.id}" th:text="${warden.wardenName}"
+                            th:selected="${#strings.toString(warden.id) == filters.get('studentStatus')}"></option>
+                </select>
+            </div>
+            <div class="col-lg-2 mb-3" th:if="${filters.containsKey('messSession') and filters.get('messSession')!=null}">
+                <label class="form-label"> <span
+                        th:text="#{message.label.mess.session}"></span>
+                </label>
+                <select class="form-select" id="messSession" name="messSession" th:value="${filters.get('messSession')}">
+                    <option value="" th:selected="${filters.get('messSession') == null or filters.get('messSession')==''}"
+                            th:text="#{message.label.select}"></option>
+                    <option th:each="entry : ${messSessionMap}" th:value="${entry.key}"
+                            th:text="${entry.value}"
+                            th:selected="${filters.get('messSession')} eq ${entry.key}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-lg-2 mb-3" th:if="${filters.containsKey('searchKey') and filters.get('searchKey')!=null}">
+                <label class="form-label"> <span
+                        th:text="#{message.label.search}"></span>
+                </label>
+                <input type="text" class="form-control" id="searchKey" name="searchKey"
+                       th:value="${filters.get('searchKey')}">
+            </div>
+			<div class="col-lg-2">
+				<input type="hidden" id="pageVal" th:value="${form.pageVal}" /> 
+				<input type="hidden" id="sizeVal" th:value="${form.size}" />
+				<button type="button" id="getData" class="btn btn-lgtblue px-4"
+					style="margin-top: 38px" onclick="return checkAdvanceFilter();">
+					<i class="fa-solid fa-database"></i> 
+					<span th:text="#{message.button.get.data}"></span>
+				</button>
+			</div>
+		</div>
+	</form>
+</th:block>

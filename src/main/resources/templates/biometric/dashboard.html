@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <link th:href="@{/assets/css/biometric/biometric-dashboard.css}" rel="stylesheet"/>
+</head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <!--<th:block th:replace="~{tabs}"></th:block>-->
+                    <form method="post" id="fr-form" class="themeForm" th:object="${frForm}">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="form-label" for="studentId" th:text="#{message.label.search} + ' ' + #{message.label.student}"></label>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" onchange="" id="studentId"
+                                                   name="rollNo" th:value="${frForm.rollNo}" placeholder="By Roll No">
+                                            <input type="text" class="form-control" onchange="" id="serialNumber"
+                                                   name="serialNumber" th:value="${frForm.serialNumber}"
+                                                   placeholder="By Serial No">
+                                            <input hidden id="serialNumberHidden" name="serialNumberHidden">
+                                            <button type="submit" onclick="" class="btn btn-lgtblue w-auto"
+                                                    id="pullData">
+                                                <i class="fa fa-database"></i>
+                                                Get Data
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3 mb-3">
+                                    <div class="col-6 mt-3">
+                                        <label class="form-label"
+                                               for="pullDeviceId">
+                                            <span>Pull</span>
+                                        </label>
+                                        <input type="text" class="form-control" onchange="" id="pullDeviceId"
+                                               name="pullIp" th:value="${frForm.pullIp}"
+                                               placeholder="Eg. 10.10.1.1">
+                                        <div class="invalid-feedback" id="pullDeviceIdErr"></div>
+                                    </div>
+                                    <div class="col-6 mt-3">
+                                        <label class="form-label"
+                                               for="pushDeviceId">
+                                            <span>Push</span>
+                                        </label>
+                                        <input type="text" class="form-control" onchange="" id="pushDeviceId"
+                                               name="pushIp" th:value="${frForm.pushIp}"
+                                               placeholder="Eg. 10.10.1.1">
+                                        <div class="invalid-feedback" id="pushDeviceIdErr"></div>
+                                    </div>
+                                    <div class="col-6 mt-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="messPeriodAsExpiry"
+                                                   checked name="messPeriodAsExpiry" onchange="checkExpiryDate()">
+                                            <label class="form-check-label" for="messPeriodAsExpiry">Mess Period as
+                                                Expiry Date</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mt-3">
+                                        <label class="form-label"
+                                               for="expiryDate">
+                                            <span>Expiry Date</span>
+                                        </label>
+                                        <input type="date" class="form-control" onchange="" id="expiryDate"
+                                               name="expiryDate" th:value="${frForm.expiryDate}">
+                                        <div class="invalid-feedback" id="expiryDateIdErr"><span>Please enter the Expiry Date.</span></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 mb-3" style="margin-top: 31px">
+                                <h1 class="tmsub-title">Push / Pull Result:</h1>
+                                <div id="result"></div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive themeTable">
+                            <table class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Roll No</th>
+                                    <th>Student Name</th>
+                                    <th>Serial No</th>
+                                    <th>Card Serial No</th>
+                                    <th>Pin No</th>
+                                    <th>Fingerprint Status</th>
+                                    <th>Card Status</th>
+                                    <th>Facial Status</th>
+                                    <th>Mess</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user, index: ${frForm.userList}">
+                                    <td th:text="${index.index + 1}"></td>
+                                    <td th:text="${user.userId}"></td>
+                                    <td th:text="${user.getFullName()}"></td>
+                                    <td th:text="${user.accessSerialNo}"></td>
+                                    <td th:text="${user.cardSn ne null ? user.cardSn : 'N/A'}"></td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="password"
+                                                   th:id="'pinInput_' + ${user.userId}"
+                                                   th:value="${user.pinNo != null ? user.pinNo : 'N/A'}"
+                                                   class="form-control"
+                                                   disabled />
+                                            <button type="button"
+                                                    class="btn btn-sm btn-bluegray"
+                                                    th:data-user-id="${user.userId}"
+                                                    onclick="togglePin(this)"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    th:title="#{message.button.view} + ' ' + #{message.label.pin}">
+                                                <i class="fa fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="fa "
+                                           th:classappend="${user.hasFingerprint ? 'fa-check text-success' : 'fa-xmark text-danger'}"></i>
+                                    </td>
+                                    <td>
+                                        <i class="fa "
+                                           th:classappend="${user.hasCardSn ? 'fa-check text-success' : 'fa-xmark text-danger'}"></i>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <th:block th:if="${user.hasFacial}">
+                                                <img th:src="'data:image/png;base64,' + ${user.facialPhotoSrc}"
+                                                     class="facial-thumb"
+                                                     data-bs-toggle="tooltip"
+                                                     data-bs-placement="right"
+                                                     th:attr="data-bs-html='true',
+                                                        title='<img class=\'tooltip-image\' src=\'data:image/png;base64,' + ${user.facialPhotoSrc} + '\'/>'">
+                                            </th:block>
+                                            <th:block th:if="${!user.hasFacial}">
+                                                <i class="fa fa-xmark text-danger"></i>
+                                            </th:block>
+                                        </div>
+                                    </td>
+                                    <td th:text="${user.messName != null && !user.messName.isEmpty()} ? ${user.messName} : 'NA'"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <button th:id="'push_to_mess' + ${user.accessSerialNo}"
+                                                    type="button" class="btn btn-outline-success btn-sm me-2"
+                                                    onclick="pushByMess(this)" data-bs-toggle="tooltip"
+                                                    data-bs-title="Push By Mess"
+                                                    th:data-config-id="${user.accessSerialNo}">
+                                                <i class="fa fa-arrow-right-to-bracket"></i>
+                                            </button>
+                                            <button th:id="'push_' + ${user.accessSerialNo}"
+                                                    type="button" class="btn btn-outline-info btn-sm me-2"
+                                                    onclick="pushData(this, 'push')" data-bs-toggle="tooltip"
+                                                    data-bs-title="Push to Device"
+                                                    th:data-config-id="${user.accessSerialNo}">
+                                                <i class="fa fa-right-to-bracket"></i>
+                                            </button>
+                                            <button th:id="'pull_' + ${user.accessSerialNo}"
+                                                    type="button" class="btn btn-outline-dark btn-sm me-2"
+                                                    onclick="pushData(this, 'pull')" data-bs-toggle="tooltip"
+                                                    data-bs-title="Pull from Device"
+                                                    th:data-config-id="${user.accessSerialNo}">
+                                                <i class="fa fa-arrow-up-from-bracket"></i>
+                                            </button>
+                                            <button type="button"
+                                                    th:classappend="${user.cardActiveStatus} == 'N' ? 'btn btn-sm btn-outline-success me-2' : 'btn btn-sm btn-outline-danger me-2'" data-bs-toggle="tooltip"
+                                                    th:data-bs-title="${user.cardActiveStatus} == 'N' ? 'Active' : 'Inactive'"
+                                                    th:data-student-id="${user.userId}"
+                                                    th:data-student-status="${user.cardActiveStatus}" onclick="activeOrInactiveStudent(this);">
+                                                <i th:classappend="${user.cardActiveStatus} == 'N' ? 'fa-solid fa-lg fa-check-circle' : 'fa-solid fa-lg fa-ban'"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <th:block th:replace="~{common/log-content::content('frDashboard')}"></th:block>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{common/modal/info-modal :: contents(id='activeInactiveStudent',headerText=#{message.label.confirmation},bodyText= '')}"></th:block>
+<th:block th:replace="~{common/biometric-footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/biometric/dashboard.js}"></script>
+    <script th:src="@{/assets/js/biometric/log.js}"></script>
+    <script th:inline="javascript">
+        const updateURL = /*[[#{url.update}]]*/ '';
+        let cronStatus = [[${cronStatus} ?: '']];
+    </script>
+</th:block>
+</body>
+</html>

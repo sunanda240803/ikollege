@@ -1,0 +1,66 @@
+<div th:replace="~{common/modal-template ::
+    modal('guest-accomm-charge-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader th:text="#{message.label.guest.accommo.charge.add.edit}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" th:action="@{#{url.guest.accomm.charges}}" method="post" th:object="${guestAccommodationDto}" id="guestAccommodationform">
+            <input type="hidden" th:value="${guestAccommodationDto.id}" th:name="id"  />
+            <div class="row">
+            	<div class="col-lg-6 mb-3">
+                    <label class="form-label" for="fromDate">
+                        <span th:text="#{message.label.from.date}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{fromDate}" id="fromDate" 
+                    	   th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                            required onkeydown="return false">
+                    <div class="invalid-feedback" th:text="#{message.validation.from.date.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="toDate">
+                    	<span th:text="#{message.label.to.date}"></span>
+                    </label>
+                    <input type="date" class="form-control" onkeydown="return false" th:field="*{toDate}" id="toDate"
+                    		th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" >
+                    <div class="invalid-feedback"></div>
+                    <div class="invalid-feedback-invalidDate d-none text-danger" th:text="#{message.validation.to.date.greater}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="individualGuestRoomAmount">
+                        <span th:text="#{message.label.guest.room.amount}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" oninput="validateIntergerNumberInput(this)" th:field="*{individualRoomAmount}" maxlength="10"
+                           th:placeholder="#{message.placeholder.guest.room.amount}" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.guest.amount.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="stayWithStudentAmount">
+                        <span th:text="#{message.label.student.amount}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" oninput="validateIntergerNumberInput(this)" th:field="*{amount}" maxlength="10"
+                           th:placeholder="#{message.placeholder.student.amount}" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.student.amount.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="multiplePersonAmount">
+                        <span th:text="#{message.label.multiple.person.amount}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" oninput="validateIntergerNumberInput(this)" th:field="*{individualRoomMultipleAmount}" maxlength="10"
+                           th:placeholder="#{message.placeholder.multiple.person.amount}" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.multiple.person.amount.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="description">
+                        <span th:text="#{message.label.description}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea rows="2" class="form-control" th:field="*{description}" th:placeholder="#{message.placeholder.description}" required>
+                    </textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

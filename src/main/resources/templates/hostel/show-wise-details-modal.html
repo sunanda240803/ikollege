@@ -1,0 +1,196 @@
+<div th:replace="~{common/modal-template ::
+    modal('show-wise-details-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader th:text="#{message.label.show.wise.details}"></modalHeader><modalBody>
+    <form class="themeForm" th:action="@{#{url.show.wise.details}}" method="post" th:object="${showMasterDto}" 
+    	 id="showWiseForm" enctype="multipart/form-data">
+    	<input type="hidden" th:value="${showMasterDto.id}" th:name="id" th:id="showId" />
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <label class="form-label" for="eventName">
+                    <span th:text="#{message.label.event.name}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+                 <select class="form-select required-select-input" th:field="*{showEventMaster.id}" id="showEventMasterId"
+                   	 	required >
+                    <option value="" th:text="#{message.label.select}"></option>
+                  	<option th:each="event:${eventList}"
+						th:value="${event.id}" th:text="${event.eventName}">
+					</option>
+                </select>
+                <div class="invalid-feedback" th:text="#{message.validation.event.name.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label" for="showName">
+                    <span th:text="#{message.label.show.name}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+                <input type="text" class="form-control required-input" th:field="*{showName}" id="showName"
+                       th:placeholder="#{message.placeholder.show.name}" required maxlength=64 onblur="checkShowNameExist();"
+                       th:classappend="${#fields.hasErrors('showName')} ? 'is-invalid' : ''">
+                <div class="invalid-feedback backendErrors" th:errors="*{showName}"></div>
+                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.show.name.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label" for="showDescription">
+                    <span th:text="#{message.label.show.desc}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+                <!-- <input type="text" class="form-control" th:field="*{showDescr}" maxlength="127"
+                       th:placeholder="#{message.placeholder.show.desc}"> -->
+                <div class="checkRadio-bg form-control" id="genderChecks">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input required-input" type="radio" value="show" id="show"
+							   name="showDescr" required th:checked="*{showDescr == 'show'}">
+						<label class="form-check-label" for="male">
+								<span th:text="#{message.label.show}"></span>
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input required-input" type="radio" value="tshirt" id="tshirt"
+							   name="showDescr" required th:checked="*{showDescr == 'tshirt'}">
+						<label class="form-check-label" for="female">
+								<span th:text="#{message.label.tshirt}"></span>
+						</label>
+					</div>
+				</div>
+                <div class="invalid-feedback" th:text="#{message.validation.show.desc.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label" for="maxSeatCount">
+                    <span th:text="#{message.label.max.seat.count}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+                <input type="text" class="form-control required-input" id="maxSeatCount" maxlength="8"
+                	th:field="*{maxSeatCount}" oninput="validateIntergerNumberInput(this)"
+                       th:placeholder="#{message.placeholder.max.seat.count}" required>
+                <div class="invalid-feedback" th:text="#{message.validation.max.seat.count.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label mt-3" for="regStartDate">
+                    <span th:text="#{message.label.reg.start.date}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+                <input type="date" class="form-control required-input" th:field="*{regStartingDate}" id="regStartingDate"
+                        required onkeydown="return false">
+                <div class="invalid-feedback" th:text="#{message.validation.reg.start.date.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label mt-3" for="regEndDate">
+                    <span th:text="#{message.label.reg.end.date}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+                <input type="date" class="form-control required-input" id="regEndingDate"
+                       th:field="*{regEndingDate}" required onkeydown="return false">
+                <div class="invalid-feedback" th:text="#{message.validation.reg.end.date.required}"></div>
+                <div class="invalid-feedback-invalidDate d-none text-danger" th:text="#{message.validation.reg.end.date.greater}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+            	<label class="form-label mt-3" >
+                    <span th:text="#{message.label.poster.layout}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+				<div class="upload-box d-lg-block">
+					<div class="box text-center has-validation">
+						<span th:text="#{message.label.upload.documents.layout.photo}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+						<input type="file" name="layout" id="layout"
+							   class="inputfile inputfile-4"
+							   data-multiple-caption="{count} files selected"  data-width="300"
+							   data-height="400" th:accept="#{message.accepted.image.types}"
+							   th:attrappend="required=${showMasterDto.imageLocation == null ? 'required' : null}">
+						<label for="layout">
+						 <img class="img-fluid d-block mx-auto profile" id="layoutImage"
+								alt="Image" th:data-default="@{/assets/img/poster.png}"
+								th:src="@{#{url.file} + #{url.image} + '/show/'+ ${showMasterDto.imageLocation}}"
+								th:attr="onerror='this.src=\'' + @{/assets/img/poster.png} + '\''">
+						</label>
+						<div class="invalid-feedback"><span
+								th:text="#{message.validation.upload.layout.picture}"></span>
+						</div>
+						<div class="invalid-value-feedback d-none"
+							 th:text="#{message.validation.upload.layout.picture}"></div>
+						<div class="invalid-dimension-feedback d-none"
+							 th:text="#{message.validation.profile.dimension}"></div>
+						<div class="invalid-size-feedback d-none"
+							 th:text="#{message.validation.image.size}"></div>
+						<div class="invalid-format-feedback d-none"
+							 th:text="#{message.invalid.file.format}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="form-label mt-3" for="seatLayout">
+                    <span th:text="#{message.label.seat.layout}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                </label>
+				<div class="upload-box d-lg-block">
+					<div class="box text-center has-validation">
+						<span th:text="#{message.label.upload.documents.seatlayout.photo}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+						<input type="file" name="seatLayout" id="seatLayout"
+							   class="inputfile inputfile-4"
+							   data-multiple-caption="{count} files selected" data-width="300"
+							   data-height="400" th:accept="#{message.accepted.image.types}"
+							   th:attrappend="required=${showMasterDto.seatImageLocation == null ? 'required' : null}">
+						<label for="seatLayout">
+							<img class="img-fluid d-block mx-auto profile" id="seatLayoutImage"
+								 th:data-default="@{/assets/img/seat.png}"
+								th:src="@{#{url.file} + #{url.image} + '/show/'+ ${showMasterDto.seatImageLocation}}"
+									th:attr="onerror='this.src=\'' + @{/assets/img/seat.png} + '\''">
+						</label>
+						<div class="invalid-feedback"><span
+								th:text="#{message.validation.upload.seatlayout.picture}"></span>
+						</div>
+						<div class="invalid-value-feedback d-none"
+							 th:text="#{message.validation.upload.seatlayout.picture}"></div>
+						<div class="invalid-dimension-feedback d-none"
+							 th:text="#{message.validation.profile.dimension}"></div>
+						<div class="invalid-size-feedback d-none"
+							 th:text="#{message.validation.image.size}"></div>
+						<div class="invalid-format-feedback d-none"
+							 th:text="#{message.invalid.file.format}"></div>
+					</div>
+				</div>
+			</div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label mt-3" for="currentlyActive">
+                    <span th:text="#{message.label.active}"></span>
+                </label>
+                <div class="form-check">
+                    <input class="form-check-input " type="checkbox" id="currentlyActive"  th:name="currentlyActive"
+                    	   th:checked="${showMasterDto.currentlyActive=='Y'}" >
+                    <label class="form-check-label" for="currentlyActive"
+                           th:text="#{message.label.currently.active}">
+                    </label>
+                    <div class="invalid-feedback" th:text="#{message.validation.currently.active.required}"></div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <label class="form-label mt-3" for="isNameType">
+                    <span th:text="#{message.label.print}"></span>
+                </label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="isNameType" th:name="isNameType"
+                    		th:checked="${showMasterDto.isNameType==true}" >
+                    <label class="form-check-label" for="isNameType" th:text="#{message.label.print.name}"></label>
+                    <div class="invalid-feedback" th:text="#{message.validation.print.name.required}"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</modalBody>
+</div>
+<script th:inline="javascript">
+
+ previewBindings = [
+	{input: '#layout', previews: ['#layoutImage']},
+	{input: '#seatLayout', previews: ['#seatLayoutImage']}
+	
+];
+
+previewBindings.forEach(function (binding) {
+	$(binding.input).on('change', function () {
+		previewImage(this, binding.previews);
+	});
+});
+</script>

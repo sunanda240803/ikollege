@@ -1,0 +1,7 @@
+<th:block th:fragment="contactNumber(value, field,mandatory)">
+            <label class="form-label" th:text="#{message.label.staff.mobileNumber}"></label>
+            <th:block th:if="${mandatory eq true}" th:replace="~{common/template/mandatory-symbol}"></th:block>
+            <input type="text" class="form-control mask" th:name="${field}" th:data-mask="#{mobileNumberMask}"
+                   th:attr="placeholder=#{message.label.staff.mobileNumber}" th:id="${field}"
+                   th:value="${value ne null and value ne 'null' ? value : ''}">
+</th:block>

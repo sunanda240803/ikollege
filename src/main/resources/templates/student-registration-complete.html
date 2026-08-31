@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <link th:href="@{/assets/css/student-registration.css}" rel="stylesheet"/>
+</head>
+<body>
+<header th:replace="~{common/student-registration-header:: title('Student Registration', null, '/login', 'new')}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-7 mx-auto">
+            <div class="card main-card mt-2">
+                <div class="card-body-min">
+                    <form class="themeForm g-3 text-center mt-3 mb-3">
+                        <th:block th:if="${invalidURL} == true">
+                            <div class="notfound">
+                                <h3>Oops! Error</h3>
+                                <div class="notfound-404">
+                                    <h1><span>4</span><span class="text-tmSecondary">0</span><span>0</span></h1>
+                                </div>
+                                <h3>Invalid URL</h3>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${invalidURL} == false">
+                            <th:block th:if="${urlExpired} == true">
+                                <div class="notfound">
+                                    <h3>Oops! Error</h3>
+                                    <div class="notfound-404">
+                                        <h1><span>4</span><span class="text-tmSecondary">0</span><span>4</span></h1>
+                                    </div>
+                                    <h3>The Page has been expired</h3>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${urlExpired} == false">
+                                <img
+                                        th:data-default="@{/assets/img/success-img.png}"
+                                        th:src="@{/assets/img/success-img.png}"
+                                        class="img-fluid" alt="success-img" width="80" height="50">
+                                <h1 th:text="#{message.label.student.registration.complete}"></h1>
+                                 <th:block th:if="${isBiodataPdfEnable}">
+                                     <a th:href="@{#{url.student.registration.pdf.download} + '/' + ${reference}}"
+                                        class="btn btn-pink mt-3">
+                                         <i class="fa-solid fa-download"></i> <span
+                                             th:text="#{message.label.student.bio.data.download}"></span>
+                                     </a><br><br>
+                                 </th:block>
+								<span class="fs-4 mt-3"><b><span th:text="#{message.label.proceed.admin.verification}"></span></b>
+                                <div class="col-12 mt-4 mb-4">
+                                    <span class="fs-4"><b><span th:text="#{message.label.fee.payment}"></span></b>
+                                    <a  href="https://fees.iitm.ac.in" target="_blank">
+                                        <b><u th:text="#{message.label.click.here}"> </u></b>
+                                    </a>
+                                    <span th:text="#{message.label.fee.payment.info}"></span></span>
+                                </div>
+                            </th:block>
+                        </th:block>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{common/modal/hostel-fee-model:: title(${hostelFeeModel})}"></div>
+<!-- Footer-->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, ${footerForm})}">
+    <script>
+        $(document).ready(function () {
+        });
+    </script>
+    <script>
+        function openModal() {
+            alert('dsfdf');
+            const modal = document.getElementById('hostelFeeModal');
+            modal.style.display = 'block';
+        }
+    </script>
+
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

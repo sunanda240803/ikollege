@@ -1,0 +1,12 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+  <div
+          th:replace="~{common/modal/info-modal-template :: modal('thesis-submitted-modal', ~{::modalHeader}, ~{::modalBody},
+		'info','fa fa-circle-exclamation', #{message.label.okay})}">
+    <modalHeader>
+      <th:block th:text="${headerText}"></th:block>
+    </modalHeader>
+    <modalBody>
+        <span th:text="${bodyText}"></span>
+    </modalBody>
+  </div>
+</th:block>

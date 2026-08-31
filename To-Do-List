@@ -1,0 +1,5 @@
+1)Forgot Password in other's login - Basic code is done. Only mail flow is not Completed
+2)2 ways authentication is done in other candidate registration -make it one
+3)Auth failure page redirecting to landing page- needs to be in same page
+4)Reset Password for HMOffice login tab
+5)Wrong password update in all login

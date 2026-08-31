@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" method="post" id="studentBioData" th:object="${studentDto}">
+	                 	<div class="row">
+		                    <th:block th:if="${role == 'Y'}">
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.category}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" id="category">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" value="Students" id="students"
+												   th:field="*{category}" th:checked="${category == 'students'}" required>
+											<label class="form-check-label" for="students">
+												<span th:text="#{message.label.iitm.students}"></span>
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" value="Others" id="others"
+												   th:field="*{category}" th:checked="${category == 'others'}" required>
+											<label class="form-check-label" for="others">
+												<span th:text="#{message.label.others}"></span>
+											</label>
+										</div>
+									</div>
+									<div class="invalid-feedback"><span th:text="#{message.validation.category.required}"></span></div>
+								</div>
+							</th:block>
+                            <div class="col-lg-3 mb-3">
+                                <label for="studentId" class="form-label">
+                                    <span th:text="#{message.label.studentID}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" class="form-control uppercase required-input" th:field="*{studentId}" id="studentId"
+                                       th:placeholder="#{message.label.enter.student.id}" required maxlength="10"
+						   				oninput="validateAlphaNumericInput(this);">
+								<div class="invalid-feedback"><span
+										th:text="#{message.validation.no.roll.no}"></span></div>
+								<div class="invalid-req-feedback d-none"><span
+										th:text="#{message.validation.no.roll.no}"></span></div>
+								<div class="invalid-min-feedback d-none"><span
+										th:text="#{message.validation.min.roll.no}"></span></div>
+								<div class="invalid-format-feedback d-none"><span
+										th:text="#{message.validation.alpha.numeric.roll.no}"></span></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+								<button id="searchButton" type="submit"
+									class="btn btn-lgtblue px-4 me-3" style="margin-top: 38px"
+									onclick="return getStudentdetails()">
+									<i class="fa-solid fa-database"></i> <span
+										th:text="#{message.label.get.data}"></span>
+								</button>
+								<th:block th:if="${studentDto.allStudentsDetailsViewDto != null && studentDto.allStudentsDetailsViewDto.studentId != null}">
+									<a class="btn btn-outline-pink me-2" data-bs-toggle="tooltip" th:title="#{message.label.print.student.bio.data}"
+										th:href="@{#{url.admin.student.bio.data} + #{url.pdf.download} + '/' + ${studentDto.allStudentsDetailsViewDto.studentId} +
+										'/true'}" style="margin-top: 38px">
+<!-- 										th:if="${roleId!=null and roleId=='Dean'}" -->
+										<i class="fa-solid fa-print"></i>
+									</a>
+                                    <a class="btn btn-pink me-2" data-bs-toggle="tooltip"
+                                       th:title="#{message.label.print.student.bio.data.no.declaration}"
+                                       th:href="@{#{url.admin.student.bio.data} + #{url.pdf.download} + '/' + ${studentDto.allStudentsDetailsViewDto.studentId} +'/false'}"
+                                       style="margin-top: 38px">
+<!--                                        th:if="${roleId!=null and (roleId=='Dean' or roleId=='Warden')}" -->
+                                        <i class="fa-solid fa-print"></i>
+                                    </a>
+									<th:block th:if="${role != 'Y'}">
+										<button type="button" class="btn btn-blue me-2" data-bs-toggle="tooltip" 
+											th:data-bs-title="#{message.label.update}+' '+#{message.label.student.information}" 
+											th:data-student-id="${studentDto.allStudentsDetailsViewDto.studentId}"
+											onclick="updateStudentBioData(this);" style="margin-top: 38px"
+											th:if="${roleId!=null and roleId=='Dean'}">
+											<i class="fa-solid fa-rotate"></i>
+										</button>
+									</th:block>
+									<th:block th:if="${category == 'Students' && role == 'Y'}">
+										<th:block th:if="${Data == 'Exist'}">
+											<a class="btn btn-blue me-2" data-bs-toggle="tooltip" style="margin-top: 38px"
+												th:data-category="${category}" th:data-student-id="${studentDto.allStudentsDetailsViewDto.studentId}"
+												th:title="#{message.label.update}+' '+#{message.label.wellness.data}" onclick="wellnessURL(this);">
+												<i class="fa-solid fa-rotate"></i>
+											</a>
+										</th:block>
+										<th:block th:if="${Data == 'New'}">
+											<a class="btn btn-success me-2" data-bs-toggle="tooltip" style="margin-top: 38px"
+												th:data-category="${category}" th:data-student-id="${studentDto.allStudentsDetailsViewDto.studentId}"
+												th:title="#{message.label.add}+' '+#{message.label.wellness.data}" onclick="wellnessURL(this);">
+												<i class="fa-solid fa-circle-plus"></i>
+											</a>
+										</th:block>
+									</th:block>
+								</th:block>
+								<th:block th:if="${studentDto.allStudentsDetailsViewDto != null && studentDto.allStudentsDetailsViewDto.studentId != null && edit==true}">
+									<button type="button" class="btn btn-blue me-2" data-bs-toggle="tooltip" style="margin-top: 38px"
+										th:data-category="${category}" th:data-student-id="${studentDto.allStudentsDetailsViewDto.studentId}"
+										th:title="#{message.label.update}+' '+#{message.student.biodata}" onclick="return updateStudentBioData(this);">
+										<i class="fa-solid fa-rotate"></i>
+									</button>
+								</th:block>
+								<th:block th:if="${category == 'Others' && studentId != null && role == 'Y'}">
+									 <th:block th:if="${Data == 'Exist'}">
+										 <a class="btn btn-blue me-2" data-bs-toggle="tooltip" style="margin-top: 38px"
+											th:data-category="${category}" th:data-student-id="${studentId}"
+											th:title="#{message.label.proceed}+' '+#{message.label.wellness.data}" onclick="wellnessURL(this);">
+											<i class="fa-solid fa-rotate"></i>
+										</a>
+									 </th:block>
+									 <th:block th:if="${Data == 'New'}">
+								 		<a class="btn btn-success me-2" data-bs-toggle="tooltip" style="margin-top: 38px"
+											th:data-category="${category}" th:data-student-id="${studentId}"
+											th:title="#{message.label.add}+' '+#{message.label.wellness.data}" onclick="wellnessURL(this);">
+											<i class="fa-solid fa-circle-plus"></i>
+										</a>
+									 </th:block>
+								 </th:block>
+							</div>
+                        </div>
+                    </form>
+
+                    <th:block th:if="${studentDto.allStudentsDetailsViewDto != null && studentDto.allStudentsDetailsViewDto.studentId != null}">
+                        <form class="themeForm mt-5" th:object="${studentDto}" method="post" enctype="multipart/form-data"
+                        	th:action="@{#{url.admin.student.bio.data}+#{url.update}}" id="studentBioDataFormUpdate">
+                        	<input type="hidden" id="hiddenStudentId" th:field="*{studentId}">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.student.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 mb-3">
+									<th:block th:if="${studentDto.imageBytes == null}">
+	                                    <div class="upload-box">
+	                                        <div class="box text-center">
+	                                            <label>
+	                                                <img class="img-fluid d-block mx-auto" id="studentProfileImage"
+	                                                     alt="Image"
+														 th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+														 th:src="@{#{url.file} + #{url.image} + '/student_Profile/1'}">
+	                                            </label>
+	                                        </div>
+	                                    </div>
+                                    </th:block>
+									<th:block th:if="${studentDto.imageBytes != null}">
+										<div class="upload-box">
+                                        	<div class="box text-center">
+												<label>
+													<img th:src="@{'data:image/jpeg;base64,' + ${studentProfile}}"
+														alt="Student Profile" style="max-width: 95%; max-height: 95%;" />
+												</label>
+											</div>
+										</div>
+									</th:block>
+                                </div>
+                                <div class="col-lg-10 mb-3">
+                                    <div class="row">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.application.no}">
+												</span>
+                                            </label>
+											<div class="form-control form-graybox">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.applicationNumber != null ? studentDto.allStudentsDetailsViewDto.applicationNumber : '-'}" />
+											</div>
+											
+										</div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.student.id}">
+												</span>
+                                            </label>
+											<div class="form-control form-graybox">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.studentId != null ? studentDto.allStudentsDetailsViewDto.studentId : '-'}" />
+											</div>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.student.name}"></span>
+												<span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.studentName != null ? studentDto.allStudentsDetailsViewDto.studentName : '-'}" />
+											</div>
+											<th:block th:if="${edit==true}">
+												<input type="text" class="form-control uppercase required-input" th:field="*{allStudentsDetailsViewDto.studentName}" 
+													th:placeholder="#{message.placeholder.student.name}" maxlength="60" required id="studentName">
+												<div class="invalid-feedback" th:text="#{message.validation.student.name.required}"></div>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.dob}"></span>
+												<span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.dob != null ? #temporals.format(studentDto.allStudentsDetailsViewDto.dob,
+													#messages.msg('date.format')) : '-'}"/>
+											</div>
+											<th:block th:if="${edit==true}">
+												<input type="date" class="form-control" th:field="*{allStudentsDetailsViewDto.dob}" min="1900-01-01"
+													onkeydown="return false" required th:max="${dobMax}" id="dob">
+												<div class="invalid-feedback" th:text="#{message.validation.date.of.birth.required}"></div>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.gender}"></span>
+												<span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.gender != null ? studentDto.allStudentsDetailsViewDto.gender : '-'}" />
+											</div>
+											<th:block th:if="${edit==true}">
+												<div class="checkRadio-bg form-control" id="genderChecks">
+													<div class="form-check form-check-inline">
+														<input class="form-check-input required-input" type="radio" value="M" id="male" required
+															th:field="*{allStudentsDetailsViewDto.gender}">
+														<label class="form-check-label" for="male"><span>Male</span></label>
+													</div>
+													<div class="form-check form-check-inline">
+														<input class="form-check-input required-input" type="radio" value="F" id="female" required
+															th:field="*{allStudentsDetailsViewDto.gender}">
+														<label class="form-check-label" for="female"><span>Female</span></label>
+													</div>
+												</div>
+												<div class="invalid-feedback" th:text="#{message.validation.student.details.gender}"></div>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.category}"></span>
+												<span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.category != null ? 
+												    (studentDto.allStudentsDetailsViewDto.category == 'OBC' ? 'OBC' : 
+												    (studentDto.allStudentsDetailsViewDto.category == 'General' ? 'General' : 
+												    (studentDto.allStudentsDetailsViewDto.category == 'SC/ST' ? 'SC / ST' : ''))) : '-'}"></span>
+											</div>
+											<th:block th:if="${edit==true}">
+												<div class="checkRadio-bg form-control" id="categoriesChecks">
+													<div class="form-check form-check-inline">
+														<input class="form-check-input required-input" type="radio" value="OBC" id="obc" required
+															th:field="*{allStudentsDetailsViewDto.category}">
+														<label class="form-check-label" for="obc"><span>OBC</span></label>
+													</div>
+													<div class="form-check form-check-inline">
+														<input class="form-check-input required-input" type="radio" value="General" id="general" required
+															th:field="*{allStudentsDetailsViewDto.category}">
+														<label class="form-check-label" for="general"><span>General</span></label>
+													</div>
+													<div class="form-check form-check-inline">
+														<input class="form-check-input required-input" type="radio" value="SC/ST" id="scOrSt" required
+															th:field="*{allStudentsDetailsViewDto.category}">
+														<label class="form-check-label" for="scOrSt"><span>SC / ST</span></label>
+													</div>
+												</div>
+												<div class="invalid-feedback" th:text="#{message.validation.student.details.category}"></div>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.aadhaar.no}"></span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.aadhaarNumber != null ? studentDto.allStudentsDetailsViewDto.aadhaarNumber : '-'}" />
+											</div>
+											<th:block th:if="${edit==true}">
+												<input type="text" class="form-control numeric required-aadhaar" id="aadhaarNumber" 
+													th:placeholder="#{message.placeholder.aadhaar.no}" th:field="*{allStudentsDetailsViewDto.aadhaarNumber}">
+												<div class="invalid-feedback" th:text="#{message.validation.student.details.aadhar}"></div>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.pan.no}"></span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.panNumber != null ? studentDto.allStudentsDetailsViewDto.panNumber : '-'}" />
+											</div>
+											<th:block th:if="${edit==true}">
+												<input type="text" class="form-control uppercase required-pan" maxlength="10" th:placeholder="#{message.placeholder.pan.no}"
+													   th:field="*{allStudentsDetailsViewDto.panNumber}" id="panNumber">
+												<div class="invalid-feedback" th:text="#{message.validation.student.details.pan}"></div>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label" th:if="${edit==false}">
+												<span th:text="#{message.label.blood.group}"></span>
+                                            </label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.bloodGroup != null ? studentDto.allStudentsDetailsViewDto.bloodGroup : '-'}" />
+											</div>
+											<th:block th:if="${edit==true}">
+											<input type="hidden" id="bloodGroupValue" th:value="${studentDto.allStudentsDetailsViewDto.bloodGroup}">
+												<th:block th:replace="~{common/field/blood-group-select::select(*{allStudentsDetailsViewDto}, 'true', '')}"></th:block>
+											</th:block>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="form-label">
+												<span th:text="#{message.label.mess.preference}"></span>
+												<span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+											</label>
+											<div class="form-control form-graybox" th:if="${edit==false}">
+												<span th:text="${studentDto.allStudentsDetailsViewDto.messPreference != null ? studentDto.allStudentsDetailsViewDto.messPreference : '-'}" />
+											</div>
+											<th:block th:if="${edit==true}">
+												<div class="input-group mb-3">
+													<select id="messPreference" class="form-select required-input" th:field="*{allStudentsDetailsViewDto.messPreference}" required>
+														<option value="" th:text="#{message.label.select}+' '+#{message.label.mess.preference}"></option>
+														<option value="South Indian">South Menu</option>
+														<option value="North Indian">North Menu</option>
+														<option value="Food Court">Food Court</option>
+														<option value="South Indian with Extras">South Menu with extras only Veg</option>
+														<option value="North Indian with Extras">North Menu with extras only Veg</option>
+													</select>
+													<div class="invalid-feedback"><span th:text="#{message.validation.student.details.mess.pref}"></span></div>
+												</div>
+											</th:block>
+										</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2 class="tmsub-title">
+                                            <span th:text="#{message.label.contact.details}"></span>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.mobile.number}"></span>
+                                            <span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                        </label>
+										<div class="form-control form-graybox" th:if="${edit==false}">
+											<span th:text="${studentDto.allStudentsDetailsViewDto.studentMobile != null ? studentDto.allStudentsDetailsViewDto.studentMobile : '-'}" />
+										</div>
+										<th:block th:if="${edit==true}">
+											<input type="text" class="form-control numeric required-mob-num" th:field="*{allStudentsDetailsViewDto.studentMobile}" required
+												id="mobileNumber" th:placeholder="#{message.placeholder.mobile.number}">
+											<div class="invalid-feedback"><span th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+											<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.student.details.mob.no.required}"></span></div>
+											<div class="invalid-val-feedback d-none"><span th:text="#{message.validation.student.details.mob.no}"></span></div>
+										</th:block>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+											<span th:text="#{message.label.email.id}"></span>
+                                        </label>
+										<div class="form-control form-graybox">
+											<span th:text="${studentDto.allStudentsDetailsViewDto.emailId != null ? studentDto.allStudentsDetailsViewDto.emailId : '-'}"></span>
+										</div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.personal.email}"></span>
+                                            <span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                        </label>
+										<div class="form-control form-graybox" th:if="${edit==false}">
+											<span th:text="${studentDto.allStudentsDetailsViewDto.studentPersonalEmail != null ? studentDto.allStudentsDetailsViewDto.studentPersonalEmail : '-'}" />
+										</div>
+										<th:block th:if="${edit==true}">
+											<input type="text" class="form-control required-email" th:placeholder="#{message.placeholder.personal.email}"
+											 th:field="*{allStudentsDetailsViewDto.studentPersonalEmail}" maxlength="128" required id="studentPersonalEmail">
+											  <div class="invalid-feedback" th:text="#{message.label.personal.email.required}"></div>
+								              <div class="invalid-req-feedback d-none" th:text="#{message.label.personal.email.required}"></div>
+								              <div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+										</th:block>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label">
+                                            <span th:text="#{message.label.address}"></span>
+                                            <span class="text-tmPrimary" th:if="${edit==true}"> *</span>
+                                        </label>
+										<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;" th:if="${edit==false}">
+                                        	<span th:text="${studentDto.allStudentsDetailsViewDto.studentAddress != null 
+                                        	? studentDto.allStudentsDetailsViewDto.studentAddress : '-'}"></span>
+                                        </div>
+                                        <th:block th:if="${edit==true}">
+											<textarea class="form-control" th:field="*{allStudentsDetailsViewDto.studentAddress}" required maxlength="300"
+												style="height: 99px; overflow: auto;" th:placeholder="#{message.placeholder.address}" id="address">
+											</textarea>
+											<div class="invalid-feedback" th:text="#{message.validation.address.required}"></div>
+										</th:block>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="row" th:if="${edit==true}">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.pwd.details}"></span>
+									</h2>
+								</div>
+							</div>
+							<div class="row mb-3" th:if="${edit==true}">
+								<div class="col-lg-3 mb-2">
+									<label class="form-label"><span th:text="#{message.label.pwd}"></span></label>
+									<div class="checkRadio-bg form-control col-lg-3">
+										<div class="form-check form-check-inline me-4">
+											<input class="form-check-input required-input" type="radio" id="yes"
+												   onclick="togglePwd(true)" value="Y"
+												   th:field="*{allStudentsDetailsViewDto.pwd}"
+												   th:checked="${allStudentsDetailsViewDto != null and allStudentsDetailsViewDto.pwd == 'Y'}">
+											<label class="form-check-label" for="yes">
+												<span th:text="#{message.label.yes}"></span>
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" id="no"
+												   onclick="togglePwd(false)" value="N"
+												   th:field="*{allStudentsDetailsViewDto.pwd}"
+												   th:checked="${allStudentsDetailsViewDto != null and allStudentsDetailsViewDto.pwd == 'N'}">
+											<label class="form-check-label" for="no">
+												<span th:text="#{message.label.no}"></span>
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 mb-2 pwdField" th:value="${studentDto.allStudentsDetailsViewDto.pwd}"
+									th:classappend="${(studentDto.allStudentsDetailsViewDto.pwd != null and studentDto.allStudentsDetailsViewDto.pwd != '' and studentDto.allStudentsDetailsViewDto.pwd == 'Y') ? '' : ' d-none'}">
+									<label class="form-label">
+										<span th:text="#{message.label.pwd.percentage}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="number" id="pwdPercentage" class="form-control"
+										   th:placeholder="#{message.placeholder.pwd.percentage}" 
+										   th:field="*{allStudentsDetailsViewDto.pwdPercentage}"
+										   required>
+									<div class="invalid-feedback">
+										<span th:text="#{message.validation.pwd.percentage.required}"></span>
+									</div>
+								</div>
+								<div class="col-lg-3 mb-2 pwdField" 
+									th:classappend="${(studentDto.allStudentsDetailsViewDto.pwd != null and studentDto.allStudentsDetailsViewDto.pwd != '' and studentDto.allStudentsDetailsViewDto.pwd == 'Y') ? '' : ' d-none'}">
+									<label class="form-label" for="pwdDesc">
+										<span th:text="#{message.label.pwd.description}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<textarea id="pwdDesc" style="height: 99px; overflow: auto;" maxlength="300"
+										class="form-control" th:placeholder="#{message.placeholder.pwd}"
+										th:field="*{allStudentsDetailsViewDto.pwdDescription}"
+										required>
+									</textarea>
+									<div class="invalid-feedback">
+										<span th:text="#{message.validation.pwd.description.required}"></span>
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3 pwdField"
+									th:classappend="${(studentDto.allStudentsDetailsViewDto.pwd != null and studentDto.allStudentsDetailsViewDto.pwd != '' and studentDto.allStudentsDetailsViewDto.pwd == 'Y') ? '' : ' d-none'}">
+									<label class="form-label" for="otherInfo">
+										<span th:text="#{message.label.other.info}"></span>
+									</label>
+									<textarea id="otherInfo" style="height: 99px; overflow: auto;" maxlength="300"
+										class="form-control" th:placeholder="#{message.placeholder.other.info}"
+										th:field="*{allStudentsDetailsViewDto.otherInfo}">
+									</textarea>
+								</div>
+							 </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.faculty.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.faculty.name}"></span>
+                                        <span class="text-tmPrimary" th:if="${edit==true}"></span>
+                                    </label>
+									<div class="form-control form-graybox" th:if="${edit==false}">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.facultyName != '0' ? studentDto.allStudentsDetailsViewDto.facultyName : '-'}" />
+									</div>
+									<th:block th:if="${edit==true}">
+											<input type="text" class="form-control uppercase" id="facultyName" th:placeholder="#{message.placeholder.faculty.name}"
+												th:field="*{allStudentsDetailsViewDto.facultyName}" value="0" maxlength="128">
+											<div class="invalid-feedback" th:text="#{message.validation.student.details.faculty.name}"></div>
+									</th:block>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.faculty.email}"></span>
+                                        <span class="text-tmPrimary" th:if="${edit==true}"></span>
+                                    </label>
+									<div class="form-control form-graybox" th:if="${edit==false}">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.facultyEmail != null ? studentDto.allStudentsDetailsViewDto.facultyEmail : '-'}" />
+									</div>
+									<th:block th:if="${edit==true}">
+										<input type="email" class="form-control facultyDetails required-email" th:placeholder="#{message.placeholder.faculty.email}"
+											id="facultyEmail" th:field="*{allStudentsDetailsViewDto.facultyEmail}" maxlength="50">
+										<div class="invalid-feedback" th:text="#{message.label.faculty.email.required}"></div>
+			             				<div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+										<div class="invalid-domain-email d-none" th:text="#{message.validation.invalid.email.domain}"></div>
+									</th:block>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.faculty.contact.no}"></span>
+                                    </label>
+									<div class="form-control form-graybox" th:if="${edit==false}">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.facultyContactNo != null ? studentDto.allStudentsDetailsViewDto.facultyContactNo : '-'}" />
+									</div>
+									<th:block th:if="${edit==true}">
+										<input type="text" class="form-control numeric required-mob-num facultyDetails" th:placeholder="#{message.placeholder.faculty.no}"
+											id="facultyContactNo" th:field="*{allStudentsDetailsViewDto.facultyContactNo}">
+										<div class="invalid-feedback"></div>
+										<div class="invalid-val-feedback d-none"><span th:text="#{message.validation.student.details.mob.no}"></span></div>
+									</th:block>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title">
+                                        <span th:text="#{message.label.course.accomadation.details}"></span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+												<span th:text="#{message.label.course.name}">
+												</span>
+                                    </label>
+									<div class="form-control form-graybox">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.deptName != null ? studentDto.allStudentsDetailsViewDto.deptName : '-'}" />
+									</div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+										<span th:text="#{message.label.hostel.name}"></span>
+                                    </label>
+									<div class="form-control form-graybox">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.hostelName != null ? studentDto.allStudentsDetailsViewDto.hostelName : '-'}" />
+									</div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+										<span th:text="#{message.label.room.no}"></span>
+                                    </label>
+									<div class="form-control form-graybox">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.roomNumber != null ? studentDto.allStudentsDetailsViewDto.roomNumber : '-'}" />
+									</div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+										<span th:text="#{message.label.mess.name}"></span>
+                                    </label>
+									<div class="form-control form-graybox">
+										<span th:text="${studentDto.allStudentsDetailsViewDto.messName != null ? studentDto.allStudentsDetailsViewDto.messName : '-'}" />
+									</div>
+                                </div>
+                            </div>
+<!-- 							<th:block th:replace="~{student-family-details :: familyDetails(familySize=${studentDto.familyInfoDtoList.size()},${edit})}"></th:block> -->
+							<th:block th:replace="~{student-family-details :: familyDetails(familySize=${studentDto.familyInfoDtoList.size()}, edit=${edit})}"></th:block>
+							<th:block th:if="${studentDto.allStudentsDetailsViewDto != null && studentDto.allStudentsDetailsViewDto.studentId != null && edit==true}">
+								<div class="row">
+  									<div class="col text-end">
+										<button type="button" class="btn btn-blue me-2" data-bs-toggle="tooltip"
+											th:data-category="${category}" th:data-student-id="${studentDto.allStudentsDetailsViewDto.studentId}"
+											th:title="#{message.label.update}+' '+#{message.student.biodata}" onclick="return updateStudentBioData(this);">
+											<i class="fa-solid fa-rotate me-2"></i><span th:text="#{message.button.update}"></span>
+										</button>
+									</div>
+								</div>
+							</th:block>
+                        </form>
+                   	</th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{student-family-details-proof::familyDetailsProof}"></th:block>
+<th:block th:replace="~{student/family-details-row-template::familyDetailsRowTemplate}"></th:block>
+<!-- //Main-->
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+	<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:src="@{/assets/js/student/student-bio-data-view.js}"></script>
+	<script th:src="@{/assets/js/student/student-family-details.js}"></script>
+	<script th:src="@{/assets/js/student/student-registration.js}"></script>
+	<!-- 	<script th:src="@{/assets/js/base/pdf.min.js}"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+	<script th:inline="javascript">
+		const getStudentRegistrationURL = /*[[#{url.admin.student.bio.data}]]*/ '';
+		const updateURL = /*[[#{url.update}]]*/ '';
+		const wellnessArchiveURL = /*[[#{student.wellness.archive}]]*/ '';
+		const idProof = /*[[${#messages.msg('message.status.id.proof')}]]*/'';
+		const familyDetails = /*[[${studentDto.familyInfoDtoList}]]*/'';
+		const fileURL = /*[[#{url.file}]]*/ '';
+		const imageURL = /*[[#{url.image}]]*/ '';
+		const guideEmail = [[${guideEmail}]];
+	</script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

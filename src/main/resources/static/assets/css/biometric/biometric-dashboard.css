@@ -1,0 +1,14 @@
+.tooltip.show {
+    opacity: 1 !important;
+}
+
+.tooltip-image {
+    width: 150px;
+    height: auto;
+    display: block;
+}
+
+.facial-thumb {
+    width: 30px;
+    cursor: pointer;
+}

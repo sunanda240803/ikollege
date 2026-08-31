@@ -1,0 +1,49 @@
+<div th:replace="~{common/widget-template :: content('foodRequestId', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <!-- Modal Header -->
+    <modalHeader>
+        <span th:text="#{message.label.today.sickfood.request.status}"></span>
+    </modalHeader>
+    
+    <!-- Modal Body -->
+    <modalBody>
+        <!-- Check if sickFoodRequest is null -->
+        <div th:if="${sickFoodRequest == null}" 
+             class="mt-3 text-center text-danger fw-bold">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i>
+            <span th:text="#{message.label.no.request.today}"></span>
+        </div>
+
+        <!-- Render meal statuses if sickFoodRequest is not null -->
+        <div th:if="${sickFoodRequest != null}" 
+             class="row text-center">
+             
+            <!-- Breakfast Status -->
+            <div class="col-lg-4">
+                <span class="text-tmPrimary fw-bold" th:text="#{message.label.breakfast}"></span>
+                <div class="text" th:text="${sickFoodRequest['BF']}"></div>
+            </div>
+
+            <!-- Lunch Status -->
+            <div class="col-lg-4">
+                <span class="text-tmPrimary fw-bold" th:text="#{message.label.lunch}"></span>
+                <div class="text" th:text="${sickFoodRequest['LC']}"></div>
+            </div>
+
+            <!-- Dinner Status -->
+            <div class="col-lg-4">
+                <span class="text-tmPrimary fw-bold" th:text="#{message.label.dinner}"></span>
+                <div class="text" th:text="${sickFoodRequest['DR']}"></div>
+            </div>
+        </div>
+    </modalBody>
+    
+    <!-- Modal Footer -->
+    <modalFooter>
+        <div class="text-end">
+            <a th:href="@{#{url.sick.food.request}}" class="text-secondary mb-0 align-middle">
+                <span th:text="#{message.label.click.view.apply}"></span>
+                <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </modalFooter>
+</div>

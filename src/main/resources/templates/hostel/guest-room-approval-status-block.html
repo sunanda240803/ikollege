@@ -1,0 +1,94 @@
+<!-- common/template/approval-status-block.html -->
+<div th:fragment="approvalBlock(dto)">
+	<div class="card">
+		<div class="flex-grow-1 p-3 text-body">
+			<div th:with="approvalStatus=${dto.WardenApprovalStatus}">
+				<div th:with="workflow=${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+					<table>
+						<tbody>
+						<!-- VALIDATING or WARDEN_APPROVAL_STATUS_COMPLETE -->
+						<div th:if="${approvalStatus eq workflow.VALIDATING.status || approvalStatus eq workflow.WARDEN_APPROVAL_STATUS_COMPLETE.status}">
+							<div th:if="${dto.approvalList != null && !dto.approvalList.isEmpty()}">
+								<tr th:each="approval : ${dto.approvalList}">
+									<span th:text="${(approval.wardenName ?: 'N/A') + ' (' + (approval.wardenEmail ?: 'N/A') + ')'}"></span>
+									-
+									<span th:include="common/template/approval-status-badge :: statusBadge(${approvalStatus}, null)"></span>
+									<br>
+								</tr>
+							</div>
+						</div>
+
+						<!-- REJECTED -->
+						<div th:if="${approvalStatus eq workflow.REJECTED.status}">
+							<div th:if="${dto.wardenName != null && !dto.wardenName.isEmpty()}">
+								<tr>
+									<span th:text="${(dto.wardenName ?: 'N/A') + ' (' + (dto.wardenEmail ?: 'N/A') + ')'}"></span>
+									-
+									<span th:include="common/template/approval-status-badge :: statusBadge(${approvalStatus}, null)"></span>
+								</tr>
+							</div>
+							<div th:if="${dto.wardenName == null || dto.wardenName.isEmpty()}">
+								<tr>
+									<span>CCW - </span>
+									<span th:include="common/template/approval-status-badge :: statusBadge(${approvalStatus}, null)"></span>
+								</tr>
+							</div>
+						</div>
+
+						<!-- APPROVED / OVERRIDE_AND_APPROVED -->
+						<div th:if="${approvalStatus eq workflow.OVERRIDE_AND_APPROVED.status || approvalStatus eq workflow.APPROVED.status}">
+							<div th:if="${dto.wardenName == null || dto.wardenName.isEmpty()}">
+								<div th:if="${dto.approvalList != null && !dto.approvalList.isEmpty()}">
+									<tr th:each="approval : ${dto.approvalList}">
+										<span th:text="${(approval.wardenName ?: 'N/A') + ' (' + (approval.wardenEmail ?: 'N/A') + ')'}"></span>
+										-
+										<span th:include="common/template/approval-status-badge :: statusBadge(${workflow.VALIDATING.status}, null)"></span>
+										<br>
+									</tr>
+								</div>
+								<br>
+								<tr>
+									<span>CCW - </span>
+									<span th:include="common/template/approval-status-badge :: statusBadge(${workflow.APPROVED.status}, null)"></span>
+								</tr>
+							</div>
+
+							<div th:if="${dto.wardenName != null && !dto.wardenName.isEmpty()}">
+								<div th:if="${dto.rejectionDescription != null && !dto.rejectionDescription.isEmpty()}">
+									<tr>
+										<span th:text="${(dto.wardenName ?: 'N/A') + ' (' + (dto.wardenEmail ?: 'N/A') + ')'}"></span>
+										-
+										<span th:include="common/template/approval-status-badge :: statusBadge(${workflow.REJECTED.status}, null)"></span>
+									</tr>
+									<br>
+									<tr>CCW - Re Approved</tr>
+								</div>
+
+								<div th:if="${dto.rejectionDescription == null || dto.rejectionDescription.isEmpty()}">
+									<tr>
+										<span th:text="${(dto.wardenName ?: 'N/A') + ' (' + (dto.wardenEmail ?: 'N/A') + ')'}"></span>
+										-
+										<span th:include="common/template/approval-status-badge :: statusBadge(${workflow.WARDEN_APPROVAL_STATUS_COMPLETE.status}, null)"></span>
+									</tr>
+									<br>
+									<tr>
+										<span>CCW - </span>
+										<span th:include="common/template/approval-status-badge :: statusBadge(${workflow.APPROVED.status}, null)"></span>
+									</tr>
+								</div>
+							</div>
+						</div>
+
+						<!-- CANCELLED -->
+						<div th:if="${approvalStatus eq workflow.CANCELLED.status}">
+							<tr>
+								<span th:include="common/template/approval-status-badge :: statusBadge(${approvalStatus}, null)"></span>
+							</tr>
+						</div>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

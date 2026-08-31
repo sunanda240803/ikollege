@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+  <!-- //Main-->
+  <main id="main" class="main">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card main-card mt-4">
+          <div class="card-body">
+            <form class="themeForm">
+              <div class="row mb-3">
+                <div class="col-lg-2 mb-3">
+                  <label for="date" class="form-label"><span th:text="#{message.label.date}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                  </label>
+                  <input type="date" id="date" class="form-control required-input"  th:value="${date}" required />
+                  <div class="invalid-feedback" th:text="#{message.validation.date}"></div>
+                </div>
+                <div class="col-lg-2">
+                  <label for="hostelOrFacilityMaster" class="form-label">
+                    <span th:text="#{message.label.hostel.name}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                  </label>
+                  <select  class="selectpicker" data-live-search="true" id="hostelOrFacilityMaster"
+                           th:value="${hostelId}" required>
+                    <option value="0" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+                    <option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+                            th:text="${hostelList.hostelName}"
+                            th:selected="${hostelList.id.toString() == hostelId}"></option>
+                  </select>
+                  <div class="invalid-feedback" id="hostelVal" th:text="#{message.validation.hostel.name.required}"></div>
+                </div>
+                <div class="col-lg-4 mb-3">
+                  <label for="description" class="form-label"><span th:text="#{message.label.description}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                  </label>
+                  <input type="text" id="description" class="form-control required-input" th:value="${description}"
+                         th:placeholder="#{message.placeholder.description}" required>
+                  <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+                </div>
+                <div class="col-lg-4 mb-3">
+                  <label class="form-label"><span th:text="#{message.label.select.fixed.variable.exclude}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                  </label>
+                  <div class="checkRadio-bg">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="selectOptions" id="fixedOption" value="fixed"
+                             th:checked="${selectOptions == 'fixed'}" th:title="#{message.label.fixed}" required />
+                      <label class="form-check-label" for="fixedOption" th:text="#{message.label.fixed}"></label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="selectOptions" id="excludeExchange" value="exclude"
+                             th:checked="${selectOptions == 'exclude'}" th:title="#{message.label.exclude.exchange}" required />
+                      <label class="form-check-label" for="excludeExchange" th:text="#{message.label.exclude.exchange}"></label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="selectOptions" id="variableOption" value="variable"
+                             th:checked="${selectOptions == 'variable'}" th:title="#{message.label.variable}" required />
+                      <label class="form-check-label" for="variableOption" th:text="#{message.label.variable}"></label>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback" th:text="#{message.label.select.fixed.variable.exclude} + ' ' + #{message.validation.is.required}"></div>
+                </div>
+                <div class="col-lg-3 mb-3 d-none" id="amountField">
+                  <label for="amount" class="form-label">
+                    <span th:text="#{message.label.amount}"></span>
+                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                  </label>
+                  <input type="number" id="amount" class="form-control" th:placeholder="#{message.placeholder.amount}" th:value="${amount}"
+                         onkeypress="validateAmountInput(event, this)" required />
+                  <div class="invalid-feedback" th:text="#{message.label.amount} + ' ' + #{message.validation.is.required}"></div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                	<div class="d-flex align-items-center justify-content-end">
+                  <input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+                  <input type="hidden" id="sizeVal" th:value="${form.size}"/>
+                  <button type="button" id="searchButton" class="btn btn-lgtblue"
+                          onclick="return validateSearchField()"><i
+                          class="fa-solid fa-database"></i> <span th:text="#{message.button.get.data}"></span></button>
+                  	</div>
+                  </div>
+                <div class="mb-3 mt-3 d-none" id="uploadField">
+                  <form enctype="multipart/form-data" id="establishmentDebitForm">
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <h2 class="tmsub-title" th:text="#{message.label.bulk.upload.file.header}"></h2>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-8 mb-3" id="documentUploadSection">
+                            <th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+										                'uploadFile' + 1, 'file', ${#messages.msg('message.accepted.document.types.xl')},
+										                'uploadDoc', null, ${#messages.msg('message.drag.drop.here.document')})}">
+                            </th:block>
+                            <div class="invalid-feedback" th:text="#{message.validation.complaint.type.required}"></div>
+                          </div>
+                          <div class="col-lg-4">
+                            <button type="button" id="uploadFileButton" class="btn btn-purple px-4 me-2" onclick="return validateFile()">
+                              <i class="fa fa-upload" aria-hidden="true"></i> <span th:text="#{message.button.upload.file}"></span>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="text-danger d-flex align-items-center" th:if="${excelErrorList != null && !excelErrorList.isEmpty()}">
+                          <div class="invalid-feedback"></div>
+                          <ul>
+                            <li th:each="error : ${excelErrorList}">
+                              <span th:text="${error}"></span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <h2 class="tmsub-title" th:text="#{message.label.bulk.upload.download}"></h2>
+                          </div>
+                        </div>
+                        <div class="col-lg-12 mb-3 d-flex align-items-center">
+                          <span class="fs-5">
+                            <u class="text-tmPrimary">
+                              <a th:href="@{#{url.establishment.debit} + #{url.template.download}}"
+                                 th:text="#{message.label.click.here.caps}"></a>
+                            </u>
+                            <span th:text="' '+#{message.button.download.excel.template}"></span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div id="studentDetailsTable">
+                <div class="col-lg-12">
+                  <h2 class="tmsub-title"><span th:text="#{message.label.student.details}"></span></h2>
+                </div>
+                <div class="mb-2">
+                  <div class="table-responsive themeTable">
+                    <table id="studentLoginTable" class="table table-bordered nowrap w-100">
+                      <thead>
+                      <tr>
+                        <th th:text="#{message.label.sl.no}"></th>
+                        <th th:text="#{message.label.student.id}"></th>
+                        <th th:text="#{message.label.student.name}"></th>
+                        <th th:text="#{message.label.room.no}"></th>
+                        <th class="text-end">
+                          <span th:text="#{message.label.amount}"></span>
+                          <i class="fa-solid fa-indian-rupee-sign"></i>
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                          th:each="establishmentList, iter : ${form.paginationList.getContent()}">
+                        <td th:text="${(form.paginationList.number * form.paginationList.size) + iter.count}"></td>
+                        <td th:text="${establishmentList.studentId}"></td>
+                        <td th:text="${establishmentList.studentName} == null ? '-' : ${establishmentList.studentName}"></td>
+                        <td th:text="${establishmentList.roomNo}"></td>
+                        <td>
+                          <input type="text" class="form-control total text-end" th:value="${#numbers.formatDecimal(establishmentList.amount, 1, 'NONE', 2, 'POINT')}"
+                                 th:placeholder="#{message.placeholder.amount}" readonly />
+                        </td>
+                      </tr>
+                      <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                        <td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                      </tr>
+                      <tr>
+                        <td class="text-end" colspan="4" valign="middle">Total Amount</td>
+                        <td class="text-end">
+                          <input type="text" class="form-control text-end" id="total-amount" name="total-amount" th:placeholder="00000000" readonly />
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                </div>
+                <div class="row">
+                  <div class="col d-flex justify-content-end text-end">
+                    <th:block th:replace="~{common/template/button :: build(
+                    id='submitForm',
+                    type='submit',
+                    buttonType='submit',
+                    size=null,
+                    tooltip=null,
+                    buttonText=#{message.button.submit},
+                    extraClass='mt-3'
+                  )}" />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:id="modalDiv"></div>
+
+  <!-- Footer-->
+  <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:src="@{/assets/js/hostel/establishment-debits.js}"></script>
+    <script th:inline="javascript">
+      const baseURL = /*[[#{url.establishment.debit}]]*/ '';
+      const uploadURL = /*[[#{url.establishment.upload.save}]]*/ '';
+      const saveEstablishmentListURL = /*[[#{url.save.establishment.list}]]*/ '';
+      const getURL = /*[[#{url.get.form}]]*/ '';
+      const checkStudentURL = /*[[#{url.exist}]]*/ '';
+    </script>
+  </th:block>
+  <!-- Footer-->
+</body>
+</html>

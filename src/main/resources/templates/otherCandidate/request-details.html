@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <div th:insert="~{common/temporary-accommodation-notes::notes}"></div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title"><span th:text="#{message.label.candidate.details}"></span></h2>
+                        </div>
+                    </div>
+                    <th:block
+                            th:insert="~{common/other-candidate-tabs::tabs(tabList='#{message.label.request.details}', screen='#{url.hostel.accomodation.request.details}')}"></th:block>
+
+                    <form class="themeForm mt-4">
+                        <div class="table-responsive themeTable">
+
+                            <table id="requestTable" class="table table-bordered  nowrap w-100" 
+                            	th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.request.type}"></th>
+                                    <th th:text="#{message.label.submitted.date}"></th>
+                                    <th th:text="#{message.label.appointment.From}"></th>
+                                    <th th:text="#{message.label.appointment.To}"></th>
+                                    <th th:text="#{message.label.stay.from}"></th>
+                                    <th th:text="#{message.label.StayTo}"></th>
+                                    <th class="text-center" th:text="#{message.label.status}"></th>
+                                    <th class="text-center" th:text="#{message.label.action}"></th>
+                                </tr>
+                                </thead>
+                                <tbody th:with="dateFormat=#{date.format}">
+                                <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                    th:each="req, iter: ${form.paginationList.getContent()}">
+                                    <td th:text="${req.id.stayId > 0?'Extension':'Accommodation'}"></td>
+                                    <td th:text="${#temporals.format(req.createdAt,dateFormat)}"></td>
+                                    <td th:text="${#temporals.format(req.appointmentFrom,dateFormat)}"></td>
+                                    <td th:text="${#temporals.format(req.appointmentTo,dateFormat)}"></td>
+                                    <td th:text="${#temporals.format(req.stayFrom,dateFormat)}"></td>
+                                    <td th:text="${#temporals.format(req.stayTo,dateFormat)}"></td>
+                                    <td class="text-center">
+                                        <i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+                                           th:data-bs-title="${req.statusNotes}">
+                                        </i>
+                                        <span>
+                                        <th:block th:include="common/template/approval-status-badge ::
+                                                statusBadge(${req.id.stayId > 0?req.stayStatus:req.appStatus},null)"></th:block>
+                                    </span>
+                                    </td>
+                                    <td class="text-center"
+                                        th:with="cancelStatus=${T(java.util.List).of(workflow.VALIDATING.status, workflow.PENDING.status)}
+                                            ,applyStatus= ${T(java.util.List).of(workflow.APPROVED.status,workflow.ALLOTTED.status,workflow.CHECKED_IN.status,workflow.CHECKED_OUT.status,workflow.DELETED.status,workflow.VIEW.status,'-')}
+                                            ,viewStatus=${T(java.util.List).of(workflow.APPROVED.status,workflow.DELETED.status,workflow.CANCELLED.status,workflow.VIEW.status,workflow.PENDING.status,'-')}
+                                            ,pdfStatus=${T(java.util.List).of(workflow.APPROVED.status,workflow.CHECKED_IN.status,workflow.CHECKED_OUT.status,workflow.ALLOTTED.status)}">
+
+                                        <!-- Re-Apply-->
+                                        <div class="d-flex justify-content-center">
+                                            <th:block th:if="${req.id.stayId > 0 and req.stayStatus eq workflow.REJECTED.status}">
+                                                <a type="button" th:href="@{#{url.stay.extension.request}+'/'+${req.encryptedKey}}"
+                                                   class="btn btn-outline-primary btn-sm delete me-2"
+                                                   data-bs-toggle="tooltip"
+                                                   th:data-bs-title="#{message.label.re.apply.extension.req}">
+                                                    <i class="fa-solid fa-retweet"></i>
+                                                </a>
+                                            </th:block>
+
+                                            <th:block th:if="${req.id.stayId <= 0 and req.appStatus eq workflow.REJECTED.status}">
+                                                <a type="button" th:href="@{#{url.accommodation.request}+'/'+${req.encryptedKey}}"
+                                                   class="btn btn-outline-primary btn-sm delete me-2"
+                                                   data-bs-toggle="tooltip"
+                                                   th:data-bs-title="#{message.label.re.apply.accom.req}">
+                                                    <i class="fa-solid fa-retweet"></i>
+                                                </a>
+                                            </th:block>
+
+                                            <!--                                            Edit-->
+                                            <th:block th:if="${req.id.stayId > 0 and req.stayStatus eq workflow.VALIDATING.status}">
+                                                <a type="button" class="btn btn-outline-primary btn-sm me-2"
+                                                   onclick="applyStayExtensionRequest(this);"
+                                                   data-bs-toggle="tooltip" th:id="${req.encryptedKey}"
+                                                   th:data-bs-title="#{message.label.edit.extension.req}">
+                                                    <i class="fa-solid fa-pencil"></i>
+                                                </a>
+                                            </th:block>
+
+                                            <th:block th:if="${req.id.stayId <= 0 and req.appStatus eq workflow.VALIDATING.status}">
+                                                <a th:href="@{#{url.accommodation.request}+'/'+${req.encryptedKey}}"
+                                                        type="button" class="btn btn-outline-primary btn-sm me-2"
+                                                   data-bs-toggle="tooltip"
+                                                   th:data-bs-title="#{message.label.edit.accom.req}">
+                                                    <i class="fa-solid fa-pencil"></i>
+                                                </a>
+                                            </th:block>
+
+                                            <!--                                            Cancel-->
+                                            <th:block th:if="${req.id.stayId <= 0 and cancelStatus.contains(req.appStatus)}">
+                                                <button
+                                                   class="btn btn-outline-secondary btn-sm delete me-2"
+                                                   th:onclick="showCancelModal(accommodationReqCancel,[[${req.encryptedKey}]],event)"
+                                                   data-bs-toggle="tooltip"
+                                                   th:data-bs-title="#{message.label.cancel.accom.req}">
+                                                    <i class="fa fa-ban fa-lg"></i>
+                                                </button>
+                                            </th:block>
+
+                                            <th:block th:if="${req.id.stayId > 0 and cancelStatus.contains(req.stayStatus)}">
+                                                <a type="button" class="btn btn-outline-secondary btn-sm delete me-2"
+                                                   onclick="showExtCancelModal(this)"
+                                                   data-bs-toggle="tooltip" th:id="${req.encryptedKey}"
+                                                   th:data-bs-title="#{message.label.cancel.extension.req}">
+                                                    <i class="fa fa-ban fa-lg"></i>
+                                                </a>
+                                            </th:block>
+
+                                            <!--                                            view-->
+                                            <th:block th:if="${req.id.stayId > 0}">
+                                                <button class="btn btn-outline-bluegray btn-sm edit me-2"
+                                                   data-bs-toggle="tooltip" th:id="${req.encryptedKey}"
+                                                   th:data-bs-title="#{message.label.view.stay.req}"
+                                                   onclick="viewExtension(this,event)">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </th:block>
+
+                                            <th:block th:if="${req.id.stayId <= 0}">
+                                                <button class="btn btn-outline-bluegray btn-sm edit me-2"
+                                                   data-bs-toggle="tooltip" th:id="${req.encryptedKey}"
+                                                   th:data-bs-title="#{message.label.view.accom.req}"
+                                                   onclick="viewAccommodation(this,event)">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </th:block>
+
+                                            <!-- Apply-->
+                                            <th:block th:if="${req.id.stayId <= 0 and applyStatus.contains(req.appStatus) and !cancelStatus.contains(req.stayStatus)}">
+                                                <a type="button" class="btn btn-outline-success btn-sm delete me-2"
+                                                   onclick="applyStayExtensionRequest(this);"
+                                                   data-bs-toggle="tooltip" th:id="${req.encryptedKey}"
+                                                   th:data-bs-title="#{message.label.apply.stay.req}">
+                                                    <i class="fa-solid fa-arrows-left-right"></i>
+                                                </a>
+                                            </th:block>
+
+<!--                                            Re-send Mail-->
+                                            <th:block
+                                                    th:if="${(req.id.stayId <= 0 and req.appStatus ne workflow.REJECTED.status and req.resendDate ne null
+                                                            and req.appStatus ne workflow.CANCELLED.status and req.appStatus ne workflow.APPROVED.status)
+                                                          or (req.id.stayId > 0 and req.stayStatus ne null and req.stayStatus ne workflow.REJECTED.status
+                                                            and req.stayStatus ne workflow.CANCELLED.status and req.stayStatus ne workflow.APPROVED.status)}">
+                                                <button id="resendEmailButton" type="button"
+                                                        th:onclick="resendAccommodationMail([[${req.encryptedKey}]])"
+                                                        class="btn btn-outline-warning btn-sm delete me-2"
+                                                        data-bs-toggle="tooltip" title="Resend Email">
+                                                    <i class="fa-solid fa-paper-plane"></i>
+                                                </button>
+                                            </th:block>
+
+<!--                                            Print PDF-->
+                                            <th:block th:if="${(req.id.stayId <= 0 and pdfStatus.contains(req.appStatus)) or (req.stayStatus eq workflow.APPROVED.status)}">
+                                                <a th:href="@{#{url.accommodation.request}+#{url.pdf.download}+'/'+${req.encryptedKey}}"
+                                                        class="btn btn-outline-pink btn-sm delete me-2"
+                                                        data-bs-target="#deleteModal" data-bs-toggle="tooltip"
+                                                        title="Print PDF">
+                                                    <i class="fa-solid fa-print"></i>
+                                                </a>
+                                            </th:block>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                    <td colspan="8" class="text-center"><span
+                                            th:text="#{message.label.no.data.available}"></span></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+
+                    <!-- Icon Legend -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <div class="border rounded px-3 py-2 bg-light small">
+                            <span class="fw-semibold me-3 text-primary">
+                                <i class="fa-solid fa-circle-info me-1"></i>
+                                <span th:text="#{message.label.icon.explanation}"></span>
+                            </span>
+
+                            <span class="me-3">
+                                <i class="fa-solid fa-arrows-left-right text-success me-1"></i>
+                                <span th:text="#{message.label.apply.stay.req}"></span>
+                            </span>
+
+                            <span class="me-3">
+                                <i class="fa-solid fa-retweet text-primary me-1"></i>
+                                <span th:text="#{message.label.re.apply}"></span>
+                            </span>
+
+                            <span class="me-3">
+                                <i class="fa-solid fa-pencil text-info me-1"></i>
+                                <span th:text="#{message.label.edit}"></span>
+                            </span>
+
+                            <span class="me-3">
+                                <i class="fa fa-ban text-danger me-1"></i>
+                                <span th:text="#{message.label.cancel}"></span>
+                            </span>
+
+                            <span class="me-3">
+                                <i class="fa-solid fa-eye text-secondary me-1"></i>
+                                <span th:text="#{message.label.view}"></span>
+                            </span>
+
+                            <span class="me-3">
+                                <i class="fa-solid fa-paper-plane text-warning me-1"></i>
+                                <span th:text="#{message.button.resend.mail}"></span>
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-print text-pink me-1"></i>
+                                <span th:text="#{message.label.download.pdf}"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+
+<div id="modalDiv"></div>
+
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/cancel-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.cancel.accommodation.request})}"></th:block>
+
+<th:block th:replace="~{common/modal/resend-mail-modal ::
+   contents(id = null, headerText=#{message.label.confirmation},bodyText=#{message.label.resend.mail})}"></th:block>
+
+<th:block th:replace="~{common/modal/request-status-description-modal}"></th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/othersLogin/accommadation-request.js}"></script>
+    <script th:inline="javascript">
+        const accommodationReqCancel = /*[[#{message.label.cancel.accommodation.request}]]*/ '';
+        const stayExtensionReqCancel = /*[[#{message.label.cancel.stay.extension.request}]]*/ '';
+        const baseURL = /*[[#{url.accommodation.request}]]*/ '';
+        const view = /*[[#{url.view}]]*/ '';
+        const cancel = /*[[#{url.cancel}]]*/ '';
+        const download = /*[[#{url.download}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+        const resend = /*[[#{url.resend.mail}]]*/ '';
+        const stayExtensionReqApply = /*[[#{url.stay.extension.request}]]*/ '';
+        const cancelRequest = /*[[#{url.cancel.request}]]*/ '';
+        const requestKey = [[${requestKey}]];
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

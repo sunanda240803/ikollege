@@ -1,0 +1,38 @@
+<div th:replace="~{common/widget-template :: content('ledgerReport', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <modalHeader><span th:text="#{message.label.ledger.report}"></span></modalHeader>
+    <modalBody>
+        <div class="card-body">
+            <a th:href="@{#{url.ledger.report}}" th:text="#{message.view.ledger.report}" class="btn btn-primary px-3 mt-1"></a>
+            <a th:href="@{#{url.ledger.report}+#{url.food.court.report}}" th:text="#{message.view.food.court.report}"
+               class="btn btn-secondary px-3 mt-1"></a>
+        </div>
+
+    </modalBody>
+    <modalfooter>
+        <div class="row align-items-center">
+            <th:block th:if="${messToCardTransferActive eq true}">
+                <div class="col-8">
+                    <p class="mb-0 align-middle">
+                        <span th:text="#{message.label.mess.to.card}"></span>
+                    </p>
+                </div>
+                <div class="col-4">
+                    <a th:href="@{#{url.mess.to.card.transfer}}" class="text-secondary mb-0 align-middle">
+                        <span th:text="#{message.label.view}+' '+#{message.label.status}"></span>
+		                <i class="fa-solid fa-arrow-right ms-2"></i>
+		            </a>
+                </div>
+            </th:block>
+
+            <th:block th:if="${messToCardTransferActive eq false}">
+                <div class="col-12">
+                    <p class="mb-0 align-middle text-danger">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                        <span th:text="#{message.label.mess.to.card.closed}"></span>
+                    </p>
+                </div>
+            </th:block>
+
+        </div>
+    </modalfooter>
+</div>

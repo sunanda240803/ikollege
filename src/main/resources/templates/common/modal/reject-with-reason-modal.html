@@ -1,0 +1,22 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+    <div th:replace="~{common/modal/simple-modal-required-template :: modal('rejectWithReasonModal', ~{::modalHeader}, ~{::modalBody},
+		'danger','fa-solid fa-ban', #{message.label.confirm},true)}">
+        <modalHeader>
+            <th:block th:text="${headerText}"></th:block>
+        </modalHeader>
+        <modalBody>
+            <span th:text="${bodyText}"></span>
+            <div class="col-lg-12 mb-3">
+                <form class="themeForm" id="rejectWithReasonForm" th:object="${statusUpdateDto}" method="post">
+                    <label style="float:left" class="form-label">
+                        <span th:text="#{message.label.bulk.accommodation.request.details.reject.reversal.reason}" />
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea name="approvalNotes" id="approvalNotesId" class="form-control" th:name="approvalNotes"
+                              th:placeholder="#{message.label.bulk.accommodation.request.details.reject.reversal.reason}"  rows="4"></textarea>
+                    <div class="invalid-feedback" style="text-align: left;"th:text="#{message.validation.reason.required}"></div>
+                </form>
+            </div>
+        </modalBody>
+    </div>
+</th:block>

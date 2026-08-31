@@ -1,0 +1,101 @@
+<div id="foodCourtTopUpModal" class="foodCourtTopUp" th:replace="~{common/modal-template :: modal('foodCourtTopUpModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+  <modalHeader th:text="#{message.label.food.court.topup}"></modalHeader>
+  <modalBody>
+    <form id="foodCourtTopUpForm" class="themeForm" th:action="@{#{url.food.court.credit.debit}+#{url.save}}"
+          th:object="${foodCourtLedgerDto}" novalidate method="post">
+      <input type="hidden" th:field="*{id}" id="id" name="id" value="0">
+
+      <div class="row">
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.student.id}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control" id="studentId" name="studentId" th:field="*{studentId}" th:value="*{studentId}" maxlength="10"
+                 oninput="this.value = this.value.toUpperCase(); validateAlphaNumericInput(this);" onchange="checkStudentExist(this)"
+                 th:placeholder="#{message.placeholder.student.id}" required>
+          <div class="invalid-feedback" th:text="#{message.label.student.id} + ' ' + #{message.validation.is.required}"></div>
+          <div class="invalid-exist-feedback d-none" th:text="#{message.label.validation.student.id.exist}"></div>
+          <div class="invalid-mess-period-exist-feedback d-none" th:text="#{message.label.validation.current.mess.period.student.not.exist}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.student.name}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control" id="studentName" th:field="*{studentName}" name="studentName" th:placeholder="#{message.placeholder.student.name}" required readonly>
+          <div class="invalid-feedback"><span th:text="#{message.validation.student.details.name}"></span></div>
+        </div>
+
+        <!-- Amount -->
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.amount}"></span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input"
+                 id="amount" th:field="*{amount}" name="amount"
+                 maxlength="10" pattern="\d{1,10}"
+                 th:placeholder="#{message.placeholder.amount}" required
+                 onkeypress="validateAmountInput(event, this)">
+          <div class="invalid-feedback"><span th:text="#{message.validation.amount.required}"></span></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.credit.debit}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <div class="checkRadio-bg form-control">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input required-input" type="radio" name="creditDebit" id="credit" th:value="'c'" th:checked="*{debitOrCredit == 'c'}"
+                     value="c" th:field="*{debitOrCredit}" required>
+              <label class="form-check-label" for="credit" th:text="#{message.label.credit}"></label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="creditDebit" id="debit" value="d" th:value="'d'" th:checked="*{debitOrCredit == 'd'}"
+                     th:field="*{debitOrCredit}" required>
+              <label class="form-check-label" for="debit" th:text="#{message.label.debit}"></label>
+            </div>
+          </div>
+          <div class="invalid-feedback" th:text="#{message.label.credit.debit} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <!-- Description -->
+        <div class="col-lg-12 mb-3">
+          <label class="form-label"  for="description" th:text="#{message.label.description}"></label>
+          <textarea class="form-control" id="description" name="description" th:field="*{description}" maxlength="320"
+                    th:placeholder="#{message.placeholder.description}"></textarea>
+          <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+        </div>
+
+        <div id="studentDetailsSection" class="d-none">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">
+                <span th:text="#{message.label.mess.name}"></span>
+              </label>
+              <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+                <span class="me-2" id="messName"></span> (
+                <span th:text="#{message.label.mess.period.colon} + ' ' +
+					${#temporals.format(currentMessPeriod.diningFromDate, #messages.msg('date.format'))}
+					+ ' ' + #{message.label.to} + ' ' +
+					${#temporals.format(currentMessPeriod.diningToDate, #messages.msg('date.format'))}">
+				</span> )
+              </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">
+                <span th:text="#{message.label.current.balance}"></span>
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+              </label>
+              <div id="currentBalance" class="form-control form-graybox"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modalBody>
+</div>

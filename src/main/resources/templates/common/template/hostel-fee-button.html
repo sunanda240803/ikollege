@@ -1,0 +1,40 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="hostelFeeButton(page)">
+    <span th:if="${page == 'loginRegistration'}">
+        <a th:if="${loginType=='e000611cee6384acac7ce443e422947d' || loginType=='1b4a53620b60ae418ff44f3fac3213bc'}" href="https://fees.iitm.ac.in" type="button" class="btn btn-orange mb-3 me-2" target="_blank">
+            <span th:text="#{message.label.ifpp.hostel.fee.payment}"></span>
+            <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip"
+            th:data-bs-title="#{message.label.hostel.fee.payment.instruction}">
+            </i>
+        </a>
+    </span>
+    <div class="row justify-content-center" th:if="${page == 'landing'}">
+        <div class="col-lg-6" th:if="${isIFPPButtonNeeded}">
+            <a href="https://fees.iitm.ac.in" target="_blank" class="iconLinkbox" style="border-color: #c1d4ed;">
+                <div class="boxIcon two d-flex justify-content-center" style="border-radius: 15px; height: 100px;">
+                    <img th:src="@{/assets/img/02-hostal-fee.svg}" class="pb-0">
+                    <h2 class="text-white ms-2" th:text="#{message.label.IFPP}"></h2>
+                </div>
+                <div class="boxText mb-0">
+                    <h5 class="fw-bold text-tmSecondary mb-0" >
+                        <span th:text="#{message.label.hostel.fee.payment}"></span>
+                        <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip"	th:attr="data-bs-title=#{message.label.hostel.fee.payment.instruction}"></i>
+                    </h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-6" th:if="${isConvocationOpen}">
+            <a th:href="@{#{url.accommodation.mess.convocation}}" class="iconLinkbox convocation-card" style="border-color: #edc1c1;">
+                <div class="boxIcon six d-flex justify-content-center" style="border-radius: 15px; height: 100px;">
+                    <img th:src="@{/assets/img/convocation-image.svg}" class="pb-0">
+                    <h2 class="text-white ms-2" th:text="#{message.button.convocation}"></h2>
+                </div>
+                <div class="boxText mb-0">
+                    <h5 class="fw-bold convocation-text mb-0 text-center" >
+                        <span th:text="${convocationYear} + ' ' + #{message.label.convocation.accommodation.mess.registration} + ' '+${convocationOpenLinkDate}"></span>
+                    </h5>
+                </div>
+            </a>
+        </div>
+    </div>
+</th:block>

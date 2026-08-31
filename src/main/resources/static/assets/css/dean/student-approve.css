@@ -1,0 +1,4 @@
+th:not(.short-head), td:not(.short-data) {
+    min-width: 150px;
+    white-space: nowrap;
+}

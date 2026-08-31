@@ -1,0 +1,125 @@
+<!-- /templates/fragments/pagination.html -->
+<div th:fragment="pagination(form)">
+    <div class="row mb-5 align-items-center" th:if="${form.paginationList != null}">
+        <!-- Left-aligned: Show Entries -->
+        <div class="col-lg-4">
+            <nav>
+                <ul class="pagination justify-content-left mb-3">
+
+					<li class="page-item disabled">
+					    <span class="page-link" th:text="#{message.label.show}"></span>
+					</li>
+
+					<li class="page-item" th:classappend="${form.size == 10} ? 'active'">
+					    <a th:if="${form.search != null and !#strings.isEmpty(form.search)}" href="javascript:void(0)"  th:attr="onclick='createUrlWithParams(' + ${form.pageVal} + ',  10 , \'' + ${form.search} + '\')'"  class="page-link" th:text="'10'"></a>
+					    <a th:if="${form.search == null or #strings.isEmpty(form.search)}" href="javascript:void(0)"   th:onclick="'createUrlWithParams(' + ${form.pageVal} + ', 10)'" class="page-link" th:text="'10'"></a>
+					</li>
+
+					<li class="page-item" th:classappend="${form.size == 25} ? 'active'">
+					    <a th:if="${form.search != null and !#strings.isEmpty(form.search)}" href="javascript:void(0)" th:attr="onclick='createUrlWithParams(' + ${form.pageVal} + ',  25 , \'' + ${form.search} + '\')'"  class="page-link" th:text="'25'"></a>
+					    <a th:if="${form.search == null or #strings.isEmpty(form.search)}"  href="javascript:void(0)"  th:onclick="'createUrlWithParams(' + ${form.pageVal} + ', 25)'" class="page-link" th:text="'25'"></a>
+					</li>
+
+					<li class="page-item" th:classappend="${form.size == 50} ? 'active'">
+					    <a th:if="${form.search != null and !#strings.isEmpty(form.search)}" href="javascript:void(0)" th:attr="onclick='createUrlWithParams(' + ${form.pageVal} + ',  50 , \'' + ${form.search} + '\')'" class="page-link" th:text="'50'"></a>
+					    <a th:if="${form.search == null or #strings.isEmpty(form.search)}" href="javascript:void(0)"   th:onclick="'createUrlWithParams(' + ${form.pageVal} + ', 50)'"  class="page-link" th:text="'50'"></a>
+					</li>
+
+					<li class="page-item disabled">
+					    <span class="page-link" th:text="#{message.label.entries}"></span>
+					</li>
+
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Center-aligned: Total Records -->
+        <div class="col-lg-4 text-center mb-2">
+            <label th:text="#{message.label.total.records}"></label>
+            <strong><span th:text="${form.paginationList.getTotalElements()}" class="ml-2 "></span></strong>
+        </div>
+
+        <!-- Right-aligned: Pagination Controls -->
+        <div class="col-lg-4 text-right mt-2">
+   			<nav>
+		        <ul class="pagination justify-content-end">
+		            <!-- Previous button -->
+		            <li class="page-item" th:classappend="${form.page == 1} ? 'disabled'">
+		                <a class="page-link" th:if="${form.search != null and !#strings.isEmpty(form.search)}"
+		                	href="javascript:void(0)" th:attr="onclick='createUrlWithParams(' + (${form.page} - 1) + ', ' + ${form.size} + ', \'' + ${form.search} + '\')'"  aria-label="Previous">
+		                    <span th:text="#{message.label.previous}"></span>
+		                </a>
+		                <a class="page-link" th:if="${form.search == null or #strings.isEmpty(form.search)}"
+		                	 href="javascript:void(0)" th:onclick="'createUrlWithParams(' + (${form.page} - 1) + ', ' + ${form.size} + ')'" aria-label="Previous">
+		                    <span th:text="#{message.label.previous}"></span>
+		                </a>
+		            </li>
+
+		            <!-- First page button -->
+		            <li class="page-item" th:if="${form.page > 3}">
+		                <a class="page-link" th:if="${form.search != null and !#strings.isEmpty(form.search)}"
+		                	href="javascript:void(0)" th:attr="onclick='createUrlWithParams(' + (1) + ', ' + ${form.size} + ', \'' + ${form.search} + '\')'">1</a>
+		                <a class="page-link" th:if="${form.search == null or #strings.isEmpty(form.search)}"
+		                	th:onclick="'createUrlWithParams(' + (1) + ', ' + ${form.size} + ', )'" >1</a>
+		            </li>
+
+		            <!-- Ellipsis before page numbers -->
+		            <li class="page-item" th:if="${form.page > 4}">
+		                <span class="page-link">...</span>
+		            </li>
+
+		            <!-- Page numbers -->
+		            <li class="page-item" th:each="i : ${#numbers.sequence(form.page - 2, form.page + 2)}"
+		                th:if="${i > 0 and i <= form.paginationList.getTotalPages()}" th:classappend="${i == form.page} ? 'active'">
+		                <a class="page-link" th:if="${form.search != null and !#strings.isEmpty(form.search)}"
+		                	href="javascript:void(0)"
+		                	th:attr="onclick='createUrlWithParams(' + (${i}) + ', ' + ${form.size} + ', \'' + ${form.search} + '\')'" th:text="${i}"></a>
+		                <a class="page-link" th:if="${form.search == null or #strings.isEmpty(form.search)}"
+		                	 href="javascript:void(0)"
+		                	th:onclick="'createUrlWithParams(' + (${i}) + ', ' + ${form.size} + ', )'" th:text="${i}"></a>
+		            </li>
+
+		            <!-- Ellipsis after page numbers -->
+		            <li class="page-item" th:if="${form.page < form.paginationList.getTotalPages() - 3}">
+		                <span class="page-link">...</span>
+		            </li>
+
+		            <!-- Last page button -->
+		            <li class="page-item" th:if="${form.page < form.paginationList.getTotalPages() - 2}">
+		                <a class="page-link" th:if="${form.search != null and !#strings.isEmpty(form.search)}"
+		                	 href="javascript:void(0)"
+		                	th:attr="onclick='createUrlWithParams(' + (${form.paginationList.getTotalPages()}) + ', ' + ${form.size} + ', \'' + ${form.search} + '\')'"
+		                	 th:text="${form.paginationList.getTotalPages()}"></a>
+		                <a class="page-link" th:if="${form.search == null or #strings.isEmpty(form.search)}"
+		                	href="javascript:void(0)"
+		                	th:onclick="'createUrlWithParams(' + (${form.paginationList.getTotalPages()}) + ', ' + ${form.size} + ')'"
+		                	th:text="${form.paginationList.getTotalPages()}"></a>
+		            </li>
+
+		            <!-- Next button -->
+		            <li class="page-item" th:classappend="${form.page == form.paginationList.getTotalPages()} ? 'disabled'">
+		                <a class="page-link" th:if="${form.search != null and !#strings.isEmpty(form.search)}"
+		                href="javascript:void(0)" th:attr="onclick='createUrlWithParams(' + (${form.page} + 1) + ', ' + ${form.size} + ', \'' + ${form.search} + '\')'" aria-label="Next">
+		                   <span th:text="#{message.label.next}"></span>
+		                </a>
+		                <a class="page-link" th:if="${form.search == null or #strings.isEmpty(form.search)}"
+		                	href="javascript:void(0)" th:onclick="'createUrlWithParams(' + (${form.page} + 1) + ', ' + ${form.size} + ')'" aria-label="Next">
+		                    <span th:text="#{message.label.next}"></span>
+		                </a>
+		            </li>
+		        </ul>
+    		</nav>
+		</div>
+    </div>
+    
+    <div hidden>
+     <input id="currentUrl" th:value="${form.currentUrl}" />
+         <th:block th:each = "paramTest: ${form.additionalParam}">
+         	<input th:name="'additionalParam.'+${paramTest.key}" th:value="${paramTest.value}" class="additional-param"/>
+         </th:block>
+         <th:block th:if="${form.additionalParam != null and #lists.size(form.additionalParam) > 0}">
+         	<input name="searchFilter" value="true" class="additional-param"/>
+         </th:block>
+    </div>
+</div>
+

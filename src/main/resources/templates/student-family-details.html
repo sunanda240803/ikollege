@@ -1,0 +1,43 @@
+<th:block th:fragment="familyDetails(familySize,edit)">
+	<div class="row">
+		<div th:class="${(familySize == 0 || edit) ? 'col-lg-9' : 'col-lg-12'}">
+			<h2 class="tmsub-title"><span th:text="#{message.label.family.details}"></span></h2>
+		</div>
+		<div class="col-lg-3 text-lg-end" th:if="${familySize == 0 || edit}">
+			<button type="button" class="btn btn-success btn-sm" id="addFamilyMember">
+				<i class="fa fa-circle-plus me-1"></i>
+				<span th:text="#{message.button.add.family.member}"></span>
+			</button>
+		</div>
+	</div>
+	<div class="col-lg-12 mb-3">
+		<div class="table-responsive themeTable">
+			<input hidden="hidden" value="0" id="familyMemberCount" />
+			<input hidden="hidden" id="familyDetailsEdit" th:value="${edit}"/>
+			<table id="familyTable" class="table table-bordered">
+				<thead>
+				<tr>
+					<th><span th:text="#{message.label.relation}"></span></th>
+					<th><span th:text="#{message.label.name}"></span></th>
+					<th><span th:text="#{message.label.mobile.number}"></span></th>
+					<th><span th:text="#{message.label.email.id}"></span></th>
+					<th><span th:text="#{message.label.age}"></span></th>
+					<th><span th:text="#{message.label.occupation}"></span></th>
+					<th><span th:text="#{message.label.income}"></span></th>
+					<th><span th:text="#{message.label.address}"></span></th>
+					<th><span th:text="#{message.label.action}"></span></th>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="uploadProofDiv">
+		<div class="col-lg-12 mb-3">
+			<h2 class="tmsub-title"><span th:text="#{message.label.family.member.proof}"></span></h2>
+		</div>
+		<div id="fileUploadContainer" class="row"></div>
+	</div>
+	
+</th:block>

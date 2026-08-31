@@ -1,0 +1,45 @@
+<th:block th:fragment="select(countrySelectForm, idSuffix, formPrefix, size)">
+    <th:block th:with="country=${countrySelectForm.countrySelect}">
+        <div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'" th:if="${country.needed}">
+            <label class="form-label" th:for="'countryId' + ${idSuffix}">
+                <span th:text="#{message.label.country}"></span>
+                <span class="text-tmPrimary" th:if="${country.required}"><th:block th:replace="~{common/template/mandatory-symbol}" /></span>
+            </label>
+            <select th:id="'countryId' + ${idSuffix}" class="form-select" th:name="${formPrefix} + .countrySelect.value" 
+					th:data-value="${countrySelectForm.countrySelect.value}"
+                    th:data-enable="${country.enabled}" disabled>
+                <option class="empty-list" value="0" th:text="#{message.label.no} + ' ' + #{message.label.records}"></option>
+            </select>
+            <div class="invalid-feedback" th:if="${country.required}" th:text="#{message.validation.country.required}"></div>
+        </div>
+    </th:block>
+    <th:block th:with="state=${countrySelectForm.stateSelect}">
+        <div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'" th:if="${state.needed}">
+            <label class="form-label" th:for="'stateId' + ${idSuffix}">
+                <span th:text="#{message.label.state}"></span>
+                <span class="text-tmPrimary" th:if="${state.required}"><th:block th:replace="~{common/template/mandatory-symbol}" /></span>
+            </label>
+            <select th:id="'stateId' + ${idSuffix}" class="form-select" th:name="${formPrefix} + .stateSelect.value"
+					th:data-value="${countrySelectForm.stateSelect.value}"
+                    th:data-enable="${state.enabled}" disabled>
+                <option class="empty-list" value="0" th:text="#{message.label.no} + ' ' + #{message.label.records}"></option>
+            </select>
+            <div class="invalid-feedback" th:if="${state.required}" th:text="#{message.validation.state.required}"></div>
+        </div>
+    </th:block>
+    <th:block th:with="city=${countrySelectForm.citySelect}">
+        <div th:class="'addressForm col-lg-' + ${colLgSize} + ' col-md-' + ${colMdSize} + ' col-sm-12 mb-3'" th:if="${city.needed}">
+            <label class="form-label" th:for="'cityId' + ${idSuffix}">
+                <span th:text="#{message.label.city}"></span>
+                <span class="text-tmPrimary" th:if="${city.required}"> <th:block th:replace="~{common/template/mandatory-symbol}" /></span>
+            </label>
+            <select th:id="'cityId' + ${idSuffix}" class="form-select" th:name="${formPrefix} + .citySelect.value"
+					th:data-value="${countrySelectForm.citySelect.value}"
+                    th:data-enable="${city.enabled}" disabled>
+                <option class="empty-list" value="0" th:text="#{message.label.no} + ' ' + #{message.label.records}"></option>
+            </select>
+            <div class="invalid-feedback" th:if="${city.required}" th:text="#{message.validation.city.required}"></div>
+        </div>
+    </th:block>
+
+</th:block>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})}">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- Main -->
+<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body themeForm">
+					<th:block th:fragment="screen('guest')">
+						<form class="themeForm"  th:action="${isUnauthenticatedView != null && isUnauthenticatedView == true} ?
+							  @{#{url.public.accommodation.request.action}} : @{#{url.guest.accommodation.student} + #{url.guest.student.request.action}}"  method="post" id="viewGuestRoomDetailForm"
+							  th:object="${studentGuestAccomDTO}">
+							<!-- Student Details Section -->
+
+							<input type="hidden"  th:name="studentId"  th:value="${studentGuestAccomDTO.studentId}" />
+							<input type="hidden"  th:name="requestId"   th:value="${studentGuestAccomDTO.requestId}" />
+							<input type="hidden"  th:name="wardenEmail"   th:value="${studentGuestAccomDTO.wardenEmail}" />
+							<input type="hidden"  th:name="wardenId"   th:value="${studentGuestAccomDTO.wardenId}" />
+							<input type="hidden"  th:name="studentDetailString"   th:value="${studentGuestAccomDTO.studentDetailString}" />
+							<input type="hidden"  th:name="accommodationType"   th:value="${studentGuestAccomDTO.accommodationType}" />
+
+
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.student.details}"></span>
+									</h2>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<input type="hidden" th:value="${studentGuestAccomDTO.minToDate}" id="minToDate">
+								<!-- Student ID -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.student.id}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.studentId}"></div>
+								</div>
+								<!-- Student Name -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.student.name}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.firstName + ' ' + studentGuestAccomDTO.studentInfo.lastName}"></div>
+								</div>
+								<!-- Gender -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.gender}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.gender} ?: #{message.label.na}"></div>
+								</div>
+								<!-- Date of Birth -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.dob}"></span>
+									</label>
+									<div class="form-control form-graybox"
+										 th:text="${studentGuestAccomDTO.studentInfo.dob != null && !studentGuestAccomDTO.studentInfo.dob.isEmpty() ?
+               										studentGuestAccomDTO.studentInfo.dob : 'N/A'}">
+									</div>
+
+								</div>
+								<!-- Address -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.address}"></span>
+									</label>
+									<div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;" th:text="${studentGuestAccomDTO.studentInfo.address} ?: #{message.label.na}"></div>
+								</div>
+								<!-- City -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.city.or.town}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.city} ?: #{message.label.na}"></div>
+								</div>
+								<!-- State -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.state}"></span>
+									</label>
+									<div class="form-control form-graybox"  th:text="${studentGuestAccomDTO.studentInfo.state} ?: #{message.label.na}"></div>
+								</div>
+								<!-- Zip Code -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.zip.code}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.pincode} ?: #{message.label.na}"></div>
+								</div>
+								<!-- Contact Number -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.contact.number}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.alternateContactNumber} ?: #{message.label.na}"></div>
+								</div>
+								<!-- Email ID -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.email.id}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.parentEmailId} ?: #{message.label.na}"></div>
+								</div>
+								<!-- Hostel Name -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.hostel.name}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.hostelName} ?: #{message.label.na}"></div>
+								</div>
+								<!-- Room Number -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.room.no}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.studentInfo.roomNo} ?: #{message.label.na}"></div>
+								</div>
+							</div>
+
+							<!-- Request Details Section -->
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.request.details}"></span>
+									</h2>
+								</div>
+							</div>
+							<div class="row mb-3">
+
+								<!-- Check-in DateTime -->
+								<!--<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.checkin.date}"></span>
+									</label>
+									<input type="datetime-local" id="checkInDate" th:name="checkInDateTime" class="form-control"
+										   th:value="${studentGuestAccomDTO.checkInDateTime}">
+									<span id="checkInDateError" class="text-danger" style="display: none;"></span>
+								</div>
+
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.checkout.date}"></span>
+									</label>
+									<input type="datetime-local" id="checkOutDate" th:name="checkOutDateTime" class="form-control"
+										   th:value="${studentGuestAccomDTO.checkOutDateTime}">
+									<span id="checkOutDateError" class="text-danger" style="display: none;"></span>
+								</div>-->
+
+								<!-- Check-in Date and Time -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.checkin.date}"></span>
+									</label>
+									<div class="row">
+										<div class="col-lg-8">
+											<input type="date" id="checkInDate" th:name="fromDate" class="form-control"
+												   th:value="${studentGuestAccomDTO.fromDate}">
+										</div>
+										<div class="col-lg-4 position-relative">
+											<i class="fa fa-regular fa-clock position-absolute" style="right: 14%;top: 51%;transform: translateY(-50%);z-index: 10;
+											pointer-events: none;display: block;"></i>
+											<select th:name="checkInTime" class="form-control">
+												<option th:each="hour : ${#numbers.sequence(0, 23)}"
+														th:value="${(hour < 10 ? '0' + hour : hour) + ':00'}"
+														th:text="${(hour < 10 ? '0' + hour : hour) + ':00'}"
+														th:selected="${(studentGuestAccomDTO.checkInTime != null and
+										  studentGuestAccomDTO.checkInTime.startsWith(hour < 10 ? '0' + hour : hour)) or
+										  (studentGuestAccomDTO.checkInTime == null and hour == 0)}">
+												</option>
+											</select>
+										</div>
+									</div>
+									<span id="checkInDateError" class="text-danger" style="display: none;"></span>
+								</div>
+
+								<!-- Check-out Date and Time -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.checkout.date}"></span>
+									</label>
+									<div class="row">
+										<div class="col-lg-8">
+											<input type="date" id="checkOutDate" th:name="toDate" class="form-control"
+												   th:value="${studentGuestAccomDTO.toDate}">
+										</div>
+										<div class="col-lg-4 position-relative">
+										<i class="fa fa-regular fa-clock position-absolute" style="right: 14%;top: 51%;transform: translateY(-50%);z-index: 10;
+											pointer-events: none;display: block;"></i>
+											<select th:name="checkOutTime" class="form-control">
+												<option th:each="hour : ${#numbers.sequence(0, 23)}"
+														th:value="${(hour < 10 ? '0' + hour : hour) + ':00'}"
+														th:text="${(hour < 10 ? '0' + hour : hour) + ':00'}"
+														th:selected="${(studentGuestAccomDTO.checkOutTime != null and
+										  studentGuestAccomDTO.checkOutTime.startsWith(hour < 10 ? '0' + hour : hour)) or
+										  (studentGuestAccomDTO.checkOutTime == null and hour == 0)}">
+												</option>
+											</select>
+										</div>
+									</div>
+
+									<span id="checkOutDateError" class="text-danger" style="display: none;"></span>
+								</div>
+
+
+								<!-- Number of Days -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.no.of.days}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.noOfDays}"></div>
+								</div>
+								<!-- Number of Persons -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.no.of.persons}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.noOfPersons}"></div>
+								</div>
+								<!-- Accommodation Type -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.accommodation.type}"></span>
+									</label>
+									<div class="form-control  form-graybox" th:name="accommodationType" th:text="${studentGuestAccomDTO.accommodationType}"></div>
+								</div>
+								<!-- Purpose of Visit -->
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.purposeof.visit}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${studentGuestAccomDTO.purposeOfVisit}"></div>
+								</div>
+							</div>
+
+							<!-- Approval Status Section -->
+							<div class="row mt-4">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title" th:text="#{message.label.approval.status}"></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="text-center">
+										<div class="row">
+											<div class="col-lg-6 mb-3">
+												<div th:replace="hostel/guest-room-approval-status-block :: approvalBlock(${studentGuestAccomDTO})"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Guest Details Section -->
+							<div class="row mt-4">
+								<div class="col-lg-6" th:classappend="${screen == 'student' ? ' col-lg-12' : ''}">
+									<h2 class="tmsub-title" th:text="#{message.label.guest.details}"></h2>
+									<div class="row mb-3">
+										<div class="col-lg-12 mb-3">
+											<div class="table-responsive themeTable">
+												<table id="familyTable" class="table table-bordered">
+													<thead>
+													<tr>
+														<th><span th:text="#{message.label.guest.name}"></span></th>
+														<th><span th:text="#{message.label.guest.relation}"></span></th>
+													</tr>
+													</thead>
+													<tbody>
+													<tr th:each="guest : ${studentGuestAccomDTO.guestReqList}">
+														<td>
+															<div class="form-control form-graybox" th:text="${guest.guestName}"></div>
+														</td>
+														<td>
+															<div class="form-control form-graybox" th:text="${guest.relationOfGuest}"></div>
+														</td>
+													</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6" th:classappend="${screen == 'student' ? 'd-none' : ''}">
+									<h2 class="tmsub-title" th:text="#{message.label.allotment.details}"></h2>
+									<div class="row mb-3">
+										<div class="col-lg-12 mb-3">
+											<div class="table-responsive themeTable">
+												<table id="familyTable" class="table table-bordered">
+													<thead>
+													<tr>
+														<th><span th:text="#{message.label.alloted.hostel}"></span></th>
+														<th><span th:text="#{message.label.alloted.room}"></span></th>
+													</tr>
+													</thead>
+													<tbody>
+													<tr th:each="guest : ${studentGuestAccomDTO.guestReqList}">
+														<td>
+															<div class="form-control form-graybox" th:text="${guest.allotedHostelName} ?: #{message.label.na}"></div>
+														</td>
+														<td>
+															<div class="form-control form-graybox" th:text="${guest.allotedRoomNo} ?: #{message.label.na}"></div>
+														</td>
+													</tr>
+													<!-- 												<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}"> -->
+													<!--  													<td colspan="2" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>  -->
+													<!-- 												</tr> -->
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Uploaded Documents Section -->
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title" th:text="#{message.label.uploaded.documents}"></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 mt-2 mb-4">
+                                    <div class="row mb-4">
+                                        <div class="col-lg-6" th:each="file : ${studentGuestAccomDTO.uploadFileList}">
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="text-truncate" th:text="${file.fileDescrption}"></div>
+                                                        <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+                                                                th:file-name="${file.uploadModifiedFileName}"
+                                                                onclick="downloadFile(this);"
+                                                                th:attr="data-bs-title=${file.uploadModifiedFileName}">
+                                                            <i class="fa fa-download pdf text-white"></i>
+                                                        </button>
+                                                        <input type="hidden" th:value="${file.uploadModifiedFileName}">
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+								</div>
+
+								<div class="col-lg-6 mb-3">
+									<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															&& (studentGuestAccomDTO.wardenApprovalStatus == 'Rejected') }">
+										<label class="form-label">
+											<span th:text="#{message.label.reject.reason}"></span>
+										</label>
+										<textarea class="form-control form-graybox"
+												  readonly th:text="${studentGuestAccomDTO.rejectionDescription}"></textarea>
+
+
+										<label class="form-label">
+											<span th:text="#{message.label.approval.notes}"></span>
+										</label>
+										<textarea th:name="approvalNotes"  class="form-control" th:text="${studentGuestAccomDTO.approvalNotes}"></textarea>
+									</th:block>
+									<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+														&& (studentGuestAccomDTO.wardenApprovalStatus != 'Rejected')}">
+										<label class="form-label">
+											<span th:text="#{message.label.approval.notes}"></span>
+										</label>
+										<textarea th:name="approvalNotes"  class="form-control" th:text="${studentGuestAccomDTO.approvalNotes}"></textarea>
+									</th:block>
+								</div>
+								<div class="col-lg-12 my-3">
+									<th:block th:replace="~{common/template/note :: noteContent('message.label.note', null, ~{::noteContent})}">
+										<noteContent>
+											<ul>
+												<li th:each="note : ${wardenNotes}" th:text="${note}"></li>
+											</ul>
+										</noteContent>
+									</th:block>
+								</div>
+
+								<div class="col-lg-12 mt-2 mb-4" th:if="${studentGuestAccomDTO != null}">
+									<div class="d-flex flex-column flex-md-row align-items-center justify-content-end justify-content-md-end">
+										<!-- Override and Approve Button -->
+										<!--&& userInfBean.userRoleDesc == 'CCW DEAN'}"-->
+											<th:block th:if="${userRole != null && userRole == 'Dean'}">
+												<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															&& (studentGuestAccomDTO.wardenApprovalStatus == 'Validating') }">
+													<button type="button" class="btn btn-aqua px-4 me-3 mb-2 mb-md-0"
+															id="overrideAndApproveBtn"
+															onclick="OverrideApproveGuestAccomReq('viewGuestRoomDetailForm', 'OverrideAndApproved')">
+														<i class="fa-solid fa-floppy-disk me-1"></i>
+														<span th:text="#{message.button.override.and.approve}"></span>
+													</button>
+
+													<!-- Reject Button -->
+													<button type="button" class="btn btn-danger px-4 me-3"
+															id="rejectBtn"
+															onclick="rejectGuestAccom('viewGuestRoomDetailForm', 'Rejected')">
+														<i class="fa-solid fa-xmark me-1"></i>
+														<span th:text="#{message.button.reject}"></span>
+													</button>
+												</th:block>
+												<!-- Re-approve Link (for Rejected Status) -->
+												<div th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															  && studentGuestAccomDTO.wardenApprovalStatus == 'Rejected'}">
+													<b>
+														If you want to Approve the request, Please
+														<a href="javascript:void(0);" onclick="return reApprove()">click here.</a>
+													</b>
+												</div>
+												<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+														&& (studentGuestAccomDTO.wardenApprovalStatus == 'WardenApproveComplete'
+															|| studentGuestAccomDTO.wardenApprovalStatus == 'Approved'
+															|| studentGuestAccomDTO.wardenApprovalStatus == 'OverrideAndApproved')}">
+													<b class="text-success">The request has been Approved Successfully.</b>
+												</th:block>
+											</th:block>
+											<th:block th:if="${userRole == null}">
+												<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															&& (studentGuestAccomDTO.wardenApprovalStatus == 'Validating') }">
+													<button type="button" class="btn btn-aqua px-4 me-3 mb-2 mb-md-0"
+															id="overrideAndApproveBtn"
+															onclick="OverrideApproveGuestAccomReq('viewGuestRoomDetailForm', 'WardenApproveComplete')">
+														<i class="fa-solid fa-floppy-disk me-1"></i>
+														<span th:text="#{message.button.approve}"></span>
+													</button>
+
+													<!-- Reject Button -->
+													<button type="button" class="btn btn-danger px-4 me-3"
+															id="rejectBtn"
+															onclick="rejectGuestAccom('viewGuestRoomDetailForm', 'Rejected')">
+														<i class="fa-solid fa-xmark me-1"></i>
+														<span th:text="#{message.button.reject}"></span>
+													</button>
+												</th:block>
+												<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															&& (studentGuestAccomDTO.wardenApprovalStatus == 'WardenApproveComplete'
+																|| studentGuestAccomDTO.wardenApprovalStatus == 'OverrideAndApproved') }">
+													<b class="text-success">The request has been Approved Successfully.</b>
+												</th:block>
+												<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															&& (studentGuestAccomDTO.wardenApprovalStatus == 'Rejected') }">
+													<b class="text-danger">The request has been rejected.</b>
+												</th:block>
+												<th:block th:if="${studentGuestAccomDTO.wardenApprovalStatus != null
+															&& (studentGuestAccomDTO.wardenApprovalStatus == 'Cancelled') }">
+													<b class="text-primary">The request has been Cancelled by the Student.</b>
+												</th:block>
+											</th:block>
+									</div>
+								</div>
+
+
+							</div>
+						</form>
+					</th:block>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<th:block
+		th:replace="~{common/modal/delete-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/dean/guest-room.js}"></script>
+	<script th:inline="javascript">
+        const maxDateDiff = /*[[${GUEST_MAILVIEW_MAX_TODATE}]]*/ '5';
+        const baseUrl = /*[[#{url.guest.accommodation.student}]]*/ '';
+        const checkInDateRequired = /*[[#{message.check-in.date.required}]]*/ '';
+        const checkOutDateRequired = /*[[#{message.check-out.date.required}]]*/ '';
+        const toDateGreaterThanFromDate = /*[[#{message.to.date.greater.than.from.date}]]*/ '';
+        const fromDateFutureOrCurrent = /*[[#{message.from.date.future.or.current}]]*/ '';
+        const toDateWithinRange = /*[[#{message.to.date.within.range}]]*/ '';
+        const requestRejectedConfirmation = /*[[#{message.request.rejected.confirmation}]]*/ '';
+        const formSubmissionError = /*[[#{message.form.submission.error}]]*/ '';
+
+        const paymentTypeIcollect = /*[[#{message.label.IFPP}]]*/ '';
+        const paymentTypePosMachine = /*[[#{payment.type.pos.machine}]]*/ '';
+        const paymentTypeCash = /*[[#{payment.type.cash}]]*/ '';
+
+        const showAdvanceFilter = /*[[#{show.advance.filter}]]*/ '';
+        const hideAdvanceFilter = /*[[#{hide.advance.filter}]]*/ '';
+
+        const studentViewUrl = /*[[#{url.guest.student.view}]]*/ '';
+        const studentEditUrl = /*[[#{url.guest.student.edit}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+
+	</script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<div th:replace="~{common/modal-template ::
+   modal('hostel-accommodation-resend-mail-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+    <modalHeader></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="guestCouponResendMail" th:action="@{#{url.hostel.guest.coupon.request}+#{url.resend.mail}}"
+              th:object="${guestCouponRequestDTO}" method="post">
+            <div class="row">
+				<input type="hidden" th:name="requestId" th:value="${requestId}" th:id="id" />
+            </div>
+        </form>
+    </modalBody>
+</div>

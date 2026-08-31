@@ -1,0 +1,133 @@
+  <div th:replace="~{common/modal-template ::
+   modal('student-hostel-accommodation-view', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+    <modalHeader th:text="#{message.label.appointment.additional.details}"></modalHeader>
+    <modalBody>
+      <form class="themeForm" id="appointment-details-form"
+            th:object="${studentAppointmentRequestDto}" enctype="multipart/form-data">
+        <input type="hidden" id="requestId" th:field="*{id}">
+          <div class="row">
+            <div class="row mb-3" th:classappend="${!status} ? 'd-none' : ''">
+              <div class="col-lg-12">
+                <div class="infoBox">
+                  <h4><i class="fa-solid fa-file-circle-exclamation me-1"></i>
+                    <span th:text="#{message.label.information}"></span> :</h4>
+                  <span class="fw-bold" th:text="#{message.hostel.accommodation.application.under.process}"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.student.id}"></label>
+              <div class="form-control form-graybox" th:text="*{studentId}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.student.name}"></label>
+              <div class="form-control form-graybox" th:text="${@securityCtxUtil.studentFullName()}"></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.period.appointment}"></h2>
+              </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.from.date}"></label>
+              <div class="form-control form-graybox" th:text="*{#temporals.format(appointmentFrom, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.to.date}"></label>
+              <div class="form-control form-graybox" th:text="*{#temporals.format(appointmentTo, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.period.stay.request}"></h2>
+              </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.to.date}"></label>
+              <div class="form-control form-graybox" th:text="*{#temporals.format(stayFrom, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.to.date}"></label>
+              <div class="form-control form-graybox" th:text="*{#temporals.format(stayTo, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label"><span th:text="#{message.label.appointment.nature}"></span></label>
+              <div class="form-control form-graybox"  id="category" th:text="*{category}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.dining}"></label>
+              <div class="form-control form-graybox" th:text="*{dining == 'y' ? 'Yes' : 'No'}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.purpose}"></label>
+              <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;" th:text="*{purpose}"></div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.validating.authority}"></h2>
+              </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.authority.name}"></label>
+              <div class="form-control form-graybox" th:text="*{validatingAuthority}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.authority.email}"></label>
+              <div class="form-control form-graybox" th:text="*{validatingAuthorityEmail}"></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.approval.status}"></h2>
+              </div>
+            </div>
+            <div class="col-lg-12 mb-3">
+              <div class="text-center">
+                <div class="row mt-2">
+                  <div class="col-lg-6" th:each="status : ${studentAppointmentRequestDto.studentWorkflowDto}"  th:if="${status.status != 'Default'}">
+                    <div class="card mt-3">
+                      <div class="card-body text-center">
+                        <div class="" th:text="${status.validatorName} + ' (' + ${status.validatorEmail} + ')'"></div>
+                        <th:block th:include="common/template/approval-status-badge :: statusBadge(${status.status},null)"></th:block>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <th:block th:include="common/template/file-upload-template :: contents(${studentFileInfoDtoList})"></th:block>
+            <div class="col-lg-12 mb-3">
+              <span class="text-success"> <i class="fa fa-solid fa-check-circle"></i></span>
+                <span th:text="#{message.label.rules.regulations.start}"></span>
+                <a th:href="#{url.iitm.link}" target="_blank"><span th:text="#{message.label.rules.regulations.link}"></span></a>
+                <span th:text="#{message.label.rules.regulations.end}"></span>
+            </div>
+            <div class="col-lg-12 mb-3">
+              <span class="text-success"> <i class="fa fa-solid fa-check-circle"></i></span>
+              <span>
+                <ul>
+                  <li th:text="#{message.label.applicable.charges.1}"></li>
+                  <li th:text="#{message.label.applicable.charges.2}"></li>
+                  <li th:text="#{message.label.applicable.charges.3}"></li>
+                  <li th:text="#{message.label.applicable.charges.4}"></li>
+                </ul>
+              </span>
+            </div>
+          </div>
+      </form>
+      <script th:inline="javascript">
+        $(document).ready(function () {
+        const $grossPay = $('#grossPay');
+        let grossPayText = $grossPay.text().trim();
+        let grossPayAmount = parseFloat(grossPayText);
+        if (!isNaN(grossPayAmount)) {
+          let formattedGrossPayAmount = new Intl.NumberFormat('en-IN', {
+            style: 'decimal',
+            currency: 'INR',
+            minimumFractionDigits: 2,
+          }).format(grossPayAmount);
+          $grossPay.text(formattedGrossPayAmount);
+        }
+        });
+      </script>
+    </modalBody>
+  </div>

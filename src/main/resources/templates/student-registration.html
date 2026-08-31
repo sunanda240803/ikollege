@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<link th:href="@{/assets/css/student-registration.css}" rel="stylesheet" />
+</head>
+
+<body>
+
+<th:block th:if="${loginType == 'register' or (loginType == 'update' and @securityCtxUtil.accountType() == 'Student')}">
+    <header th:replace="~{common/student-registration-header:: title('Student Registration',
+        ${action == 'new'} ? #{message.button.submit.form} : #{message.button.update.form}, '/login', ${action})}">
+    </header>
+</th:block>
+
+<th:block th:if="${loginType == 'update' and @securityCtxUtil.accountType() == 'SoftwareAdmin'}">
+    <header th:replace="~{common/header:: title(${headerForm})}"></header>
+</th:block>
+
+<!-- //Main-->
+<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body">
+					<form class="themeForm g-3 needs-validation" th:object="${form}" method="post" id="studentRegistrationFormId"
+						  th:action="@{#{url.student.registration}}" enctype="multipart/form-data">
+						<input name="id" th:value="${form.id}" hidden id="formId">
+						<div class="row">
+							<div class="col-lg-12">
+								<h2 class="tmsub-title"><span th:text="#{message.label.instructions}"></span></h2>
+							</div>
+						</div>
+						<th:block th:insert="~{common/template/student-registration-common :: content}"></th:block>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<th:block th:insert="~{common/template/student-registration-common-modal :: modalContent}"></th:block>
+<th:block th:replace="~{student-family-details-proof::familyDetailsProof}"></th:block>
+<th:block th:replace="~{student/family-details-row-template::familyDetailsRowTemplate}"></th:block>
+<!-- Footer-->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+	<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+	<script th:src="@{/assets/js/student/student-family-details.js}"></script>
+	<script th:src="@{/assets/js/student/student-registration.js}"></script>
+<!-- 	<script th:src="@{/assets/js/base/pdf.min.js}"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+	<!-- <script th:src="@{/assets/js/common/login-registration.js}"></script> -->
+	<script th:inline="javascript" >
+		const baseURL = /*[[#{url.student.registration}]]*/ '';
+		const validateStudentIdURL = /*[[#{url.validate.student.id}]]*/ '';
+		const idProof = /*[[${#messages.msg('message.status.id.proof')}]]*/'';
+		const familyDetails = /*[[${form.familyDetails}]]*/'';
+		const action = /*[[${action}]]*/'';
+		const guideEmail = [[${guideEmail}]];
+		const fileURL = /*[[#{url.file}]]*/ '';
+		const imageURL = /*[[#{url.image}]]*/ '';
+	</script>
+
+</th:block>
+<!-- //Footer-->
+</body>
+
+</html>

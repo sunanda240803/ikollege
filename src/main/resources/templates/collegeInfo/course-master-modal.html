@@ -1,0 +1,68 @@
+
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('course-master-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="'Course Master Add / Edit '"></span>
+	</modalHeader>
+	<modalBody>
+	<form class="themeForm" th:action="@{#{url.course.master}}"
+		method="post" th:object="${courseMasterDto}" id="courseMasterForm">
+		<input type="hidden" th:value="${courseMasterDto.courseMasterId}"
+			th:name="courseMasterId" id="courseMasterId" />
+		<div class="row">
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="courseMasterName"> 
+					<span th:text="#{message.label.course.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label> 
+				<input type="text" class="form-control course-name-validation" id="courseMasterName"
+					th:field="*{courseMasterName}" th:value="${courseMasterDto.courseMasterName}" oninput="validateAlphabetWithSpaceInput(this)"
+					th:attr="placeholder=#{message.placeholder.course.name}" maxlength="100">
+				<div class="invalid-feedback" th:text="#{message.validation.course.name.required}"></div>
+					<div class="invalid-feedback nameExist d-none" th:text="#{message.validation.course.name.exist}"></div>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="form-label"><span th:text="#{message.label.department.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<select class="selectpicker required-select-input"  data-live-search="true" th:field="*{departmentId}"  id="departmentId">
+					<option value="" th:text="#{message.label.select}+' '+#{message.label.department.name}"></option>
+					<option th:each="department:${departmentNameList}"
+							th:value="${department.departmentId}" th:text="${department.departmentName}">
+					</option>
+				</select>
+				<div class="invalid-feedback" id="deptInuptVal" th:text="#{message.validation.department.required}"></div>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="courseMasterHead"><span th:text="#{message.label.course.code}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+				<input type="text" class="form-control course-code-validation" id="courseMasterHead" th:field="*{courseMasterHead}"
+					th:placeholder="#{message.placeholder.course.code}" maxlength="3" oninput="validateAlphabetWithSpaceInput(this)">
+				<div class="form-text" th:text="#{message.label.course.code.example}"></div>
+				<div class="invalid-feedback" th:text="#{message.validation.course.master.head.required}"></div>
+				<div class="invalid-feedback codeExist d-none" th:text="#{message.validation.course.name.code.exist}"></div>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="degreeAwarded"><span th:text="#{message.label.degree.awarded}"></span>
+				</label> 
+				<input type="text" class="form-control" id="degreeAwarded" th:field="*{degreeAwarded}"
+					th:placeholder="#{message.placeholder.degree.awarded}" maxlength="50">
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="affiliation"><span th:text="#{message.label.affiliation}"></span>
+				</label> 
+				<input type="text" th:field="*{affiliation}"
+					class="form-control" id="affiliation" th:placeholder="#{message.placeholder.affiliation}" maxlength="100">
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="description">
+					<span th:text="#{message.label.description}"></span> 
+				</label>
+				<textarea type="text" class="form-control" rows="2" id="description" maxlength="300"
+					th:placeholder="#{message.placeholder.description}" th:field="*{description}"></textarea>
+			</div>
+		</div>
+	</form>
+	</modalBody>
+</div>

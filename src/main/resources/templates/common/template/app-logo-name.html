@@ -1,0 +1,10 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(logoAndName)">
+    <div class="logo">
+        <img th:src="@{/assets/img/hm_iitm_logo.png}" alt="hmiitm">
+        <h1>
+            <span th:text="${institute.schoolName}"></span>
+            <br>
+            <span th:text="${institute.location}"></span>
+        </h1>
+    </div>
+</th:block>

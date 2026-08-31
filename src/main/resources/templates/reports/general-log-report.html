@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form action="#" method="get">
+                        <input type="hidden" id="pageVal" th:value="${form.pageVal}" />
+                        <input type="hidden" id="sizeVal" th:value="${form.size}" />
+                        <input type="hidden" th:value='${filters}' id="filters">
+                        <div class="row mb-4">
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="hostelName" th:text="#{message.label.hostel.name}"></label>
+                                <select id="hostelName" name="hostelName" class="form-select required-input" required>
+                                    <option value="" selected th:text="#{message.label.select}"></option>
+                                    <option value="-1" th:selected="${filters.get('hostelName') ne null and
+                                    filters.get('hostelName').equals('-1')}">All</option>
+                                    <option th:each="hostel: ${hostelBiometricTerminals}" th:value="${hostel.terminalId}"
+                                            th:text="${hostel.terminalLocation}"
+                                            th:selected="${filters.get('hostelName') ne null and
+                                            hostel.terminalId.toString().equals(filters.get('hostelName'))}"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2 mb-3">
+                                <label class="form-label" th:text="#{message.label.from.date}"></label>
+                                <input type="date" id="fromDate" name="fromDate" class="form-control" th:value="${filters.get('fromDate')}">
+                            </div>
+                            <div class="col-lg-2 mb-3">
+                                <label class="form-label" th:text="#{message.label.to.date}"></label>
+                                <input type="date" id="toDate" name="toDate" class="form-control" th:value="${filters.get('toDate')}">
+                            </div>
+
+                            <div class="col-lg-3 mb-3 mt-4">
+                                <div class="checkRadio-bg form-control mt-1">
+                                    <div class="form-check form-check-inline me-4">
+                                        <input class="form-check-input required-input" type="radio" id="boys" name="genderType" value="M"
+                                               th:checked="${filters.get('genderType').equals('M')}">
+                                        <label class="form-check-label" for="boys"><span th:text="#{message.label.boys}"></span></label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input required-input" type="radio" id="girls" name="genderType" value="F"
+                                               th:checked="${filters.get('genderType').equals('F')}">
+                                        <label class="form-check-label" for="girls"><span th:text="#{message.label.girls}"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-auto" style="margin-top: 38px">
+                                <button id="filterData" class="btn btn-lgtblue" type="submit">
+									<i class="fa-solid fa-database"></i> 
+                                    <span th:text="#{message.button.get.data}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="mb-4">
+                        <div class="table-responsive themeTable">
+                            <table id="lateNightEntriesTable" class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.sl.no}"></th>
+                                    <th th:text="#{message.label.student.id}"></th>
+                                    <th th:text="#{message.label.student.name}"></th>
+                                    <th th:text="#{message.label.hostel.name}"></th>
+                                    <th th:text="#{message.label.day}"></th>
+                                    <th th:text="#{message.label.date}"></th>
+                                    <th th:text="#{message.label.in.out.time}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                    th:each="log, iter: ${form.paginationList.getContent()}">
+                                    <td th:text="${iter.count}"></td>
+                                    <td th:text="${log.studentId}"></td>
+                                    <td th:text="${log.studentName}"></td>
+                                    <td th:text="${log.hostelName}"></td>
+                                    <td th:text="${log.swipeDay}"></td>
+                                    <td th:text="${log.swipeDate}"></td>
+                                    <td th:text="${log.swipeTime}"></td>
+                                </tr>
+                                <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                    <td colspan="7" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/reports/general-log-report.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.general.log.report}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer -->
+</body>
+
+</html>

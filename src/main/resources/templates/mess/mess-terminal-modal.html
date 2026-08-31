@@ -1,0 +1,90 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('mess-terminal-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.edit.mess.terminal}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.mess.terminal}}" method="post" id="messTerminalForm"
+			th:object="${messTerminalDto}">
+			<input type="hidden" th:value="${messTerminalDto.id}" th:name="id" th:id="terminalId" />
+			<div class="row">
+				<!-- Left Side -->
+				<div class="col-lg-6">
+					<div class="mb-3">
+						<label class="form-label" for="messId"><span th:text="#{message.label.mess.name}"></span> <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+						<select class="selectpicker required-select-input" data-live-search="true" th:field="*{messMaster.id}" id="messId"   th:disabled="${messTerminalDto.id != null}">
+							<option value="0" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+							<option th:each="messList:${messMasterList}"
+								th:value="${messList.id}" th:text="${messList.messName}">
+							</option>
+						</select>
+						<div class="invalid-feedback" id="messInputVal" th:text="#{message.validation.mess.name.required}"></div>
+						 <input type="hidden" th:if="${messTerminalDto.id != null}" th:field="*{messMaster.id}" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><span th:text="#{message.label.terminal.ip}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+						<input type="text" class="form-control required-input" id="terminalIp" th:field="*{terminalIp}"
+							th:placeholder="#{message.placeholder.terminal.ip}"  maxlength="32">
+						<div class="invalid-feedback" th:text="#{message.validation.terminal.ip.required}"></div>
+					</div>
+					<div class="col-lg-12 mb-3">
+						<label class="form-label" style="white-space: nowrap;">
+							<span th:text="#{message.label.select}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+						<div class="checkRadio-bg form-control" id="selectModeId">
+							<div class="form-check form-check-inline me-4">
+								<input class="form-check-input required-input" type="radio"
+									th:field="*{issuedBy}" id="cardMode" value="CC">
+								<label class="form-check-label" for="cardMode"><span
+										th:text="#{message.label.card}"></span></label>
+							</div>
+							<div class="form-check form-check-inline me-4">
+								<input class="form-check-input required-input" type="radio"
+									th:field="*{issuedBy}"  id="fingerPrintMode" value="FP">
+								<label class="form-check-label" for="fingerPrintMode"><span
+										th:text="#{message.label.finger.print}"></span></label>
+							</div>
+						</div>
+						<div class="invalid-feedback" th:text="#{message.validation.card.finger.print.required}"></div>
+					</div>
+				</div>
+				<!-- Right Side -->
+				<div class="col-lg-6">
+					<div class="mb-3">
+						<label class="form-label"><span th:text="#{message.label.mac.id}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+						<input type="text" class="form-control required-input" id="macId" th:field="*{terminalMacId}"
+							th:placeholder="#{message.placeholder.mac.id}" maxlength="25">
+						<div class="invalid-feedback" th:text="#{message.validation.mac.id.required}"></div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><span th:text="#{message.label.terminal.description}"></span>
+							<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+						<textarea class="form-control required-input" id="terminalDescription" th:field="*{terminalDescription}" rows="3"
+							th:attr="placeholder=#{message.placeholder.terminal.description}" maxlength="128"></textarea>
+						<div class="invalid-feedback" th:text="#{message.validation.terminal.description.required}"></div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="mb-3">
+						<label class="form-label"><span th:text="#{message.label.device.username}"></span></label>
+						<input type="text" class="form-control" th:field="*{userName}"
+							th:attr="placeholder=#{message.placeholder.device.username}"  maxlength="10">
+					</div>
+				</div>
+				
+				<div class="col-lg-6">
+					<div class="mb-3">
+						<label class="form-label"><span th:text="#{message.label.password}"></span></label>
+						<input type="text" class="form-control" th:field="*{password}" 
+							th:attr="placeholder=#{message.placeholder.password}"  maxlength="10">
+					</div>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+	
+
+</div>

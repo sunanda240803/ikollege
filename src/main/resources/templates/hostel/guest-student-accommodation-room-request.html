@@ -1,0 +1,211 @@
+<form class="themeForm" method="post" id="guestRoomId">
+	<div class="themeAccordion accordion mb-3" id="guestRoom">
+		<div class="accordion-item">
+			<h2 class="accordion-header">
+				<button class="accordion-button ab-with-icon collapsed" type="button" data-bs-toggle="collapse" 
+					data-bs-target="#studentDetails" aria-expanded="false" aria-controls="studentDetails">
+					<div><span th:text="#{message.label.student.details}"></span></div>
+				</button>
+			</h2>
+			<div id="studentDetails" class="accordion-collapse collapse" data-bs-parent="#guestRoom">
+				<div class="accordion-body">
+					<div class="row">
+						<div class="col-lg-2">
+							<div class="upload-box">
+								<div class="box text-center">
+									<label> <img class="img-fluid d-block mx-auto"
+										id="studentProfileImage" alt="Image"
+										th:src="@{/assets/img/user-img1.png}">
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-10">
+							<div class="row">
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.student.id}"> </span>
+									</label>
+									<div class="form-control form-graybox">EE19B095</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.student.name}"> </span>
+									</label>
+									<div class="form-control form-graybox">MOGILIPALLI AADARSH	</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.hostel.name}"> </span>
+									</label>
+									<div class="form-control form-graybox">Ganga</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.room.no}"> </span>
+									</label>
+									<div class="form-control form-graybox">210</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.guest.name}"> </span>
+									</label>
+									<div class="form-control form-graybox">Suresh</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.accommodation.type}"> </span>
+									</label>
+									<div class="form-control form-graybox">Stay Along with Student</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.request.from}"> </span>
+									</label>
+									<div class="form-control form-graybox" 
+									     th:text="${#temporals.format(T(java.time.LocalDate).parse('2025-01-03'), #messages.msg('date.format'))}">
+									</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.request.to}"> </span>
+									</label>
+									<div class="form-control form-graybox" 
+									     th:text="${#temporals.format(T(java.time.LocalDate).parse('2025-01-07'), #messages.msg('date.format'))}">
+									</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.checkin.time}"> </span>
+									</label>
+									<div class="form-control form-graybox">01:00</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.checkout.time}"> </span>
+									</label>
+									<div class="form-control form-graybox">07:00</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.no.of.days}"> </span>
+									</label>
+									<div class="form-control form-graybox">1</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.no.of.person}"> </span>
+									</label>
+									<div class="form-control form-graybox">1</div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label"> <span
+										th:text="#{message.label.calculated.amount}"> </span>
+										<i class="fa-solid fa-indian-rupee-sign"></i>
+									</label>
+									<div class="form-control form-graybox currency">89</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title">
+				<span th:text="#{message.label.payment.details}"></span>
+			</h2>
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col-lg-4 mb-3">
+			<label class="form-label">
+				<span th:text="#{message.label.payment.option}"></span>
+			</label>
+			<div class="checkRadio-bg form-control">
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" required
+						id="icollect" th:name="paymentType" value="icollect" checked>
+					<label class="form-check-label" for="icollect"
+						th:text="#{message.label.icollect}"></label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" required
+						id="posMachine" th:name="paymentType" value="posMachine">
+					<label class="form-check-label" for="posMachine"
+						th:text="#{message.label.posmachine}"></label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" required
+						id="cash" th:name="paymentType" value="cash">
+					<label class="form-check-label" for="cash"
+						th:text="#{message.label.cash}"></label>
+				</div>
+			</div>
+			<div class="invalid-feedback" th:text="#{message.validation.payment.option.required}"></div>
+		</div>
+		<div class="col-lg-8 mb-3"></div>
+		<div class="col-lg-4 mb-4" id="duNoId">
+			<label class="form-label">
+				<span th:text="#{message.label.du.no}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label> 
+			<input type="text" class="form-control required-input"
+				th:name="duNo" id="duNo" required
+				th:placeholder="#{message.placeholder.du.no}">
+			<div class="invalid-feedback" th:text="#{message.validation.du.no.required}"></div>
+		</div>
+		<div class="col-lg-4 mb-4" id="voucherNoId">
+			<label class="form-label">
+				<span th:text="#{message.label.voucher.no}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label> 
+			<input type="text" class="form-control required-input"
+				th:name="voucherNo" id="voucherNo" required
+				th:placeholder="#{message.placeholder.voucher.no}">
+			<div class="invalid-feedback" th:text="#{message.validation.voucher.no.required}"></div>
+		</div>
+		<div class="col-lg-4 mb-4" id="billNoId">
+			<label class="form-label">
+				<span th:text="#{message.label.bill.no}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label> 
+			<input type="text" class="form-control required-input"
+				th:name="billNo" id="billNo" required
+				th:placeholder="#{message.placeholder.bill.no}">
+			<div class="invalid-feedback" th:text="#{message.validation.bill.no.required}"></div>
+		</div>
+		<div class="col-lg-4 mb-4">
+			<label class="form-label">
+				<span th:text="#{message.label.date}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label> 
+			<input type="date" class="form-control required-input"
+				th:name="date" id="date" required>
+			<div class="invalid-feedback" th:text="#{message.validation.payment.date.required}"></div>
+		</div>
+		<div class="col-lg-4 mb-4">
+			<label class="form-label">
+				<span th:text="#{message.label.amount}"></span>
+				<i class="fa-solid fa-indian-rupee-sign"></i>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label> 
+			<input type="text" class="form-control isNumberAndDot required-input"
+				th:name="amount" id="amount" maxlength="10"
+				th:placeholder="#{message.placeholder.amount}" required>
+			<div class="invalid-feedback" th:text="#{message.validation.amount.required}"></div>
+		</div>
+		<div class="col-lg-12 mb-3">
+			<th:block th:replace="~{common/template/note :: noteContent('message.label.note', null, ~{::noteContent})}">
+			    <noteContent>
+			        <ul>
+			            <li th:text="'No. of Requests approved by Warden on 03-Jan-2025 for Individual Guest Room: 1.'"></li>
+			            <li th:text="'No. of Requests approved by Vice Chairman Students on 03-Jan-2025 for Individual Guest Room: 1.'"></li>
+			        </ul>
+			    </noteContent>
+			</th:block>
+		</div>
+	</div>
+</form>

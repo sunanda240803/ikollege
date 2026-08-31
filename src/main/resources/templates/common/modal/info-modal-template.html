@@ -1,0 +1,34 @@
+<th:block xmlns:th="http://www.thymeleaf.org"
+          th:fragment="modal(id, header, body,modalBgColor,modalIcon,positiveBtnText)">
+    <div class="themeModal modal fade" th:id="${id}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content sewi-content">
+                <div th:class="${'modal-header bg-'+modalBgColor}">
+                </div>
+                <div class="modal-body text-center">
+                    <div th:class="${'icon-box bg-'+modalBgColor}">
+                        <i th:class="${modalIcon}"></i>
+                    </div>
+                    <h4>
+                        <th:block th:replace="${header}"></th:block>
+                    </h4>
+                    <p>
+                        <th:block th:replace="${body}"></th:block>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <div class=" mx-auto">
+                        <button type="button" class="btn btn-tmSecondary px-4" th:id="${id + 'Cancel'}"
+                                data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark me-1"></i>
+                            <th:block th:text="#{message.button.cancel}"></th:block>
+                        </button>
+                        <button type="button" th:class="${'btn px-4 text-white btn-'+modalBgColor} " th:id="${id + 'Positive'}"
+                                data-bs-dismiss="modal"><i class="fa-solid fa-check-circle me-1"></i>
+                            <th:block th:text="${positiveBtnText}"></th:block>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

@@ -1,0 +1,86 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('room-info-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.room.config.add.edit}"></span>
+	</modalHeader>
+	<modalBody>
+		<!-- Facility Details Module -->
+
+		<form class="themeForm" th:action="@{#{url.hostel.room.info}+#{url.save}}" method="post" id="roomInfoForm"
+			th:object="${roomInfoDto}">
+			<div class="row">
+				<input type="hidden" th:field="*{id}">
+				<div class="col-lg-6 mb-3">
+					<label for="hostelOrFacilityMasterInput" class="form-label">
+						<span th:text="#{message.label.hostel.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+
+					<select class="selectpicker required-select-input" data-live-search="true" id="hostelOrFacilityMasterInput"
+						onchange="getHostelFloorList('hostelOrFacilityMasterInput','floorNameInput');" th:field="*{building.hostel.id}"
+							th:disabled="${roomInfoDto.id != null && roomInfoDto.id > 0}">
+						<option value="0" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+						<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+							th:text="${hostelList.hostelName}"></option>
+					</select>
+					<div class="invalid-feedback " id="hostelInputVal" th:text="#{message.validation.hostel.name.required}"></div>
+					<input type="hidden" th:if="${roomInfoDto.id != null && roomInfoDto.id > 0}" th:field="*{building.hostel.id}" />
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label for="floorNameInput" class="form-label"><span th:text="#{message.label.floor.name}"></span> <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+
+					<select id="floorNameInput" class="form-select required-input" th:field="*{building.id}"
+						th:disabled="${roomInfoDto.id != null && roomInfoDto.id > 0}">
+						<option value="" selected th:text="#{message.label.select}+' '+#{message.label.floor.name}"></option>
+						<option th:each="floor : ${hostelFloorList}" th:value="${floor.id}"
+							th:text="${floor.floorName}"></option>
+					</select>
+					<div class="invalid-feedback" id="hostelInputValRoomInfo" th:text="#{message.validation.floor.name.required}"></div>
+					<input type="hidden" th:if="${roomInfoDto.id != null && roomInfoDto.id > 0}" 
+						th:field="*{building.id}" />
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="roomNumber"><span th:text="#{message.label.room.no}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="number" class="form-control required-input" id="roomNumber" th:field="*{roomNo}" max="99999" oninput="if(this.value.length > 5) this.value = this.value.slice(0,5);"
+						th:placeholder="#{message.placeholder.room.no}" required>
+					<div class="invalid-feedback" th:text="#{message.validation.room.no.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="capacity"><span th:text="#{message.label.capacity}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="number" class="form-control required-input" id="capacity" th:field="*{capacity}" max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2);"
+						th:placeholder="#{message.placeholder.capacity}" >
+					<div class="invalid-feedback" th:text="#{message.validation.capacity.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="vacation"><span th:text="#{message.label.vacation.room}"></span> </label>
+					<div class=" form-check">
+						<input class="form-check-input" type="checkbox" value="" th:field="*{isVacation}" id="vacation">
+						<label class="form-check-label" for="vacation"></label>
+					</div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="vacationRoomCapacity"><span th:text="#{message.label.vacation.room.capacity}"></span> </label>
+					<input type="number" class="form-control" id="vacationRoomCapacity" th:field="*{vacCapacity}" 
+					max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2);"
+						th:placeholder="#{message.placeholder.vacation.room.capacity}" >
+						<div class="invalid-feedback" id="vacationRoomVal" th:text="#{message.validation.room.capacity.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label for="roomTypeConfiguration" class="form-label"><span th:text="#{message.label.room.type.config}"></span> </label>
+					<select id="roomTypeConfiguration" class="form-select" th:field="*{officialGuestStatus}" required>
+						<option value="0" selected th:text="#{message.label.select}+' '+#{message.label.type}"></option>
+						<option th:each="configType : ${roomConfigType}" th:value="${configType}"
+							th:text="${configType}"></option>
+					</select>
+					<div class="invalid-feedback" th:text="#{message.validation.room.type.configuration.required}"></div>
+				</div>
+			</div>
+		</form>
+
+	</modalBody>
+</div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+    <link rel="stylesheet" th:href="@{/assets/css/student/mess-registration-mapping.css}">
+</head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" id="mess-registration-mapping-form" th:action="@{#{url.mess.reg.mapping}+#{url.save}}"
+                          th:object="${messRegistrationMapping}" method="post" novalidate>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <th:block th:include="common/template/mess-registration-mapping-template :: radioCheckToggle(${girlsOneMessList},
+                                #{message.label.messes.for.girls.first.preference}, 'girlsOptionOne')"></th:block>
+                            </div>
+                            <div class="col-lg-4">
+                                <th:block th:include="common/template/mess-registration-mapping-template :: radioCheckToggle(${girlsTwoMessList},
+                                #{message.label.messes.for.girls.second.preference}, 'girlsOptionTwo')"></th:block>
+                            </div>
+                            <div class="col-lg-4">
+                                <th:block th:include="common/template/mess-registration-mapping-template :: radioCheckToggle(${boysOneMessList},
+                                #{message.label.messes.for.boys.preference}, 'boysOption')"></th:block>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/mess-registration-mapping.js}"></script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

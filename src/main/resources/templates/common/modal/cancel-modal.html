@@ -1,0 +1,12 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(headerText, bodyText)">
+    <div th:replace="~{common/modal/simple-modal-template :: modal('cancelModal', ~{::modalHeader}, ~{::modalBody},
+		'secondary','fa-solid fa-ban', #{message.label.confirm},true)}">
+        <modalHeader>
+            <th:block th:text="${headerText}"></th:block>!
+        </modalHeader>
+        <modalBody>
+            <span id="cancelBodyText" th:text="${bodyText}"></span>
+            <input id="dynamicId" type="hidden">
+        </modalBody>
+    </div>
+</th:block>

@@ -1,0 +1,9 @@
+<th:block xmlns:th="http://www.thymeleaf.org"
+          th:fragment="buttons(logic, icon, text)">
+    <div class="d-grid mb-4">
+        <button type="button" th:onclick="${logic == 'loginLogic'} ? 'return authenticate();' : 'register()'" class="btn btn-tmPrimary px-4" id="loginBtn">
+            <i th:class="${icon == 'loginIcon'} ? 'fa-solid fa-arrow-right-to-bracket  me-1' : 'fa-solid fa-pen-to-square me-1'"></i>
+            <span th:text="${text == 'loginText'} ?  #{message.button.login} : #{message.button.register}"></span>
+        </button>
+    </div>
+</th:block>

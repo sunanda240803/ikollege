@@ -1,0 +1,13 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(hostelFeeSection)">
+    <div class="row btn-container mb-4 mt-3">
+        <div class="col-lg-4 click-here-animation">
+            <div class="click-here-wrapper" aria-label="Click Here animation">
+                <span th:text="#{message.label.click.here}"></span> <span class="right-hand ms-2">👉</span>
+            </div>
+        </div>
+        <div class="col-lg-5 register-btn">
+            <!-- Hostel Fee Payment Button Section -->
+            <div th:replace="common/template/hostel-fee-button :: hostelFeeButton(null)"></div>
+        </div>
+    </div>
+</th:block>

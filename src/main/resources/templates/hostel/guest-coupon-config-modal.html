@@ -1,0 +1,139 @@
+<div th:replace="~{common/modal-template ::
+    modal('guestCouponConfigModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <!-- Modal Header -->
+    <modalHeader th:text="#{message.label.add.edit.guest.coupon.config}"></modalHeader>
+
+    <!-- Modal Body -->
+    <modalBody>
+        <form class="themeForm" id="guestCouponForm" th:action="@{#{url.hostel.guest.coupon.config}}"  method="post"
+              th:object="${guestCouponConfigDto}">
+
+            <input type="hidden" th:value="${guestCouponConfigDto.id}" th:name="id" id="configId" />
+
+            <div class="row">
+                <!-- Coupon Category -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="couponCategory">
+                        <span th:text="#{message.label.coupon.category} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select id="couponCategory" class="form-select required-input" th:field="*{category}" required>
+                        <option value="" th:text="#{message.label.select}"></option>
+                        <option th:value="#{message.coupon.category.general}"  th:text="#{message.coupon.category.general}"></option>
+                        <option th:value="#{message.coupon.category.hostelResidentsVeg}" th:text="#{message.coupon.category.hostelResidentsVeg}"></option>
+                        <option th:value="#{message.coupon.category.hostelResidentsNonVeg}" th:text="#{message.coupon.category.hostelResidentsNonVeg}"></option>
+                        <option th:value="#{message.coupon.category.projectStaff}" th:text="#{message.coupon.category.projectStaff}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:text="#{message.validation.coupon.category.required}"></div>
+                </div>
+
+                <!-- Validity Details Section -->
+                <div class="col-lg-12 mt-2">
+                    <h2 class="tmsub-title" th:text="#{message.label.validity.details}"></h2>
+                </div>
+
+                <!-- Effective From -->
+                <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="effectiveFrom">
+                        <span th:text="#{message.label.effective.from.date} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{effectiveDate}"
+                           th:classappend="${#fields.hasErrors('effectiveDate')} ? 'is-invalid' : ''" id="effectiveFrom" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.effective.from.required}"></div>
+                    <!-- Inline Error Message -->
+                    <div id="effectiveFromError" class="text-danger" style="display: none;"></div>
+                </div>
+
+                <!-- Valid To -->
+                <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="validTo">
+                        <span th:text="#{message.label.valid.to.date} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{validToDate}"
+                           th:classappend="${#fields.hasErrors('validToDate')} ? 'is-invalid' : ''" id="validTo" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.valid.to.required}"></div>
+                    <!-- Inline Error Message -->
+                    <div id="validToError" class="text-danger" style="display: none;"></div>
+                </div>
+
+                <!-- Validity Days -->
+                <div class="col-lg-4 mb-3">
+                    <label class="form-label" for="validityDays">
+                        <span th:text="#{message.label.validity.days} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input numeric" min="0" maxlength="3"  th:field="*{validityDays}" id="validityDays" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.validity.days.required}"></div>
+                </div>
+
+                <!-- Amount Details Section -->
+                <div class="col-lg-12 mt-2">
+                    <h2 class="tmsub-title" th:text="#{message.label.amount.details}"></h2>
+                </div>
+
+                <!-- Breakfast Amount -->
+                <div class="col-lg-3 mb-3">
+                    <label class="form-label" for="breakfastAmount">
+                        <span th:text="#{message.label.breakfast.amount} + ':'"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input numeric" min="0" maxlength="5" th:field="*{breakfastAmount}" id="breakfastAmount" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.breakfast.amount.required}"></div>
+                </div>
+
+                <!-- Lunch Amount -->
+                <div class="col-lg-3 mb-3">
+                    <label class="form-label" for="lunchAmount">
+                        <span th:text="#{message.label.lunch.amount} + ':'"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input numeric" min="0" maxlength="5"  th:field="*{lunchAmount}" id="lunchAmount" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.lunch.amount.required}"></div>
+                </div>
+
+                <!-- Dinner Amount -->
+                <div class="col-lg-3 mb-3">
+                    <label class="form-label" for="dinnerAmount">
+                        <span th:text="#{message.label.dinner.amount} + ':'"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input numeric" min="0" maxlength="5"  th:field="*{dinnerAmount}" id="dinnerAmount" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.dinner.amount.required}"></div>
+                </div>
+
+                <!-- Snacks Amount -->
+                <div class="col-lg-3 mb-3">
+                    <label class="form-label" for="snacksAmount">
+                        <span th:text="#{message.label.snacks.amount} + ':'"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input numeric" min="0" maxlength="5"  th:field="*{snacksAmount}" id="snacksAmount" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.snacks.amount.required}"></div>
+                </div>
+
+                <!-- Description -->
+                <div class="col-lg-12 mb-3">
+                    <label class="form-label" for="description">
+                        <span th:text="#{message.label.description} + ':'"></span>
+                    </label>
+                    <textarea class="form-control" maxlength="200"  th:field="*{description}" id="description"></textarea>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>
+<style>
+.is-invalid {
+    border-color: #dc3545; /* Red border for invalid fields */
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block; /* Show error message */
+}
+</style>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+<!--                    <form action="#" method="get">-->
+                        <form th:action="@{#{url.receipt.update}}">
+                        <div class="row mb-4">
+                            <div class="col-lg-3 mb-3">
+                                <label for="search" class="form-label"><span th:text="#{message.label.select.bank}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <select name="search" id="search" class="form-select" required>
+                                    <option value="" th:text="#{message.label.select}" selected></option>
+                                    <option th:each="bank : ${bankList}" th:value="${bank.id.acchead}" th:text="${bank.accname}"
+                                            th:selected="${bank.id.acchead eq selectedBank}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:text="#{message.validation.select.bank}"></div>
+                            </div>
+                            <!-- Filter Data Button -->
+                            <div class="col-lg-3 mb-3 pt-3">
+                                <button id="filterData" class="btn btn-lgtblue mt-3" type="submit">
+                                    <i class="fa-solid fa-database"></i>
+                                    <span th:text="#{message.button.get.data}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div th:if="${selectedBank ne null}">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span th:text="#{message.title.receipt.details}"></span></h2>
+                            </div>
+                        </div>
+                        <form class="themeForm g-3" th:action="@{#{url.receipt.update}}" th:object="${receiptEntryDto}" method="post"
+                        id="receiptUpdateForm">
+                            <div class="table-responsive themeTable">
+                                <table class="table table-bordered  nowrap w-100">
+                                    <thead>
+                                    <tr>
+                                        <th th:text="#{message.label.sl.no}"></th>
+                                        <th th:text="#{message.label.dd.cheque.no}"></th>
+                                        <th th:text="#{message.label.student.id}"></th>
+                                        <th th:text="#{message.label.dd.cheque.date}"></th>
+                                        <th th:text="#{message.label.voucher.date}"></th>
+                                        <th class="text-end">
+                                            <span th:text="#{message.label.amount}"></span>
+                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        </th>
+                                        <th class="text-center" th:text="#{message.label.credited}"></th>
+                                        <th th:text="#{message.label.credited.date}"></th>
+                                        <th class="text-center" th:text="#{message.label.action}"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                        th:each="receipt, iter: ${form.paginationList.getContent()}">
+                                        <input type="hidden" th:value="${receipt.id.voucherNo}" th:name="|receiptEntryDtoList[${iter.index}].voucherNo|">
+                                        <td th:text="${iter.count}"></td>
+                                        <td th:text="${receipt.chequeNo}"></td>
+                                        <td th:text="${receipt.docRefNo ne null and !receipt.docRefNo.isEmpty()
+                                        ? receipt.docRefNo.split('-')[0] : '-'}"></td>
+                                        <td th:text="${#temporals.format(receipt.chequeDate,'MMM dd, yyyy')}"></td>
+                                        <td th:text="${#temporals.format(receipt.voucherDate,'MMM dd, yyyy')}"></td>
+                                        <td class="currency text-end" th:text="${receipt.amount}"></td>
+                                        <td>
+                                            <p class="form-group text-center">
+                                                <input type="checkbox" class="form-check-input form-check-inline"
+                                                       th:name="|receiptEntryDtoList[${iter.index}].isCredited|"
+                                                       value="false" onclick="this.value = this.checked ?'true' : 'false'"/>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="date" class="form-control" th:name="|receiptEntryDtoList[${iter.index}].creditedDate|"/>
+                                                <div class="invalid-feedback" th:text="#{message.validation.credit.date.required}"></div>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" th:data-bs-title="#{message.label.delete}"
+                                                        th:data-voucher="${receipt.id.voucherNo}"
+                                                        data-bs-toggle="tooltip" th:id="${'deleteReceipt_'+receipt.id.voucherNo}"
+                                                        onclick="deleteReceipt(this);">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                        <td colspan="8" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col d-flex justify-content-end text-end">
+                                    <button id="submitUpdateReceiptDetails" class="btn btn-lgtblue mt-3">
+                                    	<i class="fa-solid fa-arrow-pointer me-1"></i>
+                                    	<span th:text="#{message.button.submit}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/delete-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+</th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/base/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/base/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/assets/js/collegeInfo/sims-config.js}"></script>
+    <script th:src="@{/assets/js/hostel/receipt-update.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.receipt.update}]]*/ '';
+        const deleteURL = /*[[#{url.delete}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(id, headerText, bodyText)">
+  <div th:replace="~{common/modal/simple-modal-template :: modal(${id ne null ?(id+'Modal'):'infoModal'}, ~{::modalHeader}, ~{::modalBody},
+		'primary','fa-solid fa-exclamation', #{message.label.okay},true)}">
+    <modalHeader>
+      <th:block th:text="${headerText}"></th:block>!
+    </modalHeader>
+    <modalBody>
+      <span id="deleteModalText" th:text="${bodyText}"></span>
+      <input id="dynamicId" type="hidden">
+      <form class="themeForm">
+        <div class="row">
+          <div class="mb-3">
+            <label class="form-label"><span th:text="#{message.label.mess.period.radio}"></span>
+              <th:block th:replace="~{common/template/mandatory-symbol}" />
+            </label>
+            <div class="checkRadio-bg form-control" id="messPeriod">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input required-input" type="radio"
+                       name="messPeriod" id="current" value="Current" required th:disabled="${!currentMp}"
+                       th:checked="${currentMp}">
+                <label class="form-check-label" for="current"
+                       th:text="#{message.label.current}+' '+ #{message.label.mess.period.radio}"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input required-input" type="radio"
+                       name="messPeriod" id="next" value="Next" required th:disabled="${!nextMp}"
+                       th:checked="${nextMp}">
+                <label class="form-check-label" for="next"
+                       th:text="#{message.label.next}+' '+ #{message.label.mess.period.radio}"></label>
+              </div>
+            </div>
+            <div class="invalid-feedback" th:text="#{message.validation.mess.period.required}"></div>
+          </div>
+        </div>
+      </form>
+
+    </modalBody>
+  </div>
+</th:block>

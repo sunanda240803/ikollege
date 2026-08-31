@@ -1,0 +1,42 @@
+<div
+        th:replace="~{common/modal-template :: modal('student-mess-bulk-mail-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Send, null, 'lg')}">
+    <modalHeader>
+        <span th:text="#{message.label.student.mess.bulk.mail.template}"></span>
+    </modalHeader>
+    <modalBody>
+        <form class="themeForm" id="studentMessBulkMailForm" th:action="@{#{url.mess.period.config}+#{url.mess.mail}}"
+              th:object="${messMasterControllerDto}" th:method="post">
+            <input type ="hidden" th:field="*{id}">
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.mess.period}"></span>
+                    </label>
+                    <div th:with="dateFormat=#{date.format}" class="form-control form-graybox"
+                         th:text="${#temporals.format(messMasterControllerDto.diningFromDate, dateFormat)+' to '
+                         +#temporals.format(messMasterControllerDto.diningToDate, dateFormat)}"></div>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">
+                        <span th:text="#{message.label.mail.subject}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea class="form-control required-input" th:field="*{bulkMailSubject}" required></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mail.subject.required}"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="form-label">
+                        <span th:text="#{message.label.mail.content}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea class="form-control" rows="5" id="contentId" th:field="*{bulkMailContent}">
+                    </textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mail.content.required}"></div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

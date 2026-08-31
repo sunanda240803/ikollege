@@ -1,0 +1,166 @@
+<!-- Form Module -->
+<!-- <th:block th:fragment="viewRequest"> -->
+<div th:replace="~{common/modal-template :: modal('view-request-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.guest.accommodation.request}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:object="${guestRequestDto}">
+			<div class="row">
+				<th:block th:if="${!guestRequestDto.stayExtensionList.isEmpty()}">
+				    <th:block th:each="extension, index : ${guestRequestDto.stayExtensionList}">
+				        <div class="row mt-2">
+				            <div class="col-lg-12">
+				                <h2 class="tmsub-title"
+								    th:text="${index.index == 0 ? #messages.msg('message.label.accommodation.details') : #messages.msg('message.label.stay.extension.details')}">
+								</h2>
+
+				            </div>
+				        </div>
+				        <div class="col-lg-6 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.from.date}"></span>
+				            </label>
+				            <div class="form-control form-graybox">
+				                <span th:text="${#temporals.format(extension.fromDate, #messages.msg('date.format'))}"></span>
+				            </div>
+				        </div>
+				        <div class="col-lg-6 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.to.date}"></span>
+				            </label>
+				            <div class="form-control form-graybox">
+				                <span th:text="${#temporals.format(extension.toDate, #messages.msg('date.format'))}"></span>
+				            </div>
+				        </div>
+				        <div class="col-lg-6 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.noOfDays}"></span>
+				            </label>
+				            <div class="form-control form-graybox">
+				                <span th:text="${extension.noOfDays}"></span>
+				            </div>
+				        </div>
+				        <div class="col-lg-6 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.accommodation.type}"></span>
+				            </label>
+				            <div class="form-control form-graybox">
+				                <span th:text="${extension.accommodationType}"></span>
+				            </div>
+				        </div>
+				        <div class="col-lg-12 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.guest.details}"></span>
+				            </label>
+				            <div class="form-control form-graybox">
+							    <span th:each="guest, iterStat : ${extension.guestList}"
+							          th:text="${(guest.guestName ?: '') + ' - ' + (guest.relationOfGuest ?: '') + (!iterStat.last ? ', ' : '')}">
+							    </span>
+							</div>
+				        </div>
+				        <div class="col-lg-6 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.rate.day}"></span>
+				                <i class="fa-solid fa-indian-rupee-sign"></i>
+				            </label>
+				            <div class="form-control form-graybox">
+				                <span th:text="${#numbers.formatDecimal(extension.amount, 2, 'COMMA', 2, 'POINT')}"></span>
+				            </div>
+				        </div>
+				        <div class="col-lg-6 mb-3">
+				            <label class="form-label">
+				                <span th:text="#{message.label.paid.amount}"></span>
+				                <i class="fa-solid fa-indian-rupee-sign"></i>
+				            </label>
+				            <div class="form-control form-graybox">
+				                <span th:text="${extension.paymentAmount != null ? extension.paymentAmount : 0}"></span>
+				            </div>
+				        </div>
+				
+						<div class="row mt-2" th:if="${(guestRequestDto.uploadFileList != null && !guestRequestDto.uploadFileList.isEmpty()) || (guestRequestDto.familyDetails != null && !guestRequestDto.familyDetails.isEmpty()) && index.index == 0}">
+				            <div class="col-lg-12">
+				                <h2 class="tmsub-title" th:text="#{message.label.uploaded.documents}"></h2>
+				            </div>
+				         </div> 
+						
+						 <div class="col-lg-12" th:if="${guestRequestDto.uploadFileList != null && !guestRequestDto.uploadFileList.isEmpty() && index.index == 0}">
+						 	<div class="row">
+				            	<div class="col-lg-6 mb-3" th:each="file : ${guestRequestDto.uploadFileList}">
+								    <ul class="list-group">
+								        <li class="list-group-item" >
+										    <div class="d-flex justify-content-between align-items-center">
+										        
+										        <span th:text="${file.filename.length() > 25 ? 
+										                        file.filename.substring(0, 23) + '.....' + file.filename.substring(file.filename.lastIndexOf('.')) : 
+										                        file.filename}" 
+										              data-bs-toggle="tooltip" 
+										              data-bs-placement="top" 
+										              th:attr="title=${file.filename}">
+										        </span>
+										
+										        <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+										                data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+										                th:attr="data-bs-title=#{message.label.download.document}"
+										                th:data-filename="${file.filename}" th:onclick="triggerDownload(this)">
+										            <i class="fa fa-download pdf text-white"></i>
+										        </button>
+										
+										        <input type="hidden" id="fileName" th:value="${file.filename}">
+										    </div>
+										</li>
+								    </ul>
+								  </div>
+						    </div>
+						</div>
+						<!-- student biodata file upload -->
+						<div class="col-lg-12" th:if="${guestRequestDto.familyDetails != null && !guestRequestDto.familyDetails.isEmpty() && index.index == 0}">
+							<div class="row">
+								<div class="col-lg-6 mb-3" th:each="file,iter : ${guestRequestDto.familyDetails}">
+									<div class="upload-box d-lg-block">
+										<div class="box text-center m-0 w-100">
+											<span th:text="${file.relationName+' ('+file.relationType+')'}"></span>
+											<label class="mt-2" th:for="${iter.index+'_idProof'}">
+												<img class="img-fluid d-block mx-auto profile"
+													 th:id="${iter.index+'_idProof'}"
+													 th:data-default="@{/assets/img/id-proof.png}" alt=""
+													 th:src="@{#{url.file} + #{url.image} + '/GUEST_ACCOMMODATION/'+ ${file.proofFileName}}"
+													 th:attr="onerror='this.src=\'' + @{/assets/img/id-proof.png} + '\''">
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--  -->
+						
+<!--						<div class="col-lg-6 mb-3"></div>-->
+						<div class="row mt-2">
+				            <div class="col-lg-12">
+				                <h2 class="tmsub-title" th:text="#{message.label.approval.status}"></h2>
+				            </div>
+				         </div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="text-center">
+									<div class="row">
+										<div class="col-lg-12 mb-3">
+											<div th:replace="hostel/guest-room-approval-status-block :: approvalBlock(${extension})"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div th:if="${extension != null && extension.approvalList == null}">
+						    <div class="col-lg-6 mb-3">
+						    <th:block th:include="common/template/approval-status-badge :: statusBadge(${extension.wardenApprovalStatus},null)"></th:block>
+						       <!--  <span th:text="${guestRequestDto.wardenApprovalStatus}"></span> -->
+						    </div>
+					</div>
+					</th:block>
+				</th:block>
+			</div>
+		</form>
+	</modalBody>
+	</div>

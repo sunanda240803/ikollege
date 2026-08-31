@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+<body>
+<header th:replace="~{common/student-registration-header:: title('Archive Photos', null, '/login', null)}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-body-wrap mt-2">
+                <div class="card-body">
+                    <form class="themeForm g-3 text-center mt-3 mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <th:block
+                                        th:replace="~{archive-photo-card::content('student', #{url.student}, 'Student Bio-Data Images')}"></th:block>
+                            </div>
+                            <div class="col-4">
+                                <th:block
+                                        th:replace="~{archive-photo-card::content('candidate', #{url.candidate}, 'Candidate Profile')}"></th:block>
+                            </div>
+                            <div class="col-4">
+                                <th:block
+                                        th:replace="~{archive-photo-card::content('settled_students', #{url.archive.settled.students}, 'Settled Students')}"></th:block>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/common/log.js}"></script>
+    <script>
+        $(document).ready(function () {
+        });
+
+        function start(domElem) {
+            const elem = $(domElem);
+            const url = elem.attr('data-url');
+            const id = elem.attr('id').replace('btn_', '');
+            getProgress(id, url);
+            $.ajax({
+                url: contextPath + '/archive' + url,
+                type: 'POST',
+                success: function (response) {
+                    if (response === 'success') {
+                        showToast('Success', "Data archived successfully.");
+                    } else {
+                        showErrorToast('Archive error', "Data archive unsuccessful. Check the logs for details.");
+                    }
+                    startFetchLogs(id, url, false);
+                },
+                error: function (error) {
+                    startFetchLogs(id, url, false);
+                    showErrorToast('Archive error', "Unknown error. Try after sometime.");
+                    console.log(error);
+                }
+            });
+        }
+
+        function getProgress(id, url) {
+            fetchLogs(id, url);
+            $.ajax({
+                url: contextPath + '/archive/getProgress' + url,
+                type: "get",
+                success: function (response) {
+                    if (response) {
+                        console.log(response);
+                        $('#archived_data_' + id).html(response.progress + ' of ' + response.maxRecords);
+                        $('#archived_status_' + id).html(response.status);
+                        $('#archived_etl_' + id).html(response.etl);
+                        $('#archived_etc_' + id).html(response.etc);
+                        $('#archived_progress_' + id)
+                            .attr('aria-valuenow', response.progress)
+                            .attr('aria-valuemax', response.maxRecords)
+                            .attr('style', 'width: ' + response.progressPercent)
+                            .html(response.progressPercent)
+                    }
+                    if (response.status === 'Archive Started' || (response.maxRecords > 0 && response.maxRecords > response.progress)) {
+                        setTimeout(function () {
+                            getProgress(id, url);
+                        }, 1000);
+                    }
+                }
+            });
+        }
+    </script>
+</th:block>
+</body>
+</html>

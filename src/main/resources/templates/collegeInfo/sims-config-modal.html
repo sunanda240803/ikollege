@@ -1,0 +1,41 @@
+<div th:replace="~{common/modal-template ::
+   modal('sims-config-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+   <modalHeader th:text="#{message.label.sims.config}"></modalHeader>
+   <modalBody>
+    <form class="themeForm" th:action="@{#{url.sims.config}}" method="post" th:object="${simsDto}"
+			id="simsConfigForm">
+			<input type="hidden" th:value="${simsDto.id}" th:name="id"  />
+         <div class="row">
+            <div class="col-lg-6 mb-3">
+               <label class="form-label" for="configKey">
+                  <span th:text="#{message.label.config.key}"></span>
+                  <th:block th:replace="~{common/template/mandatory-symbol}" />
+               </label>
+               <input type="text" class="form-control required-input uppercase"  th:field="*{configKey}"   th:classappend="${#fields.hasErrors('configKey')} ? 'is-invalid' : ''" id="configKey"
+                  th:placeholder="#{message.label.enter}+' '+#{message.label.config.key}" maxlength="80" required >
+               <div class="invalid-feedback-frontEnd" th:text="#{message.validation.config.key.required}"></div>
+               <div class="invalid-feedback backendErrors" th:errors="*{configKey}"></div>
+                 <div id="errorMessage" class="d-none"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+               <label class="form-label" for="description"> <span
+                  th:text="#{message.label.config.description}"></span> 
+               </label>
+               <input type="text" id="description" th:field="*{description}" rows="2" maxlength="300"
+                  class="form-control"
+                  th:placeholder="#{message.label.enter}+' '+#{message.label.config.description}">
+            </div>
+            <div class="col-lg-12 mb-3">
+               <label class="form-label" for="configValue">
+                  <span th:text="#{message.label.config.value}"></span>
+                  <th:block th:replace="~{common/template/mandatory-symbol}" />
+               </label>
+               <textarea type="text" class="form-control required-input" th:field="*{configValue}" id="configValue" th:classappend="${#fields.hasErrors('configValue')} ? 'is-invalid' : ''" 
+                  th:placeholder="#{message.label.enter}+' '+#{message.label.config.value}" required></textarea>
+               <div class="invalid-feedback-frontEnd" th:text="#{message.validation.config.value.required}"></div>
+                 <div class="invalid-feedback backendErrors" th:errors="*{configValue}"></div>
+            </div>
+         </div>
+      </form>
+   </modalBody>
+</div>

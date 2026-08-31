@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+<header
+        th:replace="~{common/student-dashboard-header:: title(${headerForm},'Ledger Report','Dashboard',null,null,null,'Back',null,#{url.dashboard}+#{url.student},null)}">
+</header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <div class="row mb-2">
+                        <div class="col-lg-12 themeTabs">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span th:text="#{message.label.select} + ' ' + #{message.label.criteria}"></span></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <form class="themeForm g-3 needs-validation novalidate mb-4" th:action="@{#{url.ledger.report}}" id="ledger-form"
+                              method="post" th:object="${selectForm}">
+                            <div class="row mb-3 justify-content-start">
+                                <div class="col-auto">
+                                    <label class="form-label">
+                                        <span th:text="#{message.label.select}"></span>
+                                        <span class="text-tmPrimary"> *</span>
+                                    </label>
+                                    <div class="checkRadio-bg">
+                                        <div class="form-check form-check-inline me-4">
+                                            <input class="form-check-input" type="radio" id="mess" value="Mess" required
+                                                   th:field="*{selectedCriteria}">
+                                            <label class="form-check-label" for="mess"><span th:text="#{message.label.mess}"></span></label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" id="card" value="Card" required
+                                                   th:field="*{selectedCriteria}">
+                                            <label class="form-check-label" for="card"><span th:text="#{message.label.card}"></span></label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback"><span th:text="#{message.label.validation.select.type.is.required}"></span></div>
+                                </div>
+                                <div class="col-auto mt-3">
+                                    <button id="searchButton" type="button" class="btn btn-lgtblue mt-4"
+                                            onclick="validateForm()"><i class="fa-solid fa-database"></i>
+                                        <span th:text="#{message.label.get.data}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="row"
+                             th:if="${(selectForm ne null and selectForm.selectedCriteria ne null and !selectForm.selectedCriteria.isEmpty())
+                             and (ledgerReport eq null or ledgerReport.isEmpty())}">
+                            <div class="col-lg-12">
+                                <span class="text-danger" th:text="#{message.label.no.ledger.found}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Details-->
+                        <div id="transactionDetails" th:if="${ledgerReport ne null and !ledgerReport.isEmpty()}">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <h2 class="tmsub-title"><span th:text="#{message.label.transaction.details}"></span></h2>
+                                </div>
+                                <div class="col-lg-3 text-lg-end">
+                                    <span class="fw-bold" th:text="#{message.label.opening.balance}"></span>
+                                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    <span class="fw-bold">: </span>
+                                    <span class="currency" th:text="${openingBal}"></span>
+                                    <span th:text="#{message.label.dr}"></span>
+                                </div>
+                            </div>
+
+                            <!-- Accordian Start -->
+                            <div class="row mb-5">
+                                <div class="col-lg-12">
+                                    <div class="themeAccordion accordion" id="ledgerAccordion">
+                                        <div class="accordion-item" th:each="ledger, ledgerStat : ${ledgerReport}">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button ab-with-icon d-flex justify-content-between align-items-center"
+                                                        type="button" data-bs-toggle="collapse"
+                                                        th:classappend="${ledgerReport.size() ne ledgerStat.index+1}?'collapsed':''"
+                                                        th:data-bs-target="'#collapseSection'+${ledgerStat.index}"
+                                                        aria-expanded="false" th:aria-controls="'collapseSection'+${ledgerStat.index}">
+                                                    <div th:text="${ledger.key}"></div>
+                                                    <div class="ms-auto" th:text="${ledger.value.totalOpeningClosingBalance}"></div>
+                                                </button>
+                                            </h2>
+                                            <div th:class="'accordion-collapse collapse'"
+                                                 th:classappend="${ledgerReport.size() eq ledgerStat.index+1}?'show':''"
+                                                 th:id="'collapseSection'+${ledgerStat.index}"
+                                                 data-bs-parent="#ledgerAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered now1rap w-100">
+                                                        <thead>
+                                                        <tr>
+                                                            <th><span th:text="#{message.label.voucher.no}"></span></th>
+                                                            <th><span th:text="#{message.label.voucher.date}"></span></th>
+                                                            <th><span th:text="#{message.label.description}"></span></th>
+                                                            <th><span th:text="#{message.label.ref.no}"></span></th>
+                                                            <th class="text-end">
+                                                                <span th:text="#{message.label.credit.amount}+#{message.label.cr}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            </th>
+                                                            <th class="text-end">
+                                                                <span th:text="#{message.label.debit.amount}+#{message.label.dr}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            </th>
+                                                            <th class="text-end">
+                                                                <span th:text="#{message.label.closing.balance}"></span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr th:each="entry : ${ledger.value.data}">
+                                                            <td th:text="${entry.voucherNo}"></td>
+                                                            <td th:with="dateFormat=#{date.format}"
+                                                                th:text="${#temporals.format(entry.voucherDate, dateFormat)}"></td>
+                                                            <td th:text="${entry.description}"></td>
+                                                            <td th:text="${entry.refNo}"></td>
+                                                            <td class="text-end" th:classappend="${entry.debitOrCredit eq 'c' ? 'currency' : ''}"
+                                                                th:text="${entry.debitOrCredit eq 'c' ? entry.amount : ''}"></td>
+                                                            <td class="text-end" th:classappend="${entry.debitOrCredit eq 'd' ? 'currency' : ''}"
+                                                                th:text="${entry.debitOrCredit eq 'd' ? entry.amount : ''}"></td>
+                                                            <td class="text-end" th:text="${entry.formattedClosingBalance}"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold text-end" colspan="4">
+                                                                <span>Total</span>
+                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                                <span> :</span>
+                                                            </td>
+                                                            <td class="currency text-end fw-bold" th:text="${ledger.value.totalCredit}"></td>
+                                                            <td class="currency text-end fw-bold" th:text="${ledger.value.totalDebit}"></td>
+                                                            <td class="text-end fw-bold" th:text="${ledger.value.totalClosingBalance}"></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/student/ledger-report.js}"></script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

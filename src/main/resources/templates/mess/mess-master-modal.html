@@ -1,0 +1,189 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('mess-master-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.mess.add.edit}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.mess.master}}" method="post" id="messMasterForm"
+			th:object="${messMasterDto}">
+			<input type="hidden" th:value="${messMasterDto.id}" th:name="id" th:id="messId" />
+			<div class="row">
+				<div class="col-lg-6">
+					<label class="form-label" for="messName"><span th:text="#{message.label.mess.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<input type="text" class="form-control mess-name-validation" th:field="*{messName}" id="messName"
+						maxlength="128" th:placeholder="#{message.placeholder.mess.name}">
+					<div class="invalid-feedback nameReq" th:text="#{message.validation.mess.name.required}"></div>
+					<div class="invalid-feedback nameExist d-none" th:text="#{message.validation.mess.name.exist}"></div>
+				</div>
+				<div class="col-lg-6">
+					<label class="form-label" for="floorName"><span th:text="#{message.label.floor.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<input type="text" class="form-control required-input" th:field="*{messFloorName}" id="floorName"
+						maxlength="128" th:placeholder="#{message.placeholder.floor.name}">
+					<div class="invalid-feedback" th:text="#{message.validation.floor.name.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="description"><span th:text="#{message.label.description}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<textarea rows="2" class="form-control required-input" th:field="*{description}" id="description"
+						maxlength="256" th:placeholder="#{message.placeholder.description}"></textarea>
+					<div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="messHead"><span th:text="#{message.label.mess.head}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<input type="text" class="form-control mess-head-validation" th:field="*{messHead}" id="messHead"
+						maxlength="10" th:placeholder="#{message.placeholder.mess.head}">
+					<div class="invalid-feedback messHeadReq" th:text="#{message.validation.mess.head.required}"></div>
+					<div class="invalid-feedback messHeadExist d-none" th:text="#{message.validation.mess.head.exist}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3 mt-2">
+					<label class="form-label" for="capacity"><span th:text="#{message.label.capacity}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<input type="number" min="0" max="9999" class="form-control required-input" th:field="*{capacity}" id="capacity"
+					oninput="if(this.value.length > 4) this.value = this.value.slice(0,4);"
+						   th:placeholder="#{message.placeholder.capacity}">
+					<div class="invalid-feedback" th:text="#{message.validation.capacity.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="fromDate"><span th:text="#{message.label.from.date}"></span></label>
+					<input type="date" class="form-control" th:name="fromDate" id="fromDate"
+						th:value="${messMasterDto.fromDate}"
+						th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+						onkeydown="return false">
+					<div class="invalid-feedback" th:text="#{message.validation.from.date.range}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="toDate"><span th:text="#{message.label.to.date}"></span></label>
+					<input type="date" class="form-control" th:name="toDate" id="toDate"
+						th:value="${messMasterDto.toDate}"
+						th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" onkeydown="return false">
+					<div class="invalid-feedback" th:text="#{message.validation.to.date.range}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" style="white-space: nowrap;">
+						<span th:text="#{message.label.is.food.court}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<div class="checkRadio-bg form-control" id="foodCourt">
+						<div class="form-check form-check-inline me-4">
+							<input class="form-check-input required-input" type="radio" name="isFoodCourt"
+								th:field="*{isFoodCourt}" id="foodCourtYes" value="yes">
+							<label class="form-check-label" for="foodCourtYes"><span th:text="#{message.label.yes}"></span></label>
+						</div>
+						<div class="form-check form-check-inline me-4">
+							<input class="form-check-input required-input" type="radio" name="isFoodCourt"
+								th:field="*{isFoodCourt}" id="foodCourtNo" value="no">
+							<label class="form-check-label" for="foodCourtNo"><span th:text="#{message.label.no}"></span></label>
+						</div>
+					</div>
+					<div class="invalid-feedback" th:text="#{message.validation.food.court.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="foodCourtAmount"><span
+							th:text="#{message.label.food.court.amount}"></span></label>
+					<input type="number" min="0" max="999999999" class="form-control" th:field="*{foodCourtAmount}"
+						   id="foodCourtAmount" th:placeholder="#{message.label.enter} + ' ' + #{message.label.food.court.amount}" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4);"
+						   required>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" style="white-space: nowrap;">
+						<span th:text="#{message.label.is.jain.food}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<div class="checkRadio-bg form-control" id="jainFoodCourt">
+						<div class="form-check form-check-inline me-4">
+							<input class="form-check-input required-input" type="radio" name="isJainFood"
+								th:field="*{isJainFood}" id="jainFoodYes" value="true">
+							<label class="form-check-label" for="jainFoodYes"><span th:text="#{message.label.yes}"></span></label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input required-input" type="radio" name="isJainFood" th:field="*{isJainFood}" id="jainFoodNo"
+								value="false" th:checked="${messMasterDto.isJainFood == false or messMasterDto.isJainFood == null}">
+							<label class="form-check-label" for="jainFoodNo"><span th:text="#{message.label.no}"></span></label>
+						</div>
+					</div>
+					<div class="invalid-feedback" th:text="#{message.validation.jain.food.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="genderOption">
+						<span th:text="#{message.label.gender.option}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<select class="form-select required-input" th:field="*{genderOption}" id="genderOption" required>
+						<option value="" th:text="#{message.label.select}+' '+#{message.label.gender.option}"></option>
+						<option value="B">Only for Boys</option>
+						<option value="G">Only for Girls</option>
+						<option value="BT">Both</option>
+					</select>
+					<div class="invalid-feedback" th:text="#{message.validation.gender.option.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="messType">
+						<span th:text="#{message.label.mess.type}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<select class="form-select required-input" th:field="*{messType}" id="messType" required>
+						<option value="" th:text="#{message.label.select}+' '+#{message.label.mess.type}"></option>
+						<option value="South">South Mess</option>
+						<option value="North">North Mess</option>
+					</select>
+					<div class="invalid-feedback" th:text="#{message.validation.mess.type.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" for="girlsThreshold"><span
+							th:text="#{message.label.girls.threshold.count}"></span></label>
+					<input type="number" min="0" max="9999" class="form-control" th:field="*{girlsThresholdCount}"
+						id="girlsThreshold" th:placeholder="#{message.placeholder.girls.threshold.count}" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4);"
+						required>
+				</div>
+
+				<div class="col-lg-6 mb-3 mt-3">
+					<label class="form-label" style="white-space: nowrap;">
+						<span th:text="#{message.label.is.veg.nonveg}"></span>
+					<div class="checkRadio-bg form-control mt-2" id="isVegNonVegId">
+						<div class="form-check form-check-inline me-4">
+							<input class="form-check-input required-input" type="radio" name="isVegNonVeg"
+								   th:field="*{isVegNonVeg}" id="vegId" th:value="v">
+							<label class="form-check-label" for="vegId"><span th:text="#{message.label.veg}"></span></label>
+						</div>
+						<div class="form-check form-check-inline me-4">
+							<input class="form-check-input required-input" type="radio" name="isVegNonVeg"
+								   th:field="*{isVegNonVeg}" id="nonVegId" th:value="nv">
+							<label class="form-check-label" for="nonVegId"><span th:text="#{message.label.non.veg}"></span></label>
+						</div>
+					</div>
+				</div>
+
+                <div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" th:for="onlineCoupon" th:text="#{message.online.coupon}"></label>
+					<div class="form-check">
+						<input th:class="form-check-input" type="checkbox" th:id="onlineCoupon"
+							th:name="onlineCoupon"
+							th:checked="${messMasterDto.onlineCoupon==true}" >
+						<label class="form-check-label" th:for="onlineCoupon" th:text="#{message.online.coupon}"></label>
+					</div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label mt-3" th:for="sickFoodAvail">
+						<span th:text="#{message.label.sick.food}"></span></label>
+					<div class="form-check">
+						<input th:class="form-check-input" type="checkbox" th:id="sickFoodAvail"
+							   th:name="sickFoodAvail"
+							   th:checked="${messMasterDto.sickFoodAvail==true}" >
+						<label class="form-check-label" th:for="sickFoodAvail" th:text="#{message.label.sick.food.available}"></label>
+					</div>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

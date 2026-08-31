@@ -1,0 +1,23 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="content(id, header, body, footer)">
+	<div class="col" th:id="${id}">
+		<div class="card shadow">
+			<div class="min-card">
+				<div class="card-header">
+					<h5 class="card-title">
+						<span th:replace="${header ne null} ? ${header} : ''"></span>
+					</h5>
+				</div>
+				<div class="card-body mb-5">
+					<div class="row">
+						<div class="col-12">
+							<th:block th:replace="${body ne null ? body : ''}"></th:block>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer" th:if="${footer ne null}">
+					<th:block th:replace="${footer}"></th:block>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>

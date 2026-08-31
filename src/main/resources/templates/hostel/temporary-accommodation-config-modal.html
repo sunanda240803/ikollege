@@ -1,0 +1,109 @@
+<div id="temporaryAccommodationConfigModal" class="temporaryAccommodationConfigList" th:replace="~{common/modal-template :: modal('temporaryAccommodationConfigModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Add, null, 'lg')}">
+  <modalHeader>
+    <span id="modalHeaderText" th:text="#{message.label.add.edit.accommodation.details}"></span>
+  </modalHeader>
+  <modalBody>
+    <form id="tempAccommodationConfigForm" class="themeForm" th:action="@{#{url.temporary.accommodation.config}}" th:object="${temporaryAccommodationConfigDto}"
+          method="post">
+      <input type="hidden" th:field="*{id}">
+      <div class="row">
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.category.name}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input" th:field="*{categoryName}" maxlength="30"
+                 th:placeholder="#{message.label.category.name}"
+                 th:classappend="${#fields.hasErrors('categoryName')} ? 'is-invalid' : ''" required>
+          <div class="invalid-feedback backendErrors" th:errors="*{categoryName}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.category.name} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.description}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <textarea type="text" class="form-control required-input" th:field="*{description}" th:placeholder="#{message.label.description}"
+                    th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" required>
+          </textarea>
+          <div class="invalid-feedback backendErrors" th:errors="*{description}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.description} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="accStayAmnt">
+            <span th:text="#{message.label.hostel.rent}"></span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input numeric" th:field="*{accStayAmnt}" th:placeholder="#{message.label.hostel.rent}"
+                 oninput="checkInputLength(this);" data-maxlength="10"
+                 th:classappend="${#fields.hasErrors('accStayAmnt')} ? 'is-invalid' : ''" required>
+          <div class="invalid-feedback backendErrors" th:errors="*{accStayAmnt}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.hostel.rent} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="effectiveDate">
+            <span th:text="#{message.label.effective.date}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="date" class="form-control required-input" th:field="*{effectiveDate}" th:placeholder="#{message.label.effective.date}"
+                 th:classappend="${#fields.hasErrors('effectiveDate')} ? 'is-invalid' : ''" required>
+          <div class="invalid-feedback backendErrors" th:errors="*{effectiveDate}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.effective.date} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="breakfastCoupon">
+            <span th:text="#{message.label.breakfast.amount}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input numeric" th:field="*{breakfastCoupon}"
+                 th:placeholder="#{message.label.breakfast.amount}" oninput="checkInputLength(this);" data-maxlength="8"
+                 th:classappend="${#fields.hasErrors('breakfastCoupon')} ? 'is-invalid' : ''" required>
+          <div class="invalid-feedback backendErrors" th:errors="*{breakfastCoupon}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.breakfast.amount} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="lunchCoupon">
+            <span th:text="#{message.label.lunch.amount}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input numeric" th:field="*{lunchCoupon}"
+                 th:placeholder="#{message.label.lunch.amount}" oninput="checkInputLength(this);" data-maxlength="8"
+                 th:classappend="${#fields.hasErrors('lunchCoupon')} ? 'is-invalid' : ''" required>
+          <div class="invalid-feedback backendErrors" th:errors="*{lunchCoupon}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.lunch.amount} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="dinnerCoupon">
+            <span th:text="#{message.label.dinner.amount}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input numeric" th:field="*{dinnerCoupon}"
+                 th:placeholder="#{message.label.dinner.amount}" oninput="checkInputLength(this);" data-maxlength="8"
+                 th:classappend="${#fields.hasErrors('dinnerCoupon')} ? 'is-invalid' : ''" required>
+          <div class="invalid-feedback backendErrors" th:errors="*{dinnerCoupon}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.dinner.amount} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="rebateCharges">
+            <span th:text="#{message.label.rebate.charges}"></span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control numeric" th:field="*{rebateCharges}" required
+                 th:placeholder="#{message.label.rebate.charges}" oninput="checkInputLength(this);" data-maxlength="8"
+                 th:classappend="${#fields.hasErrors('rebateCharges')} ? 'is-invalid' : ''">
+          <div class="invalid-feedback backendErrors" th:errors="*{rebateCharges}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.label.rebate.charges} + ' ' + #{message.validation.is.required}"></div>
+        </div>
+      </div>
+    </form>
+  </modalBody>
+</div>

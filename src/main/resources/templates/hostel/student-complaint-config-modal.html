@@ -1,0 +1,54 @@
+<div th:replace="~{common/modal-template ::
+   modal('student-complaint-config-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader th:text="#{message.label.student.complaint.config.add}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="student-complaint-config-form" th:action="@{#{url.student.complaint.config}+#{url.save}}"
+              th:object="${studentComplaintConfigurationDto}" novalidate method="post">
+            <div class="row">
+                <input type="hidden" th:field="*{id}" id="id">
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label">
+                        <span th:text="#{message.label.complaint.type}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <div class="checkRadio-bg form-control" id="complaintType">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input required-input" type="radio" th:field="*{complaintType}" th:value="'hostel'"
+                                   th:classappend="${#fields.hasErrors('complaintType')} ? 'is-invalid' : ''" id="hostel" name="complaintType" required>
+                            <label class="form-check-label" for="hostel"><span th:text="#{message.label.hostel}"></span></label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input required-input" type="radio" th:field="*{complaintType}" th:value="'mess'"
+                                   th:classappend="${#fields.hasErrors('complaintType')} ? 'is-invalid' : ''" id="mess" name="complaintType" required>
+                            <label class="form-check-label" for="mess"><span th:text="#{message.label.mess}"></span></label>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback backendErrors" th:text="#{message.validation.complaint.type.required}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.complaint.type.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3" id="shortDescriptionContainer">
+                    <label class="form-label" for="shortDescription">
+                        <span th:text="#{message.label.complaint.name}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" th:field="*{complaintName}" class="form-control required-input" maxlength="60"
+                           id="shortDescription"
+                              th:placeholder="#{message.placeholder.complaint.name}" required>
+                    <div class="invalid-feedback backendErrors" th:text="#{message.validation.complaint.name.required}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.complaint.name.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="inChargeEmail">
+                        <span th:text="#{message.label.in-charge.email.id}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea type="email" class="form-control" th:field="*{configMailId}" maxlength="320" id="inChargeEmail"
+                           th:placeholder="#{message.placeholder.email.id}" required></textarea>
+                    <div class="invalid-feedback"><span th:text="#{message.validation.email.id.required}"></span></div>
+                    <div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+                    <div class="invalid-valid-feedback d-none" th:text="#{message.validation.local.guardian.details.email}"></div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

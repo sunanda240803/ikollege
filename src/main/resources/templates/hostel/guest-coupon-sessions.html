@@ -1,0 +1,162 @@
+
+<div class="col-lg-12 my-3 couponTable" th:classappend="*{((requestId eq null or requestId <=0)) and (overallAmount ne null and overallAmount >= 0) or
+(vegOrNonVeg ne null and !vegOrNonVeg.isEmpty()) and (messId ne null and messId > 0) and (diningFrom ne null and diningTo ne null) ? '':'d-none'}">
+    <div class="table-responsive themeTable">
+	    <table id="couponTable" class="table table-bordered nowrap w-100">
+	        <thead>
+	            <tr>
+	                <th class="text-center">
+	                    <span th:text="#{message.label.date}"></span>
+	                </th>
+	                <th class="text-center">
+	                    <span th:text="#{message.label.breakfast}"></span>
+	                </th>
+	                <th class="text-center">
+	                    <span th:text="#{message.label.lunch}"></span>
+	                </th>
+	                <th class="text-center">
+	                    <span th:text="#{message.label.dinner}"></span>
+	                </th>
+                    <th class="text-center">
+                        <span th:text="#{message.label.snacks}"></span>
+                    </th>
+                    <th class="text-center dayTotal"
+                        th:if="*{requestId == null or (requestId != null and (category == 'Hostel Residents' or category == 'Online Coupon'))}">
+                        <span th:text="#{message.label.day.total}"></span>
+                    </th>
+
+                </tr>
+	        </thead>
+	        <tbody>
+	            <!-- Dynamic rows will be appended here -->
+	        </tbody>
+	        <th:block th:if="*{requestId != null}">
+		        <tbody>
+		        	<tr th:if="*{foodFrequency != null && !foodFrequency.isEmpty()}"
+					    th:each="coupon, iter: *{foodFrequency}">
+                        <td>
+                            <div class="form-control form-graybox text-center">
+					       		<span class="graybox-text"
+                                      th:text="${#temporals.format(coupon.date, #messages.msg('date.format'))}"/>
+                            </div>
+                        </td>
+                        <th:block th:if="*{bulkCoupon == true}">
+                            <td>
+                                <div class="form-control form-graybox text-center">
+                                    <span class="graybox-text" th:text="${coupon.noOfBreakfast}"/>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-control form-graybox text-center">
+                                    <span class="graybox-text" th:text="${coupon.noOfLunch}"/>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-control form-graybox text-center">
+                                    <span class="graybox-text" th:text="${coupon.noOfDinner}"/>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-control form-graybox text-center">
+                                    <span class="graybox-text" th:text="${coupon.noOfSnacks}"/>
+                                </div>
+                            </td>
+				        </th:block>
+				        <th:block th:if="*{bulkCoupon != true}">
+						    <td>
+						    	<div class="d-flex justify-content-center mt-2">
+						    		<input class="form-check-input" type="checkbox" th:checked="${coupon.havingBreakfast}" disabled/>
+						    	</div>
+                            </td>
+						    <td>
+						    	<div class="d-flex justify-content-center mt-2">
+                                    <input class="form-check-input" type="checkbox" th:checked="${coupon.havingLunch}" disabled/>
+                                </div>
+						    </td>
+						    <td>
+						    	<div class="d-flex justify-content-center mt-2">
+                                    <input class="form-check-input" type="checkbox" th:checked="${coupon.havingDinner}" disabled/>
+                                </div>
+						    </td>
+                            <td>
+						    	<div class="d-flex justify-content-center mt-2">
+                                    <input class="form-check-input" type="checkbox" th:checked="${coupon.havingSnacks}" disabled/>
+                                </div>
+						    </td>
+                            <td th:if="*{(category == 'Hostel Residents' or category == 'Online Coupon')}">
+                                <div class="d-flex justify-content-center mt-2">
+                                    <span th:text="'₹ ' + ${coupon.dayTotal}"></span>
+                                </div>
+                            </td>
+
+                        </th:block>
+					</tr>
+                    <tr th:if="*{!((category == 'Hostel Residents' or category == 'Online Coupon') and vegOrNonVeg == 'Non Veg')}">
+                      <td class="text-end fw-bold">
+				        	<span th:text="#{message.label.rate.per.unit}"></span>
+				        	<i class="fa-solid fa-indian-rupee-sign"></i>
+				        </td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{bfRatePerUnit}" />
+							</div>
+						</td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{lunchRatePerUnit}" />
+							</div>
+						</td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{dinnerRatePerUnit}" />
+							</div>
+						</td>
+                        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{snacksRatePerUnit}" />
+							</div>
+						</td>
+				    </tr>
+                    <tr th:if="*{(category != 'Hostel Residents' and category != 'Online Coupon')}">
+                        <td class="text-end fw-bold">
+				        	<span th:text="#{message.label.sub.total}"></span>
+							<i class="fa-solid fa-indian-rupee-sign"></i>
+						</td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{subBfTotal}" />
+							</div>
+						</td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{subLnTotal}" />
+							</div>
+						</td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{subDnTotal}" />
+							</div>
+						</td>
+                        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{subSnacksTotal}" />
+							</div>
+						</td>
+				    </tr>
+				    <tr>
+                        <td th:colspan="*{requestId != null and (category == 'Hostel Residents' or category == 'Online Coupon')} ? 5 : 4"
+                            class="text-end fw-bold">
+				        	<span th:text="#{message.label.total.amount}"></span>
+				        	<i class="fa-solid fa-indian-rupee-sign"></i>
+				        </td>
+				        <td>
+							<div class="form-control form-graybox text-center">
+								<span class="graybox-text" th:text="*{overallAmount}" />
+							</div>
+						</td>
+				    </tr>
+		        </tbody>
+	        </th:block>
+	    </table>
+	</div>
+</div>

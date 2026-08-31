@@ -1,0 +1,52 @@
+<th:block th:fragment="radioCheckToggle(messList, label, fieldPrefix)">
+    <div class="row mt-3">
+        <div class="col-lg-9">
+            <h2 class="tmsub-title" th:text="${label}"></h2>
+        </div>
+        <div class="col-lg-3 text-end">
+            <button type="button" th:id="${fieldPrefix}+'SaveButton'" class="btn btn-aqua">
+                <i class="fa-solid fa-floppy-disk me-1"></i>
+                <span th:text="#{message.button.save}"></span>
+            </button>
+        </div>
+    </div>
+    <input type="text" th:id="${fieldPrefix}+'Id'" th:name="*{id}" th:field="*{id}" th:value="${id}" hidden>
+    <div class="row overflow-auto border p-3 me-1 ms-1 rounded-2 mh-100">
+        <div th:if="${fieldPrefix == 'girlsOptionTwo'}" class="col-lg-4 mt-4 d-flex align-items-center">
+            <input class="form-check-input" type="checkbox" th:field="*{girlsOptionTwoEnable}" id="girlsOptionTwoEnable">
+            <label class="form-check-label" for="girlsOptionTwoEnable" th:text="#{message.label.enable}"></label>
+        </div>
+        <div class="col-lg-8" th:if="${fieldPrefix == 'girlsOptionTwo'}">
+            <label class="form-label" th:for="${girlsOptionTwoEnable}" th:text="#{message.minimum.mess.count}"></label>
+            <input type="number" class="form-control" th:id="${fieldPrefix + 'MinCount'}" th:name="${fieldPrefix + 'MinCount'}"
+                   th:field="*{girlsOptionTwoMinCount}" th:value="*{girlsOptionTwoMinCount}" th:placeholder="#{message.placeholder.minimum.mess.count}"
+                   min="1" required />
+        </div>
+        <div class="col-lg-12 mb-3">
+            <label class="form-label"
+                   th:for="${fieldPrefix + 'MinCount'}" th:if="${fieldPrefix == 'girlsOptionOne' || fieldPrefix == 'boysOption'}"
+                   th:text="#{message.minimum.mess.count}">
+            </label>
+            <input type="number" th:if="${fieldPrefix == 'girlsOptionOne'}" class="form-control" th:id="${fieldPrefix + 'MinCount'}"
+                   th:name="${fieldPrefix + 'MinCount'}" th:field="*{girlsOptionOneMinCount}"
+                   th:value="*{girlsOptionOneMinCount}" th:placeholder="#{message.placeholder.minimum.mess.count}" min="1" required />
+            <input type="number" th:if="${fieldPrefix == 'boysOption'}" class="form-control" th:id="${fieldPrefix + 'MinCount'}" th:name="${fieldPrefix + 'MinCount'}" th:field="*{boysOptionMinCount}"
+                   th:value="*{boysOptionMinCount}" th:placeholder="#{message.placeholder.minimum.mess.count}" min="1" required />
+        </div>
+        <th:block th:each="mess : ${messList}">
+            <div class="col-lg-12 col-md-4 mb-3 RadioCheckToggle">
+                <input type="checkbox" class="btn-check" th:id="'CheckToggle_' + ${mess.id} + '_' + ${fieldPrefix}"
+                       th:value="${mess.id}" th:checked="${mess.check}">
+                <label class="btn btn-outline-bluegray text-start d-flex flex-column" th:for="'CheckToggle_' + ${mess.id} + '_' + ${fieldPrefix}">
+                    <span class="fw-bold" th:text="${mess.messName}"></span>
+                </label>
+            </div>
+        </th:block>
+        <input type="text" th:id="${girlsOptionOne}" th:if="${fieldPrefix == 'girlsOptionOne'}"
+               th:field="*{girlsOptionOne}" th:value="${girlsOptionOne}" hidden>
+        <input type="text" th:id="${girlsOptionTwo}" th:if="${fieldPrefix == 'girlsOptionTwo'}"
+               th:field="*{girlsOptionTwo}" th:value="${girlsOptionTwo}" hidden>
+        <input type="text" th:id="${boysOption}" th:if="${fieldPrefix == 'boysOption'}"
+               th:field="*{boysOption}" th:value="${boysOption}" hidden>
+    </div>
+</th:block>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form action="#" method="get">
+	                        <div class="row mb-3">
+		        				<div class="col-auto">
+		        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+		        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+		        							data-bs-title="Use Hostel Name,Floor Name and Floor Description to search"></i>
+		        					</label>
+	                            	<input type="text" class="form-control" name="search" id="search"
+	                                   th:value="${form.search}">
+	                             </div>
+	                             <div class="col-auto mt-3">
+	                            	<button class="btn btn-secondary mt-4" type="submit">
+	                            		<span th:text="#{message.label.search}"></span>
+	                            	</button>
+	                            </div>
+	                        </div>
+                   		</form>
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="FloorListDataTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+											<th>
+												<span
+													th:text="#{message.label.hostel.name}"></span>
+											</th>
+											<th>
+												<span
+													th:text="#{message.label.floor.name}"></span>
+											</th>
+											<th>
+												<span
+													th:text="#{message.label.floor.description}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.action}"></span>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}" 
+											th:each="floors, iter: ${form.paginationList.getContent()}">
+											<td th:text="${floors.hostel.hostelName}"></td>
+											<td th:text="${floors.floorName}"></td>
+											<td th:text="${floors.floorDesc}"></td>
+											<td class="text-center">
+												<div class="d-flex justify-content-center">
+													<button type="button" class="btn btn-outline-primary btn-sm me-2"
+														data-bs-toggle="tooltip" th:data-floor-id="${floors.id}"
+														onclick="editFloor(this);" data-bs-title="Edit">
+														<i class="fa-solid fa-pencil"></i>
+													</button>
+													<button type="button" class="btn btn-outline-danger btn-sm"
+														data-bs-toggle="tooltip" th:id="${'deleteReq_'+floors.id}"
+														onclick="deleteFloor(this);"
+														th:data-floor-id="${floors.id}" data-bs-title="Delete">
+														<i class="fa-solid fa-trash-can"></i>
+													</button>
+												</div>
+											</td>
+										</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<div th:id="modalDiv"></div>
+
+	<th:block th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}"></th:block>
+
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/hostel/floor-master.js}"></script>
+
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.floor.master}]]*/ '';
+			const checkDetailsExistURL = /*[[#{url.floor.name.exist}]]*/ '';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

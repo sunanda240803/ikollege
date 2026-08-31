@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form id="messDineSummaryForm"
+                          th:action="@{#{url.mess.dine.summary}}"
+                          th:object="${searchForm}" method="post" class="form-horizontal">
+
+                        <div class="row mb-4">
+                            <div class="col-lg-3 mb-3">
+                                <label for="messPeriod" th:text="#{message.label.mess.period}"></label>
+                                <select id="messPeriod" th:field="*{messPeriodId}" class="form-select required-input" required>
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                    <option th:each="period : ${messPeriods}"
+                                            th:value="${period.id}"
+                                            th:text="${period.messPeriod}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label for="messName" th:text="#{message.label.mess.name}"></label>
+                                <select id="messName" th:field="*{messId}" class="form-select required-input" required>
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                    <option th:each="mess : ${messNames}"
+                                            th:value="${mess.id}"
+                                            th:text="${mess.messName}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 row">
+                                <div class="col-lg-4">
+                                    <button type="button" id="downloadReport" class="btn btn-lgtblue mt-4" onclick="downloadRequestReport()">
+                                        <i class="fa-solid fa-file-excel"></i>
+                                        <span>Export</span>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/mess/mess-dine-summary.js}"></script>
+    <script th:inline="javascript">
+        const excelDownloadUrl = /*[[#{url.mess.dine.summary.excel.report.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>

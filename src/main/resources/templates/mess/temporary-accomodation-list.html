@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<th:block th:fragment="formInputs(filters)">
+								<form class="themeForm" method="get" id="searchRoomInfo">
+									<input type="hidden" th:value='${filters}' id="filters">
+									<input type="hidden" id="search" name="search">
+									<div class="row mb-4">
+										<div class="col-lg-2 mb-3">
+											<label class="form-label"> <span
+												th:text="#{message.label.candidate.name}"></span>
+											</label> 
+											<input type="text" class="form-control" id="candidateName" name="candidateName" th:value="${filters.get('candidateName')}" 
+												th:placeholder="#{message.label.enter} + ' ' + #{message.label.candidate.name}"/>
+										</div>
+										<div class="col-lg-2 mb-3">
+											<label class="form-label"> <span
+												th:text="#{message.label.request.id}"></span>
+											</label> 
+											<input type="text" class="form-control" id="requestId" name="requestId" th:value="${filters.get('requestId')}"
+												th:placeholder="#{message.label.enter} + ' ' + #{message.label.request.id}" />
+										</div>
+										<div class="col-md-2 mb-2">
+											<label for="approvalFromDate" class="form-label" th:text="#{message.label.approval.date}"></label>
+											<input type="date" id="approvalFromDate" name="approvalFromDate" class="form-control required-input" th:value="${filters.get('approvalFromDate')}">
+										</div>
+<!--										<div class="col-md-2 mb-2">
+											<label for="approvalToDate" class="form-label" th:text="#{message.label.approval.to.date}"></label>
+											<input type="date" id="approvalToDate" name="approvalToDate" class="form-control required-input" th:value="${filters.get('approvalToDate')}">
+										</div>-->
+										<div class="col-lg-3">
+											<input type="hidden" id="pageVal" th:value="${form.pageVal}" /> 
+											<input type="hidden" id="sizeVal" th:value="${form.size}" />
+											<button type="button" id="getData" class="btn btn-lgtblue px-4"
+												style="margin-top: 38px" onclick="return checkAdvanceFilter();">
+												<i class="fa-solid fa-database"></i> 
+												<span th:text="#{message.button.get.data}"></span>
+											</button>
+										</div>									
+									</div>
+								</form>
+							</th:block>
+							<div class="text-end">
+								<strong>Total Approved Amount : </strong>
+								<span class="currency" th:text="${totalApprovedAmount}"></span>
+							</div>
+							<div class="row mb-4">
+							    <div class="col-lg-4">
+							        <label class="form-label">Search</label>
+							        <input type="text" id="tableSearch" class="form-control" placeholder="Search..." onkeyup="filterTable()">
+							    </div>
+							</div>
+							<div th:replace="~{common/template/left-right-table-scroll-arrows.html :: leftRightArrow()}"></div>
+							<div class="table-responsive themeTable " id="myTable">
+								<table id="hostelRoomAllotmentLogs" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+											<th class="text-center">
+												<span th:text="#{message.label.request.id}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.last.submitted.date}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.candidate.name}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.stay.from}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.stay.to}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.gender}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.email}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.approval.date}"></span>
+											</th>
+											<th class="text-center">
+												<span th:text="#{message.label.payment.amount}"></span>
+											</th>
+
+											<th class="text-center">
+												<span th:text="#{message.label.payment.advice}"></span>
+											</th>
+										</tr>
+									</thead>									
+									<tbody>
+										<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											 th:each="temporaryAccomodationList, iter: ${form.paginationList.getContent()}">
+											<td class="text-center" th:text="${temporaryAccomodationList.requestId}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.createdAt}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.candidateName}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.stayFrom}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.stayTo}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.gender}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.email}"></td>
+											<td class="text-center" th:text="${temporaryAccomodationList.approvalDate}"></td>
+											<td class="text-end currency" th:text="${temporaryAccomodationList.netAmount}"></td>
+											<td class="text-center">
+				                                 <button type="button" class="btn btn-outline-primary btn-sm me-2"
+														data-bs-toggle="tooltip" th:data="${temporaryAccomodationList.url}"
+														onclick="viewDetails(this)" th:data-bs-title="#{message.label.edit}">
+														<i class="fa-solid fa-pencil"></i>
+												 </button>
+				                              </td>									
+										</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="12" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Footer-->
+	
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/mess/temp-accomodation-list.js}"></script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

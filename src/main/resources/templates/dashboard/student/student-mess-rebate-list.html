@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+ 	
+	<header th:replace="~{common/student-dashboard-header:: title(${headerForm}, 'Mess Rebate Request',
+	 	'Dashboard', null,null, null, 'Back', null, #{url.dashboard}+#{url.student}, null)}">
+	</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+
+	<!-- Conditional Link Section -->
+		<div class="container mt-4" th:if="${isGuideNameEmailPresent}">
+			<div class="d-flex justify-content-center">
+				<a href="javascript:void(0);" class="btn btn-warning text-center py-2 px-4" onclick="viewBioData()">
+					<span th:text="#{message.label.guide.name.email.fill.note}"></span>
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="studentMessRebateListTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+		                                    <th th:text="#{message.label.request.date}"></th>
+<!-- 		                                    <th th:text="#{message.label.leave.from.date}"></th> -->
+<!-- 		                                    <th th:text="#{message.label.leave.to.date}"></th> -->
+		                                    <th th:text="#{message.label.rebate.from.date}"></th>
+		                                    <th th:text="#{message.label.rebate.to.date}"></th>
+                                    		<th th:text="#{message.label.reason}"></th>
+                                    		<th th:text="#{message.label.no.of.days}"></th>
+                                    		<th th:text="#{message.label.status}"></th>
+                                    		<th class="text-center" th:text="#{message.label.action}"></th>
+                                    	</tr>
+									</thead>
+									<tbody>
+								    	<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											th:each="messRebate, iter: ${form.paginationList.getContent()}">
+											<td th:text="${#temporals.format(messRebate.createdAt, #messages.msg('date.format'))}"></td>
+<!-- 											<td th:text="${#temporals.format(messRebate.leaveFrom, #messages.msg('date.format'))}"></td> -->
+<!-- 											<td th:text="${#temporals.format(messRebate.leaveTo, #messages.msg('date.format'))}"></td> -->
+											<td th:text="${#temporals.format(messRebate.rebateFrom, #messages.msg('date.format'))}"></td>
+											<td th:text="${#temporals.format(messRebate.rebateTo, #messages.msg('date.format'))}"></td>
+											<td th:text="${messRebate.rebateReason}"></td>
+											<td th:text="${messRebate.noOfDays}"></td>
+											<td>
+<!-- 			                                    <i class="fas fa-info-circle text-secondary" -->
+<!-- 			                                       data-bs-toggle="tooltip" th:data-bs-title="${messRebate.statusNotes}"> -->
+<!-- 			                                    </i> -->
+			                                    <th:block th:include="common/template/approval-status-badge :: statusBadge(${messRebate.approvalStatus}, null)"></th:block>
+			                                </td>
+								    		<td class="text-center">
+												<button type="button" class="btn btn-sm btn-outline-bluegray me-2"
+													data-bs-toggle="tooltip" title="View"
+													th:data-mess-id="${messRebate.id}"
+													onclick="viewStudentMessRebateDetails(this);">
+													<i class="fa-solid fa-eye"></i>
+												</button>
+								    		</td>
+								    	</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="7" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<div th:id="modalDiv"></div>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dashboard/student/student-mess-rebate.js}"></script>
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:inline="javascript">
+			const messRebateURL = /*[[#{url.student.mess.rebate}]]*/ '';
+			const newURL = /*[[#{url.new}]]*/ '';
+			const checkDetailsExistURL = /*[[#{url.exist}]]*/ '';
+			const downloadURL = /*[[#{url.download}]]*/ '';
+			const getStudentRegistrationURL = /*[[#{url.student.registration}]]*/ '';
+			const getStudentRegistrationURLSuffix = /*[[#{url.get}]]*/ '';
+	   	</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})}">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="themeForm"  th:action="@{#{url.guest.student.request.action}}"  method="post" id="studentBulkUploadViewForm"
+                          th:object="${studentBulkAccommodationDto}">
+                        <input type="hidden"  th:name="id"  th:value="${studentBulkAccommodationDto.id}" />
+                        <div class="row mb-4">
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.event.name}"></span></label>
+                                <div class="form-control form-graybox"><span th:text="${studentBulkAccommodationDto.eventName} ?: #{message.label.na}"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.event.description}"></span></label>
+                                <div class="form-control form-graybox"><span th:text="${studentBulkAccommodationDto.description} ?: #{message.label.na}"/></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.uploaded.by}"></span></label>
+                                <div class="form-control form-graybox"><span th:text="${studentBulkAccommodationDto.createdBy} ?: #{message.label.na}"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label"><span th:text="#{message.label.bulk.accommodation.request.details.students.count}"></span></label>
+                                <div class="form-control form-graybox"><span th:text="${studentBulkAccommodationDto.count} ?: #{message.label.na}"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 mb-4">
+                                <label class="form-label"><span th:text="#{message.label.bulk.accommodation.request.details.event.from.date}"/></label>
+                                <input type="date" id="eventFromDate"   th:name="eventFromDate" class="form-control" th:value="${studentBulkAccommodationDto.eventFromDate}">
+                            </div>
+                            <div class="col-lg-2 mb-4">
+                                <label class="form-label"><span th:text="#{message.label.bulk.accommodation.request.details.event.to.date}"/></label>
+                                <input type="date" id="eventToDate"   th:name="eventToDate" class="form-control" th:value="${studentBulkAccommodationDto.eventToDate}">
+                            </div>
+                            <div class="col-lg-2 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.approval.status}"></span></label>
+                                <div class="form-control form-graybox">
+                                    <th:block th:include="common/template/approval-status-badge :: statusBadge(${studentBulkAccommodationDto.approvalStatus}, null)">
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 mb-4">
+                                <label class="form-label"><span th:text="#{message.label.uploaded.file}"></span></label>
+                                <div th:if="${studentBulkAccommodationDto != null and studentBulkAccommodationDto.fileDownloadLink != null and
+                                    !studentBulkAccommodationDto.fileDownloadLink.isEmpty()}"  id="downloadSection">
+                                    <!-- Show download option when file exists -->
+                                    <button type="button" class="btn btn-success"
+                                            th:data-bs-title="Download"
+                                            th:data-url="${studentBulkAccommodationDto.fileDownloadLink}"
+                                            onclick="handleActionClick(this)">
+                                        <i class="fa-solid fa-download"></i>
+                                        <span th:text="#{message.label.download.file}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label"><span th:text="#{message.label.approval.notes.details}"></span></label>
+                                <div class="form-control form-graybox"><span th:text="${studentBulkAccommodationDto.approvalNotes} ?: #{message.label.na}"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.bulk.accommodation.request.details.approval.reason}" /></label>
+                                <textarea name="approvalNotes" id="approvalNotesId" class="form-control" th:placeholder="#{message.label.bulk.accommodation.request.details.approval.reason}"
+                                          th:name="approvalNotes"  rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="table-responsive themeTable">
+                                <table id="studentLoginTable" class="table table-bordered nowrap w-100">
+                                    <thead>
+                                    <tr>
+                                        <th th:text="#{message.label.mess.rebate.sl.no}"></th>
+                                        <th th:text="#{message.label.stay.from}"></th>
+                                        <th th:text="#{message.label.stay.to}"></th>
+                                        <th th:text="#{message.label.male.participant}"></th>
+                                        <th th:text="#{message.label.female.participant}"></th>
+                                        <th th:text="#{message.label.dining.status}"></th>
+                                        <th th:text="#{message.label.dining.session}"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="row, rowStat : ${studentBulkAccommodationDto.rows}" align="left" th:id="${rowStat.index}">
+                                        <td valign="middle" width="1%">
+                                            <span th:text="${rowStat.index + 1}"></span>
+                                        </td>
+                                        <input type="date" class="form-control"  th:name="|rows[${rowStat.index}].id|"  th:value="${row.id}" hidden>
+                                        <!--<td valign="middle" width="14%">
+                                            <input type="date" class="form-control"
+                                                   th:name="|rows[${rowStat.index}].stayFrom|"
+                                                   th:value="${row.stayFrom}">
+                                        </td>
+                                        <td valign="middle" width="14%">
+                                            <input type="date" class="form-control"
+                                                   th:name="|rows[${rowStat.index}].stayTo|"
+                                                   th:value="${row.stayTo}">
+                                        </td>-->
+                                        <td valign="middle" width="5%">
+                                            <div class="form-control form-graybox">
+                                                <span th:text="${row.fromDate} ?: 'N/A'"></span>
+                                                <input type="hidden"  th:value="${row.fromDate}">
+                                            </div>
+                                        </td>
+                                        <td valign="middle" width="5%">
+                                            <div class="form-control form-graybox">
+                                                <span th:text="${row.toDate} ?: 'N/A'"></span>
+                                                <input type="hidden"  th:value="${row.toDate}">
+                                            </div>
+                                        </td>
+                                        <td valign="middle" width="5%">
+                                            <div class="form-control form-graybox">
+                                                <span th:text="${row.maleParticipants} ?: '0'"></span>
+                                                <input type="hidden"  th:value="${row.maleParticipants}">
+                                            </div>
+                                        </td>
+                                        <td valign="middle" width="5%">
+                                            <div class="form-control form-graybox">
+                                                <span th:text="${row.femaleParticipants} ?: '0'"></span>
+                                                <input type="hidden"  th:value="${row.femaleParticipants}">
+                                            </div>
+                                        </td>
+                                        <td valign="middle" width="5%">
+                                            <div class="form-control form-graybox">
+                                                <span th:text="${row.dining == 'required'} ? #{message.label.dining.value.required} : #{message.label.dining.value.not.required}"></span>
+                                                <input type="hidden" th:value="${row.dining}">
+                                            </div>
+                                        </td>
+                                        <td valign="middle" width="5%">
+                                            <div class="form-control form-graybox">
+                                                <span th:text="${row.session}"></span>
+                                                <input type="hidden"  th:value="${row.session}">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row "  th:if="${isDeanLogin && studentBulkAccommodationDto.approvalStatus != null && studentBulkAccommodationDto.approvalStatus == 'Pending'}">
+                                <div class="col-lg-12 mb-5 text-end">
+                                    <button type="button" class="btn btn-success me-2" id="approveBtn" th:data-mail="${isMail}" onclick="approveStudentBulkRequest('Approve', this)" >
+                                        <i class="fa-solid fa-circle-check me-1"></i> <span th:text="#{message.button.approve}"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-info text-white me-2" id="approveWithConditionBtn" th:data-mail="${isMail}" onclick="approveStudentBulkRequest('Approve With Condition', this)">
+                                        <i class="fa-solid fa-circle-xmark me-1"></i> <span th:text="#{message.button.approve.with.condition}"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-danger  me-2" id="rejectBtn" th:data-mail="${isMail}" onclick="approveStudentBulkRequest('Reject', this)">
+                                        <i class="fa-solid fa-ban me-1"></i> <span th:text="#{message.button.reject}"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dean/bulk-accommodation-request-details.js}"></script>
+    <script th:inline="javascript">
+        const baseUrl = /*[[#{url.dean.student.bulk.accommodation}]]*/ '';
+        const updateAndApproveUrl = /*[[#{url.dean.student.bulk.accommodation.update.and.approve}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+
+</body>
+</html>

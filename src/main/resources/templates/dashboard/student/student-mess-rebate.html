@@ -1,0 +1,21 @@
+<div th:replace="~{common/widget-template :: content('studentMessRebateId', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+	<modalHeader><span th:text="#{message.label.mess.rebate}"></span></modalHeader>
+	<modalBody>
+		<div class="text-center">
+			<div class="row">
+				<div class="col-12">
+					<span class="text-tmPrimary fw-bold" th:text="#{message.label.last.mess.rebate.status}"></span><br>
+					<th:block th:include="common/template/approval-status-badge :: statusBadge(${approvalStatus}, null)"></th:block>
+				</div>
+			</div>
+		</div>
+	</modalBody>
+	<modalfooter>
+		<div class="text-end">
+			<a th:href="@{#{url.student.mess.rebate} + #{url.list}}" class="text-secondary mb-0 align-middle">
+				<span th:text="#{message.label.click.view.apply}"/>
+				<i class="fa-solid fa-arrow-right ms-2"></i>
+			</a>
+		</div>
+	</modalfooter>
+</div>

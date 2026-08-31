@@ -1,0 +1,54 @@
+<div class="row mb-4">
+    <div class="col-lg-12 themeTabs">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/dashboard}"
+                    th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/dashboard' ? ' active' : ''}">
+                    <span th:text="'Student List'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/liveStatus}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/liveStatus' ? ' active' : ''}">
+                    <span th:text="'Live Status'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/frPull}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/frPull' ? ' active' : ''}">
+                    <span th:text="'Bulk Pull'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/frPush}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/frPush' ? ' active' : ''}">
+                    <span th:text="'Bulk Push'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/frClear}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/frClear' ? ' active' : ''}">
+                    <span th:text="'Clear'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/messDetails}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/messDetails' ? ' active' : ''}">
+                    <span th:text="'Mess Details'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/frScheduler}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/frScheduler' ? ' active' : ''}">
+                    <span th:text="'Cron Jobs'"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:class="'nav-link'" th:href="@{/history}"
+                   th:classappend="${#strings.replace(#httpServletRequest.requestURI, #httpServletRequest.contextPath, '') == '/history' ? ' active' : ''}">
+                    <span th:text="'History'"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

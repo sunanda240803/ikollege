@@ -1,0 +1,348 @@
+
+<th:block>
+    <div class="row col-lg-12" >
+            <form class="themeForm" th:action="@{#{url.download.student.bulk.accommodation.upload}}" method="post"
+                  enctype="multipart/form-data" th:object="${studentBulkAccommodationDto}" id="studentBulkUploadForm">
+                <div class="row" id="bulkRoomInventory">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.download}"></span></h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-3 d-flex align-items-center">
+                        <span class="fs-5">
+                            <u class="text-tmPrimary">
+                                <a th:href="@{#{url.download.student.bulk.accommodation.template}}" th:text="#{message.label.click.here.caps}"></a>
+                            </u>
+                            <span th:text="#{message.label.student.bulk.upload.click.here.note}"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title" th:text="#{message.label.bulk.accommodation.request}"></h2>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <input type="hidden" th:value="${studentBulkAccommodationDto.id}" th:name="id" id="bulkAccommodationId" />
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="eventName">
+                                <span th:text="#{message.label.event.name}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                            </label>
+                            <input type="text" class="form-control required-input" id="eventName"
+                                   name="eventName" th:value="${studentBulkAccommodationDto.eventName}"
+                                   th:placeholder="#{message.label.event.name}" required>
+                            <div class="invalid-feedback" th:text="#{message.validation.event.name.required}"></div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="eventFromDate">
+                                <span th:text="#{message.label.event.from.date}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                            </label>
+                            <input type="date" class="form-control required-input" id="eventFromDate"
+                                   name="eventFromDate" th:value="${studentBulkAccommodationDto.eventFromDate}"
+                                   th:placeholder="#{message.label.event.from.date}" required>
+                            <div class="invalid-feedback" th:text="#{message.validation.event.from.date.required}"></div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="eventToDate">
+                                <span th:text="#{message.label.event.to.date}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                            </label>
+                            <input type="date" class="form-control required-input" id="eventToDate"
+                                   name="eventToDate" th:value="${studentBulkAccommodationDto.eventToDate}"
+                                   th:placeholder="#{message.label.event.to.date}" required>
+                            <div class="invalid-feedback" th:text="#{message.validation.event.to.date.required}"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label class="form-label me-3" for="description">
+                                <span th:text="#{message.label.bulk.upload.desc}"></span>
+                            </label>
+                            <input type="text" class="form-control" id="description" name="description"
+                                   th:value="${studentBulkAccommodationDto.description}"
+                                   th:placeholder="#{message.label.bulk.upload.desc}">
+                        </div>
+
+                        <div class="col-lg-8">
+                            <div th:if="${studentBulkAccommodationDto != null and studentBulkAccommodationDto.fileDownloadLink != null and
+                            !studentBulkAccommodationDto.fileDownloadLink.isEmpty()}"  id="downloadSection">
+                                <!-- Show download option when file exists -->
+                                <div class="row mb-3"  id="downloadButtonsContainer">
+                                    <div class="col-lg-4">
+                                        <label class="form-label me-3">
+                                            <span th:text="#{message.label.uploaded.file}"></span>
+                                        </label>
+                                        <div>
+                                            <button type="button" class="btn btn-success"
+                                                    th:data-bs-title="Download"
+                                                    th:data-url="${studentBulkAccommodationDto.fileDownloadLink}"
+                                                    onclick="handleActionClick(this)">
+                                                <i class="fa-solid fa-download"></i>
+                                                <span th:text="#{message.label.download.file}"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-primary ms-2" id="showUploadSectionBtn">
+                                                <i class="fa fa-upload"></i>
+                                                <span th:text="#{message.label.upload.new.file}"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hidden upload section (will be shown when "Upload New File" is clicked) -->
+                                <div style="display: none;" id="uploadFileSection">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label class="form-label me-3" for="uploadFile">
+                                                <span th:text="#{message.label.bulk.upload.file}"></span>
+                                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                            </label>
+                                            <div>
+                                                <input type="file" class="form-control" id="uploadFile" name="file"
+                                                       th:placeholder="#{message.label.bulk.upload.file}">
+                                                <div class="selectFile2 d-none"><span class="text-danger" th:text="#{message.validation.choose.file}"></span></div>
+                                                <div class="validFile d-none"><span class="text-danger" th:text="#{message.validation.invalid.file.format}"></span></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 d-flex my-4 pt-2">
+                                            <!--<button type="button" id="uploadFileButton" class="btn btn-purple px-4 me-2" onclick="return validateUploadedFile()">
+                                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                                <span th:text="#{message.button.upload.file}"></span>
+                                            </button>-->
+                                            <button type="button" id="cancelUploadBtn" class="btn btn-secondary px-4">
+                                                <span th:text="#{message.button.cancel}"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Default upload section (shown when no file exists) -->
+                            <div th:unless="${studentBulkAccommodationDto != null and studentBulkAccommodationDto.fileDownloadLink != null
+                            and !studentBulkAccommodationDto.fileDownloadLink.isEmpty()}">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label class="form-label me-3" for="uploadFile">
+                                            <span th:text="#{message.label.bulk.upload.file}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <div>
+                                            <input type="file" class="form-control required-input" id="uploadFile" name="file"
+                                                   th:placeholder="#{message.label.bulk.upload.file}">
+                                            <div class="selectFile2 d-none"><span class="text-danger" th:text="#{message.validation.choose.file}"></span></div>
+                                            <div class="validFile d-none"><span class="text-danger" th:text="#{message.validation.invalid.file.format}"></span></div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-danger errorList d-flex align-items-center" th:if="${excelErrorList != null && !excelErrorList.isEmpty()}">
+                            <ul>
+                                <li th:each="error : ${excelErrorList}">
+                                    <span th:text="${error}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-4">
+                    <div class="col-lg-12">
+                        <h2 class="tmsub-title" th:text="#{message.label.accommodation.details}"></h2>
+                    </div>
+                </div>
+                <div class="" id="accommodationCard">
+                    <div id="rowsContainer" th:fragment="rowsContainer">
+                        <div class="row-container" th:each="row, rowStat : *{rows}">
+                            <div class="row g-3 mt-1 ">
+                                <input type="hidden" th:value="${row.id}" th:name="id" th:field="*{rows[__${rowStat.index}__].id}" th:id="'id_' + ${rowStat.index}" />
+                                <div class="col-lg-12 row">
+                                    <div class="col-lg-2 mt-2">
+										<label class="form-label">
+										    <span th:for="'stayFrom_' + ${rowStat.index}" th:text="#{message.label.stay.from}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+                                        <input type="date" class="form-control required-input"
+                                               th:id="'stayFrom_' + ${rowStat.index}"
+                                               th:value="${row.stayFrom}"
+                                               th:field="*{rows[__${rowStat.index}__].stayFrom}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].stayFrom')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.validation.accommodation.stayFrom.required}"></div>
+                                    </div>
+
+                                    <div class="col-md-2 mt-2">
+										<label class="form-label me-3">
+										    <span th:for="'stayTo_' + ${rowStat.index}" th:text="#{message.label.StayTo}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+                                        <input type="date" class="form-control required-input"
+                                               th:id="'stayTo_' + ${rowStat.index}"
+                                               th:value="${row.stayTo}"
+                                               th:field="*{rows[__${rowStat.index}__].stayTo}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].stayTo')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.validation.accommodation.stayTo.required}"></div>
+                                    </div>
+
+                                    <div class="col-md-2 mt-2">
+										<label class="form-label me-3">
+										    <span th:for="'maleParticipants_' + ${rowStat.index}" th:text="#{message.label.no.of.male.participant}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+                                        <input type="number" class="form-control required-input" min="1"
+                                               th:id="'maleParticipants_' + ${rowStat.index}"
+                                               th:field="*{rows[__${rowStat.index}__].maleParticipants}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].maleParticipants')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.validation.accommodation.maleParticipants.required}"></div>
+                                    </div>
+
+                                    <div class="col-md-2 mt-2">
+										<label class="form-label me-3">
+										    <span th:for="'femaleParticipants_' + ${rowStat.index}" th:text="#{message.label.no.of.female.participant}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+                                        <input type="number" class="form-control required-input" min="1"
+                                               th:id="'femaleParticipants_' + ${rowStat.index}"
+                                               th:field="*{rows[__${rowStat.index}__].femaleParticipants}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].femaleParticipants')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.validation.accommodation.femaleParticipants.required}"></div>
+                                    </div>
+
+                                    <div class="col-md-2 mt-2">
+										<label class="form-label me-3">
+										    <span th:for="'dining_' + ${rowStat.index}" th:text="#{message.label.dining}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+                                        <select class="form-select required-input"
+                                                th:id="'dining_' + ${rowStat.index}"
+                                                th:field="*{rows[__${rowStat.index}__].dining}"
+                                                onchange="toggleSessionRequired(this)"
+                                                th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].dining')} ? 'is-invalid' : ''">
+                                            <option value="">Select</option>
+                                            <option th:each="status : ${diningStatusList}" th:value="${status.value}" th:text="${status.text}"></option>
+                                        </select>
+                                        <div class="invalid-feedback" th:text="#{message.validation.accommodation.dining.required}"></div>
+                                    </div>
+                                    <div class="col-md-2 d-none mt-2" th:id="'session_' + ${rowStat.index} + '_container'">
+                                        <label class="form-label me-3">
+										    <span th:for="'dining_' + ${rowStat.index}" th:text="#{message.label.session}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <select class="form-select required-input"
+                                                th:id="'session' + ${rowStat.index}"
+                                                th:field="*{rows[__${rowStat.index}__].session}"
+                                                onchange="toggleLimitedSessionRequired(this)"
+                                                th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].session')} ? 'is-invalid' : ''">
+                                            <option value="">Select</option>
+                                            <option th:each="status : ${sessionList}" th:value="${status.value}" th:text="${status.text}"></option>
+                                        </select>
+                                        <div class="invalid-feedback" th:text="#{message.validation.accommodation.session.required}"></div>
+                                    </div>
+                                    <div class="col-md-2 d-none mt-2" th:id="'breakfastCount_' + ${rowStat.index} + '_container'">
+                                        <label class="form-label me-3">
+										    <span th:for="'breakfastCount_' + ${rowStat.index}" th:text="#{message.label.breakfast.count}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input type="number" class="form-control required-input"
+                                               th:id="'breakfastCount' + ${rowStat.index}"
+                                               th:field="*{rows[__${rowStat.index}__].breakfastCount}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].breakfastCount')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.label.breakfast.count} + ' ' + #{message.label.is.required}"></div>
+                                    </div>
+                                    <div class="col-md-2 d-none mt-2" th:id="'lunchCount_' + ${rowStat.index} + '_container'">
+                                        <label class="form-label me-3">
+										    <span th:for="'lunchCount' + ${rowStat.index}" th:text="#{message.label.lunch.count}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input type="number" class="form-control required-input"
+                                               th:id="'lunchCount' + ${rowStat.index}"
+                                               th:field="*{rows[__${rowStat.index}__].lunchCount}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].lunchCount')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.label.lunch.count} + ' ' + #{message.label.is.required}"></div>
+                                    </div>
+                                    <div class="col-md-2 d-none mt-2" th:id="'dinnerCount_' + ${rowStat.index} + '_container'">
+                                        <label class="form-label me-3">
+										    <span th:for="'dinnerCount' + ${rowStat.index}" th:text="#{message.label.dinner.count}"></span>
+                                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                        </label>
+                                        <input type="number" class="form-control required-input"
+                                               th:id="'dinnerCount' + ${rowStat.index}"
+                                               th:field="*{rows[__${rowStat.index}__].dinnerCount}"
+                                               th:classappend="${#fields.hasErrors('rows[__${rowStat.index}__].dinnerCount')} ? 'is-invalid' : ''">
+                                        <div class="invalid-feedback" th:text="#{message.label.dinner.count} + ' ' + #{message.label.is.required}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1 mt-2 ms-1">
+                                    <button type="button" id="deleteRowBtn" class="btn btn-danger btn-sm remove-row" th:if="${rowStat.index > 0}"
+                                            th:text="#{message.button.delete}" ></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="button" id="addRowBtn" class="btn btn-success" th:text="#{message.button.add.row}"></button>
+                    <button type="button" id="submitBtn" class="btn btn-primary" th:text="#{message.button.submit.request}"></button>
+                </div>
+
+            </form>
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.filter}"></h2>
+            </div>
+        </div>
+    </div>
+</th:block>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const diningStatusList = /*[[${diningStatusList}]]*/ [];
+    const sessionList = /*[[${sessionList}]]*/ [];
+    // Convert message properties to JavaScript object
+    const messages = {
+        validation: {
+            accommodation: {
+                stayFrom: { required: /*[[#{message.validation.accommodation.stayFrom.required}]]*/ '' },
+                stayTo: { required: /*[[#{message.validation.accommodation.stayTo.required}]]*/ '' },
+                maleParticipants: { required: /*[[#{message.validation.accommodation.maleParticipants.required}]]*/ '' },
+                femaleParticipants: { required: /*[[#{message.validation.accommodation.femaleParticipants.required}]]*/ '' },
+                dining: { required: /*[[#{message.validation.accommodation.dining.required}]]*/ '' },
+                session: { required: /*[[#{message.validation.accommodation.session.required}]]*/ '' },
+                breakfastCount: { required: /*[[#{message.label.breakfast.count} + ' ' + #{message.label.is.required}]]*/ '' },
+                lunchCount: { required: /*[[#{message.label.lunch.count} + ' ' + #{message.label.is.required}]]*/ '' },
+                dinnerCount: { required: /*[[#{message.label.dinner.count} + ' ' + #{message.label.is.required}]]*/ '' }
+            }
+        },label: {
+            accommodation: {
+                stayFrom: /*[[#{message.label.stay.from}]]*/ '',
+                stayTo: /*[[#{message.label.stay.to}]]*/ '' ,
+                maleParticipants: /*[[#{message.label.no.of.male.participant}]]*/ '',
+                femaleParticipants: /*[[#{message.label.no.of.female.participant}]]*/ '' ,
+                dining: /*[[#{message.label.dining}]]*/ '',
+                session: /*[[#{message.label.session}]]*/ '',
+                breakfastCount: /*[[#{message.label.breakfast.count}]]*/ '' ,
+                lunchCount: /*[[#{message.label.lunch.count}]]*/ '' ,
+                dinnerCount: /*[[#{message.label.dinner.count}]]*/ ''
+            }
+        },
+        button: {
+            delete: /*[[#{message.button.delete}]]*/ 'Delete'
+        }
+    };
+    /*]]>*/
+</script>

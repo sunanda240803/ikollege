@@ -1,0 +1,69 @@
+<div th:replace="~{common/widget-template :: content('messPriority', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <!-- Modal Header -->
+    <modalHeader>
+        <span th:text="#{message.label.priority.mess.registration}"></span>
+    </modalHeader>
+    
+    <!-- Modal Body -->
+    <modalBody class="mb-3">
+        <div class="border-bottom text-tmPrimary pb-2 mb-2">
+			<strong th:text="#{message.label.period}"></strong>
+			<span th:text="${dinningFromDate} + ' ' + #{message.label.to} + ' ' + ${dinningToDate}"></span>
+		</div>
+		
+		<span th:if="${(daysDifferenceBegin <= 2 && daysDifferenceBegin >= 0)}">
+	    	<strong th:text="#{message.registration.start.soon}"></strong>
+		</span>
+	
+		<!-- Alert: Last day of registration -->
+		<span th:if="${(daysDifferenceEnd == 0) && (currentDateTime.isBefore(endDateTime))
+            && !(daysDifferenceBegin <= 2 && daysDifferenceBegin >= 0)}">
+    		<strong th:text="#{message.registration.last.day}"></strong>
+		</span>
+
+		
+		<th:block th:if="${currentDateTime.isEqual(beginDateTime) or currentDateTime.isAfter(beginDateTime) and currentDateTime.isBefore(endDateTime)}">
+			<span th:if="${studDetailEditStatus == true}">
+			    <strong th:text="#{message.label.note}"></strong><b>:</b>
+			    <small th:text="#{message.label.biodata.message}"></small>
+			</span>
+			<span th:if="${feedbackFormStatus == 'Enable' && messId != 0}">
+			    <strong th:text="#{message.label.note}"></strong><b>:</b>
+			    <small th:text="#{message.label.feedback.message}"></small>
+			</span>
+			<span th:if="${((feedbackFormStatus == 'Enable'&& messId == 0) || (feedbackFormStatus == 'Disable'))  
+					&& (studDetailEditStatus == false) and (currentDateTime.isBefore(endDateTime))
+					&& (daysDifferenceEnd != 0)}">
+			    <strong th:text="#{message.label.note}"></strong><b>:</b>
+			    <small th:text="#{message.registration.open}"></small>
+			</span>
+			<span th:if="${((feedbackFormStatus == 'Disable') || (feedbackFormStatus == 'Enable'&& messId == 0))&& (studDetailEditStatus == false) && (daysDifferenceEnd != 0)           
+               and (currentMessName != null) 
+               and (currentDateTime.isBefore(endDateTime))}">
+				<strong th:text="#{message.registration.done}" class="text-success"></strong>
+			</span>
+		</th:block>
+    </modalBody>
+    
+    <!-- Modal Footer -->
+    <modalFooter>
+		<!-- Alert: Registration closed -->
+		<span th:if="${currentDateTime.isAfter(endDateTime)}">
+		    <i class="fa-solid fa-triangle-exclamation me-1 text-danger"></i>
+		    <strong th:text="#{message.registration.end}" class="text-danger"></strong>
+		</span>
+        <div class="text-end" th:if="${(currentDateTime.isEqual(beginDateTime) or currentDateTime.isAfter(beginDateTime)) 
+             and currentDateTime.isBefore(endDateTime)}">
+             <a th:if="${studDetailEditStatus}"  href="javascript:void(0)" class="text-secondary mb-0 align-middle"
+			   data-bs-toggle="modal" data-bs-target="#applicationNoModal">
+			    <span th:text="#{message.label.click.view.apply}"></span>
+			    <i class="fa-solid fa-arrow-right text-tmPrimary ms-2"></i>
+			</a>
+            <a th:if="${!studDetailEditStatus}" th:href="@{#{url.priority.mess.widget}+#{url.priority.get.tab}}"
+            	class="text-secondary mb-0 align-middle">
+                <span th:text="#{message.label.click.register.update}"></span>
+                <i class="fa-solid fa-arrow-right text-tmPrimary ms-2"></i>
+            </a>
+        </div>
+    </modalFooter>
+</div>

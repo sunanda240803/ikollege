@@ -1,0 +1,30 @@
+<div th:replace="~{common/widget-template :: content('rfidPinChangeId', ~{::modalHeader}, ~{::modalBody}, 
+	${lastUpdatedRfidPinDate != null} ? ~{::modalFooter} : null)}">
+	<modalHeader><span th:text="#{message.label.rfid.pin.change}"></span></modalHeader>
+	<modalBody>
+		<div class="text-center">
+			<th:block th:if="${lastUpdatedRfidPinDate != null}">
+				<span class="text-tmPrimary fw-bold"
+					th:text="#{message.label.last.updated.on}"></span><br>
+				<div class="fw-bold text-primary" th:text="${lastUpdatedRfidPinDate}"></div>
+			</th:block>
+			<p th:if="${lastUpdatedRfidPinDate == null}"
+				class="my-4 align-middle text-danger fw-bold">
+				<i class="fa-solid fa-triangle-exclamation me-1"></i>
+				<span th:text="#{message.label.rfid.not.registered}"></span>
+			</p>
+		</div>
+	</modalBody>
+	<modalfooter th:if="${lastUpdatedRfidPinDate != null}">
+		<div class="text-end">
+			<a href="#" class="text-secondary mb-0 align-middle" onclick="validateRFIDPinChange();"> 
+				<span th:text="#{message.label.click.view.apply}" />
+				<i class="fa-solid fa-arrow-right ms-2"></i>
+			</a>
+		</div>
+	</modalfooter>
+</div>
+
+<script th:src="@{/assets/js/dashboard/student/rfid-pin-change.js}"></script>
+   
+   

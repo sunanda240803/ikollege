@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <h2 class="tmsub-title"><span th:text="#{message.label.student.details}"></span></h2>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-2 mb-3">
+                                <div class="upload-box">
+                                    <div class="box text-center">
+                                        <label>
+                                            <img th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+                                                 th:src="@{#{url.file} + #{url.image} + '/STUDENT_IMAGE/' + ${allStudentsDetailsViewDto.studentId}}"
+                                                 alt="Student Profile" style="max-width: 95%; max-height: 95%;" />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-10 mb-3">
+                                <div class="row mb-5">
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.student.name}"> </label>
+                                        <div th:text="${allStudentsDetailsViewDto.studentName} != null ? ${allStudentsDetailsViewDto.studentName} : 'N/A'" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.dob}"> </label>
+                                        <div th:text="${allStudentsDetailsViewDto.dob} != null ? *{#temporals.format(allStudentsDetailsViewDto.dob, #messages.msgOrNull('date.format'))} :
+                                        'N/A'" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.gender}"> </label>
+                                        <div th:text="${allStudentsDetailsViewDto.gender} == 'M' ? 'Male' :
+                                        (${allStudentsDetailsViewDto.gender} == 'F' ? 'Female' : 'N/A')" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.address}"> </label>
+                                        <div th:text="${allStudentsDetailsViewDto.studentAddress} != null ? ${allStudentsDetailsViewDto.studentAddress} : 'N/A'" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.mobile.number}"> </label>
+                                        <div th:text="${allStudentsDetailsViewDto.studentMobile} != null ? ${allStudentsDetailsViewDto.studentMobile} : 'N/A'" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.email.id}"> </label>
+                                        <div th:text="${allStudentsDetailsViewDto.emailId} != null ? ${allStudentsDetailsViewDto.emailId} : 'N/A'" class="form-control form-graybox"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-3" th:if="${studentBlackListDetailDto.studentRemark} == 'blackListStudent'">
+                                <div th:text="'There is a remark for this student from \'' +
+                                    ${#temporals.format(studentBlackListDetailDto.fromDate, #messages.msgOrNull('date.format'))} + '\' to \'' +
+                                    ${#temporals.format(studentBlackListDetailDto.toDate, #messages.msgOrNull('date.format'))} + '\''" class="form-control form-graybox text-danger"></div>
+                            </div>
+                            <input type="hidden" name="" th:if="${status.isEmpty()}" id="studentRemarks" th:value="${studentBlackListDetailDto.studentRemark}">
+                            <input type="hidden" name="" id="encryptedString" th:value="${studentAppointmentRequestDto.encryptedString}">
+                            <input type="hidden" name="" id="studentId" th:value="${studentAppointmentRequestDto.studentId}">
+                            <input type="hidden" name="" id="requestId" th:value="${studentAppointmentRequestDto.id}">
+                            <input type="hidden" name="" id="thesisSubmittedDate" th:value="${studentAppointmentRequestDto.thesisSubmittedDate}">
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-10">
+                                <h2 class="tmsub-title"><span th:text="#{message.label.accommodation.details}"></span></h2>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.appointment.from}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.appointmentFrom} != null ? *{#temporals.format(studentAppointmentRequestDto.appointmentFrom, #messages.msgOrNull('date.format'))} :
+                                'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.appointment.to}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.appointmentTo} != null ? *{#temporals.format(studentAppointmentRequestDto.appointmentTo, #messages.msgOrNull('date.format'))} :
+                                'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.stay.request.from}" for="stayRequestFrom"></label>
+
+                                <th:block th:if="${!status.isEmpty() and status eq 'v'}">
+                                    <div th:text="${studentAppointmentRequestDto.stayFrom} != null ? *{#temporals.format(studentAppointmentRequestDto.stayFrom, #messages.msgOrNull('date.format'))} :
+                                    'N/A'" class="form-control form-graybox">
+                                    </div>
+                                </th:block>
+
+                                <th:block th:unless="${!status.isEmpty() and status eq 'v'}">
+                                    <input type="date" class="form-control" id="stayRequestFrom"
+                                           th:value="${studentAppointmentRequestDto.stayFrom}" required>
+                                    <div class="invalid-feedback" th:text="#{message.validation.stay.from.date.required}"></div>
+                                </th:block>
+                            </div>
+
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.stay.request.to}" for="stayRequestTo"></label>
+
+                                <th:block th:if="${!status.isEmpty() and status eq 'v'}">
+                                    <div th:text="${studentAppointmentRequestDto.stayTo} != null ? *{#temporals.format(studentAppointmentRequestDto.stayTo, #messages.msgOrNull('date.format'))} :
+                                    'N/A'" class="form-control form-graybox">
+                                    </div>
+                                </th:block>
+
+                                <th:block th:unless="${!status.isEmpty() and status eq 'v'}">
+                                    <input type="date" class="form-control" id="stayRequestTo"
+                                           th:value="${studentAppointmentRequestDto.stayTo}" required>
+                                    <div class="invalid-feedback" th:text="#{message.validation.stay.to.date.required}"></div>
+                                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.stay.to.date.required}"></div>
+                                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.stay.to.date}"></div>
+                                </th:block>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.gross.pay}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.grossPay} != null ? ${studentAppointmentRequestDto.grossPay} : 'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.guide.name}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.validatingAuthority} != null ? ${studentAppointmentRequestDto.validatingAuthority} : 'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.guide.email}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.validatingAuthorityEmail} != null ? ${studentAppointmentRequestDto.validatingAuthorityEmail} : 'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.dining.required}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.dining} != null ? (${studentAppointmentRequestDto.dining} == 'y' ? 'Yes' : 'No') : 'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.purpose}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.purpose} != null ? ${studentAppointmentRequestDto.purpose} : 'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+							    <label class="form-label" th:text="#{message.label.category}"></label>
+							    <div th:text="${studentAppointmentRequestDto.category} != null ? ${studentAppointmentRequestDto.category} : 'N/A'" class="form-control form-graybox"></div>
+							</div>
+                            
+                            <div class="col-lg-4 mb-3" th:if="${studentAppointmentRequestDto.category.equalsIgnoreCase(#messages.msgOrNull('message.label.scholar'))}">
+                                <label class="form-label" th:text="#{message.label.thesis.submitted.date}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.thesisSubmittedDate} != null ? *{#temporals.format(studentAppointmentRequestDto.thesisSubmittedDate, #messages.msgOrNull('date.format'))} :
+                                'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.admissionDate}"> </label>
+                                <div th:text="${studentAppointmentRequestDto.admissionDate} != null ? *{#temporals.format(studentAppointmentRequestDto.admissionDate, #messages.msgOrNull('date.format'))} :
+                                'N/A'" class="form-control form-graybox"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12" th:if="${studentAppointmentRequestDto.getStudentFilesInfoDtoList()} eq null or
+                                ${studentAppointmentRequestDto.getStudentFilesInfoDtoList().size()} eq 0">
+                                <h2 class="tmsub-title" th:text="#{message.label.uploaded.documents}"></h2>
+                            </div>
+                            <div class="col-lg-12">
+                                <th:block th:if="${studentAppointmentRequestDto.getStudentFilesInfoDtoList()} ne null or
+                                ${studentAppointmentRequestDto.getStudentFilesInfoDtoList().size()} ne 0"
+                                          th:include="common/template/file-upload-template ::
+                                          contents(${studentAppointmentRequestDto.getStudentFilesInfoDtoList()})"></th:block>
+                                <span th:if="${studentAppointmentRequestDto.getStudentFilesInfoDtoList()} eq null or
+                                ${studentAppointmentRequestDto.getStudentFilesInfoDtoList().size()} eq 0" th:text="'No documents uploaded'" class="mb-2"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"><span th:text="#{message.label.approval.status.details}"></span></h2>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12 mb-3">
+                                <div class="text-center">
+                                    <div class="row mt-2">
+                                        <div class="col-lg-4" th:each="status : ${studentAppointmentRequestDto.studentWorkflowDto}">
+                                            <div class="card mt-3">
+                                                <div class="lex-grow-1 p-3 text-body">
+                                                    <div th:text="${status.validatorName} + ' (' + ${status.validatorEmail} + ')'"></div>
+                                                    <th:block th:include="common/template/approval-status-badge :: statusBadge(${status.status},null)"></th:block>
+                                                    <div th:if="${status.status} != 'Pending'" th:text="' (' + *{#temporals.format(status.modifiedAt, #messages.msgOrNull('session.date.format'))} + ')'"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2" th:if="${status.isEmpty()}">
+                            <div class="col-lg-4 mb-3" id="recommendedOccupancy">
+                                <label class="form-label" th:text="#{message.label.recommended.occupancy}"></label>
+                                <div class="checkRadio-bg form-control " id="occupancy">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="single" name="recommendedOccupancy"
+                                               th:checked="*{studentAppointmentRequestDto.occupancy != 'multi'}">
+                                        <label class="form-check-label" for="single"><span th:text="#{message.label.single}"></span></label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" id="shared" type="radio" name="recommendedOccupancy"
+                                               th:checked="*{studentAppointmentRequestDto.occupancy == 'multi'}">
+                                        <label class="form-check-label" for="shared"><span th:text="#{message.label.shared}"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.notes}" for="approvalNotes"> </label>
+                                <textarea type="text"  class="form-control" maxlength="360" oninput="trimSpaces(this)"
+                                          th:attr="readonly=${studentAppointmentRequestDto.approvalStatus == 'complete'}"
+                                          th:text="${studentAppointmentRequestDto.approvalNotes}" id="approvalNotes" th:placeholder="#{message.placeholder.notes}">
+                                </textarea>
+                            </div>
+                            <div class="col-lg-4 mb-3" th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+                                <th:bloack th:if="${studentAppointmentRequestDto.status.equals(workflow.REJECTED.status)}">
+                                    <label class="form-label" th:text="#{message.label.reject.description}" for="rejectReason"> </label>
+                                    <textarea type="text"  class="form-control" maxlength="360" oninput="trimSpaces(this)" readonly
+                                              th:text="${studentAppointmentRequestDto.rejectDescription}"  id="rejectReason" th:placeholder="#{message.placeholder.rejection.reason}"></textarea>
+                                </th:bloack>
+                            </div>
+                        </div>
+                        <hr class="my-4" th:if="${status.isEmpty()}">
+                        <div class="row text-end" th:if="${status.isEmpty()}">
+                            <div class="col-lg-12">
+                                <div class="d-flex align-items-center  justify-content-end">
+                                    <button type="button" id="overrideAndApproveButton" onclick="approveRequest(this);"
+                                            class="btn btn-success px-4 me-2"
+                                            th:if="${studentAppointmentRequestDto.approvalStatus == 'validating'}"
+                                            th:data-status = "'OverrideApproved'">
+                                        <i class="fa-solid fa-check-circle me-1"></i>
+                                        <span th:text="#{message.button.override.approve}"></span>
+                                    </button>
+                                    <button type="button" id="approveButton" onclick="approveRequest(this);"
+                                            class="btn btn-success px-4 me-2"
+                                            th:if="${studentAppointmentRequestDto.approvalStatus == 'approve'}"
+                                            th:data-status = "'Approved'">
+                                        <i class="fa-solid fa-check-circle me-1"></i>
+                                        <span th:text="#{message.button.approve}"></span>
+                                    </button>
+                                    <button type="button" id="rejectButton" onclick="rejectRequest(this, '');"
+                                            class="btn btn-danger px-4 me-2"
+                                            th:if="${studentAppointmentRequestDto.approvalStatus == 'approve' || studentAppointmentRequestDto.approvalStatus == 'validating'}"
+                                            th:data-status = "'Rejected'">
+                                        <i class="fa-solid fa-times-circle me-1"></i>
+                                        <span th:text="#{message.button.reject}"></span>
+                                    </button>
+                                    <button type="button" id="saveButton" onclick="saveRequest(this);"
+                                            class="btn btn-aqua px-4"
+                                            th:if="${studentAppointmentRequestDto.approvalStatus == 'complete'}"
+                                            th:data-student = "'Student'" th:data-status = "'Approved'">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                                        <span th:text="#{message.button.save}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-3 mt-3" th:if="${studentAppointmentRequestDto.approvalStatus == 'complete'}">
+                                <div class="text-danger">
+                                    <span th:text="'If you want to Reject the request, Please '"></span>
+                                    <a href="#" th:text="#{message.label.click.here}" id="reverseRejection" th:data-status = "'Rejected'" onclick="reverseApprovalStatusRequest(this);"></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-3 mt-3" th:if="${studentAppointmentRequestDto.approvalStatus == 'rejected'}">
+                                <div class="text-danger">
+                                    <span th:text="'If you want to Approve the request, Please '"></span>
+                                    <a href="#" th:text="#{message.label.click.here}" id="reverseApproved" th:data-status = "'Approved'" onclick="reverseApprovalStatusRequest(this);"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dean/student-appointment-request.js}"></script>
+    <script th:src="@{/assets/js/dashboard/student/student-hostel-accommodation.js}"></script>
+    <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.dean.student.accommodation.request}]]*/ '';
+        const updateApprovalStatus = /*[[#{url.update}]]*/ '';
+        const publicURL = /*[[#{url.public.api}]]*/ '';
+        const hostelAccommodationURL = /*[[#{url.hostel.accommodation}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/ '';
+        const saveURL = /*[[#{url.save}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+    </script>
+</th:block>
+<!-- //Footer-->
+<th:block th:replace="~{common/modal/info-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+<th:block th:replace="~{common/modal/delete-modal :: contents(id = null, headerText=#{message.label.information},bodyText=#{message.label.student.remarks.information})}"></th:block>
+</body>
+</html>

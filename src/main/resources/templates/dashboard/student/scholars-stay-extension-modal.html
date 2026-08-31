@@ -1,0 +1,107 @@
+<div th:replace="~{common/modal-template ::
+   modal('scholars-stay-extension-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+  <modalHeader th:text="#{message.label.ms.phd.scholars.stay.extension}"></modalHeader>
+  <modalBody>
+    <form class="themeForm" id="scholars-stay-extension-form" th:action="@{#{url.scholars.stay.extension}+#{url.save}}"
+          th:object="${scholarsStayExtensionDto}" novalidate method="post">
+      <div class="row">
+        <input type="hidden" th:field="*{id}">
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="selectCategory">
+            <span th:text="#{message.label.category}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <select name="categoryName" th:field="*{category}" id="selectCategory"
+                  th:classappend="${#fields.hasErrors('category')} ? 'is-invalid' : ''"
+                  class="form-select pointer" required>
+            <option value="" selected="" th:text="#{message.label.select}+' '+#{message.label.category}"></option>
+            <option value="ThesisSubmitted" th:text="#{message.label.thesis.submitted}"></option>
+            <option value="SCHOLAR" th:text="#{message.label.sem.extension}"></option>
+          </select>
+          <div class="invalid-feedback backendErrors" th:errors="*{category}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.validation.category.required}"></div>
+        </div>
+        <div id="extensionFields" th:classappend="*{category!=null && !#strings.isEmpty(category) ?'':'d-none'}">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="msOrPhdPeriod">
+                <span th:text="#{message.label.ms.phd.period}"></span>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control" th:field="*{thesisStatus}"  id="msOrPhdPeriod" readonly>
+              <div class="invalid-feedback" th:text="#{message.validation.ms.phd.period.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="admissionDate">
+                <span th:text="#{message.label.admission.date}"></span>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="date" class="form-control required-input" th:attr="max=${maxDate}" th:field="*{admissionDate}"
+                     th:classappend="${#fields.hasErrors('admissionDate')} ? 'is-invalid' : ''"
+                     id="admissionDate" required onkeydown="return false">
+              <div class="invalid-feedback backendErrors" th:errors="*{admissionDate}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.admission.date.required}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="stayFrom">
+                <span th:text="#{message.label.stay.from}"></span>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="date" class="form-control required-input" th:field="*{stayFrom}"
+                     th:classappend="${#fields.hasErrors('stayFrom')} ? 'is-invalid' : ''"
+                     id="stayFrom" required onkeydown="return false" disabled>
+              <div class="invalid-feedback backendErrors" th:errors="*{stayFrom}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.stay.from.date.required}"></div>
+              <div class="invalid-feedback-phd-yrs-comp d-none" th:text="#{message.validation.stay.from.date.phd.yrs.comp}"></div>
+              <div class="invalid-feedback-ms-yrs-comp d-none" th:text="#{message.validation.stay.from.date.ms.yrs.comp}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="stayTo">
+                <span th:text="#{message.label.stay.to}"></span>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="date" class="form-control required-input" th:field="*{stayTo}"
+                     th:classappend="${#fields.hasErrors('stayTo')} ? 'is-invalid' : ''"
+                     id="stayTo" required onkeydown="return false" disabled>
+
+              <div class="invalid-feedback backendErrors" th:errors="*{stayTo}" th:text="#{message.validation.stay.to.date.required}"></div>
+              <div class="invalid-feedback-frontEnd" th:text="#{message.validation.stay.to.date.required}"></div>
+              <div class="invalid-req-feedback d-none" th:text="#{message.validation.stay.to.date.required}"></div>
+              <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.stay.to.date}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="guideName">
+                <span th:text="#{message.label.guide.name}"></span>
+                <i class="text-info fa fa-question-circle" data-bs-toggle="tooltip" th:data-bs-title="#{message.label.guide.name.approval.note}"></i>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control" th:field="*{validatingAuthority}" id="guideName" readonly>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="guideEmail">
+                <span th:text="#{message.label.guide.email}"></span>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control" th:field="*{validatingAuthorityEmail}" id="guideEmail" readonly>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="hodName">
+                <span th:text="#{message.label.hod.name}"></span>
+                <i class="text-info fa fa-question-circle" data-bs-toggle="tooltip" th:data-bs-title="#{message.label.hod.name.approval.note}"></i>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control" th:field="*{hodName}" id="hodName" readonly>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" for="hodEmail">
+                <span th:text="#{message.label.hod.email}"></span>
+                <th:block th:replace="~{common/template/mandatory-symbol}" />
+              </label>
+              <input type="text" class="form-control" th:field="*{hodEmail}" id="hodEmail" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modalBody>
+</div>

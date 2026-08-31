@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<th:block th:fragment="formInputs(filters)">
+	                    		<form class="themeForm" id="accountHeadSummary" method="get">
+	                    			<input type="hidden" th:value='${filters}' id="filters">
+									<input type="hidden" id="search" name="search">
+		                            <div class="row mb-3">
+		                            	<div class="col-lg-2 mb-3">
+											<label class="form-label" for="messPeriod">
+												<span th:text="#{message.mess.period}"></span>
+											</label>
+											<select class="form-select" id="messPeriod" name="messPeriod" onchange="" required>
+												<option value="" th:text="#{message.label.select}"></option>
+												<option th:each="entry : ${messPeriodMap}" th:value="${entry.key}"
+													th:text="${entry.value}"></option>
+											</select>
+											<div class="invalid-feedback"
+                                                 th:text="#{message.validation.mess.period.required}">
+                                            </div>
+										</div>                             	
+										<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.from.date}"></span>
+											</label>
+											<input type="date" class="form-control"
+												   th:name="fromDate" id="fromDate" th:value="${filters.get('fromDate')}">
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.to.date}"></span>
+											</label>
+											<input type="date" class="form-control"
+												   th:name="toDate" id="toDate" th:value="${filters.get('toDate')}">
+											<div id="toDateError" class="invalid-feedback" style="display:none;">
+										        <span th:text="#{message.label.to.date.validation}" />
+										    </div>
+										</div>                                
+		                                <div class="col-lg-3">
+											<input type="hidden" id="pageVal" th:value="${form.pageVal}" /> 
+											<input type="hidden" id="sizeVal" th:value="${form.size}" />
+											<button type="button" id="getData" class="btn btn-lgtblue px-4"
+												style="margin-top: 38px" onclick="return checkAdvanceFilter('downloadExcel');">
+												<i class="fa-solid fa-database"></i> 
+												<span th:text="#{message.label.get.report}"></span>
+											</button>
+										</div>
+		                            </div>
+		                        </form>
+                    		</th:block>
+                    	</div>
+                    	<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>          	                    	                 
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer-->
+    <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/reports/student-mess-self-allotment-report.js}"></script>
+		<script th:inline="javascript">
+		    const baseURL = /*[[#{url.student.mess.self.allotment.report}]]*/ '';
+		    const excelURL = /*[[#{url.excel.report.download}]]*/ '';
+	    </script>
+	</th:block>
+</body>
+
+</html>

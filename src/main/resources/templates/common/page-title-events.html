@@ -1,0 +1,60 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(headerForm)">
+		<div class="pagetitle">
+			<div class="row d-flex justify-content-between">
+				<div class="col-auto">
+					<div class="d-flex justify-content-start align-items-center">
+						<div>
+
+							<h1 class="float-start">
+								<span th:text="${accountHeadName}" id="accHeadTitle"></span>
+								<span class="icon-container"><i class="fa-solid fa-arrow-right"></i></span>
+								<th:block th:if="${subAccountHeadName != null}">        							
+									<span th:text="${subAccountHeadName}"></span>
+									<span class="icon-container"><i class="fa-solid fa-arrow-right"></i></span>
+								</th:block>
+								<span th:text="${headerForm.title}"></span>
+								
+							</h1>
+              
+<!-- 								<th:block th:if="${subAccountHeadName != null}">
+        							<span class="icon-container"><i class="bi bi-arrow-right"></i></span>
+									<span th:text="${subAccountHeadName}"></span>
+								</th:block>
+							</h1> -->
+
+							<!--<th:block th:if="${subAccountHeadName !=null}">
+							<i class="fa-solid fa-arrow-right float-end pl-3 mt-1 pr-3"></i>
+							<div>
+								<h1 class="float-start">
+									<th:block th:if="${subAccountHeadName !=null}" th:text="${subAccountHeadName}">
+									</th:block>
+								</h1>
+							</div>
+							</th:block>-->
+							<!--<h1 class="fs-6">
+								<span th:text="${headerForm.title}"></span>
+							</h1>-->
+						</div>
+					</div>
+				</div>
+				<div class="col-auto text-lg-end">
+					<button type="button" class="btn btn-primary addRow" id="addNew" th:if="${headerForm.addNewText !=null && ( eventCreationAccess ==true || addAccesss==true)}">
+						<i class="fa-solid fa-circle-plus me-1"></i> <span th:text="${headerForm.addNewText}"></span>
+					</button>
+					<a class="btn btn-secondary" th:if="${disabledEventListLable==null || disabledEventListLable !=true}"th:href="'/stact/events?accHeadId='+${accountHeadId}+${subAccHeadId !=null ?'&subAccHeadId='+subAccHeadId:''}"
+					   id="">
+						<i class="fa-solid fa-angles-left"></i> View Events
+					</a>
+					<a type="button" th:href="@{${headerForm.url}}" class="btn btn-secondary" 
+							th:if="${headerForm.needBack} == true">
+						<i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+					</a>
+				</div>
+			</div>
+			
+			<input id="accHeadId" th:value="${accHeadId}" type="hidden">
+			<input id="subAccHeadId" th:value="${subAccHeadId}" type="hidden">	
+			<input id="subAccHeadId" th:value="@{${headerForm.url}}" type="hidden">		
+			
+		</div>
+</th:block>

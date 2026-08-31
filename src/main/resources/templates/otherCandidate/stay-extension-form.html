@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" id="stayExtensionForm" th:action="@{#{url.stay.extension.request}}" method="post" 
+      					th:object="${stayExtensionRequestForm}" enctype="multipart/form-data"
+      					th:with="categoryEnum = ${T(com.iitm.hosteldine.constant.CategoryEnum)}">
+                        <input type="hidden" name="imageName" id="imageName" th:field="*{candidateProfileDto.imageName}">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2 class="tmsub-title" th:text="#{message.label.selected.appointment.period}"></h2>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label" for="periodFromDate">
+                                            <span th:text="#{message.label.from.date}"></span>
+                                        </label>
+                                        <div type="date" id="periodFromDate" class="form-control form-graybox" 
+                                        	th:text="${stayExtensionRequestForm.candidateAppointmentRequestDto.appointmentFrom}"></div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label" for="periodToDate">
+                                            <span th:text="#{message.label.to.date}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox" id="periodToDate"
+                                        	th:text="${stayExtensionRequestForm.candidateAppointmentRequestDto.appointmentTo}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2 class="tmsub-title" th:text="#{message.label.previously.approved.stay.period }"></h2>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label" for="stayFrom">
+                                            <span th:text="#{message.label.from.date}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox" id="stayFrom"
+                                        	th:text="${stayExtensionRequestForm.candidateAppointmentRequestDto.stayFrom}"></div>
+                                    </div>
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label" for="stayTo">
+                                            <span th:text="#{message.label.to.date}"></span>
+                                        </label>
+                                        <div class="form-control form-graybox" id="stayTo"
+                                        	th:text="${stayExtensionRequestForm.candidateAppointmentRequestDto.stayTo}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-lg-12 mb-3">
+                                <h2 class="tmsub-title"
+                                    th:text="#{message.label.other.details}"></h2>
+                            </div>
+
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.category}"></span>
+                                </label>
+                                <div class="form-control form-graybox" th:text="${
+                                	stayExtensionRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value) ? 'MS/PHD Interview':
+                                       stayExtensionRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.PROJECT_STAFF.value) ? 'ICSR' : 
+                                       stayExtensionRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.INTERNSHIP.value) ?
+                                       'Internship with IITM Faculty' : stayExtensionRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.SASTHRA.value) ? 'Sasthra / Saarang' : 
+                                       stayExtensionRequestForm.candidateAppointmentRequestDto.category}"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-lg-12 mb-3">
+                                <h2 class="tmsub-title"
+                                    th:text="#{message.label.validating.authority}"></h2>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.authority.name}"></span>
+                                </label>
+                                <div type="text" class="form-control form-graybox" 
+                                	th:text="${stayExtensionRequestForm.candidateAppointmentRequestDto.validatingAuthority}"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.authority.email}"></span>
+                                </label>
+                                <div type="text" class="form-control form-graybox" 
+                                	th:text="${stayExtensionRequestForm.candidateAppointmentRequestDto.validatingAuthorityEmail}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.stay.request.details}"></h2>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                            <input type="hidden" th:field="*{encryptedKey}">
+                            <input type="hidden" th:field="*{stayExtensionRequestDto.stayId}">
+                            <input type="hidden" th:field="*{stayExtensionRequestDto.appointmentId}">
+                            <input type="hidden" th:field="*{stayExtensionRequestDto.candidateId}">
+                            <input type="hidden" th:name="stayExtensionRequestDto.messOption" 
+                            	th:value="${stayExtensionRequestForm.candidateAppointmentRequestDto.messOption}">
+                                <label class="form-label" for="requestFromDate">
+                                    <span th:text="#{message.label.from.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" id="requestFromDate" class="form-control required-input" required
+                                	th:field="*{stayExtensionRequestDto.stayFrom}"
+                                	th:classappend="${#fields.hasErrors('stayExtensionRequestDto.stayFrom')} ? 'is-invalid' : ''">
+                                	<div class="invalid-feedback backendErrors" th:errors="*{stayExtensionRequestDto.stayFrom}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.stay.from.date.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="requestToDate">
+                                    <span th:text="#{message.label.to.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" id="requestToDate" class="form-control required-input" required
+                                	th:field="*{stayExtensionRequestDto.stayTo}"
+                                	th:classappend="${#fields.hasErrors('stayExtensionRequestDto.stayTo')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{stayExtensionRequestDto.stayTo}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.stay.to.date.required}"></div>
+                                <div class="invalid-req-feedback d-none" th:text="#{message.validation.stay.to.date.required}"></div>
+                                <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.stay.end.date}"></div>
+                                <div class="invalid-feedback-approved-dates-compare d-none" th:text="#{message.validation.stay.extension.approved.date}"></div>
+                                <div class="text-danger"><small class="stayToDate"></small></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="currentHostel">
+                                    <span th:text="#{message.label.current.hostel}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <select id="currentHostel" class="form-select required-input" required 
+                                	th:name="stayExtensionRequestDto.hostelId"
+                                	th:classappend="${#fields.hasErrors('stayExtensionRequestDto.hostelId')} ? 'is-invalid' : ''">
+                                    <option value="" th:text="#{message.label.select}"></option>
+                                    <option th:each="hostelList : ${stayExtensionRequestForm.stayExtensionRequestDto.hostelList}" th:value="${hostelList.id}"
+											th:selected="${stayExtensionRequestForm.stayExtensionRequestDto.hostelId == hostelList.id}"
+											th:text="${hostelList.hostelName}"></option>
+                                </select>
+                                <div class="invalid-feedback backendErrors" th:errors="*{stayExtensionRequestDto.hostelId}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.current.hostel.required}"></div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="roomNo">
+                                    <span th:text="#{message.label.room.no}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" oninput="validateNumberInput(this)" id="roomNo" class="form-control required-input numeric" required
+                                	th:field="*{stayExtensionRequestDto.roomNo}" th:placeholder="#{message.label.room.no}"
+                                	th:classappend="${#fields.hasErrors('stayExtensionRequestDto.roomNo')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{stayExtensionRequestDto.roomNo}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.room.no.required}"></div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="description">
+                                    <span th:text="#{message.label.description}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <textarea type="text" class="form-control required-input" th:placeholder="#{message.placeholder.description}"
+                                          id="description" required th:field="*{stayExtensionRequestDto.description}"
+                                          th:classappend="${#fields.hasErrors('stayExtensionRequestDto.description')} ? 'is-invalid' : ''">
+								</textarea>
+								<div class="invalid-feedback backendErrors" th:errors="*{stayExtensionRequestDto.description}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.description.required}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"
+                                    th:text="#{message.label.upload.documents}"></h2>
+                            </div>
+                            <div class="col-lg-6 mb-3" th:if="*{stayExtensionRequestDto.stayId ne null and stayExtensionRequestDto.stayId > 0
+                                            and candidateFilesInformationDto ne null and !candidateFilesInformationDto.isEmpty()}"
+                                 th:each="candidateFile : ${stayExtensionRequestForm.candidateFilesInformationDto}">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="text-truncate"
+                                                 th:text="${candidateFile.description == null or #strings.isEmpty(#strings.trim(candidateFile.description)) ? candidateFile.filename : candidateFile.description}"></div>
+                                            <button class="btn btn-tmPrimary btn-sm" type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+                                                    th:attr="data-bs-title=#{message.label.download.file}"
+                                                    th:data-filename="${candidateFile.filename}"
+                                                    onclick="triggerDownload(this)">
+                                                <i class="fa fa-download pdf text-white"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-8 mb-3" id="">
+                                <div th:each="index : ${#numbers.sequence(1, 1)}" class="row">
+                                    <div class="col-lg-4 mt-2">
+                                        <label class="form-label" th:for="'uploadAddFileDescId_' + ${index}"
+                                               th:text="#{message.label.file.description}"></label><br>
+                                        <input type="text" class="form-control" th:field="*{fileDescription}"
+                                               th:id="'uploadAddFileDescId_' + ${index}"
+                                               th:placeholder="#{message.placeholder.description}">
+                                    </div>
+                                    <div class="col-lg-6 mt-2"><br>
+                                        <th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+										                'uploadFile' + ${index}, 'file', ${#messages.msg('message.accepted.file.type.pdf.images.doc.xl')},
+										                'uploadDoc', null, ${#messages.msg('message.drag.drop.here.document')})}">
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Button Section-->
+                        <div class="row text-end ">
+                            <div class="col-lg-12 mb-4">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <button type="button" class="btn btn-secondary px-4 me-3" onclick="window.history.back();" id="cancelForm">
+                                        <i class="fa-solid fa-ban me-1"></i>
+                                        <span th:text="#{message.button.cancel}"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 me-3"
+                                            th:if="*{stayExtensionRequestDto.stayId eq null or stayExtensionRequestDto.stayId <= 0}"
+                                            id="stayRequestSave">
+                                        <i class="fa-solid fa-arrow-pointer me-1"></i> <span
+                                            th:text="#{message.button.save}"></span>
+                                    </button>
+
+                                    <button th:if="*{stayExtensionRequestDto.stayId ne null and stayExtensionRequestDto.stayId > 0}"
+                                            type="button"
+                                            class="btn btn-aqua px-4 me-3" id="stayRequestSave">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                                        <span th:text="#{message.button.update}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/othersLogin/accommadation-request.js}"></script>
+    <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:inline="javascript">
+        const approvedStayRanges = /*[[${stayExtensionApprovedDetails}]]*/ [];
+        const download = /*[[#{url.download}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+        const image = /*[[#{url.image}]]*/ '';
+        const checkStayToDate = /*[[#{message.validation.stay.to.date}]]*/ '';
+	</script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

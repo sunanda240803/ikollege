@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+<body>
+    <!-- Login Page-->
+	<div th:replace="~{common/template/login-page-wrapper:: title(${loginPageWrapper})}"></div>
+	<!-- Login Page Content -->
+		<div class="login-page-content">
+            <div class="container">
+                <div class="row justify-content-center">                   
+                   <div class="col-md-12 col-lg-10 col-xl-9">
+                        <div class="card" style="background: #f5f5f5;">
+                            <div class="card-body">
+								<div th:replace="common/template/app-logo-name :: title(logoAndName)"></div>
+								<div class="login-bottom">
+									<div class="login-bottom-title">
+										<h5 class="title" style="background: #f5f5f5;" th:text="#{message.label.hostel.accommodation.request.text}"></h5>
+									</div>								
+								</div>
+								<div class="row">
+									<div class="col-lg-3">	
+										<a th:href="@{#{url.login}}" class="iconLinkbox" style="border-color: #ccf9ff;">	
+											<div class="boxIcon three">
+												<img th:src="@{/assets/img/01-student-login.svg}">
+											</div>
+											<div class="boxText">	
+												<h6>
+													<th:block th:text="#{message.label.iitmstudent}"></th:block>
+													<br><th:block th:text="#{message.label.login}"></th:block>
+												</h6>
+											</div>
+										</a>
+									</div>
+									<div class="col-lg-3">	
+										<a th:href="@{#{url.faculty.login}}" class="iconLinkbox" style="border-color: #d8f1bb;">	
+											<div class="boxIcon four">
+												<img th:src="@{/assets/img/04-faculty-login.svg}">
+											</div>
+											<div class="boxText">	
+											<h6>
+												<th:block th:text="#{message.label.iitmfaculty}"></th:block>
+												<br><th:block th:text="#{message.label.login}"></th:block>
+											</h6>
+											</div>
+										</a>
+									</div>
+									<div class="col-lg-3">	
+										<a th:href="@{#{url.hm.office.login}}" class="iconLinkbox" style="border-color: #e9c1ef;">	
+											<div class="boxIcon five">
+												<img th:src="@{/assets/img/05-office-login.svg}">
+											</div>
+											<div class="boxText">	
+												<h6>
+													<th:block th:text="#{message.label.iitm.ohmoffice}"></th:block>
+													<br><th:block th:text="#{message.label.login}"></th:block>
+												</h6>
+											</div>
+										</a>
+									</div>
+									<div class="col-lg-3">	
+										<a th:href="@{#{url.other.login}}" class="iconLinkbox" style="border-color: #ffe9ab;">	
+											<div class="boxIcon one">
+												<img th:src="@{/assets/img/03-others-login.svg}">
+											</div>
+											<div class="boxText">	
+												<h6>
+													<th:block th:text="#{message.label.others.login}"></th:block>
+<!--													<br><span><th:block th:text="#{message.label.others.project.staff}"></th:block></span>-->
+												</h6>
+											</div>
+										</a>
+									</div>
+								</div>
+									<!-- temporary disabled -->
+								<div th:replace="common/template/hostel-fee-button :: hostelFeeButton('landing')"></div>
+							</div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
+						  <div class="mt-4 text-center">
+                            <p class="mb-0 text-light small">
+                            	<span th:text="#{message.label.footer.text}"></span>
+                            	<b th:text="#{message.label.footer.triesten.link}"></b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+        </div>
+	</section> 	
+	
+	<!-- JS FILES -->
+	<!-- Footer -->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, null)}">
+	<script th:src="@{/assets/js/landing-page.js}"></script>
+	<script th:src="@{/assets/js/common/login-registration.js}"></script>
+	<script>
+		const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+		const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+	</script>
+</th:block>
+  </body>
+</html>

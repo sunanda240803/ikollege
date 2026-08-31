@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form class="themeForm mb-4" th:action="@{#{url.student.credit.debit.upload}+#{url.save}}" method="post"
+							enctype="multipart/form-data" th:object="${messBilling}" id="studentCreditDebitId">
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.bulk.upload.download}"></span>
+									</h2>
+								</div>
+							</div>
+							<div class="col-lg-12 mb-3 d-flex align-items-center">
+								<span class="fs-5">
+									<u class="text-tmPrimary">
+										<a th:href="@{#{url.student.credit.debit.upload}+#{url.template.download}}"
+											id="excelTemplate" th:text="#{message.label.click.here.caps}">
+										</a>
+									</u>
+									<span th:text="#{message.label.download.excel.template}"></span>
+								</span>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.upload.excel.file}"></span>
+									</h2>
+								</div>
+							</div>
+							<div class="row mb-4">
+								<div class="col-lg-3 mb-3">
+									<label for="voucherDate" class="form-label">
+										<span th:text="#{message.label.voucher.date}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="date" id="voucherDate" class="form-control required-input" th:field="*{date}"
+										required th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''">
+					                <div class="invalid-feedback backendErrors" th:errors="*{date}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.voucher.date}+ ' ' +#{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3 ">
+									<label class="form-label">
+										<span th:text="#{message.label.upload.type}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" id="debitOrCredit"
+										th:classappend="${#fields.hasErrors('debitOrCredit')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="debitOrCredit" id="credit" value="c" required
+												th:checked="${messBilling.debitOrCredit == 'c'}">
+											<label class="form-check-label" for="credit"
+												th:text="#{message.label.credit.student}">
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="debitOrCredit" id="debit" value="d" required
+												th:checked="${messBilling.debitOrCredit == 'd'}">
+											<label class="form-check-label" for="debit"
+												th:text="#{message.label.debit.student}">
+											</label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{debitOrCredit}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.upload.type}+' '+ #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<div class="form-group">
+										<label for="accountHead" class="form-label">
+											<span th:text="#{message.label.account.head}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+										<select id="accountHead" class="selectpicker required-select-input" data-live-search="true" 
+											th:field="*{accHead}" required th:classappend="${#fields.hasErrors('accHead')} ? 'is-invalid' : ''">
+											<option value="" th:text="#{message.label.select}+' '+#{message.label.account.head}"></option>
+											<option th:each="accHead : ${accHeadList}" th:value="${accHead.id.acchead}"
+												th:text="${accHead.accname}"
+												th:selected="${accHead.id.acchead == accHead}">
+											</option>
+										</select>
+										<div class="invalid-feedback backendErrors" th:errors="*{accHead}"></div>
+										<div class="invalid-feedback-frontEnd" th:text="#{message.label.account.head} + ' ' + #{message.validation.is.required}"></div>
+									</div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label for="hostelName" class="form-label">
+										<span th:text="#{message.label.hostel.name}"></span>
+									</label>
+									<select id="fcno" class="selectpicker required-select-input" data-live-search="true" 
+										th:field="*{fcno}" required th:classappend="${#fields.hasErrors('fcno')} ? 'is-invalid' : ''">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+										<option th:each="hostel : ${hostelList}" th:value="${hostel.id}"
+											th:text="${hostel.hostelName}"
+											th:selected="${hostel.id.toString() == fcno}">
+										</option>
+									</select>
+									<div class="invalid-feedback backendErrors" th:errors="*{fcno}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.hostel.name} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.select.book.type}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" id="bookType"
+										th:classappend="${#fields.hasErrors('bookType')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="bookType" id="messType" value="MS" required 
+												th:checked="${messBilling.bookType == 'MS'}">
+											<label class="form-check-label" for="messType">
+												<span th:text="#{message.label.mess}"></span>
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="bookType" id="cardType" value="CC" required
+												th:checked="${messBilling.bookType == 'CC'}">
+											<label class="form-check-label" for="cardType">
+												<span th:text="#{message.label.card}"></span>
+											</label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{bookType}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.select.book.type} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label for="description" class="form-label">
+										<span th:text="#{message.label.description}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<textarea id="description" class="form-control required-input" th:field="*{description}"
+										th:placeholder="#{message.placeholder.description}" required
+										th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''">
+									</textarea>
+									<div class="invalid-feedback backendErrors" th:errors="*{description}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.description}+' '+#{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-6 mb-3">
+									<label class="form-label me-3" for="file">
+										<span th:text="#{message.label.bulk.upload.file}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<th:block th:replace="~{common/template/drag-drop-file-upload-template::contents('uploadFile', 
+                                       		'file', ${#messages.msg('message.accepted.document.types.xl')}, 'uploadDoc', 
+                                       		null, ${#messages.msg('message.drag.drop.student.credit.debit.file.upload')})}">
+                                    </th:block>
+                                    <div class="selectFile2 d-none">
+                                    	<span class="text-danger" th:text="#{message.validation.choose.file}"></span>
+                                    </div>
+									<div class="validFile d-none">
+										<span class="text-danger" th:text="#{message.validation.invalid.file.format}"></span>
+									</div>
+								</div>
+								<div class="col-lg-12 mb-3">
+									<div class="d-flex align-items-center justify-content-end">
+										<button type="button" onclick="return validateFile()" id="uploadButton" class="btn btn-purple">
+											<i class="fa fa-upload" aria-hidden="true"></i>
+											<span th:text="#{message.button.upload.file}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="errorText" th:if="${messBilling != null 
+							    && messBilling.errorList != null 
+							    && !messBilling.errorList.isEmpty()}">
+								<ul>
+									<li th:each="error : ${messBilling.errorList}">
+										<span th:text="${error}" class="text-danger"></span>
+									</li>
+								</ul>
+							</div>
+							<hr>
+							<th:block th:replace="~{common/log-content::content(${logTag})}"></th:block>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:src="@{/assets/js/hostel/student-credit-debit-upload.js}"></script>
+		<script th:src="@{/assets/js/biometric/log.js}"></script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

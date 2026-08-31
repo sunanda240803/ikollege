@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head></head>
+<th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+<body>
+<!-- Header -->
+<header class="header fixed-top">
+	<nav class="navbar navbar-expand-lg p-0">
+		<div class="container-fluid justify-content-around p-0">
+			<div class="row w-100">
+				<div class="col-lg-5">
+					<!--Client Logo-->
+					<div class="header-logo d-flex align-items-center justify-content-between">
+						<a href="#" class="d-flex align-items-center">
+							<img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+							<span>
+									<span th:text="${institute.schoolName}"></span><br>
+									<span class="text-secondary" th:text="${institute.location}"></span>
+								</span>
+						</a>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+								data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+								aria-expanded="false" aria-label="Toggle navigation">
+							<i class="fa-solid fa-outdent"></i>
+						</button>
+					</div>
+				</div>
+				<div class="col-lg-7 pe-lg-0">
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav ms-auto">
+
+							<li class="nav-item dropdown accountMenu">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class="ph-duotone ph-user-square"></i> My Account
+								</a>
+								<ul class="dropdown-menu dropdown-menu-arrow listMenu">
+									<li class="dropdown-header d-flex align-items-center ">
+										<img th:src="@{assets/img/user-img1.png}" alt="Profile" class="rounded-circle">
+										<h6><span th:text="${@securityCtxUtil.userName()}"></span></h6>
+									</li>
+									<li><a class="dropdown-item" th:href="logout">	<i class="ph-duotone ph-power"></i> Logout	</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<!--Page Title-->
+	<div class="pagetitle">
+		<div class="row align-items-center">
+			<div class="col-lg-6">
+				<h1 class="text-tmPrimary">Faculty Dashboard</h1>
+			</div>
+		</div>
+	</div>
+</header>
+<!-- //Header -->
+<!-- //Main-->
+<main id="main" class="main dashboard-padding" style="padding: 350px">
+	<!--Module Section-->
+	<div class="container-fluid">
+		<div class="row text-center">
+			<h1 class="text-light">Welcome to <span class="text-capitalize" th:text="${loginType}"></span> Dashboard!</h1>
+
+
+		</div>
+	</div>
+</main>
+<!-- //Main-->
+<!-- Footer-->
+<footer class="fixed-bottom footer">
+	<div class="container-fluid">
+		<div class="row d-flex align-items-center">
+			<div class="col-lg-6">
+				<p class="mb-0"> V-<span th:text="${buildVersion}"></span>
+			</div>
+			<div class="col-lg-6  text-lg-end">
+				<p class="mb-0">Copyright 2024 © Office of Hostel Management - IIT Madras </p>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- //Footer-->
+<!--//-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, null)}">
+    <script th:src="@{/assets/js/landing-page.js}"></script>
+</th:block>
+</body>
+</html>

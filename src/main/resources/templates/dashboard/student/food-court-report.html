@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header
+        th:replace="~{common/student-dashboard-header:: title(${headerForm},'Student Food Court Purchase Report','Dashboard',null,null,null,'Back',null,#{url.dashboard}+#{url.student},null)}">
+</header>
+
+<!-- //Main-->
+<main id="main" class="main">
+    <!--School Info Section-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="mb-4" action="#" method="get">
+                        <div class="row mt-4">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title">
+										<span th:text="#{message.label.mess.details}"></span>
+									</h2>
+								</div>
+							</div>
+
+							<div class="row">
+								<form class="themeForm">
+								<div class="col-lg-4">
+									<label class="form-label">
+										<span th:text="#{message.label.mess.name}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${currentMessName != null ? currentMessName : '-'}"></div>
+								</div>
+									<div class="col-lg-4">
+									<label class="form-label">
+										<span th:text="#{message.label.mess.period}"></span>
+									</label>
+									<div class="form-control form-graybox" th:text="${dinningFromDate} + ' to ' + ${dinningToDate}"></div>
+								</div>
+								</form>
+							</div>
+                    </form>
+                    <form class="themeForm g-3 needs-validation">
+                        <div class="table-responsive themeTable">
+                            <table id="foodCourtReportTable" class="table table-bordered  nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.voucher.no}"></th>
+                                    <th th:text="#{message.label.voucher.date}"></th>
+                                    <th th:text="#{message.label.description}"></th>
+                                    <th class="text-end">
+                                        <span th:text="#{message.label.credit.amount}+#{message.label.cr}"></span>
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    </th>
+                                    <th class="text-end">
+                                        <span th:text="#{message.label.debit.amount}+#{message.label.dr}"></span>
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    </th>
+                                    <th class="text-end">
+                                        <span th:text="#{message.label.closing.balance}"></span>
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${foodCourtReportList != null && foodCourtReportList.size() > 0}"
+                                    th:each="foodCourt : ${foodCourtReportList}">
+                                    <td th:text="${foodCourt.voucherNo}"></td>
+                                    <td th:with="dateFormat=#{date.format}" th:text="${#temporals.format(foodCourt.voucherDate,dateFormat)}"></td>
+                                    <td th:text="${foodCourt.description}"></td>
+                                    <td class="text-end" th:text="${foodCourt.debitOrCredit eq 'c' ? foodCourt.amount : ''}"
+                                    th:classappend="${foodCourt.debitOrCredit eq 'c' ? 'currency':''}"></td>
+                                    <td class="text-end" th:text="${foodCourt.debitOrCredit eq 'd' ? foodCourt.amount : ''}"
+                                    th:classappend="${foodCourt.debitOrCredit eq 'd' ? 'currency' : ''}"></td>
+                                    <td class="text-end" th:text="${foodCourt.formattedClosingBalance}"></td>
+                                </tr>
+                                <tr th:unless="${foodCourtReportList != null && foodCourtReportList.size() > 0}">
+                                    <td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/show-event-master.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.hostel.event.master}]]*/ '';
+        const getURL = /*[[#{url.get}]]*/ '';
+        const deleteURL = /*[[#{url.delete}]]*/ '';
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

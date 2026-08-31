@@ -1,0 +1,41 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('food-request-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+    <modalHeader>
+        <span th:text="#{message.label.food.request.details}"></span>
+    </modalHeader>
+    <modalBody>
+        <form class="themeForm" th:object="${sickFoodRequestDto}">
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <label class="form-label">
+                        <span th:text="#{message.label.student.name}"></span>
+                    </label>
+                    <div class="form-control form-graybox" th:text="*{studentName}"></div>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">
+                        <span th:text="#{message.label.mobile.number}"></span>
+                    </label>
+                    <div class="form-control form-graybox" th:text="*{mobileNum}"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <label class="form-label">
+                        <span th:text="#{message.label.delivery.address}"></span>
+                    </label>
+                    <textarea class="form-control form-graybox" th:text="*{deliveryAddress}" readonly></textarea>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">
+                        <span th:text="#{message.label.medical.reason}"></span>
+                    </label>
+                    <textarea class="form-control form-graybox" th:text="*{medicalReason}" readonly></textarea>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

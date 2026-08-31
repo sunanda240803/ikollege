@@ -1,0 +1,102 @@
+<th:block th:fragment="table">
+    <div class="deanDashboardList">
+        <div th:replace="~{common/template/left-right-table-scroll-arrows.html :: leftRightArrow()}"></div>
+        <div class="table-responsive themeTable" th:data-col-size="${columnDto.actionList.size()}" id="horizontalScrollContainer">
+            <table id="deanDashboardTable" class="table table-bordered nowrap w-100">
+                <thead>
+                <tr>
+                    <th class="text-center"  th:text="#{message.label.action}"></th>
+                    <th class="text-center"  th:text="#{message.label.hostel.name}"></th>
+                    <th class="text-center"  th:text="#{message.label.room.number}"></th>
+                    <th class="text-center"  th:text="#{message.label.seat.name}"></th>
+                    <th th:each="columnData : ${columnDto?.actionList}" th:text="${columnData.displayName}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${form.list != null }"
+                    th:each="dean, iter: ${form.list}">
+                    <td>
+                        <button class="btn btn-sm ms-2 mb-2" 
+                        		th:each="action, actIter : ${dean.actionList}"
+                                th:if="${action.actionStyle} ne null"
+                                th:data-row-id="${iter.index}"
+                                th:classappend="${action.actionStyle}" data-bs-toggle="tooltip"
+                                th:data-bs-title="${action.displayName}"
+                                th:data-id="${iter.index+'_'+actIter.index}"
+                                th:id="${'id_'+iter.index+'_'+actIter.index}"
+                                th:data-url="${action.url}" th:onclick="handleActionClick(this)">
+                            <i th:classappend="${action.actionIcon}"></i>
+                        </button>
+                    </td>
+
+                    <td th:unless="${dean.allottedHostelName} == '-'" th:data-row-id="${iter.index}"
+                        th:classappend="${dean.allottedHostelName} == '-' ? 'd-none' : ''"
+                        class="hostelNameGrayBox">
+                        <div th:text="${dean.allottedHostelName}" class="form-control form-graybox" id="hostelName"></div>
+                    </td>
+                    <td th:unless="${dean.allottedHostelName} == '-'" th:data-row-id="${iter.index}"
+                        th:classappend="${dean.allottedHostelName} == '-' ? 'd-none' : ''"
+                        class="roomNoGrayBox">
+                        <div th:text="${dean.roomNo}" class="form-control form-graybox" id="roomNo"></div>
+                    </td>
+                    <td th:unless="${dean.allottedHostelName} == '-'" th:data-row-id="${iter.index}"
+                        th:classappend="${dean.allottedHostelName} == '-' ? 'd-none' : ''"
+                        class="seatGrayBox">
+                        <div th:text="${dean.seat}" class="form-control form-graybox" id="seat"></div>
+                    </td>
+
+                    <td th:if="${dean.allottedHostelName} == '-'" th:data-row-id="${iter.index}"
+                        th:classappend="${dean.allottedHostelName} != '-' ? 'd-none' : ''"
+                        class="select-hostel-details hostelNameSelect">
+                        <select class="form-select required-select-input hostelName"
+                                th:id="'hostelOrFacilityMasterInput_' + ${iter.index}"
+                                onchange="hostelChange(this)"
+                                th:data-row-id="${iter.index}"
+                                th:data-request-id="${dean.slNo}"
+                                th:data-url="${url}">
+                            <option value="0" th:text="#{message.label.select} + ' ' + #{message.label.hostel.name}"></option>
+                            <option th:each="hostelList : ${dean.hostelListGenderBased}"
+                                    th:value="${hostelList.id}"
+                                    th:text="${hostelList.hostelName}"></option>
+                        </select>
+                    </td>
+                    <td th:if="${dean.allottedHostelName} == '-'" th:data-row-id="${iter.index}"
+                        th:classappend="${dean.allottedHostelName} != '-' ? 'd-none' : ''"
+                        class="select-hostel-details roomNoSelect">
+                        <select class="form-select roomNumber"
+                                th:data-row-id="${iter.index}"
+                                th:data-request-id="${dean.slNo}"
+                                th:data-url="${url}"
+                                onchange="roomChange(this)"
+                                disabled>
+                            <option value="0" th:text="#{message.label.select} + ' ' + #{message.label.room.number}"></option>
+                        </select>
+                    </td>
+                    <td th:if="${dean.allottedHostelName} == '-'" th:data-row-id="${iter.index}"
+                        th:classappend="${dean.allottedHostelName} != '-' ? 'd-none' : ''"
+                        class="select-hostel-details seatSelect">
+                        <select class="form-select subRoomId"
+                                th:data-row-id="${iter.index}"
+                                th:data-request-id="${dean.slNo}"
+                                th:data-url="${url}"
+                                onchange="subRoomChange(this)"
+                                disabled>
+                            <option value="" selected>Select Seat</option>
+                        </select>
+                    </td>
+                    <td th:each="data : ${columnDto?.actionList}">
+                        <th:block th:if="${#strings.endsWith(data.property, 'Status')}"
+                                  th:include="common/template/approval-status-badge :: statusBadge(${@propertyAccessorUtil.getPropertyValue(dean, data.property)}, null)">
+                        </th:block>
+                        <span th:unless="${#strings.endsWith(data.property, 'Status')}"
+                              th:text="${@propertyAccessorUtil.getPropertyValue(dean, data.property)}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+    </div>
+    <style>
+    </style>
+</th:block>

@@ -1,0 +1,6 @@
+.checkin-card-body {
+    min-height: 125px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}

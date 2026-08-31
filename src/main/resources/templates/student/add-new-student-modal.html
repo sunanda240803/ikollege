@@ -1,0 +1,85 @@
+<div th:replace="~{common/modal-template ::
+   modal('add-new-student-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+  <modalHeader th:text="#{message.label.add.new.student}"></modalHeader>
+  <modalBody>
+	<div class="page-loading mt-3" id="modalLoader" style="display: none;">
+		<div role="status">
+			<img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+			<h4>Loading...</h4>
+		</div>
+	</div>
+    <form id="add-new-student-form" class="themeForm" th:action="@{#{url.student.bulk.upload} + #{url.student.add.new}}"  method="post"
+          th:object="${studentBulkInfoDto}">
+      <div class="row">
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="studentID">
+            <span th:text="#{message.label.student.id}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" id="studentID" class="form-control required-input" th:field="${studentBulkInfoDto.studentId}"
+                 th:placeholder="#{message.placeholder.student.id}" required maxlength="10">
+          <div class="invalid-feedback" th:text="#{message.label.validation.student.id.is.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="firstName">
+            <span th:text="#{message.label.first.name}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" id="firstName" class="form-control required-input" th:field="${studentBulkInfoDto.firstName}"
+                 th:placeholder="#{message.placeholder.first.name}" required maxlength="120">
+          <div class="invalid-feedback" th:text="#{message.validation.first.name.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="lastName">
+            <span th:text="#{message.label.last.name}"></span>
+          </label>
+          <input type="text" id="lastName" class="form-control" th:field="${studentBulkInfoDto.lastName}"
+                 th:placeholder="#{message.placeholder.last.name}" maxlength="120">
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label">
+            <span th:text="#{message.label.gender}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <div class="checkRadio-bg form-control ">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input required-input" type="radio" name="gender" id="genderType1" th:field="${studentBulkInfoDto.gender}"
+                     th:value="M" required>
+              <label class="form-check-label" for="genderType1" th:text="#{message.label.male}"></label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input required-input" type="radio" name="gender" id="genderType2" th:field="${studentBulkInfoDto.gender}"
+                     th:value="F" required>
+              <label class="form-check-label" for="genderType2" th:text="#{message.label.female}"></label>
+            </div>
+          </div>
+          <div class="invalid-feedback" th:text="#{message.validation.student.details.gender}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="courseCode">
+            <span th:text="#{message.label.course.code}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <select class="form-select required-input" data-live-search="true" id="courseCode" th:value="${course}"
+                  th:field="${studentBulkInfoDto.course}" required>
+            <option value="" th:text="#{message.label.select} + ' ' + #{message.label.course.code}"></option>
+            <option th:each="courseObj : ${courseHeadList}" th:value="${courseObj}" th:text="${courseObj}" th:selected="*{course} == ${courseObj}"></option>
+          </select>
+          <div class="invalid-feedback" th:text="#{message.validation.course.code.required}"></div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="previousID"  th:text="#{message.label.previous.id}"></label>
+          <input type="text" id="previousID" class="form-control"  th:field="${studentBulkInfoDto.previousId}"
+                 th:placeholder="#{message.placeholder.previous.id}" maxlength="10">
+        </div>
+
+      </div>
+    </form>
+  </modalBody>
+</div>

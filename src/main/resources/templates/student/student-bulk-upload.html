@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form th:action="@{#{url.student.bulk.upload}+#{url.student.bulk.upload.save}}" method="post"
+						  enctype="multipart/form-data" th:object="${studentBulkUploadDto}" id="studentBulkUploadForm">
+
+
+						<div class="row" id="bulkRoomInventory">
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.download}"></span></h2>
+								</div>
+							</div>
+							<div class="col-lg-12 mb-3 d-flex align-items-center">
+									<span class="fs-5">
+										<u class="text-tmPrimary">
+											<a th:href="@{#{url.student.bulk.upload}+#{url.download.student.bulk.upload.template}}" th:text="#{message.label.click.here.caps}"></a>
+										</u>
+										<span th:text="#{message.label.student.bulk.upload.click.here.note}"></span>
+									</span>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.file.header}"></span></h2>
+								</div>
+							</div>
+							<label class="form-label me-3" for="uploadFile">
+								<span th:text="#{message.label.bulk.upload.file}"></span>
+								<th:block th:replace="~{common/template/mandatory-symbol}" />
+							</label>
+							<div class="col-lg-3">
+								<input type="file" class="form-control" id="uploadFile" name="file" th:placeholder="#{message.label.bulk.upload.file}">
+								<div class="selectFile2 d-none"><span class="text-danger">Please choose file to upload.</span></div>
+								<div class="validFile d-none"><span class="text-danger">Invalid file format</span></div>
+							</div>
+							<div class="col-lg-3 my-2">
+								<button type="button" id="uploadFileButton" class="btn btn-purple px-4 me-2" onclick=" return validateFile()">
+									<i class="fa fa-upload" aria-hidden="true"></i> <span th:text="#{message.button.upload.file}"></span>
+								</button>
+							</div>
+						</div>
+						<div class="text-danger errorList d-flex align-items-center" th:if="${excelErrorList != null && !excelErrorList.isEmpty()}">
+							<ul>
+								<li th:each="error : ${excelErrorList}">
+									<span th:text="${error}"></span>
+								</li>
+							</ul>
+						</div>
+						<hr>
+						<th:block th:replace="~{common/log-content::content(${logTag})}"></th:block>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-----Modules----->
+<div th:id="modalDiv"></div>
+<!-- //Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/student/student-bulk-upload.js}"></script>
+	<script th:src="@{/assets/js/biometric/log.js}"></script>
+	<script th:inline="javascript">
+			const baseURL = /*[[#{url.student.bulk.upload}]]*/ '';
+			const downloadURL = /*[[#{url.download.all.students.details.view.report}]]*/ '';
+			const addUrl = /*[[#{url.student.add.new}]]*/'';
+            const requiredMessage = /*[[#{message.student.addnew.required}]]*/ '';
+			const savedSuccess = /*[[#{response.student.addnew.save.success}]]*/ '';
+            const errorLoadingModal = /*[[#{message.student.addnew.error.loadingModal}]]*/ '';
+            const savedError = /*[[#{message.student.save.error}]]*/ '';
+		</script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<div th:replace="~{common/modal-template :: modal('statusDescriptionModal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+    <modalHeader>
+        <th:block th:text="#{message.label.status}+' '+#{message.label.description}"></th:block>
+    </modalHeader>
+    <modalBody>
+        <div class="row mb-3 mt-4">
+            <div class="col-lg-12">
+                <div class="bg-light p-3 rounded">
+                    <h5 class="text-tmPrimary">
+                        <i class="fa-solid fa-file-circle-exclamation me-1"></i>
+                        <span>Note</span>:
+                    </h5>
+                    <table id="noteTable" class="table-responsive themeTable table table-bordered  nowrap w-100">
+                        <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Description for Accommodation</th>
+                            <th>Description for Stay Extension</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Edit</td>
+                            <td colspan="2">The request has been submitted. However, the details can be edited.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td colspan="2">Approval process for the request is not complete yet. The request could be cancelled, if
+                                required.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Resend</td>
+                            <td>If your validator has not received the approval mail, it could be resent. However, only after 2 days of request, this
+                                could be triggered.
+                            </td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Reapply</td>
+                            <td colspan="2">The request has been rejected due to some reason. The request could be reapplied, if
+                                required .
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Allotted</td>
+                            <td>You have been allotted to the mentioned hostel for that particular accommodation request.</td>
+                            <td>You have been allotted to the hostel for that particular Stay Extension request.</td>
+                        </tr>
+                        <tr>
+                            <td>Checked In</td>
+                            <td colspan="2" class="text-center">You have been checked-in to the allotted hostel.</td>
+                        </tr>
+                        <tr>
+                            <td>Checked Out</td>
+                            <td colspan="2" class="text-center">You have been checked-out from the allotted hostel.</td>
+                        </tr>
+                        <tr>
+                            <td>Apply</td>
+                            <td>-</td>
+                            <td>Stay extension can be applied.</td>
+                        </tr>
+                        <tr>
+                            <td>Closed</td>
+                            <td>-</td>
+                            <td>The request to apply for a stay extension is closed. The next opening date to apply for further extension is ''</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td colspan="2">All personal and request details related to that particular accommodation request along with the stay
+                                extension details will be shown in the PDF.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </modalBody>
+</div>
+</th:block>

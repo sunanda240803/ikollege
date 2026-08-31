@@ -1,0 +1,15 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="noteContent(headerText, content, replace)">
+    <div class="noteBox bg-light p-3 rounded">
+        <h4>
+            <i class="fa-solid fa-file-circle-exclamation me-1"></i>
+            <th:block th:text="#{${headerText}}"></th:block> :
+        </h4>
+        <ul>
+            <li th:if="${content != null and #strings.startsWith(content, 'message.') and replace == null}" th:text="#{${content}}"></li>
+        </ul>
+        <div th:if="${content != null and (!#strings.startsWith(content, 'message.') or replace != null)}" th:utext="${content}"></div>
+        <div th:if="${content == null and replace != null}">
+            <th:block th:replace="${replace}"></th:block>
+        </div>
+    </div>
+</th:block>

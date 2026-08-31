@@ -1,0 +1,21 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(id, name, acceptedFileTypes, uploadButton,value,title)">
+    <!-- Drag-and-Drop File Upload Area -->
+    <div class="drop-zone" th:id="${id} + '_dropZone'" th:data-id="${id}">
+        <!-- <span th:text="${title} + ' (' + ${acceptedFileTypes} + ')'"></span> -->
+        <span th:text="${title}"></span><br>
+		<span th:text="'(' + ${acceptedFileTypes} + ')'"></span>
+        
+        <input type="file" class="form-control drop-file" th:id="${id} + '_fileUpload'" th:name="${name}"
+               th:accept="${acceptedFileTypes}" th:data-files="${acceptedFileTypes}" th:data-id="${id}"
+               th:data-upload-button="${uploadButton}" hidden multiple>
+    </div>
+    <!-- Display Uploaded File Information -->
+    <div class="file-info text-success" th:id="${id} + '_fileInfo'" th:text="${value != null ? value : ''}"><label></label></div>
+    <div class="file-error text-danger" th:id="${id} + '_fileError'"></div>
+    <script th:inline="javascript">  
+		setTimeout(function() {
+			initDragAndDrop(); },1500
+		);
+	</script>
+</th:block>
+

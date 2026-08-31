@@ -1,0 +1,62 @@
+<div th:replace="~{common/modal-template :: modal('student-with-remark-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader th:text="#{message.label.student.with.remark}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="student-with-remark-form"
+              th:object="${studentWithRemark}" th:action="@{#{url.student.with.remarks}+#{url.save}}" novalidate method="post">
+            <div class="row">
+                <input type="text" class="form-control" th:field="*{id}" hidden>
+                <input type="text" id="currentlyActive" th:field="*{currentlyActive}" name="currentlyActive" hidden>
+                <input type="text" id="currentlyActiveDate" th:field="*{currentlyActiveDate}" name="currentlyActiveDate" hidden>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="studentId">
+                        <span th:text="#{message.label.student.id}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" th:field="*{studentId}"
+                           oninput="validateAlphaNumericInput(this);" maxlength="10"
+                           th:placeholder="#{message.placeholder.enter.student.id}" id="studentId" name="studentId" required>
+                    <div class="invalid-feedback" th:text="#{message.label.validation.student.id.is.required}"></div>
+                    <div class="invalid-req-feedback d-none" th:text="#{message.label.validation.student.id.is.required}"></div>
+                    <div class="invalid-exist-feedback d-none" th:text="#{message.label.validation.student.id.exist}"></div>
+                    <div class="invalid-prev-feedback d-none" th:text="#{message.label.validation.previous.id.exist}"></div>
+                    <div class="invalid-date-feedback d-none" th:text="#{message.label.student.remarks.for.given.date}"></div>
+                </div>
+                <div class="col-lg-6 mb-3" th:if="*{id != null}">
+                    <label class="form-label" for="studentName">
+                        <span th:text="#{message.label.student.name}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" th:value="${studentName}" id="studentName" name="studentName" hidden>
+                    <div class="invalid-feedback" th:text="#{message.label.validation.student.id.is.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="fromDate">
+                        <span th:text="#{message.label.from.date}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{fromDate}" id="fromDate" name="fromDate" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.from.date.required}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="toDate">
+                        <span th:text="#{message.label.to.date}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{toDate}" id="toDate" name="toDate" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.to.date.required}"></div>
+                    <div class="invalid-req-feedback d-none" th:text="#{message.validation.to.date.required}"></div>
+                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.to.date}"></div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="remarkDescription">
+                        <span th:text="#{message.label.description}"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}"></th:block>
+                    </label>
+                    <textarea class="form-control required-input" id="remarkDescription" maxlength="320"
+                              oninput="trimSpaces(this)" th:placeholder="#{message.placeholder.description}" th:field="*{remarkDescription}" required></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

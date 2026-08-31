@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+    .dashboard-padding {
+        padding: 20px 0 !important;  /* Adjust top and bottom padding as needed */
+    }
+}

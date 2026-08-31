@@ -1,0 +1,88 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('mess-session-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.edit.mess.session}"></span>
+	</modalHeader>
+	<modalBody>
+	<form class="themeForm" th:action="@{#{url.mess.session}}"
+		method="post" th:object="${messSessionDto}" id="messSessionForm"> 
+			<div class="row g-3">
+				<div class="col-lg-6">
+					<label class="form-label" for="messId"><span th:text="#{message.label.mess.name}"></span> <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+                        <select  class="selectpicker required-select-input" data-live-search="true" th:field="*{id.messId}" id="messId"
+                         	 th:disabled="${editMode}">
+                        <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+                        	<option th:each="master:${messMasterList}"
+								th:value="${master.id}" th:text="${master.messName}">
+							</option>
+                        </select>
+                        <input type="hidden" th:if="${editMode}"  th:field="*{id.messId}" />
+					<div class="invalid-feedback" id="messInputVal" th:text="#{message.validation.mess.name.required}" ></div>
+				</div>
+				<div class="col-lg-6">
+					<label class="form-label" for="session"><span th:text="#{message.label.session}"></span> <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+                        <select id="session" class="form-select required-input" th:field="*{id.sessionName}" th:id="sessionName"
+                        	onchange="checkMessAndSessionExist()" th:disabled="${editMode}">
+                           <option value="" th:text="#{message.label.select}+' '+#{message.label.session}"></option>
+                          <option value="BF" th:text="#{message.label.breakfast}"></option>
+                          <option value="LC" th:text="#{message.label.lunch}"></option>
+                          <option value="ET" th:text="#{message.label.evening.tea}"></option>
+                          <option value="DR" th:text="#{message.label.dinner}"></option>
+						</select>
+						<input type="hidden" th:if="${editMode}"  th:field="*{id.sessionName}" />
+					<div class="invalid-feedback" th:text="#{message.validation.mess.session.name.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="startTime"><span th:text="#{message.label.start.time}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<div class="input-group">
+						<div class="me-2">
+							<select id="startHour" class="form-select custom-size" onchange="updateHiddenStartTime();">
+								<option value="" selected>Hour</option>
+								<option th:each="i : ${#numbers.sequence(0, 24)}"
+										th:value="${i < 10 ? '0' + i : i}"
+										th:text="${i < 10 ? '0' + i : i}"></option>
+							</select>
+						</div>
+						<div class="">
+							<select id="startMinute" class="form-select" onchange="updateHiddenStartTime();">
+								<option value="" selected>Minute</option>
+								<option th:each="minute : ${#numbers.sequence(0, 3)}"
+										th:value="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+										th:text="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"></option>
+							</select>
+						</div>
+					</div>
+					<input type="time" th:field="*{startTime}" id="startTime" class="d-none">
+					<div class="invalid-feedback" th:text="#{message.validation.mess.start.time.required}"></div>
+				</div>
+
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="endTime"><span th:text="#{message.label.end.time}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+					<div class="input-group">
+						<div class="me-2">
+							<select id="endHour" class="form-select custom-size"  onchange="updateHiddenEndTime();">
+								<option value="" selected>Hour</option>
+								<option th:each="i : ${#numbers.sequence(0, 24)}"
+										th:value="${i < 10 ? '0' + i : i}"
+										th:text="${i < 10 ? '0' + i : i}"></option>
+							</select>
+						</div>
+						<div class="">
+							<select id="endMinute" class="form-select"  onchange="updateHiddenEndTime();">
+								<option value="" selected>Minute</option>
+								<option th:each="minute : ${#numbers.sequence(0, 3)}"
+										th:value="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"
+										th:text="${minute * 15 < 10 ? '0' + (minute * 15) : minute * 15}"></option>
+							</select>
+						</div>
+					</div>
+					<input type="time" th:field="*{endTime}" id="endTime" class="d-none">
+					<div class="invalid-feedback" th:text="#{message.validation.mess.end.time.required}"></div>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

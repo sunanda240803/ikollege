@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<th:block th:fragment="formInputs(filters)">
+	                    		<form class="themeForm" id="vacantRoomReport" method="get">
+	                    			<input type="hidden" id="pageVal" th:value="${form.pageVal}" /> 
+									<input type="hidden" id="sizeVal" th:value="${form.size}" />
+	                    			<input type="hidden" th:value='${filters}' id="filters">
+	                    			<input type="hidden" th:value="${filters.get('hostelFloorId')}" id="floorId">
+									<input type="hidden" id="search" name="search">
+		                            <div class="row mb-3">  
+		                            	<div class="col-lg-3 mb-3">
+											<label class="form-label" for="hostelName">
+												<span th:text="#{message.label.hostel.name}"></span>
+											</label>
+											<select class="form-select" name="hostelId" id="hostelId" onchange="getHostelFloorList(this);">
+												<option value=""
+													th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+												<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+													th:text="${hostelList.hostelName}"
+													th:selected="${filters.get('hostelId')} eq ${hostelList.id}">
+												</option>
+											</select>
+											<div class="invalid-feedback">
+												<span th:text="#{message.validation.select.hostel.name}"></span>
+											</div>
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label" for="hostelFloorName">
+												<span th:text="#{message.label.hostel.floor.name}"></span>
+											</label>
+											<select class="form-select" id="hostelFloorId" name="hostelFloorId">
+												<option value="" th:text="#{message.label.select}"></option>
+											</select>
+											<div class="invalid-feedback">
+												<span th:text="#{message.validation.select.hostel.floor.name}"></span>
+											</div>
+										</div>
+										<div class="col-lg-3 mb-3">
+											<div class="form-check mt-4">
+											    <input class="form-check-input" type="checkbox" id="stableRoomId"
+											        name="stableRoomId" value=""
+											        th:checked="${filters.get('stableRoomId')} == 'stableRoom'" onchange="updateStableRoomId()" />
+												<label class="form-check-label" for="commonPurposeRoom">
+													<span th:text="#{message.label.common.purpose.room}"></span>
+												</label>
+											</div>
+										</div>                               
+		                                <div class="col-lg-3">
+											<button type="button" id="getData" class="btn btn-lgtblue px-4"
+												style="margin-top: 38px" onclick="return checkAdvanceFilter();">
+												<i class="fa-solid fa-database"></i> 
+												<span th:text="#{message.label.filter.data}"></span>
+											</button>
+										</div>
+		                            </div>
+		                        </form>
+                    		</th:block>
+						</div>
+						<div class="row">
+							<div class="col-lg-12  mb-3">
+								<div class="d-flex justify-content-between align-items-center">
+									<h2 class="tmsub-title mb-0">
+										<span th:text="#{message.label.hostel.vacant.details}"></span>
+									</h2>
+									<button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+										th:if="${form.paginationList != null && form.paginationList.totalElements > 0}"
+										data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+										th:attr="data-bs-title=#{message.label.export.pdf}"
+										th:onclick="triggerDownload(this)">
+										<i class="fa-solid fa-file-pdf text-white"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<!-- reportList -->
+								<div class="table-responsive themeTable">
+									<table class="table table-bordered nowrap w-100">
+										<thead>
+											<tr>
+												<th class="text-center" th:text="#{message.label.hostel.floor.name}"></th>
+												<th class="text-center" th:text="#{message.label.room.number}"></th>
+												<th class="text-center" th:text="#{message.label.vacancy}"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+												th:each="vacantRoomList, iter : ${form.paginationList.getContent()}">
+												<td class="text-center" th:text="${vacantRoomList.hostelFloorName}"></td>
+												<td class="text-center" th:text="${vacantRoomList.roomNo}"></td>
+												<td class="text-center" th:text="${vacantRoomList.vacancy}"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/hostel/room-vacant-report.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.hostel.room.vacant.report}]]*/ '';
+			const hostelFloorListURL = /*[[#{url.get.hostel.floor.list}]]*/ '';
+			const downloadUrl = /*[[#{url.download}]]*/ ''; 
+		</script>
+	</th:block>
+</body>
+
+</html>

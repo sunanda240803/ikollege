@@ -1,0 +1,41 @@
+<div th:replace="~{common/widget-template :: content('onlineCouponId', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <!-- Modal Header -->
+    <modalHeader>
+        <span th:text="#{message.label.online.messcoupon.status}"></span>
+    </modalHeader>
+    
+    <!-- Modal Body -->
+    <modalBody>
+		<div class="row text-center">
+			<div class="col-lg-6">
+				<span class="text-tmPrimary fw-bold"
+					th:text="#{message.label.applied.on}"></span><br>
+				<div class="fw-bold text-primary"
+					th:text="${onlineMessCoupon != null && onlineMessCoupon.createdAt != null ? 
+					#temporals.format(onlineMessCoupon.createdAt, #messages.msgOrNull('date.format')) : '-'}">
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<span class="text-tmPrimary fw-bold"
+					th:text="#{message.label.last.payment.status}"></span><br>
+				<th:block th:if="${onlineMessCoupon == null || onlineMessCoupon.paymentStatus == null}">
+					<div class="fw-bold text-primary" th:text="${'-'}"></div>
+				</th:block>
+				<th:block th:if="${onlineMessCoupon != null && onlineMessCoupon.paymentStatus != null 
+					&& !#strings.isEmpty(onlineMessCoupon.paymentStatus)}">
+					<div th:include="common/template/approval-status-badge :: statusBadge(null, ${onlineMessCoupon.paymentStatus})"/>
+				</th:block>
+			</div>
+		</div>
+	</modalBody>
+    
+    <!-- Modal Footer -->
+    <modalFooter>
+        <div class="text-end">
+            <a th:href="@{#{url.hostel.guest.coupon.request}}" class="text-secondary mb-0 align-middle">
+                <span th:text="#{message.label.click.view.apply}"></span>
+                <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </modalFooter>
+</div>

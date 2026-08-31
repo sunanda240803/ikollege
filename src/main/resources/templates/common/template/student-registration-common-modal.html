@@ -1,0 +1,222 @@
+<th:block th:fragment="modalContent">
+<!-- Form Module -->
+<div class="themeModal modal fade" id="undertakingFormModel" tabindex="-1"
+	 aria-labelledby="undertakingFormModelLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="undertakingFormModelLabel"><span
+						th:text="#{message.label.undertaking.form}"></span></h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="themeForm">
+					<div class="row">
+						<div class="col-lg-12 mb-3">
+							<div class="card main-card h-100">
+								<div class="card-body d-flex flex-column h-100">
+									<embed th:src="@{/assets/pdf/bio_data_form_court_rules.pdf}"
+										   type="application/pdf" class="flex-grow-1 w-100 responsive">
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12 mb-3">
+							<div class="form-check form-check-inline">
+								<th:block th:if="${form.id == null}">
+									<input class="form-check-input required-check-input" type="checkbox" id="agreement1" value="option1">
+								</th:block>
+								<th:block th:if="${form.id != null}">
+									<input class="form-check-input" type="checkbox" disabled checked>
+								</th:block>
+								<label class="form-check-label" for="agreement1"><span
+										th:text="#{message.label.undertaking.form.rules.agree}"></span></label>
+							</div>
+							<div class="text-danger agreementError1 d-none"><span
+									th:text="#{message.validation.undertaking.form.rules.agree}"></span></div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<th:block th:if="${form.id == null}">
+					<button type="button" onclick="return validateAgreement(1,'undertakingFormModel')"
+						class="btn btn-sm btn-tmPrimary px-3" id="proceed3"><span
+						th:text="#{message.label.undertaking.form.proceed}"></span></button>
+				</th:block>
+				<th:block th:if="${form.id != null}">
+					<button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal" aria-label="Close">
+						<span th:text="#{message.label.close}"></span></button>
+				</th:block>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Form Module -->
+<div class="themeModal modal fade" id="hostelRulesModel" tabindex="-1"
+	 aria-labelledby="hostelRulesAndRegulationsModelLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="hostelRulesAndRegulationsModelLabel"><span
+						th:text="#{message.label.undertaking.form.hostel.rules}"></span></h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="themeForm">
+					<div class="row">
+						<div class="col-lg-12 mb-3">
+							<div class="card main-card h-100">
+								<div class="card-body d-flex flex-column h-100">
+									<embed th:src="@{/assets/pdf/hostel_residents_rules_and_regulation.pdf}"
+										   type="application/pdf" class="flex-grow-1 w-100 responsive">
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12 mb-3">
+							<div class="form-check form-check-inline">
+								<th:block th:if="${form.id == null}">
+									<input class="form-check-input required-check-input" type="checkbox" id="agreement2" value="option2">
+								</th:block>
+								<th:block th:if="${form.id != null}">
+									<input class="form-check-input" type="checkbox" checked disabled>
+								</th:block>
+								<label class="form-check-label" for="agreement2"><span
+										th:text="#{message.label.undertaking.form.rules.agree}"></span></label>
+								<span id="tickMark2" class="d-none ms-2">
+										<i class="bi bi-check-circle-fill text-success"></i>
+									<!-- Bootstrap Icon for tick -->
+									</span>
+							</div>
+							<div class="text-danger agreementError2 d-none"><span
+									th:text="#{message.validation.undertaking.form.rules.agree}"></span></div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<th:block th:if="${form.id == null}">
+					<button type="button" onclick="return validateAgreement(2,'hostelRulesModel')"
+							class="btn btn-sm btn-tmPrimary px-3" id="proceed2"><span
+							th:text="#{message.label.undertaking.form.proceed}"></span></button>
+				</th:block>
+				<th:block th:if="${form.id != null}">
+					<button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal" aria-label="Close">
+						<span th:text="#{message.label.close}"></span></button>
+				</th:block>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Form Module -->
+<div class="themeModal modal fade" id="vehicleRulesModel" tabindex="-1"
+	 aria-labelledby="vehicleRulesAndRegulationsModelLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="vehicleRulesAndRegulationsModelLabel"><span
+						th:text="#{message.label.undertaking.form.vehicle.rules}"></span></h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="themeForm">
+					<div class="row">
+						<div class="col-lg-12 mb-3">
+							<div class="card main-card h-100">
+								<div class="card-body d-flex flex-column h-100">
+									<embed th:src="@{/assets/pdf/power_vehicle_rules_and_regulation.pdf}"
+										   type="application/pdf" class="flex-grow-1 w-100 responsive">
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12 mb-3">
+							<div class="form-check form-check-inline">
+								<th:block th:if="${form.id == null}">
+									<input class="form-check-input required-check-input" type="checkbox" id="agreement3" value="option3">
+								</th:block>
+								<th:block th:if="${form.id != null}">
+									<input class="form-check-input" type="checkbox" disabled checked>
+								</th:block>
+								<label class="form-check-label" for="agreement3"><span
+										th:text="#{message.label.undertaking.form.rules.agree}"></span></label>
+								<span id="tickMark3" class="d-none ms-2">
+										<i class="bi bi-check-circle-fill text-success"></i>
+									<!-- Bootstrap Icon for tick -->
+									</span>
+							</div>
+							<div class="text-danger agreementError3 d-none"><span
+									th:text="#{message.validation.undertaking.form.rules.agree}"></span></div>
+
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<th:block th:if="${form.id == null}">
+					<button type="button" class="btn btn-sm btn-tmPrimary px-3" id="proceed1"
+						onclick="return validateAgreement(3,'vehicleRulesModel')"><span
+						th:text="#{message.label.undertaking.form.proceed}"></span></button>
+				</th:block>
+				<th:block th:if="${form.id != null}">
+					<button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal" aria-label="Close">
+						<span th:text="#{message.label.close}"></span></button>
+				</th:block>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Cropping or Resizing images -->
+<div class="themeModal modal fade" id="resizeModal" tabindex="-1"
+	 aria-labelledby="resizeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title fs-5" id="resizeModalLabel">Resize Image</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="themeForm">
+					<div class="row themeForm">
+						<!-- Image Upload -->
+						<div class="mb-3 col-lg-12">
+							<label for="imageInput" class="form-label">Select Image <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+							<input type="file" class="form-control" id="imageInput" accept="image/*">
+						</div>
+						<div class="image-preview-wrapper col-lg-12">
+							<!-- Image Preview Before Resizing -->
+							<img id="imageToResize" class="d-none" alt="Image to resize">
+						</div>
+
+						<!-- Input for Resize Dimensions -->
+						<div class="mb-5 col-lg-12">
+							<label for="resizeWidth" class="form-label">Width (px) <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+							<input type="number" class="form-control" id="resizeWidth"
+								   placeholder="Enter width in pixels">
+						</div>
+						<div class="mb-3 col-lg-12">
+							<label for="resizeHeight" class="form-label">Height (px) <th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+							<input type="number" class="form-control" id="resizeHeight"
+								   placeholder="Enter height in pixels">
+						</div>
+						<div class="col-lg-12">
+							<!-- Resized Image Preview -->
+							<canvas id="resizedCanvas" class="d-none"></canvas>
+						</div>
+						<div class="resized-image-wrapper col-lg-12">
+							<img id="resizedImage" class="d-none">
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-circle-xmark me-1"></i> Cancel</button>
+				<button type="button" id="resizeButton" class="btn btn-sm btn-tmPrimary d-none"><i class="fa fa-compress"></i> Resize</button>
+				<button type="button" id="downloadButton" class="btn btn-sm btn-pink d-none"><i class="fa-solid fa-download"></i> Download</button>
+			</div>
+		</div>
+	</div>
+</div>
+<datalist id="parentNameList"></datalist>
+</th:block>

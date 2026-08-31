@@ -1,0 +1,93 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('asset-configuration-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.edit.asset.configuration}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.asset.configuration}}" method="post" th:object="${assetCategoryForm}"
+			id="assetCategoryForm">
+			<input type="hidden" th:field="*{id}" th:id="categoryId" />
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.configuration}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<select class="form-select required-input" th:value="*{categoryType}" id="categoryType">
+						<option value="0" th:text="#{message.label.select}+' '+#{message.label.asset.configuration}"></option>
+						<option th:each="assetConfigList : ${assetConfigList}" th:value="${assetConfigList.id}"
+							th:text="${assetConfigList.value}" th:selected="*{categoryType} == ${assetConfigList.id}">
+						</option>
+					</select>
+					<div class="invalid-feedback" th:text="#{message.validation.asset.configuration.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 d-none" id="assetCategoryOrMaintenance">
+					<label class="form-label">
+						<span id="assetTypeLabel"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control asset-config-validation" id="categoryName" th:field="*{categoryName}"
+						th:attr="placeholder=#{message.label.name}" maxlength="64">
+					<div class="invalid-feedback assetCategoryReq errMsg" th:text="#{message.validation.asset.category.required}"></div>
+					<div class="invalid-feedback maintenanceTypeReq errMsg" th:text="#{message.validation.maintenance.type.required}"></div>
+					<div class="invalid-feedback assetCategoryExist errMsg" th:text="#{message.validation.asset.category.exist}"></div>
+					<div class="invalid-feedback maintenanceTypeExist errMsg" th:text="#{message.validation.maintenance.type.exist}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 forCategory">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.shortcode}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control isAlphanumeric asset-shortCode-validation" id="assetCategoryShortcode"
+						th:field="*{assetCategoryShortcode}" th:attr="placeholder=#{message.placeholder.asset.shortcode}"
+						maxlength="4">
+					<div class="invalid-feedback shortcodeErrMsg shortcodeReq" th:text="#{message.validation.asset.shortcode.required}"></div>
+					<div class="invalid-feedback shortcodeErrMsg shortcodeExist" th:text="#{message.validation.asset.shortcode.exist}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 forCategory">
+					<label class="form-label">
+						<span th:text="#{message.label.minor.repair.cost}"></span>
+						<i class="fa-solid fa-indian-rupee-sign"></i>
+					</label>
+					<input type="text" class="form-control isNumberAndDot asset-cost-validation" id="minorRepairCost" th:value="*{minorCostString}" maxlength="10"
+						pattern="\d*" oninput="validateDecimalInput(this, 2)"
+						th:attr="placeholder=#{message.placeholder.minor.repair.cost}">
+					<div class="invalid-feedback" th:text="#{message.validation.minor.cost.length}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 forCategory">
+					<label class="form-label">
+						<span th:text="#{message.label.major.repair.cost}"></span>
+						<i class="fa-solid fa-indian-rupee-sign"></i>
+					</label>
+					<input type="text" class="form-control isNumberAndDot asset-cost-validation" id="majorRepairCost" th:value="*{majorCostString}" maxlength="10"
+						pattern="\d*" oninput="validateDecimalInput(this, 2)"
+						th:attr="placeholder=#{message.placeholder.major.repair.cost}">
+						<div class="invalid-feedback" th:text="#{message.validation.major.cost.length}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 forCategory">
+					<label class="form-label">
+						<span th:text="#{message.label.replacement.cost}"></span>
+						<i class="fa-solid fa-indian-rupee-sign"></i>
+					</label>
+					<input type="text" class="form-control isNumberAndDot asset-cost-validation" id="replacementCost" th:value="*{replacementCostString}" maxlength="10"
+						oninput="validateDecimalInput(this, 2)"
+						th:attr="placeholder=#{message.placeholder.replacement.cost}">
+						<div class="invalid-feedback" th:text="#{message.validation.replacement.cost.length}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 forCategory">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.category.description}"></span>
+					</label>
+					<textarea rows="2" class="form-control" th:field="*{assetCategoryDescription}" id="assetCategoryDescription"
+						th:placeholder="#{message.label.asset.category.description}">
+						</textarea>
+				</div>
+				<input type="hidden" id="categoryType1" th:name="categoryType">
+				<input type="hidden" id="minorRepairCost1" th:name="minorRepairCost">
+				<input type="hidden" id="majorRepairCost1" th:name="majorRepairCost">
+				<input type="hidden" id="replacementCost1" th:name="replacementCost">
+			</div>
+		</form>
+	</modalBody>
+</div>

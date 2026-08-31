@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card main-card mt-4">
+        <div class="card-body themeForm">
+          <form class="themeForm">
+            <div class="row">
+              <div class="col-lg-4">
+                <label class="form-label">
+                  <span th:text="#{message.label.report.type}"></span>
+                  <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                </label>
+                <div class="checkRadio-bg form-control">
+                  <div class="form-check form-check-inline me-4">
+                    <input class="form-check-input required-input" type="radio" id="ledger" value="Ledger" name="reportType" required>
+                    <label class="form-check-label" for="ledger"><span th:text="#{message.label.ledger.report}"></span></label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input required-input" type="radio" id="online" value="Online" name="reportType" required>
+                    <label class="form-check-label" for="online"><span th:text="#{message.label.online}+' Report'"></span></label>
+                  </div>
+                </div>
+                <div class="invalid-feedback" th:text="#{message.validation.report.type.required}"></div>
+              </div>
+              <div class="col-lg-2 mb-3">
+                <label class="form-label" th:text="#{message.label.submitted.from}" for="submittedFromDate"></label>
+                <input type="date" class="form-control" id="submittedFromDate">
+              </div>
+              <div class="col-lg-2 mb-3">
+                <label class="form-label" th:text="#{message.label.submitted.to}" for="submittedToDate"></label>
+                <input type="date" class="form-control" id="submittedToDate">
+              </div>
+              <div class="col-lg-3">
+                <label for="hostelId" class="form-label" th:text="#{message.label.hostel.name}"></label>
+                <select class="form-select" data-live-search="true" name="hostelId" id="hostelId">
+                  <option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+                  <option th:each="hostel : ${hostelList}"
+                          th:value="${hostel.id}"
+                          th:text="${hostel.hostelName}"
+                          th:selected="${hostelId} eq ${hostel.id}">
+                  </option>
+                </select>
+              </div>
+              <div class="col-lg-3" style="margin-top: 38px">
+                <button id="filterData" class="btn btn-lgtblue" type="button" onclick="generateCouponReport()">
+                  <i class="fa-solid fa-database"></i>
+                  <span th:text="#{message.label.get.data}"></span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+  <script th:src="@{/assets/js/reports/hostel-nigt-coupon-report.js}"></script>
+  <script th:inline="javascript">
+    const baseURL = /*[[#{url.hostel.night.coupon.report}]]*/ '';
+    const downloadURL = /*[[#{url.download}]]*/ '';
+  </script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

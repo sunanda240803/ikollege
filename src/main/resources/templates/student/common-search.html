@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form class="themeForm" th:action="@{#{url.common.search}+#{url.save}}" method="post"
+								id="commonSearchSaveId" th:object="${studentDetailsViewDto}">
+								<input type="hidden" id="roleId" th:value="${roleId}">
+							<div class="row mb-3">
+								<div class="col-lg-4 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.select.criteria}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												id="active" th:field="*{searchCriteria}" value="active"
+												th:checked="${searchCriteria == 'active'}" required>
+											<label class="form-check-label" for="active"
+												th:text="#{message.label.search.only.active.students}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												id="all" th:field="*{searchCriteria}" value="all"
+												th:checked="${searchCriteria == 'all'}" required>
+											<label class="form-check-label" for="all"
+												th:text="#{message.label.search.all.students}"></label>
+										</div>
+									</div>
+									<div class="invalid-feedback"
+										th:text="#{message.validation.criteria.required}"></div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.select.field}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<select class="form-select required-input" th:field="*{field}" id="field" required>
+										<option value="0" th:text="#{message.label.select}+' '+#{message.label.select.field}"></option>
+                                        <option th:each="field : ${fieldList}"
+                                                th:value="${field.id}"
+                                                th:text="${field.value}">
+                                        </option>
+									</select>
+									<div class="invalid-feedback"
+										th:text="#{message.validation.field.required}"></div>
+								</div>
+								<div class="col-lg-4 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.search}"></span>
+									</label>
+									<div class="input-group mb-3">
+										<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+										<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+										<input type="text" class="form-control" th:field="*{searchString}"
+											placeholder="Search For..." id="searchString">
+										<button class="btn btn-lgtblue" type="button" onclick="return showStudentList()">
+											<i class="fa-solid fa-database me-1"></i>
+											<span th:text="#{message.button.get.data}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+							<th:block th:if="${form.paginationList != null && form.paginationList.getContent() != null}">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="table-responsive themeTable">
+											<table id="studentList"
+												class="table table-bordered nowrap w-100">
+												<thead>
+													<tr>
+														<th><span th:text="#{message.label.full.name}"></span></th>
+														<th><span th:text="#{message.label.admission.no}"></span></th>
+														<th><span th:text="#{message.label.dob}"></span></th>
+														<th><span th:text="#{message.label.gender}"></span></th>
+														<th class="text-center"><span th:text="#{message.label.vacation}"></span></th>
+														<th class="text-center"><span th:text="#{message.label.day.scholar}"></span></th>
+														<th><span th:text="#{message.label.auth}"></span></th>
+														<th class="text-center"><span th:text="#{message.label.action}"></span></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr
+														th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+														th:each="studentList,iterStat : ${form.paginationList.getContent()}">
+														<td><span th:text="${studentList.studentName}"></span>
+															<input type="hidden" th:name="allStudentsDetailsViewList[__${iterStat.index}__].studentId"
+															th:value="${studentList.studentId}">
+														</td>
+														<td><span th:text="${studentList.studentId}"></span></td>
+														<td><span th:text="${#temporals.format(studentList.dob, #messages.msg('date.format'))}"></span></td>
+														<td><span th:text="${studentList.gender}"></span></td>
+														<td class="text-center"><input type="checkbox"
+															th:name="allStudentsDetailsViewList[__${iterStat.index}__].vacationCategoryStatus"
+															class="form-check-input vacation-checkbox"
+															th:id="'vacationCategory_' + ${iterStat.index}"
+															th:checked="${studentList.vacationCategory == 'Y'}">
+														</td>
+														<td class="text-center"><input type="checkbox"
+															th:name="allStudentsDetailsViewList[__${iterStat.index}__].dayScholarStatus"
+															class="form-check-input"
+															th:id="'dayScholar_' + ${iterStat.index}"
+															th:checked="${studentList.dayScholar == 'Y'}"></td>
+														<td><span th:text="${studentList.auth}"></span></td>
+														<td th:with="status = ${studentList.activeFlag}">
+															<div class="d-flex justify-content-center">
+																<button type="button" class="btn btn-sm btn-outline-bluegray me-2"
+																	data-bs-toggle="tooltip" data-bs-title="View"
+																	th:data-student-id="${studentList.studentId}"
+																	onclick="viewStudentBioData(this);"
+																	th:if="${roleId!=null and (roleId!='Dean'and roleId!='Warden')}">
+																	<i class="fa-solid fa-eye"></i>
+																</button>
+																<a class="btn btn-outline-pink me-2" data-bs-toggle="tooltip"
+								                                     th:title="#{message.label.print.student.bio.data.no.declaration}"
+								                                     th:href="@{#{url.admin.student.bio.data} + #{url.pdf.download} + '/' + ${studentList.studentId} +'/false'}"
+								                                     th:if="${roleId!=null and (roleId=='Dean' or roleId=='Warden' or roleId=='SoftwareAdmin')}">
+								                                      <i class="fa-solid fa-print"></i>
+								                                </a>
+                                                                <button type="button"
+                                                                        th:classappend="${status} == 'N' ? 'btn btn-sm btn-outline-success me-2' : 'btn btn-sm btn-outline-danger me-2'"
+                                                                        data-bs-toggle="tooltip"
+                                                                        th:data-bs-title="${status} == 'N' ? 'Active' : 'Inactive'"
+                                                                        th:data-student-id="${studentList.studentId}"
+                                                                        th:data-student-status="${status}"
+                                                                        onclick="activeOrInactiveStudent(this);">
+                                                                    <i th:classappend="${status} == 'N' ? 'fa-solid fa-lg fa-check-circle' : 'fa-solid fa-lg fa-ban'"></i>
+                                                                </button>
+															</div>
+														</td>
+													</tr>
+													<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+														<td colspan="8" class="text-center"><span
+															th:text="#{message.label.no.data.available}"></span>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+									</div>
+									<input type="hidden" id="tableLength" name="tableLength" th:value="${form.additionalParam['tableLength']}" />
+									<th:block th:if="${form.paginationList != null && form.paginationList.getContent() != null
+										&& !#lists.isEmpty(form.paginationList.getContent())}">
+										<div class="col-lg-12 d-lg-flex align-items-lg-center justify-content-lg-end">
+											<div class="d-flex align-items-center justify-content-center mb-3">
+												<button type="button" class="btn btn-blue px-4 me-3"
+													id="saveForm" onclick="validateForm()">
+													<i class="fa-solid fa-rotate me-1"></i> <span
+														th:text="#{message.button.update}"></span>
+												</button>
+											</div>
+										</div>
+									</th:block>
+								</div>
+							</th:block>
+						</form>
+						<form class="themeForm" method="post" id="studentBioData"></form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+    <th:block th:replace="~{common/modal/info-modal ::
+            contents(id='activeInactiveStudent',headerText=#{message.label.confirmation},bodyText= '')}">
+    </th:block>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/student/common-search.js}"></script>
+		<script th:inline="javascript">
+			const getStudentRegistrationURL = /*[[#{url.admin.student.bio.data}]]*/ '';
+			const baseURL = /*[[#{url.common.search}]]*/ '';
+			const updateURL = /*[[#{url.update}]]*/ '';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+</html>

@@ -1,0 +1,58 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="content(rolemenu, index, index2, index3)">
+    <ul th:if="${index != null}">
+        <input type="hidden" th:name="|submenu[${index.index}].submenu[${index2.index}].id|" th:value="${rolemenu.id}"/>
+        <input type="hidden" th:name="|submenu[${index.index}].submenu[${index2.index}].menu.menuId|" th:value="${rolemenu.menu.menuId}"/>
+        <input type="hidden" th:name="|submenu[${index.index}].submenu[${index2.index}].menu.menuHeading|" th:value="${rolemenu.menu.menuHeading}"/>
+
+        <th:block  th:each="submenu, subindex: ${rolemenu.submenu}">
+            <th:block th:if="${rolemenu.submenu.size() > 1 && subindex.index == 0}">
+                <li class="">
+                    <div class="form-check form-check-inline col-m">
+                        <label class="form-check-label"
+                               th:for="'schoolInfoChk_' + ${submenu.menu.menuId} + '_0'">
+                            <input th:class="'form-check-input submenu_' + ${rolemenu.menu.menuId}"
+                                   type="checkbox" value="check"
+                                   th:attr="data-menu=${rolemenu.menu.menuId}"
+                                   th:onchange="'selectAll(this)'"
+                                   th:id="'schoolInfoChk_' + ${submenu.menu.menuId} + '_0'" >
+                            <span th:text="'Select All'"></span>
+                        </label>
+                    </div>
+                </li>
+            </th:block>
+            <li class="">
+                <div class="form-check form-check-inline col-m">
+                    <input th:name="'submenu[' + ${index.index} + '].submenu[' + ${index2.index} + ']' +
+                            (${index3} != null ? ('.submenu[' + ${index3.index} + ']') : '') + '.submenu[' + ${subindex.index} + '].id'"
+                           type="hidden" th:value="${submenu.id}"/>
+                    <input th:name="'submenu[' + ${index.index} + '].submenu[' + ${index2.index} + ']' +
+                            (${index3} != null ? ('.submenu[' + ${index3.index} + ']') : '') + '.submenu[' + ${subindex.index} + '].menu.menuId'"
+                           type="hidden" th:value="${submenu.menu.menuId}"/>
+                    <input th:name="'submenu[' + ${index.index} + '].submenu[' + ${index2.index} + ']' +
+                            (${index3} != null ? ('.submenu[' + ${index3.index} + ']') : '') + '.submenu[' + ${subindex.index} + '].menu.menuHeading'"
+                           type="hidden" th:value="${submenu.menu.menuHeading}"/>
+                    <label class="form-check-label"
+                           th:for="'schoolInfoChk_' + ${submenu.menu.menuId} + '_' + ${subindex.index + 1}">
+                        <i th:class="${submenu.menu.menuType == 'report'} ? 'ph-duotone ph-list-checks' : 'ph-duotone ph-diamonds-four'"></i>
+                        <input th:class="'form-check-input submenu_' + ${rolemenu.menu.menuId}"
+                               type="checkbox" value="check"
+                               th:attr="data-menu=${rolemenu.menu.menuId}"
+                               th:checked="${submenu.checked}"
+                               th:onchange="'selectAll(this)'"
+                               onclick="this.value = this.checked"
+                               th:name="'submenu[' + ${index.index} + '].submenu[' + ${index2.index} + ']' +
+                            (${index3} != null ? ('.submenu[' + ${index3.index} + ']') : '') + '.submenu[' + ${subindex.index} + '].checked'"
+                               th:value="${submenu.checked}"
+                               th:id="'schoolInfoChk_' + ${submenu.menu.menuId} + '_' + ${subindex.index + 1}" >
+                        <span th:text="${submenu.menu.menuHeading}"></span>
+                    </label>
+                </div>
+            </li>
+            <th:block th:if="${!#lists.isEmpty(submenu.submenu)}">
+                <div class="ms-4">
+                    <th:block th:replace="~{adminSettings/role-sub-menu-privilege::content(${submenu}, ${index}, ${index2}, ${subindex})}"></th:block>
+                </div>
+            </th:block>
+        </th:block>
+    </ul>
+</th:block>

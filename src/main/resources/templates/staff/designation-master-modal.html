@@ -1,0 +1,35 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('designation-master-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader> <span
+		th:text="'Add / Edit Designation Master'"></span> </modalHeader>
+	<modalBody>
+	<form class="themeForm" th:action="@{#{url.designation.master}}"
+		method="post" th:object="${staffDesignationMasterDto}"
+		id="designationMasterForm">
+		<input type="hidden" th:value="${staffDesignationMasterDto?.id}"
+			th:name="id" th:id="designationId" />
+		<div class="row">
+			<div class="col-lg-6 mb-3">
+				<label class="form-label"> <span
+					th:text="#{message.label.designation.name}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label> <input type="text" class="form-control" id="designationName"
+					th:name="designationName"  maxlength="25"
+					th:value="${staffDesignationMasterDto.designationName}"
+					th:placeholder="#{message.placeholder.designation.name}">
+				<div class="invalid-feedback designationNameReq"
+					th:text="#{message.validation.designation.name.required}"></div>
+				<div class="invalid-feedback designationNameExist d-none"
+					th:text="#{message.validation.designation.name.exist}"></div>
+				<div class="invalid-feedback designationNameInvalid d-none"
+					th:text="#{message.validation.designation.name.alphabetic}"></div>
+			</div>
+
+
+		</div>
+
+	</form>
+
+	</modalBody>
+</div>

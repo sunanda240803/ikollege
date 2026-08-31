@@ -1,0 +1,36 @@
+	<div class="col-lg-2 col-md-6 col-sm-12 mb-3">
+		<label class="form-label">
+			<span th:text="#{message.label.dining.from.date}"></span>
+			<th:block th:replace="~{common/template/mandatory-symbol}" />
+		</label>
+		<th:block th:if="*{requestId == null}">
+			<input type="date" class="form-control future-date required-input" id="diningFromDate" required
+				th:field="*{diningFrom}" th:classappend="${#fields.hasErrors('diningFrom')} ? 'is-invalid' : ''">
+			<div class="invalid-feedback backendErrors" th:errors="*{diningFrom}"></div>
+			<div class="invalid-feedback-frontEnd" th:text="#{message.validation.dining.from.date.required}"></div>
+		</th:block>
+		<th:block th:if="*{requestId != null}">
+			<div class="form-control form-graybox">
+				<span th:text="*{#temporals.format(diningFrom, #messages.msg('date.format'))}" />
+			</div>
+		</th:block>
+	</div>
+	<div class="col-lg-2 col-md-6 col-sm-12 mb-3">
+		<label class="form-label">
+			<span th:text="#{message.label.dining.to.date}"></span>
+			<th:block th:replace="~{common/template/mandatory-symbol}" />
+		</label>
+		<th:block th:if="*{requestId == null}">
+			<input type="date" class="form-control future-date" id="diningToDate" required th:field="*{diningTo}"
+				th:classappend="${#fields.hasErrors('diningTo')} ? 'is-invalid' : ''">
+			<div class="invalid-feedback backendErrors" th:errors="*{diningTo}"></div>
+			<div class="invalid-feedback-frontEnd" th:text="#{message.validation.dining.to.date.required}"></div>
+			<div class="invalid-req-feedback d-none" th:text="#{message.validation.dining.to.date.required}"></div>
+			<div class="invalid-future-feedback d-none" th:text="#{message.validation.dining.to.date}"></div>
+		</th:block>
+		<th:block th:if="*{requestId != null}">
+			<div class="form-control form-graybox">
+				<span th:text="*{#temporals.format(diningTo, #messages.msg('date.format'))}" />
+			</div>
+		</th:block>
+	</div>

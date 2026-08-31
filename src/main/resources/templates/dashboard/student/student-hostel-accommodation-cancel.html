@@ -1,0 +1,28 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('cancel-request-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'sm')}">
+	<modalHeader> <span
+		th:text="#{message.label.cancel.request}"></span> </modalHeader>
+	<modalBody>
+		<form class="themeForm"
+			th:action="@{#{url.hostel.accommodation}+#{url.cancel}}" method="post"
+			id="cancelRequestForm" th:object="${studentAppointmentRequestDto}">
+			<input type="hidden" th:name="requestId" th:value="${requestId}" th:id="id" />
+			<input type="hidden" th:name="status" th:value="${status}" th:id="status" />
+			<div class="row">
+				<div class="col-lg-12 mb-3">
+					<th:block th:if="${status != 'Cancelled'}">
+						<label class="form-label">
+							<span th:text="#{message.label.reason}"></span> 
+							<th:block th:replace="~{common/template/mandatory-symbol}" />
+						</label>
+						<textarea class="form-control required-input" id="cancelDescription" th:name="cancelDescription"
+							th:attr="placeholder=#{message.placeholder.reason}" required>
+	            		</textarea>
+						<div class="invalid-feedback" th:text="#{message.validation.reason.required}"></div>
+					</th:block>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header
+		th:replace="~{common/student-dashboard-header:: title(${headerForm},'Hostel Enrollment Payments','Dashboard','Add New',null,null,'Back',null,#{url.dashboard}+#{url.student},#{url.hostel.payment})}"></header>
+
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                        	<th:block th:replace="~{common/template/note :: noteContent('message.label.note', null, ~{::noteContent})}">
+								 <noteContent>
+									  <ul>
+	                                    <li th:text="#{message.hostel.payment.note.1}+${officeNo}"></li>
+	                                    <li th:text="#{message.hostel.payment.note.2}"></li>
+	                                </ul>
+								</noteContent>
+							</th:block>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title"><span th:text="#{message.label.hostel.payment.list}"></span></h2>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+							<span class="table-responsive themeTable">
+								<table id="studentComplaintListDataTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+		                                    <th th:text="#{message.label.paymentType}"></th>
+		                                    <th th:text="#{message.label.payment.referenceno}"></th>
+		                                    <th th:text="#{message.label.payment.date}"></th>
+		                                    <th class="text-end">
+												<span th:text="#{message.label.payment.amount}"></span>
+													<i class="fa-solid fa-indian-rupee-sign"></i>
+											</th>
+                                    		<th th:text="#{message.label.ifsc.code}"></th>
+                                    		<th th:text="#{message.label.bankName}"></th>
+                                    		<th th:text="#{message.label.branchName}"></th>
+                                    		<th th:text="#{message.label.utr.loanaccno}"></th>
+                                    		<th th:text="#{message.label.status}"></th>
+                                    		<th th:text="#{message.label.approval.status}"></th>
+                                    		<th class="text-center" th:text="#{message.label.action}"></th>
+                                    	</tr>
+									</thead>
+									<tbody>
+								    	 <tr th:if="${studentHostelPayments ne null and !studentHostelPayments.isEmpty()}"
+                                             th:each="payment : ${studentHostelPayments}">
+											 <td th:with="ifpp=#{message.label.icollect},icollect = #{message.label.icollect.payment}" th:text="${payment.paymentType.value.equalsIgnoreCase(icollect) ? ifpp : payment.paymentType.value}"></td>
+											 <td th:text="${payment.paymentReferenceNo ne null and !payment.paymentReferenceNo.isEmpty()?payment.paymentReferenceNo:'-'}"></td>
+											 <td th:with="dateFormat=#{date.format}"
+                                                 th:text="${#temporals.format(payment.paymentDate, dateFormat)}"></td>
+											 <td class="currency text-end"
+													 th:text="${payment.paymentAmount ne null and payment.paymentAmount > 0?payment.paymentAmount:'-'}"></td>
+											 <td th:text="${payment.ifscCode ne null and !payment.ifscCode.isEmpty()?payment.ifscCode:'-'}"></td>
+											 <td th:text="${payment.bankName ne null and !payment.bankName.isEmpty()?payment.bankName:'-'}"></td>
+											 <td th:text="${payment.branchName ne null and !payment.branchName.isEmpty()?payment.branchName:'-'}"></td>
+											 <td th:text="${payment.loanAccNo ne null and payment.loanAccNo > 0?payment.loanAccNo:'-'}"></td>
+											 <td th:text="${payment.studentConfirmStatus}"></td>
+											 <td th:text="${payment.hostelOfficeEnrollment}"></td>
+											 <td class="text-center">
+												 <div class="d-flex justify-content-center" th:if="${payment.hostelOfficeEnrollment eq 'Validating'}">
+													 <button type="button" class="btn btn-outline-danger btn-sm" th:data-id="${payment.id}"
+															 data-bs-toggle="tooltip" th:id="${'deletePayment_'+payment.id}"
+															 onclick="deleteHostelPayment(this);" th:data-bs-title="#{message.label.delete}">
+														 <i class="fa-solid fa-trash-can"></i>
+													 </button>
+												 </div>
+												 <span class="d-flex justify-content-center"
+													   th:unless="${payment.hostelOfficeEnrollment eq 'Validating'}">
+													 -
+												 </span>
+											 </td>
+								    	</tr>
+								    	<tr th:unless="${studentHostelPayments ne null and !studentHostelPayments.isEmpty()}">
+											<td colspan="11" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+									</tbody>
+								</table>
+							</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:id="modalDiv"></div>
+
+<!-- Delete Modal-->
+<th:block th:replace="~{common/modal/delete-modal ::
+   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+</th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/hostel-payment.js}"></script>
+    <script th:inline="javascript">
+		const baseURL = /*[[#{url.hostel.payment}]]*/ '';
+		const ifscURL = /*[[#{url.ifsc}]]*/ '';
+		const existsURL = /*[[#{url.exist}]]*/ '';
+	</script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

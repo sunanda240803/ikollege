@@ -1,0 +1,53 @@
+.card-header {
+    text-align: center !important;
+}
+
+.show-list .card-header .card-title {
+    color: white;
+    background: linear-gradient(90deg, #3432de 0%, #020082);
+    font-weight: bold;
+}
+
+.order-summary .card-header .card-title {
+    color: #0300c4;
+    background: linear-gradient(90deg, #ffffff 0%, #e7e7e7);
+    font-weight: bold;
+}
+
+.order-summary .card-body {
+    min-height: 350px !important;
+}
+
+.order-summary .card-body .total-amount label {
+    font-weight: 700!important;
+    color: var(--bs-primary);
+    font-size: 1.25rem;
+}
+
+.order-summary .card-body .total-amount span {
+    font-weight: 700!important;
+    color: var(--bs-secondary);
+    font-size: 1.25rem;
+}
+
+.order-summary .card-footer .contact-info a {
+    color: var(--bs-secondary-color);
+    text-decoration: underline;
+}
+
+.order-summary .card-footer .contact-info label {
+    font-weight: 700 !important;
+    color: #0300c4 !important;
+}
+.card-header img {
+
+    overflow-clip-margin: content-box;
+    overflow: clip;
+    vertical-align: middle;
+    max-width: 100%;
+}
+
+.left-right-text {
+    margin-left: 0!important;
+    margin-bottom: 0.5rem!important;
+}

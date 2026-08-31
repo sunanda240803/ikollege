@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form action="#" method="get" id="messBillSummary" th:object="${messBillSummary}">
+							<div class="row mb-4">
+								<div class="col-lg-3 mb-3">
+									<label for="messPeriodId" class="form-label"> 
+										<span th:text="#{message.label.mess.allotted.list.period}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<select id="messPeriod" class="selectpicker required-select-input" th:field="*{messPeriod}"
+										data-live-search="true" required>
+						                 <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.allotted.list.period}"></option>
+										<option th:each="messPeriod : ${messPeriodList}" th:value="${messPeriod.id}"
+											th:text="${#temporals.format(messPeriod.diningFromDate, #messages.msg('date.format'))} +' to ' +
+						               	 	${#temporals.format(messPeriod.diningToDate, #messages.msg('date.format'))}">
+										</option>
+									</select>
+									<div class="invalid-feedback" th:text="#{message.label.mess.allotted.list.period} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label for="messListName" class="form-label">
+										<span th:text="#{message.label.mess.name}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label> 
+									<select id="messName" class="selectpicker required-select-input" th:field="*{messName}"
+										data-live-search="true" required>
+						                 <option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+										<option th:each="messMaster : ${messMasterList}"
+											th:value="${messMaster.id}" th:text="${messMaster.messName}">
+										</option>
+									</select>
+									<div class="invalid-feedback" th:text="#{message.label.mess.name} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-auto mt-3">
+									<button id="getData" class="btn btn-lgtblue mt-4" type="button" onclick="getMessBillSummaryReport()">
+										<i class="fa-solid fa-file-excel"></i>
+										<span th:text="#{message.label.get.report}"></span>
+									</button>
+								</div>
+								<div class="col-auto mt-3">
+									<button id="getData" class="btn btn-lgtblue mt-4" type="button" onclick="getMessBillSummaryPdf()">
+										<i class="fa-solid fa-print"></i>
+										<span th:text="#{message.label.get.pdf}"></span>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div th:id="modalDiv"></div>
+	<div th:id="modalMailDiv"></div>
+	
+	<!-- Resend Email Modal-->
+	<th:block th:replace="~{common/modal/resend-mail-modal ::
+	   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.mess.bill.summary.mail})}">
+	</th:block>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.mess.bill.summary.report}]]*/'';
+			const downloadReportURL = /*[[#{url.download.mess.bill.summary.report}]]*/'';
+			const downloadPdfURL = /*[[#{url.pdf.download}]]*/'';
+			const sendMailURL = /*[[#{url.mess.mail}]]*/'';
+			const updateURL = /*[[#{url.update}]]*/'';
+      		const messAllottedURL = /*[[#{url.mess.allotted.list}]]*/ '';
+      		const checkStudentInMessPeriodURL = /*[[#{url.student.in.mess.period}]]*/ '';
+      		const studentURL = /*[[#{url.student}]]*/ '';
+		</script>
+		<script th:src="@{/assets/js/mess/mess-bill-summary-report.js}"></script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

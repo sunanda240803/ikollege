@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}">
+	<!-- Custom styling for the expand/collapse functionality -->
+	<link rel="stylesheet" th:href="@{/assets/css/hostel/checker-approval.css}">
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- Main Content -->
+<main id="main" class="main">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card main-card mt-4">
+				<div class="card-body themeForm">
+					<form id="voucherForm" th:action="@{#{url.transaction.checker.approval.save.api}}" method="post">
+						<div class="row mb-3">
+							<div class="d-flex justify-content-end">
+							</div>
+						</div>
+					</form>
+					<div class="mb-4">
+						<div class="table-responsive themeTable">
+							<table id="HostelListDataTable" class="table table-bordered nowrap w-100">
+								<thead>
+								<tr>
+									<th><span th:text="#{message.label.transaction.checker.approval.slNo}"></span></th>
+									<th class="text-center"><span th:text="#{message.label.transaction.checker.approval.voucher.no}"></span></th>
+									<th><span th:text="#{message.label.transaction.checker.approval.voucher.date}"></span></th>
+									<th class="text-center"><span th:text="#{message.label.transaction.checker.approval.account.head}"></span></th>
+									<th class="text-center"><span th:text="#{message.label.transaction.checker.approval.description}"></span></th>
+									<th class="text-center"><span th:text="#{message.label.transaction.checker.approval.debit.or.credit}"></span></th>
+									<th class="text-center"><span th:text="#{message.label.transaction.checker.approval.amount}"></span></th>
+									<th class="text-center">
+										<div class="d-flex flex-column align-items-center ">
+									        <!-- Action text -->
+									        <span th:text="#{message.label.action}"></span>
+									        <!-- Select all checkbox -->
+									        <div class="form-check"
+									             data-bs-toggle="tooltip"
+									             data-bs-placement="top"
+									             th:title="#{message.label.select.all}">
+									            <input type="checkbox"
+									                   class="form-check-input"
+									                   id="selectAllVouchers"
+									                   onclick="toggleSelectAll(this)">
+									        </div>
+									     </div>
+									</th>
+								</tr>
+								</thead>
+								<tbody>
+								<th:block th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+										  th:each="item : ${form.paginationList.getContent()}">
+
+									<!-- Debit Row (Primary) -->
+									<tr th:if="${item.debitRecord != null && item.debitRecord.size > 0 }">
+										<td th:text="${item.slNo}" rowspan="2" th:id="${'slno_' + item.voucherNumber}"></td>
+										<td th:text="${item.voucherNumber}" rowspan="2" th:id="${'voucherno_' + item.voucherNumber}"></td>
+										<td th:text="${item.debitRecord[0].voucherDate}"></td>
+										<td th:text="${item.debitRecord[0].accountHead}"></td>
+										<td th:text="${item.debitRecord[0].description}"></td>
+										<td class="text-center" th:text="${item.debitRecord[0].debitOrCredit}"></td>
+										<td class="text-end">
+                                            <span><i class="fa-solid fa-indian-rupee-sign"></i>
+                                                <span th:text="${item.debitRecord[0].amount}"></span>
+                                            </span>
+										</td>
+										<td class="text-center" rowspan="2" th:id="${'action_' + item.voucherNumber}">
+											<div class="d-flex justify-content-center">
+												<button type="button" class="btn btn-outline-secondary btn-sm toggle-btn me-2"
+														data-bs-toggle="tooltip"
+														th:id="${'toggle_' + item.voucherNumber}"
+														onclick="toggleDetails(this);"
+														th:data-voucher-no="${item.voucherNumber}"
+														th:data-total-rows="${item.debitRecord.size() + item.creditRecord.size()}"
+														data-bs-title="Show All Entries">
+													<i class="fa-solid fa-chevron-down toggle-icon"></i>
+												</button>
+												<div class="form-check form-check-inline mx-2">
+													<label class="d-flex align-items-center" data-bs-toggle="tooltip" title="Select">
+														<input type="checkbox"
+															   class="form-check-input me-2 voucher-checkbox"
+															   style="width: 2em !important; height: 2em !important;"
+															   th:value="${item.voucherNumber}"
+															   name="selectedVouchers" />
+													</label>
+												</div>
+												<button type="button" class="btn btn-outline-danger btn-sm"
+														data-bs-toggle="tooltip" th:id="${'deleteReq_'+item.voucherNumber}"
+														onclick="deleteCheckerApproval(this);"
+														th:data-voucher-no="${item.voucherNumber}" data-bs-title="Delete">
+													<i class="fa-solid fa-trash-can"></i>
+												</button>
+											</div>
+										</td>
+									</tr>
+									<!-- Credit Row (Primary) -->
+									<tr th:if="${item.creditRecord != null && item.creditRecord.size > 0}">
+                                        <td th:text="${item.slNo}" th:if="${item.debitRecord == null || item.debitRecord.size == 0 }"></td>
+                                        <td th:text="${item.voucherNumber}" th:id="${'voucherno_' + item.voucherNumber}" th:if="${item.debitRecord == null || item.debitRecord.size == 0 }"></td>
+										<td th:text="${item.creditRecord[0].voucherDate}"></td>
+										<td th:text="${item.creditRecord[0].accountHead}"></td>
+										<td th:text="${item.creditRecord[0].description}"></td>
+										<td class="text-center" th:text="${item.creditRecord[0].debitOrCredit}"></td>
+										<td class="text-end">
+											<i class="fa-solid fa-indian-rupee-sign"></i>
+											<span th:text="${item.creditRecord[0].amount}"></span>
+										</td>
+									</tr>
+
+									<!-- Additional Debit Rows (Hidden by default) -->
+									<th:block th:each="debit, iter : ${item.debitRecord}" th:if="${iter.index > 0}">
+										<tr class="expandable-row" th:id="${'debit_' + item.voucherNumber + '_' + iter.index}">
+											<td th:text="${debit.voucherDate}"></td>
+											<td th:text="${debit.accountHead}"></td>
+											<td th:text="${debit.description}"></td>
+											<td class="text-center" th:text="${debit.debitOrCredit}"></td>
+											<td class="text-end">
+                                                <span><i class="fa-solid fa-indian-rupee-sign"></i>
+                                                    <span th:text="${debit.amount}"></span>
+                                                </span>
+											</td>
+										</tr>
+									</th:block>
+
+									<!-- Additional Credit Rows (Hidden by default) -->
+									<th:block th:each="credit, iter : ${item.creditRecord}" th:if="${iter.index > 0}">
+										<tr class="expandable-row" th:id="${'credit_' + item.voucherNumber + '_' + iter.index}">
+											<td th:text="${credit.voucherDate}"></td>
+											<td th:text="${credit.accountHead}"></td>
+											<td th:text="${credit.description}"></td>
+											<td class="text-center" th:text="${credit.debitOrCredit}"></td>
+											<td class="text-end">
+												<i class="fa-solid fa-indian-rupee-sign"></i>
+												<span th:text="${credit.amount}"></span>
+											</td>
+										</tr>
+									</th:block>
+								</th:block>
+								<tr th:if="${form.paginationList == null || form.paginationList.getContent().size() eq 0}">
+									<td colspan="8" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<div th:id="modalDiv"></div>
+<th:block th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}"></th:block>
+
+<!-- Footer and Scripts -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/hostel/checker-approval.js}"></script>
+
+	<script th:inline="javascript">
+		const checkerApprovalURL = /*[[#{url.transaction.checker.approval}]]*/ '';
+
+
+	</script>
+</th:block>
+</body>
+</html>

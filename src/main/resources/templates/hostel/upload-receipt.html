@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form th:action="@{#{url.upload.receipts}+#{url.upload}}" method="post" th:object="${uploadReceiptsDto}"
+							enctype="multipart/form-data" id="uploadReceiptBulkUpload">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.bulk.upload.download}"></span>
+											</h2>
+										</div>
+									</div>
+									<div class="col-lg-12 mb-3 d-flex align-items-center">
+										<span class="fs-5"> 
+											<u class="text-tmPrimary"> 
+												<a href="#" onclick="downloadExcelTemplate();"
+													th:text="#{message.label.click.here.caps}"> 
+												</a>
+											</u> 
+											<span th:text="' '+#{message.label.download.excel.template.for.upload.receipts}"></span>
+										</span>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.bulk.upload.file.header}"></span>
+											</h2>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-12 mb-3" id="documentUploadSection">
+											<th:block th:replace="~{common/template/drag-drop-file-upload-template::contents('uploadFile', 'file',
+												${#messages.msg('message.accepted.document.types.xl')}, 'uploadDoc', null, 
+												${#messages.msg('message.drag.drop.here.upload.receipts.document')})}">
+											</th:block>
+		                                    <div class="selectFile2 d-none">
+		                                    	<span class="text-danger" th:text="#{message.validation.choose.file}"></span>
+		                                    </div>
+											<div class="validFile d-none">
+												<span class="text-danger" th:text="#{message.validation.invalid.file.format}"></span>
+											</div>
+										</div>
+										<div class="col-lg-12">
+											<div class="text-danger d-flex align-items-center errorText" th:if="${uploadReceiptsDto != null
+						    			&& uploadReceiptsDto.errorList != null && !uploadReceiptsDto.errorList.isEmpty()}">
+												<ul>
+													<li th:each="error : ${uploadReceiptsDto.errorList}">
+														<span th:text="${error}" class="text-danger"></span>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row mb-4">
+								<div class="col-lg-9 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.receipt.type}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" th:classappend="${#fields.hasErrors('receiptType')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="receiptType" id="feeReceipt" value="fee" required 
+												th:checked="${uploadReceiptsDto.receiptType == 'fee'}"/> 
+											<label class="form-check-label" for="feeReceipt" th:text="#{message.label.fee.receipt}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="receiptType" th:checked="${uploadReceiptsDto.receiptType == 'loan'}"
+												id="loanReceipt" value="loan" required />
+											<label class="form-check-label" for="loanReceipt" th:text="#{message.label.loan.receipt}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="receiptType" th:checked="${uploadReceiptsDto.receiptType == 'subsidy'}"
+												id="subsidyReceipt" value="subsidy" required />
+											<label class="form-check-label" for="subsidyReceipt" th:text="#{message.label.subsidy.receipt}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="receiptType" th:checked="${uploadReceiptsDto.receiptType == 'mess'}"
+												id="messBill" value="mess" required />
+											<label class="form-check-label" for="messBill" th:text="#{message.label.mess.bill}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="receiptType" th:checked="${uploadReceiptsDto.receiptType == 'rebate'}"
+												id="messRebate" value="rebate" required />
+											<label class="form-check-label" for="messRebate" th:text="#{message.label.mess.rebate}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio"
+												name="receiptType" th:checked="${uploadReceiptsDto.receiptType == 'dayScholar'}"
+												id="dayScholar" value="dayScholar" required />
+											<label class="form-check-label" for="dayScholar" th:text="#{message.label.day.scholar}"></label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{receiptType}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.receipt.type}+' '+ #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3 form-group-upload">
+									<label for="voucherDate" class="form-label">
+										<span th:text="#{message.label.voucher.date}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="date" id="voucherDate" class="form-control required-input" required
+										th:field="*{date}" th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''">
+									<div class="invalid-feedback backendErrors" th:errors="*{date}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.voucher.date} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-6 mb-3 form-group-upload feeTypeSection">
+									<!-- ledger -->
+									<label class="form-label text-capitalize">
+										<span th:text="#{message.label.fee.types}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" th:classappend="${#fields.hasErrors('feeTypes')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" name="feeTypes"
+												th:checked="${uploadReceiptsDto.feeTypes} == #{message.option.hostel.fee}"
+												id="messFee" th:value="#{message.option.hostel.fee}" required /> 
+											<label class="form-check-label" for="messFee" th:text="#{message.label.hostel.fee}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" name="feeTypes"
+												th:checked="${uploadReceiptsDto.feeTypes} == #{message.option.dining.fee}"
+												id="diningFee" th:value="#{message.option.dining.fee}" required /> 
+											<label class="form-check-label" for="diningFee" th:text="#{message.label.dining.fee}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" name="feeTypes"
+												th:checked="${uploadReceiptsDto.feeTypes} == #{message.option.optional.fee}"
+												id="optionalFee" th:value="#{message.option.optional.fee}" required />
+											<label class="form-check-label" for="optionalFee" th:text="#{message.label.optional.fee}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" name="feeTypes"
+												th:checked="${uploadReceiptsDto.feeTypes} == #{message.option.vacation.fee}"
+												id="vacationFee" th:value="#{message.option.vacation.fee}" required /> 
+											<label class="form-check-label" for="vacationFee" th:text="#{message.label.vacation.fee}"></label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{feeTypes}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.fee.types}+' '+ #{message.validation.is.required}"></div>
+								</div>
+
+								<div class="col-lg-3 mb-3 form-group-upload">
+									<label class="form-label text-capitalize">
+										<span th:text="#{message.label.select.book.type}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" th:classappend="${#fields.hasErrors('bookType')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" name="bookType"
+												th:checked="${uploadReceiptsDto.bookType == 'MS'}"
+												id="messOption" value="MS" required/> 
+											<label class="form-check-label" for="messOption" th:text="#{message.label.mess}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" name="bookType"
+												th:checked="${uploadReceiptsDto.bookType == 'CC'}"
+												id="cardOption" value="CC" required /> 
+											<label class="form-check-label" for="cardOption" th:text="#{message.label.card}"></label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{bookType}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.select.book.type}+' '+ #{message.validation.is.required}"></div>
+								</div>
+
+								<div class="col-lg-3 mb-3 form-group">
+									<label for="accountHead" class="form-label accountHead">
+										<span th:text="#{message.label.account.head}"></span> 
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label> 
+									<select id="accountHead" class="selectpicker required-select-input accountHead"
+										th:field="*{accHead}" data-live-search="true" required
+										th:classappend="${#fields.hasErrors('accHead')} ? 'is-invalid' : ''">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.account.head}"></option>
+										<option th:each="accHead : ${accHeadList}" th:value="${accHead.id.acchead}" th:text="${accHead.accname}"
+											th:selected="${accHead.id.acchead == accHead}">
+										</option>
+									</select>
+									<div class="invalid-feedback backendErrors" th:errors="*{accHead}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.account.head} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+
+								<div class="col-lg-3 form-group mb-3">
+									<label for="bank" class="form-label bank">
+										<span th:text="#{message.label.bank}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<select id="bank" class="selectpicker required-select-input bank"
+										th:field="*{bank}" data-live-search="true" required
+										th:classappend="${#fields.hasErrors('bank')} ? 'is-invalid' : ''">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.account.head}"></option>
+										<option th:each="bank : ${bankList}" th:value="${bank.id.acchead}" th:text="${bank.accname}"></option>
+									</select>
+									<div class="invalid-feedback backendErrors" th:errors="*{bank}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.bank} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label for="fromDate" class="form-label">
+										<span th:text="#{message.label.from.date}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label> 
+									<input type="date" id="fromDate" class="form-control required-input" required th:field="*{fromDate}" 
+										th:classappend="${#fields.hasErrors('fromDate')} ? 'is-invalid' : ''">
+									<div class="invalid-feedback backendErrors" th:errors="*{fromDate}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.from.date} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label for="toDate" class="form-label">
+										<span th:text="#{message.label.to.date}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label> 
+									<input type="date" id="toDate" class="form-control required-input" th:field="*{toDate}"
+										th:classappend="${#fields.hasErrors('toDate')} ? 'is-invalid' : ''" required>
+									<div class="invalid-feedback backendErrors" th:errors="*{toDate}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.to.date} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label for="description" class="form-label">
+										<span th:text="#{message.label.description}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<textarea id="description" class="form-control required-input" th:field="*{description}"
+										th:placeholder="#{message.placeholder.description}" required
+										th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''">
+									</textarea>
+									<div class="invalid-feedback backendErrors" th:errors="*{description}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.description} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+								<div class="col-lg-12">
+									<div class="d-flex align-items-center justify-content-end">
+										<button type="button" id="uploadFileButton" onclick="return validateFile()" class="btn btn-purple px-4 me-2">
+											<i class="fa fa-upload" aria-hidden="true"></i>
+											<span th:text="#{message.button.upload.file}"></span>
+										</button> 
+									</div>
+								</div>
+							</div>
+							<hr>
+							<th:block th:replace="~{common/log-content::content(${logTag})}"></th:block>
+						</form>
+						<div class="row">
+							<div class="col-lg-12">
+								<h2 class="tmsub-title">
+									<span class="mb-3" th:text="#{message.label.details}"></span>
+								</h2>
+							</div>
+						</div>
+						<div class="row mb-4" id="listDetailsId">
+							<div class="col-lg-2 mb-3">
+								<label for="csvFrmDate" class="form-label">
+									<span th:text="#{message.label.from.date}"></span>
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label> 
+								<input type="date" id="csvFrmDate" class="form-control additional-param"
+									th:value="${fromDate}" name="fromDate" required>
+								<div class="invalid-feedback-frontEnd" th:text="#{message.label.from.date}+' '+ #{message.validation.is.required}"></div>
+							</div>
+							<div class="col-lg-2 mb-3">
+								<label for="csvToDate" class="form-label">
+									<span th:text="#{message.label.to.date}"></span>
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label> 
+								<input type="date" id="csvToDate" class="form-control additional-param"
+									th:value="${toDate}" name="toDate" required>
+								<div class="invalid-feedback-frontEnd" th:text="#{message.label.to.date}+' '+ #{message.validation.is.required}"></div>
+							</div>
+							<div class="col-lg-3 mb-3">
+								<label class="form-label">
+									<span th:text="#{message.label.select.book.type}"></span>
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label>
+								<div class="checkRadio-bg form-control">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input additional-param" type="radio"
+											name="bookType" th:checked="${bookType == 'mess'}"
+											id="messFilter" value="mess" required/> 
+										<label class="form-check-label" for="messFilter"
+											th:text="#{message.label.mess}">
+										</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input additional-param" type="radio"
+											name="bookType" th:checked="${bookType == 'card'}"
+											id="cardFilter" value="card" required/> 
+										<label class="form-check-label" for="cardFilter"
+											th:text="#{message.label.card}">
+										</label>
+									</div>
+								</div>									
+								<div class="invalid-feedback-frontEnd" th:text="#{message.label.select.book.type}+' '+ #{message.validation.is.required}"></div>
+							</div>
+
+							<div class="col-lg-3 mb-3">
+								<label class="form-label" for="receiptTypeList" th:text="#{message.label.receipt.type}"></label>
+								<select class="form-select additional-param" name="receiptTypeList" id="receiptTypeList">
+									<option value="" th:text="#{message.label.select}+' '+#{message.label.receipt.type}"></option>
+									<option value="ifpp_payments" th:selected="${receiptTypeList == 'ifpp_payments'}" th:text="#{message.label.fee.receipt}"></option>
+									<option value="loan_receipt" th:selected="${receiptTypeList == 'loan_receipt'}" th:text="#{message.label.loan.receipt}"></option>
+									<option value="subsidy_receipt" th:selected="${receiptTypeList == 'subsidy_receipt'}" th:text="#{message.label.subsidy.receipt}"></option>
+									<option value="mess_bill" th:selected="${receiptTypeList == 'mess_bill'}" th:text="#{message.label.mess.bill}"></option>
+									<option value="mess_rebate" th:selected="${receiptTypeList == 'mess_rebate'}" th:text="#{message.label.mess.rebate}"></option>
+									<option value="day_scholar" th:selected="${receiptTypeList == 'day_scholar'}" th:text="#{message.label.day.scholar}"></option>
+								</select>
+							</div>
+							<div class="col-lg-2 mt-4">
+								<input type="hidden" id="pageVal" th:value="${form.pageVal}" />
+								<input type="hidden" id="sizeVal" th:value="${form.size}" />
+								<button type="button" id="searchButton" class="btn btn-lgtblue mt-3" onclick="return validateSearchField()">
+									<i class="fa-solid fa-database"></i> 
+									<span th:text="#{message.button.get.data}"></span>
+								</button>
+
+								<button type="button" id="downloadExcelButton" class="btn btn-pink mt-3" onclick="return downloadExcel();">
+									<i class="fa-solid fa-file-excel"></i>
+									<span th:text="#{message.button.download.excel}"></span>
+								</button>
+							</div>
+							<div class="col-lg-12 mt-5 text-end">
+								<span th:text="#{message.label.present.date.total.updated.amount}"></span>
+								<span class="text-danger" th:text="${currentTotalAmount}"></span>
+							</div>
+						</div>
+
+						<div class="table-responsive themeTable">
+							<table id="detailsTable"
+								class="table table-bordered nowrap w-100">
+								<thead>
+									<tr>
+										<th th:text="#{message.label.sl.no}"></th>
+										<th th:text="#{message.label.ref.no}"></th>
+										<th th:text="#{message.label.account.head}"></th>
+										<th th:text="#{message.label.student.name}"></th>
+										<th th:text="#{message.label.description}"></th>
+										<th th:text="#{message.label.voucher.date}"></th>
+										<th class="text-end">
+											<span th:text="#{message.label.amount}"></span>
+											<i class="fa-solid fa-indian-rupee-sign"></i>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+										th:each="detail, iter : ${form.paginationList.getContent()}">
+										<td class="text-center" th:text="${form.paginationList.number * form.paginationList.size + iter.index + 1}"></td>
+										<td th:text="${detail.docRefNo}"></td>
+										<td th:text="${detail.accHead}"></td>
+										<td th:text="${detail.studentName}"></td>
+										<td th:text="${detail.description}"></td>
+										<td th:text="${#temporals.format(detail.voucherDate, #messages.msgOrNull('date.format'))}"></td>
+										<td class="text-end"
+											th:text="${detail.amount % 1 == 0} ? ${detail.amount.longValue()} : ${#numbers.formatDecimal(detail.amount, 1, 2)}">
+										</td>
+
+
+									</tr>
+									<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+										<td colspan="7" class="text-center">
+											<span th:text="#{message.label.no.data.available}"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div th:id="modalDiv"></div>
+	<th:block
+		th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:src="@{/assets/js/hostel/upload-receipts.js}"></script>
+		<script th:src="@{/assets/js/biometric/log.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.upload.receipts}]]*/'';
+			const getURL = /*[[#{url.get}]]*/'';
+			const deleteURL = /*[[#{url.delete}]]*/'';
+			const downloadURL = /*[[#{url.template.download}]]*/'';
+			const revokeURL = /*[[#{url.revoke.blacklist}]]*/'';
+			const downloadExcelReportURL = /*[[#{url.excel.report.download}]]*/'';
+		</script>
+	</th:block>
+</body>
+</html>

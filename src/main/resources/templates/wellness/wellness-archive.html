@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form action="#" method="get" id="wellnessFormId" th:object="${studentWellnessDto}">
+							<div class="row">
+							    <!-- Toggle Filter Button -->
+							    <div class="col-lg-12 d-flex toggleFilterSection justify-content-center justify-content-lg-start align-items-center my-4">
+							        <div class="text-end">
+							            <button type="button" id="toggleFilter" class="btn btn-primary collapsed" data-bs-toggle="collapse" 
+							                data-bs-target="#advancedFilter" aria-expanded="false" aria-controls="advancedFilter">
+							                <span id="toggleFilterText" th:text="#{message.label.show.advanced.filter}"></span>
+							            </button>
+							        </div>
+							    </div>
+								<div class="row collapse" id="advancedFilter">
+									<div class="col-lg-3 mb-3">
+										<label for="studentName" class="form-label">
+											<span th:text="#{message.label.student.name}"></span>
+										</label>
+										<input type="text" class="form-control" id="studentName" th:field="*{studentName}"
+											th:placeholder="#{message.label.student.name}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label for="studentId" class="form-label">
+											<span th:text="#{message.label.student.id}"></span>
+										</label>
+										<input type="text" class="form-control" id="studentId" th:field="*{studentId}" 
+											th:placeholder="#{message.label.student.id}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label for="referralDateFrom" class="form-label">
+											<span th:text="#{message.label.referral.date.from}"></span>
+										</label>
+										<input type="date" class="form-control" id="referralDateFrom" th:field="*{referralDateFrom}"
+											th:placeholder="#{message.label.referral.date.from}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label for="referralDateTo" class="form-label">
+											<span th:text="#{message.label.referral.date.to}"></span>
+										</label>
+										<input type="date" class="form-control" id="referralDateTo" th:field="*{referralDateTo}"
+											th:placeholder="#{message.label.referral.date.to}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label for="visitDateFrom" class="form-label">
+											<span th:text="#{message.label.visit.date.from}"></span>
+										</label>
+										<input type="date" class="form-control" id="visitDateFrom" th:field="*{visitDateFrom}"
+											th:placeholder="#{message.label.visit.date.from}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label for="visitDateTo" class="form-label">
+											<span th:text="#{message.label.visit.date.to}"></span>
+										</label>
+										<input type="date" class="form-control" id="visitDateTo" th:field="*{visitDateTo}"
+											th:placeholder="#{message.label.visit.date.to}">
+									</div>
+									<div class="col-lg-3 mb-3">
+						              <label class="form-label" for="referralType">
+						              	<span th:text="#{message.label.referral.type}"></span>
+						              </label>
+						              	<select id="referralType" class="form-select" th:field="*{referralType}">
+							                 <option value="" th:text="#{message.label.select}+' '+#{message.label.referral.type}"></option>
+							               	 <option th:each="referralType : ${referralTypeList}" 
+							               	 	th:value="${referralType}" th:text="${referralType}">
+							               	 </option>
+										</select>
+						            </div>
+						            <div class="col-lg-3 mb-3">
+						              <label class="form-label" for="concern">
+						              	<span th:text="#{message.label.type.of.concern}"></span>
+						              </label>
+						              <select id="concernType" class="form-select" th:field="*{concernType}">
+						                 <option value="" th:text="#{message.label.select}+' '+#{message.label.type.of.concern}"></option>
+						               	 <option th:each="concern : ${concernTypeList}" 
+						               	 	th:value="${concern}" th:text="${concern}">
+						               	 </option>
+									  </select>
+						            </div>
+						            <div class="col-lg-3 mb-3">
+										<label for="coordinatorName" class="form-label">
+											<span th:text="#{message.label.coordinator.name}"></span>
+										</label>
+										<input type="text" class="form-control" id="coordinatorName" th:field="*{coordinatorName}"
+											th:placeholder="#{message.label.coordinator.name}">
+									</div>
+						            <div class="col-lg-3 mb-3">
+						              <label class="form-label" for="department">
+						              	<span th:text="#{message.label.department}"></span>
+						              </label>
+						              <select id="department" class="form-select" th:field="*{department}">
+						                 <option value="" th:text="#{message.label.select}+' '+#{message.label.department}"></option>
+						               	 <option th:each="departCode : ${departmentList}" 
+						               	 	th:value="${departCode}" th:text="${departCode}">
+						               	 </option>
+									  </select>
+						            </div>
+									<div class="col-lg-3 mb-3">
+										<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+										<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+										<button type="button" id="getData" class="btn btn-lgtblue px-4" 
+											onclick="getWellnessFilteredList('get')" style="margin-top: 38px">
+											<i class="fa-solid fa-database"></i>
+											<span th:text="#{message.button.get.data}"></span>
+										</button>
+									</div>
+	                   				<hr class="my-4">
+								</div>
+	
+								<div class="table-responsive themeTable">
+									<table id="wellnessTableId" class="table table-bordered nowrap w-100">
+										<thead>
+											<tr>
+			                                    <th th:text="#{message.label.submitted.date}"></th>
+			                                    <th th:text="#{message.label.category}"></th>
+			                                    <th th:text="#{message.label.student.id}"></th>
+			                                    <th th:text="#{message.label.student.name}"></th>
+			                                    <th th:text="#{message.label.referral.date}"></th>
+			                                    <th th:text="#{message.label.referral.type}"></th>
+			                                    <th th:text="#{message.label.coordinator.name}"></th>
+			                                    <th th:text="#{message.label.type.of.concern}"></th>
+			                                    <th th:text="#{message.label.no.of.visit.completed}"></th>
+	                                    		<th class="text-center"  th:text="#{message.label.action}"></th>
+	                                    	</tr>
+										</thead>
+										<tbody>
+									    	<tr th:if="${form.list != null}"
+												th:each="wellness, iter : ${form.list}">
+												<td>
+													<span th:text="${#temporals.format(wellness.submittedDate, #messages.msg('date.format'))}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.category}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.studentId}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.studentName}"></span>
+												</td>
+												<td>
+													<span th:text="${#temporals.format(wellness.referralDate, #messages.msg('date.format'))}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.referralType}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.coordinatedName}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.concernType}"></span>
+												</td>
+									    		<td>
+													<span th:text="${wellness.noOfVisit}"></span>
+												</td>
+									    		<td>
+									    			<div class="d-flex justify-content-center">
+										    			<button id="viewButton" type="button" class="btn btn-sm btn-outline-bluegray me-2" 
+													         data-bs-toggle="tooltip"  data-bs-title="View"
+													         onclick="viewWellnessDetails(this);" 
+													         th:data-wellness-id="${wellness.wellnessId}">
+													        <i class="fa-solid fa-eye"></i>
+													    </button>
+														<button id="editButton" type="button"
+															class="btn btn-outline-primary btn-sm me-2"
+															data-bs-toggle="tooltip" th:data-bs-title="#{message.label.edit}"
+															th:data-category="${wellness.category}"
+															th:data-student-id="${wellness.studentId}"
+															onclick="editWellnessDetails(this);">
+															<i class="fa-solid fa-pencil"></i>
+														</button>
+														<button id="printButton" type="button" class="btn btn-outline-pink btn-sm me-2"
+													         onclick="printPdfWellnessDetails(this);" 
+															 data-bs-toggle="tooltip" 
+															 th:data-bs-title="#{message.label.print.pdf.wellness.report}"
+													         th:data-wellness-id="${wellness.wellnessId}">
+										                    <i class="fa-solid fa-file-pdf"></i>
+										                </button>
+														<button type="button" class="btn btn-outline-danger btn-sm"
+															data-bs-toggle="tooltip" th:id="${'deleteReq_'+iter.index}"
+															onclick="deleteWellnessDetails(this);" 
+															th:data-wellness-id="${wellness.wellnessId}" data-bs-title="Delete">
+															<i class="fa-solid fa-trash-can"></i>
+														</button>
+													</div>
+												</td>
+									    	</tr>
+<!--									    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="10" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>-->
+										</tbody>
+									</table>
+								</div>
+								<div th:replace="~{common/template/dt-pagination :: pagination(${form})}"></div>
+<!--								<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>-->
+							</div>
+						</form>
+						<input type="hidden" th:value="${saveButton}" id=saveButton>
+						<input type="hidden" th:value="${addNew}" id=addNew>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	<th:block
+		th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+	</th:block>
+	
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/student/student-wellness-archive.js}"></script>
+		<script th:src="@{/assets/js/data-table-common.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{student.wellness.archive}]]*/ '';
+			const downloadReportURL = /*[[#{url.download.student.wellness.report}]]*/'';
+			const viewWellnessDetailsURL = /*[[#{wellness.details}]]*/'';
+			const pdfWellnessDetailsURL = /*[[#{url.pdf.download}]]*/'';
+		</script>	
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+<th:block th:fragment="notes">
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <h2 class="tmsub-title"><span th:text="#{message.label.instructions}"></span></h2>
+        </div>
+        <div class="col-lg-12">
+           <div class="alert alert-warning" role="alert">
+               <ul class="mb-2"><li class="fw-bold" th:text="#{message.label.temporary.guests.mess.facility.mandatory.note}"></li></ul>
+               <p class="text-center fw-semibold" th:text="#{message.label.charges.table.heading}"></p>
+               <div class="table-responsive">
+                   <table class="table table-bordered table-striped align-middle">
+                       <thead class="table-secondary">
+                       <tr>
+                           <th th:text="#{message.label.category}"></th>
+                           <th th:text="#{message.label.single.room}" class="text-center"></th>
+                           <th th:text="#{message.label.sharing.room}" class="text-center"></th>
+                           <th th:text="#{message.label.dromitory.room}" class="text-center"></th>
+                       </tr>
+                       </thead>
+                       <tr th:each="row : ${accommodationCharges}">
+                           <td th:text="${row.category}"></td>
+                           <td th:text="${row.singleRoom}" class="text-center"></td>
+                           <td th:text="${row.sharingRoom}" class="text-center"></td>
+                           <td th:text="${row.dormitoryRoom}" class="text-center"></td>
+                       </tr>
+                   </table>
+               </div>
+           </div>
+        </div>
+    </div>
+</th:block>

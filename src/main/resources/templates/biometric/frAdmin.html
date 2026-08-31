@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <!--<th:block th:replace="~{tabs}"></th:block>-->
+                    <div class="">
+                        <form class="themeForm">
+                            <h2 class="tmsub-title">
+                                <span th:text="'Admin Users'"></span>
+                            </h2>
+                            <div class="row">
+                                <div class="col-lg-3 mb-3">
+                                    <div class="input-group">
+                                        <label class="input-group-text bg-tmPrimary fw-semibold text-white px-lg-4"
+                                               for="deviceId">Pull Data from</label>
+                                        <input type="text" class="form-control-sm" onchange="" id="deviceId">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 mb-3">
+                                    <button type="button" onclick="clearUsers()" class="btn btn-dark btn-sm w-50"
+                                            id="pullData">
+                                        <i class="fa fa-arrow-up-from-bracket me-1"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                            <hr>
+                            <h2 class="tmsub-title" th:text="'Clear User Data Result'"></h2>
+                            <th:block th:replace="~{common/log-content::content('clearData')}"></th:block>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{common/biometric-footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/biometric/frClear.js}"></script>
+    <script th:src="@{/assets/js/biometric/log.js}"></script>
+</th:block>
+</body>
+</html>

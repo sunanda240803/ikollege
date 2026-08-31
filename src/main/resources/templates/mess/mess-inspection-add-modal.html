@@ -1,0 +1,142 @@
+<div th:replace="~{common/modal-template ::
+    modal('addNewRecordModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <!-- Modal Header -->
+    <modalHeader th:text="#{message.label.add.mess.inspection}"></modalHeader>
+
+    <!-- Modal Body -->
+    <modalBody>
+        <form class="themeForm" id="addNewForm" th:action="@{#{url.dean.mess.inspection}}"  method="post"
+              th:object="${messInspectionDto}" enctype="multipart/form-data">
+
+            <input type="hidden" th:value="${messInspectionDto.id}" th:name="id" id="configId" />
+
+            <div class="row">
+                <!-- Warden Name -->
+                <div class="col-lg-6 mb-3" th:if="${!isWardenLogin}">
+                    <label class="form-label" for="wardenName">
+                        <span th:text="#{message.label.mess.inspection.warden.name} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select class="form-select required-input" id="wardenName" name="wardenName" required>
+                        <option value="" th:text="#{message.label.select}"></option>
+                        <option th:each="warden : ${wardenDetailsList}" th:value="${warden.id}" th:text="${warden.wardenName}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.warden.name.required }"></div>
+                </div>
+
+                <!-- Mess Name -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="messName">
+                        <span th:text="#{message.label.mess.inspection.mess.name} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select class="form-select required-input" id="messName" name="messName" required>
+                        <option value="" th:text="#{message.label.select}"></option>
+                        <option th:each="mess : ${messMasterList}" th:value="${mess.id}" th:text="${mess.messName}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.mess.name.required }"></div>
+                </div>
+
+                <!-- Inspection Details Section -->
+                <div class="col-lg-12 mt-2">
+                    <h2 class="tmsub-title" th:text="#{message.label.mess.inspection.details}"></h2>
+                </div>
+
+                <!-- Cleanliness Kitchen -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="cleanlinessKitchen">
+                        <span th:text="#{message.label.add.mess.inspection.kitchen.cleanliness} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+
+                    <textarea class="form-control required-input" th:field="*{cleanlinessKitchen}"
+                              th:classappend="${#fields.hasErrors('cleanlinessKitchen')} ? 'is-invalid' : ''"
+                              id="cleanlinessKitchen" required rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.kitchen.cleanliness.required}"></div>
+                    <!-- Inline Error Message -->
+                </div>
+
+                <!-- Plate Cleanliness -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="cleanlinessPlate">
+                        <span th:text="#{message.label.mess.inspection.plate.cleanliness} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea class="form-control required-input" th:field="*{cleanlinessPlate}"
+                              th:classappend="${#fields.hasErrors('cleanlinessPlate')} ? 'is-invalid' : ''"
+                              id="cleanlinessPlate" required rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.plate.cleanliness.required}"></div>
+                </div>
+
+                <!-- Mess Hygiene -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="hygieneMess">
+                        <span th:text="#{message.label.mess.inspection.mess.hygiene} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea class="form-control required-input" th:field="*{hygieneMess}"
+                              th:classappend="${#fields.hasErrors('hygieneMess')} ? 'is-invalid' : ''"
+                              id="hygieneMess" required rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.mess.hygiene.required}"></div>
+                </div>
+
+                <!-- Queue Maintenance -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="queueMaintainance">
+                        <span th:text="#{message.label.mess.inspection.queue.maintenance} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea class="form-control required-input" th:field="*{queueMaintainance}"
+                              th:classappend="${#fields.hasErrors('queueMaintainance')} ? 'is-invalid' : ''"
+                              id="queueMaintainance" required rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.queue.maintenance.required}"></div>
+                </div>
+
+                <!-- Food Availability -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="availabilityFood">
+                        <span th:text="#{message.label.mess.inspection.food.availability} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <textarea class="form-control required-input" th:field="*{availabilityFood}"
+                              th:classappend="${#fields.hasErrors('availabilityFood')} ? 'is-invalid' : ''"
+                              id="availabilityFood" required rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.food.availability.required}"></div>
+                </div>
+
+                <!-- Student Feedback -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="feedbackStudent">
+                        <span th:text="#{message.label.mess.inspection.student.feedBack} + ':'"></span>
+                    </label>
+                    <textarea class="form-control required-input" th:field="*{feedbackStudent}"
+                              th:classappend="${#fields.hasErrors('feedbackStudent')} ? 'is-invalid' : ''"
+                              id="feedbackStudent" required rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.student.feedBack.required}"></div>
+                </div>
+
+                <!-- Other Items -->
+                <div class="col-lg-12 mb-3">
+                    <label class="form-label" for="otherItem">
+                        <span th:text="#{message.label.mess.inspection.any.other.item} + ':'"></span>
+                    </label>
+                    <textarea class="form-control" th:field="*{otherItem}"
+                              th:classappend="${#fields.hasErrors('otherItem')} ? 'is-invalid' : ''"
+                              id="otherItem" rows="3"></textarea>
+                    <div class="invalid-feedback" th:text="#{message.validation.mess.inspection.any.other.item.required}"></div>
+                </div>
+
+                <div class="col-lg-12 mb-3" id="">
+                    <label class="form-label">
+                        <span th:text="#{message.label.file.upload}+':'"> </span>
+                    </label>
+                    <th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+									'uploadFile', 'file', ${#messages.msg('message.validation.accepted.document.types')}, 'uploadDoc', null, ${#messages.msg('message.drag.drop.here.document')})}">
+                    </th:block>
+                    <div class="invalid-feedback backendErrors" th:errors="*{file}"></div>
+                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.document.required}"></div>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

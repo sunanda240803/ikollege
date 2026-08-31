@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form id="facultyAccommodationRequestForm"
+                          th:action="@{#{url.hostel.faculty.accommodation.request.get.list}}"
+                          th:object="${searchForm}" method="get" class="form-horizontal">
+
+                        <div class="row mb-4">
+                            <div class="col-lg-2">
+                                <label for="eventFromDate" th:text="#{message.label.event.from.date}"></label>
+                                <input type="date" id="eventFromDate" th:field="*{eventFromDate}" class="form-control">
+                            </div>
+                            <div class="col-lg-2">
+                                <label for="eventToDate" th:text="#{message.label.event.to.date}"></label>
+                                <input type="date" id="eventToDate" th:field="*{eventToDate}" class="form-control">
+                                <div id="toDateError" class="invalid-feedback" style="display:none;">
+							        <span th:text="#{message.label.to.date.validation}" />
+							    </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label for="studentId" th:text="#{message.label.approval.status}"></label>
+                                <select class="form-select" id="approvalStatus" th:name="approvalStatus" th:field="*{approvalStatus}" >
+                                    <option value="" th:text="#{message.label.select}+' '+#{message.label.approval.status}"></option>
+
+                                    <!-- Define the enum values using th:with -->
+                                    <th:block th:with="
+											approved = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).APPROVED},
+											rejected = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).REJECTED},
+											pending = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING}  ">
+
+                                        <option th:value="${approved.status}"
+                                                th:text="${approved.status}"
+                                                th:selected="${searchForm.approvalStatus == approved.status}"></option>
+                                        <option th:value="${rejected.status}"
+                                                th:text="${rejected.status}"
+                                                th:selected="${searchForm.approvalStatus == rejected.status}"></option>
+                                        <option th:value="${pending.status}"
+                                                th:text="${pending.status}"
+                                                th:selected="${searchForm.approvalStatus == pending.status}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <button id="searchButton" type="button" class="btn btn-primary mt-4"
+                                        onclick="validateForm()"><i class="fa-solid fa-database"></i>
+                                    <span th:text="#{message.label.get.data}"></span>
+                                </button>
+
+                            </div>
+                            <div class="col-lg-2">
+                                <button type="button" id="downloadReport" class="btn btn-lgtblue mt-4" onclick="downloadRequestReport()">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                    <span>Export</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <!-- Results table -->
+                    <div class="mb-4" th:if="${showTable}">
+                        <div class="table-responsive themeTable">
+                            <table id="foodCourtPurchaseTable" class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.sl.no}"></th>
+                                    <th th:text="#{message.label.faculty.id}"></th>
+                                    <th th:text="#{message.label.faculty.name}"></th>
+                                    <th th:text="#{message.label.from.date}"></th>
+                                    <th th:text="#{message.label.to.date}"></th>
+                                    <th th:text="#{message.label.event.name}"></th>
+                                    <th th:text="#{message.label.male.participants}"></th>
+                                    <th th:text="#{message.label.female.participants}"></th>
+                                    <th th:text="#{message.label.student.count}"></th>
+                                    <th th:text="#{message.label.stay.from}"></th>
+                                    <th th:text="#{message.label.stay.to}"></th>
+                                    <th th:text="#{message.label.dining}"></th>
+                                    <th th:text="#{message.label.status}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item,iterStat : ${form.paginationList}" th:id="'row_' + ${iterStat.index}">
+                                    <td class="text-center" th:text="${form.paginationList.number * form.paginationList.size + iterStat.index + 1}"></td>
+                                    <td th:text="${item.createdBy}"></td>
+                                    <td th:text="${item.uploadedFacultyName}"></td>
+                                    <td th:text="${#temporals.format(item.fromDate,#messages.msg('date.format'))}"></td>
+                                    <td th:text="${#temporals.format(item.toDate,#messages.msg('date.format'))}"></td>
+                                    <td th:text="${item.eventName}"></td>
+                                    <td th:text="${item.noOfMaleParticipants}"></td>
+                                    <td th:text="${item.noOfFemaleParticipants}"></td>
+                                    <td th:text="${item.studentCount}"></td>
+                                    <td th:text="${#temporals.format(item.stayFrom,#messages.msg('date.format'))}"></td>
+                                    <td th:text="${#temporals.format(stayTo,#messages.msg('date.format'))}"></td>
+                                    <td th:text="${item.dining}"></td>
+                                    <td th:text="${item.approvalStatus}"></td>
+                                </tr>
+                                <tr th:if="${form.paginationList == null || form.paginationList.empty}">
+                                    <td colspan="18" class="text-center">
+                                        <span th:text="#{message.label.no.data.available}"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/faculty-accommodation-request.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.student.bulk.upload}]]*/ '';
+        const excelDownloadUrl = /*[[#{url.hostel.faculty.accommodation.request.excel.report.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>

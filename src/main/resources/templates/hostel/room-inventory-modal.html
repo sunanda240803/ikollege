@@ -1,0 +1,96 @@
+<!-- Form Module -->
+<div
+	th:replace="~{common/modal-template :: modal('room-inventory-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.edit.room.inventory}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.room.inventory}+#{url.details}}" method="post"
+			th:object="${roomInventoryForm}" id="roomInventoryModalForm">
+			<input type="hidden" th:field="*{assetCategoryId}" th:id="id" />
+			<div class="row">
+				<div class="col-lg-6 mb-3 editInventory d-none">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.code}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control" id="assetCode" th:value="*{assetCode}" readonly
+						th:attr="placeholder=#{message.placeholder.asset.code}">
+				</div>
+				<div class="col-lg-6 mb-3 addInventory d-none">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.category}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<select class="selectpicker required-select-input" data-live-search="true" th:field="*{categoryId}" id="assetCategoryIdModal" required>
+						<option value="" th:text="#{message.label.select}+' '+#{message.label.asset.category}"></option>
+						<option th:each="categoryList : ${categoryList}" th:value="${categoryList.id}" th:text="${categoryList.categoryName}">
+						</option>
+					</select>
+					<div class="invalid-feedback " th:text="#{message.validation.asset.category.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.name}"></span>
+						<<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control required-input" id="assetName" th:field="*{assetName}" maxlength="64"
+						th:attr="placeholder=#{message.placeholder.asset.name}"
+						onkeypress="return isAlphaAndSpace(event)" required>
+					<div class="invalid-feedback" th:text="#{message.validation.asset.name.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" for="hostelIdModal">
+						<span th:text="#{message.label.hostel.name}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<select class="selectpicker required-select-input" data-live-search="true"
+							th:field="*{hostelId}" id="hostelIdModal" onchange="getRoomList('hostelIdModal','roomId');" required>
+						<option value="0" th:if="${#lists.size(hostelList) > 1}"
+								th:text="#{message.label.select} + ' ' + #{message.label.hostel.name}">
+						</option>
+						<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+								th:text="${hostelList.hostelName}">
+						</option>
+					</select>
+					<div class="invalid-feedback " th:text="#{message.validation.hostel.name.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.room.number}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<select class="selectpicker required-select-input" data-live-search="true" th:field="*{roomId}" id="roomId" required>
+						<option value="0" th:text="#{message.label.select}+' '+#{message.label.room.number}"></option>
+						<option th:each="roomList : ${roomList}" th:value="${roomList.id}" th:text="${roomList.roomNo}">
+						</option>
+					</select>
+					<div class="invalid-feedback" th:text="#{message.validation.room.number.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3 assetCondition">
+					<label class="form-label">
+						<span th:text="#{message.label.asset.condition}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<select class="form-select required-select-input" th:field="*{assetCondition}" id="assetConditionModal" required>
+						<option value="" th:text="#{message.label.select}+' '+#{message.label.asset.condition}"></option>
+						<option th:each="assetConditionList : ${assetConditionList}" 
+							th:if="${assetConditionList.id != 'all'}" th:value="${assetConditionList.id}"
+							th:text="${assetConditionList.value}">
+						</option>
+					</select>
+					<div class="invalid-feedback" th:text="#{message.validation.asset.condition.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3" th:if="${@securityCtxUtil.userName().toLowerCase().contains('.hostel')}">
+					<label class="form-label" for="quantity">
+						<span th:text="#{message.label.quantity}"></span>
+						<<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="number" class="form-control required-input" th:field="*{quantity}" id="quantity" max="64"
+						   th:placeholder="#{message.label.enter} + ' ' + #{message.label.quantity}" required>
+					<div class="invalid-feedback" th:text="#{message.validation.quantity.required}"></div>
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

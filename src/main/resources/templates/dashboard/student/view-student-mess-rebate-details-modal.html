@@ -1,0 +1,110 @@
+<!-- Form Module -->
+<th:block th:fragment="viewMessRebate">
+<div th:replace="~{common/modal-template :: modal('view-mess-rebate-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.mess.rebate.details}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm"> 
+			<div class="row">
+<!-- 				<div class="col-lg-6 mb-3"> -->
+<!-- 					<label class="form-label" > -->
+<!-- 						<span th:text="#{message.label.academic.leave.from.date}"></span> -->
+<!-- 					</label> -->
+<!-- 					<div class="form-control form-graybox" th:text="${#temporals.format(messRebateDto.leaveFrom, #messages.msg('date.format'))}"></div> -->
+<!-- 				</div> -->
+<!-- 				<div class="col-lg-6 mb-3"> -->
+<!-- 					<label class="form-label" > -->
+<!-- 						<span th:text="#{message.label.academic.leave.to.date}"></span> -->
+<!-- 					</label> -->
+<!-- 					<div class="form-control form-graybox" th:text="${#temporals.format(messRebateDto.leaveTo, #messages.msg('date.format'))}"></div> -->
+<!-- 				</div> -->
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.rebate.from.date}"></span>
+					</label>
+					<div class="form-control form-graybox" th:text="${#temporals.format(messRebateDto.rebateFrom, #messages.msg('date.format'))}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.rebate.to.date}"></span>
+					</label>
+					<div class="form-control form-graybox" th:text="${#temporals.format(messRebateDto.rebateTo, #messages.msg('date.format'))}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.rebate.reason}"></span>
+					</label>
+					<div class="form-control form-graybox" th:text="${messRebateDto.rebateReason}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.no.of.days}"></span>
+					</label>
+					<div class="form-control form-graybox" th:text="${messRebateDto.noOfDays}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.guideName}"></span>
+					</label>
+					  <div class="form-control form-graybox" th:text="${messRebateDto.guideName}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.guideEmail}"></span>
+					</label>
+					<div class="form-control form-graybox" th:text="${messRebateDto.guideEmail}"></div>
+				</div>
+				<div class="col-lg-6 mb-3" th:if="${messRebateDto.fileUpload != null}">
+					<label class="form-label" >
+						<span th:text="#{message.label.Reported.document}"></span>
+					</label>
+					<ul class="list-group">
+				        <li class="list-group-item" >
+						    <div class="d-flex justify-content-between align-items-center">
+							    <span th:text="${messRebateDto.fileUpload.length() > 25 ? 
+						               messRebateDto.fileUpload.substring(0, 23) + '.....' + messRebateDto.fileUpload.substring(messRebateDto.fileUpload.lastIndexOf('.')) : 
+						               messRebateDto.fileUpload}"
+						              data-bs-toggle="tooltip" 
+						              data-bs-placement="top" 
+						              th:attr="title=${messRebateDto.fileUpload}">
+						        </span>			
+						        <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+						                data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+						                th:attr="data-bs-title=#{message.label.report.doc.download}"
+						                th:data-filename="${messRebateDto.fileUpload}" th:onclick="triggerDownload()">
+						            <i class="fa fa-download pdf text-white"></i>
+						        </button>
+								<input type="hidden" id="fileName" th:value="${messRebateDto.fileUpload}">
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="row mt-2">
+					<div class="col-lg-12">
+						<h2 class="tmsub-title" th:text="#{message.label.approval.status}"></h2>
+					</div>
+				</div>
+				<div class="col-lg-12 mb-3">
+					<div class="text-center">
+						<div class="row">
+							<div class="col-lg-6"
+								th:each="status : ${messRebateWorkflow}"
+								th:if="${status.approvalStatus != 'Default'}">
+								<div class="card mt-3">
+									<div class="card-body text-center">
+										<div class=""
+											th:text="${status.guideName} + ' (' + ${status.guideEmail} + ')'"></div>
+										<th:block
+											th:include="common/template/approval-status-badge :: statusBadge(${status.approvalStatus},null)"></th:block>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>	
+		</form>
+	</modalBody>
+	</div>
+</th:block>

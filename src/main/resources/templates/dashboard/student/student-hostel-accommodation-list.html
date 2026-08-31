@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+	<header
+		th:replace="~{common/student-dashboard-header:: title(${headerForm}, 'Hostel Accommodation',
+	 	'Dashboard', 'Add New', null, null, 'Back', null,#{url.dashboard}+#{url.student}, null)}">
+	</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeTable">
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="hostelAccommodationListTable" class="table table-bordered  nowrap w-100">
+									<thead>
+										<tr>
+											<th th:text="#{message.label.submitted}"></th>
+											<th th:text="#{message.label.appointment.from}"></th>
+											<th th:text="#{message.label.appointment.to}"></th>
+											<th th:text="#{message.label.stay.from}"></th>
+											<th th:text="#{message.label.stay.to}"></th>
+											<th th:text="#{message.label.status}"></th>
+											<th class="text-center" th:text="#{message.label.action}"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											th:each="hostelAccommodation, iter: ${form.paginationList.getContent()}">
+											<td th:text="${hostelAccommodation.createdAt}"></td>
+											<td th:text="${#temporals.format(hostelAccommodation.appointmentFrom, #messages.msg('date.format'))}"></td>
+											<td th:text="${#temporals.format(hostelAccommodation.appointmentTo, #messages.msg('date.format'))}"></td>
+											<td th:text="${#temporals.format(hostelAccommodation.stayFrom, #messages.msg('date.format'))}"></td>
+											<td th:text="${#temporals.format(hostelAccommodation.stayTo, #messages.msg('date.format'))}"></td>
+											<td>
+												<i class="fas fa-info-circle text-secondary"
+													data-bs-toggle="tooltip"
+													th:attr="data-bs-title=${hostelAccommodation.statusNotes}">
+												</i>
+												<th:block th:include="common/template/approval-status-badge :: statusBadge(${hostelAccommodation.status},null)"></th:block>
+											</td>
+											<td class="text-center">
+												<button id="viewButton" type="button"
+													class="btn btn-outline-bluegray btn-sm edit me-2"
+													data-bs-toggle="tooltip" th:data-bs-title="#{message.label.view}"
+														th:data-extension-id="${hostelAccommodation.requestId}"
+														onclick="studentHostelAccommodationView(this)"
+													data-bs-target="#guest-accomm-charge-modal">
+													<i class="fa-solid fa-eye"></i>
+												</button>
+<!--												<button th:if="${hostelAccommodation.status == 'Validating' or hostelAccommodation.status == 'Pending'}"-->
+<!--													id="cancelButton" type="button"-->
+<!--													class="btn btn-outline-secondary btn-sm delete me-2"-->
+<!--													th:data-accommodation-id="${hostelAccommodation.requestId}"-->
+<!--													th:data-cancel="Cancelled"-->
+<!--													onclick="cancelPopup(this)" data-bs-toggle="tooltip"-->
+<!--													title="Cancel">-->
+<!--													<i class="fa fa-ban fa-lg"></i>-->
+<!--												</button>-->
+<!--												<button th:if="${hostelAccommodation.status == 'Approved'}"-->
+<!--													id="cancelButton" type="button"-->
+<!--													class="btn btn-outline-secondary btn-sm delete me-2"-->
+<!--													th:data-accommodation-id="${hostelAccommodation.requestId}"-->
+<!--													th:data-cancel="CancelledAfterApproval"-->
+<!--													onclick="cancelPopup(this)" data-bs-toggle="tooltip"-->
+<!--													title="Cancel After Approval">-->
+<!--													<i class="fa fa-ban fa-lg"></i>-->
+<!--												</button>-->
+												<button th:if="${hostelAccommodation.resendMailStatus}"
+													id="resendEmailButton" type="button"
+													class="btn btn-outline-warning btn-sm delete me-2"
+													th:data-accommodation-id="${hostelAccommodation.requestId}"
+													onclick="resendMail(this)" data-bs-toggle="tooltip"
+													title="Resend Email">
+													<i class="fa-solid fa-paper-plane"></i>
+												</button>
+												<a id="printLink"
+												class="btn btn-outline-pink btn-sm delete me-2"
+												data-bs-toggle="tooltip" title="Print"
+												th:href="@{#{url.hostel.accommodation} + #{url.pdf.download} + '/' + ${hostelAccommodation.requestId}}"
+												th:if="${hostelAccommodation.status == 'Approved' or hostelAccommodation.status == 'Alloted'}">
+													<i class="fa-solid fa-print"></i>
+											</a>
+											</td>
+										</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                  			<td colspan="7" class="text-center">
+                                  				<span th:text="#{message.label.no.data.available}"></span>
+                                  			</td>
+                 						</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div
+							th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- //Main-->
+
+	<!-- Modal-->
+	<div th:id="modalCancelDiv"></div>
+	<div th:id="modalAppointmentDiv"></div>
+	<div th:id="modalViewDiv"></div>
+	<div th:id="modalMailDiv"></div>
+	
+	<!-- Resend Email Modal-->
+	<th:block th:replace="~{common/modal/resend-mail-modal ::
+	   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.resend.email.submission})}">
+	</th:block>
+	
+	<!-- Cancel Modal-->
+	<th:block th:replace="~{common/modal/cancel-modal ::
+	   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.cancel.submission})}">
+	</th:block>
+
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dashboard/student/student-hostel-accommodation.js}"></script>
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:inline="javascript">
+			const hostelAccommodationURL = /*[[#{url.hostel.accommodation}]]*/ '';
+			const newURL = /*[[#{url.new}]]*/ '';
+			const resendMailURL = /*[[#{url.resend.mail}]]*/ '';
+			const cancelURL = /*[[#{url.cancel}]]*/ '';
+			const getViewURL = /*[[#{url.get.view}]]*/ '';
+			const downloadURL = /*[[#{url.download}]]*/ '';
+            const file = /*[[#{url.file}]]*/ '';
+	   	</script>
+	</th:block>
+	<!-- //Footer-->
+</body>
+</html>
+

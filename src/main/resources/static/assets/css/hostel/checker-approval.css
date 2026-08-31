@@ -1,0 +1,22 @@
+	.expandable-row {
+        display: none;
+        transition: all 1s ease;
+    }
+    .expandable-row.show {
+        display: table-row;
+        animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .empty-cell {
+        background-color: transparent !important;
+    }
+    .toggle-icon {
+        transition: transform 1s ease;
+    }
+
+    .toggle-icon.rotate-180 {
+        transform: rotate(180deg);
+    }

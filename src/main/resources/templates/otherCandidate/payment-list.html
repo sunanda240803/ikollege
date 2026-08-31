@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+					<th:block th:insert="~{common/other-candidate-tabs::tabs(tabList='#{message.label.payment.details}', screen='#{url.hostel.accomodation.payment.details}')}"></th:block>
+						<form action="#" method="get">
+
+							<div class="col-lg-12 mb-3">
+								<div class="noteBox">
+									<h4><i class="fa-solid fa-file-circle-exclamation me-1"></i>
+										<span th:text="#{message.label.note}"></span> :</h4>
+									<ul>
+										<li th:text="#{message.payment.details.note}"></li>
+									</ul>
+								</div>
+							</div>
+
+	                        <div class="row mb-3">
+		        				<div class="col-auto">
+		        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+		        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+		        							data-bs-title="Use Payment Status to search"></i>
+		        					</label>
+	                            	<input type="text" class="form-control" name="search" id="search"
+	                                   th:field="*{form.search}">
+	                             </div>
+	                             <div class="col-auto mt-3">
+	                            	<button class="btn btn-secondary mt-4" type="submit">
+	                            		<span th:text="#{message.label.search}"></span>
+	                            	</button>
+	                            </div>
+	                        </div>
+                   		</form>
+						
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="paymentDetailsTable"
+									class="table table-bordered nowrap w-100"
+									th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+									<thead>
+										<tr>
+											<th th:text="#{message.label.stay.from}"></th>
+											<th th:text="#{message.label.stay.to}"></th>
+											<th th:text="#{message.label.dining.from}"></th>
+											<th th:text="#{message.label.dining.to}"></th>
+											<th class="text-end" th:text="#{message.label.total.amount} + ' (₹)'"></th>
+											<th th:text="#{message.label.payment.status}"></th>
+											<th class="text-center" th:text="#{message.label.pay}"></th>
+										</tr>
+									</thead>
+									<tbody>
+										
+										<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											th:each="paymentReqInfo, iter: ${form.paginationList.getContent()}">
+											<input type="hidden"  th:value="${paymentReqInfo.encrypId}"/>
+											<input type="hidden"  th:value="${paymentReqInfo.orderNo}"/>
+											<td th:text="${#temporals.format(paymentReqInfo.hostelPayFromDate,'MMM dd, yyyy')}"></td>
+											<td th:text="${#temporals.format(paymentReqInfo.hostelPayToDate,'MMM dd, yyyy')}"></td>
+											<td th:text="${#temporals.format(paymentReqInfo.messPayFromDate,'MMM dd, yyyy')}"></td>
+											<td th:text="${#temporals.format(paymentReqInfo.messPayToDate,'MMM dd, yyyy')}"></td>
+											<td class="text-end currency" th:text="${paymentReqInfo.overallAmount}"></td>
+											<td>
+												<div th:with="paymentStatus=${paymentReqInfo.paymentStatus}, 
+												             onlinePaymentStatus=${paymentReqInfo.onlinePaymentStatus}">
+												    <!-- Check if the status is 'Pending' -->
+												    <div th:if="${paymentStatus eq workflow.PENDING.status}">
+												        <!-- Check if 'onlinePaymentStatus' is empty -->
+												        <div th:if="${#strings.isEmpty(onlinePaymentStatus)}">
+												           <th:block th:include="common/template/approval-status-badge :: statusBadge(${paymentStatus},null)"></th:block>
+												        </div>
+												        <!-- If 'onlinePaymentStatus' is not empty -->
+												        <div th:unless="${#strings.isEmpty(onlinePaymentStatus)}">
+												            <th:block th:include="common/template/approval-status-badge :: statusBadge(${onlinePaymentStatus},null)"></th:block>
+												        </div>
+												    </div>
+												
+												    <!-- Check if the status is 'Completed' -->
+												    <div th:if="${paymentStatus eq workflow.COMPLETED.status}">
+												        <div th:if="${onlinePaymentStatus eq workflow.SUCCESS.status}">
+												             <th:block th:include="common/template/approval-status-badge :: statusBadge(${onlinePaymentStatus},null)"></th:block>
+												        </div>
+												        <div th:unless="${onlinePaymentStatus eq workflow.SUCCESS.status}">
+												            <th:block th:include="common/template/approval-status-badge :: statusBadge(${paymentStatus},null)"></th:block>
+												        </div>
+												    </div>
+												
+												    <!-- Default case when it's neither 'Pending' nor 'Completed' -->
+												    <div th:unless="${paymentStatus eq workflow.PENDING.status or paymentStatus eq workflow.COMPLETED.status}">
+														<th:block th:include="common/template/approval-status-badge :: statusBadge(${onlinePaymentStatus},null)"></th:block>
+												    </div>
+												</div>
+											</td>
+											<td class="text-center">
+												<div th:with="paymentStatus=${paymentReqInfo.paymentStatus}, 
+												             onlinePaymentStatus=${paymentReqInfo.onlinePaymentStatus}">
+													<div th:if="${paymentStatus eq workflow.COMPLETED.status}">
+												        <div th:if="${onlinePaymentStatus eq workflow.SUCCESS.status}">
+												             <a id="printLink" class="btn btn-outline-pink btn-sm delete me-2"
+																data-bs-toggle="tooltip" title="Print" target="_blank"
+																th:href="@{#{url.other.candidate.payment} + #{url.receipt.pdf.download} + '/' + ${paymentReqInfo.encrypId}+ '/' + ${paymentReqInfo.orderNo}}">
+																	<i class="fa-solid fa-print"></i>
+															</a>
+												        </div>
+												        <div th:unless="${onlinePaymentStatus eq workflow.SUCCESS.status}">
+												           -
+												        </div>
+													</div>
+													<div th:unless="${paymentStatus eq workflow.COMPLETED.status}">
+														<div th:unless="${onlinePaymentStatus eq workflow.SUCCESS.status}">
+															<a th:href="@{#{url.other.candidate.payment} + #{url.initiate} + '/' + ${paymentReqInfo.encrypId}}" class="btn btn-outline-primary btn-sm me-2" 
+															   id="payButton" role="button" data-bs-toggle="tooltip" th:data-bs-title="#{message.label.pay.now}">
+															    <i class="fa-solid fa-indian-rupee-sign"></i>
+															</a>
+													    </div>
+												    </div>
+												</div>
+											</td>
+										</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="8" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dashboard/candidate/payment-details.js}"></script>
+	</th:block>
+	<!-- Footer-->
+</body>
+</html>

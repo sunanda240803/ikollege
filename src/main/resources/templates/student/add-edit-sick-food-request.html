@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head th:replace="~{common/head :: common_header(~{::link})} "></head>
+   <body>
+      <header th:replace="~{common/student-dashboard-header:: title(${headerForm}, 'Sick Food Request',
+	 	'Dashboard', null,null, null, 'Back', null, #{url.dashboard}+#{url.student}, null)}">
+	</header>
+      </header>
+      <!-- //Main-->
+      <main id="main" class="main">
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="card main-card mt-4">
+                  <div class="card-body">
+                     <form class="themeForm" id="sickFoodForm" th:action="@{#{url.sick.food.request}}"  th:object="${sickFoodRequestDto}"  novalidate method="post" enctype="multipart/form-data">
+                        <input type="hidden"  th:field="*{id}"  />
+                        <div class="row mb-3">
+                           <div class="col-lg-12">
+		                      <th:block th:replace="~{common/template/note :: noteContent('message.label.note', ${contactInfo}, null)}"></th:block>
+                           </div>
+                        </div>
+                        <div class="row mt-2">
+                           <div class="col-lg-12">
+                              <h2 class="tmsub-title" th:text="#{message.label.request.form}"></h2>
+                           </div>
+                        </div>
+                        <div class="row mb-5">
+                           <div class="col-lg-12">
+                              <div class="row">
+                                 <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="requestDate">
+                                       <span th:text="#{message.label.request.date}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="date" id="requestDate" class="form-control required-input"  th:field="*{requestDate}" required
+                                           th:readonly="${sickFoodRequestDto.requestDate != null and !sickFoodRequestDto.requestDate.isAfter(T(java.time.LocalDate).now())}">
+                                    <div class="invalid-feedback" th:text="#{message.validation.request.date.required}"></div>
+                                    <div id="errorMessage" class="d-none text-danger"></div>
+                                 </div>
+                                 <div class="col-lg-4 mb-3">
+                                    <label class="form-label" for="medicalReason">
+                                       <span th:text="#{message.label.medical.reason}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <textarea type="text" id="medicalReason" rows="2"  th:field="*{medicalReason}" class="form-control required-input" placeholder="Medical Reason" required></textarea>
+                                    <div class="invalid-feedback" th:text="#{message.validation.medical.reason.required}"></div>
+                                 </div>
+                                 <div class="col-lg-3">
+                                    <label class="form-label" >
+                                    <span th:text="#{message.label.medical.proof.document}"></span>
+                                    </label>
+                                    <th:block
+                                       th:replace="~{common/template/drag-drop-file-upload-template::contents('uploadFile', 'uploadedFileName', ${#messages.msg('message.accepted.file.types')}, 'uploadDoc', ${sickFoodRequestDto.medicalProofDoc}, ${#messages.msg('message.drag.drop.sickfood.select')})}">
+                                    </th:block>
+                                 </div>
+                                 <div class="col-lg-2"></div>
+                                 <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="mobileNumber">
+                                       <span th:text="#{message.label.mobile.number}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control numeric required-mob-num"   th:field="*{mobileNum}" id="mobileNumber"
+                                       th:attr="placeholder=#{message.placeholder.mobile.number}" th:data-mask="${mobileNumberMask}" required>
+                                    <div class="form-text" th:text="#{message.label.mob.no.note}"></div>
+                                    <div class="invalid-feedback" th:text="#{message.validation.mobile.number.required}"></div>
+                                     <div class="invalid-req-feedback d-none" th:text="#{message.validation.mobile.number.required}"></div>
+                                     <div class="invalid-val-feedback d-none" th:text="#{message.validation.family.details.mob.no}"></div>
+                                     
+                                 </div>
+
+                                 <div class="col-lg-4 mb-3">
+
+                                    <label class="form-label">
+                                       <span th:text="#{message.delivery.option}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <div class="checkRadio-bg form-control">
+                                       <div class="form-check form-check-inline me-4">
+                                          <input class="form-check-input required-input" type="radio" id="hostel"
+                                                  value="Hostel"  th:field="*{deliveryOption}" required
+                                                 th:checked="*{deliveryOption ne null and deliveryOption.equalsIgnoreCase('Hostel')}">
+                                          <label class="form-check-label" for="hostel"><span
+                                                  th:text="#{message.label.sick.food.option1}"></span></label>
+                                       </div>
+                                       <div class="form-check form-check-inline">
+                                          <input class="form-check-input required-input" type="radio" id="dd"
+                                                 value="Hospital" th:field="*{deliveryOption}" required
+                                                 th:checked="*{deliveryOption ne null and deliveryOption.equalsIgnoreCase('Hospital')}">
+                                          <label class="form-check-label" for="dd"><span th:text="#{message.label.sick.food.option2}"></span></label>
+                                       </div>
+                                    </div>
+                                    <div class="invalid-feedback" th:text="#{message.validation.delivery.option.required}"></div>
+                                 </div>
+                                 <div class="col-lg-3 mb-3">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.delivery.address}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <textarea type="text" id="address"  th:field="*{deliveryAddress}" rows="2" class="form-control required-input" placeholder="Delivery Address" required></textarea>
+                                    <div class="invalid-feedback" th:text="#{message.validation.delivery.address.required}"></div>
+                                 </div>
+                                 <div class="col-lg-2"></div>
+                                 <!--<div class="col-lg-3 mb-3 ">
+                                    <label class="form-label" >
+                                       <span th:text="#{message.label.mess.type}"></span>
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                     <input th:if="${sickFoodRequestDto.requestDate != null and !sickFoodRequestDto.requestDate.isAfter(T(java.time.LocalDate).now())}" type="hidden" id="messType" th:field="*{messType}" />
+                                    <select class="form-select required-input" required id="messType"  th:field="*{messType}"   th:disabled="${sickFoodRequestDto.requestDate != null and !sickFoodRequestDto.requestDate.isAfter(T(java.time.LocalDate).now())}">
+                                      <option value="" th:text="#{message.label.select}"></option>
+                                      <option value="North" th:text="#{message.label.north.menu}"></option>
+                                      <option value="South" th:text="#{message.label.south.menu}"></option>
+                                    </select>
+                                    <div class="invalid-feedback" th:text="#{message.validation.mess.type.required}"></div>
+                                 </div>-->
+                                 <div class="col-lg-4 mb-3">
+                                    <label class="form-label">
+                                       <span th:text="#{message.label.select.mess.session}"></span> 
+                                       <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <div class="checkRadio-bg form-control" id="messSession">
+                                       <div class="form-check form-check-inline"
+                                          th:each="item, iter : ${sickFoodRequestDto.messSessionStatus}">
+                                          <input type="hidden"  th:name="|messSessionStatus[${iter.index}].id|" th:value="${item.id!=null? item.id:0}"  />
+                                           <input type="hidden" th:if="${sickFoodRequestDto.requestDate != null and !sickFoodRequestDto.requestDate.isAfter(T(java.time.LocalDate).now()) and item.id!=null }" th:name="|messSessionStatus[${iter.index}].messSession|" th:value="${item.messSession!=null}?${item.messSession}:${iter.index == 0 ? 'BF' : (iter.index == 1 ? 'LC' : 'DR')}" />
+                                          <input type="checkbox" class="form-check-input" th:id="${'messSession_'+iter.index}"
+                                             th:value="${item.messSession!=null}?${item.messSession}:${iter.index == 0 ? 'BF' : (iter.index == 1 ? 'LC' : 'DR')}"
+                                             th:name="|messSessionStatus[${iter.index}].messSession|"  th:checked="${item.id!=null && item.messSession!=null}"  th:disabled="${sickFoodRequestDto.requestDate != null and !sickFoodRequestDto.requestDate.isAfter(T(java.time.LocalDate).now())}" />
+                                          <label class="form-check-label" th:for="${'messSession_'+iter.index}"
+                                             th:text="${iter.index == 0 ? 'Break fast' : (iter.index == 1 ? 'Lunch' : 'Dinner')}"></label>
+                                       </div>
+                                    </div>
+                                    <div class="invalid-feedback" th:text="#{message.validation.mess.session.required}"></div>
+                                 </div>
+                              </div>
+                              <div class="form-check mb-3 mt-3">
+                                 <input class="form-check-input required-input"  th:checked="${sickFoodRequestDto.id!=null && sickFoodRequestDto.id>0}" type="checkbox" id="agreement1" value="option1" required>
+                                 <label class="form-check-label" for="agreement1">
+                                 <span th:text="#{message.label.sickfood.acknowledge}"></span>
+                                 </label>
+                              </div>
+                              <div class="form-check">
+                                 <input class="form-check-input required-input"  th:checked="${sickFoodRequestDto.id!=null && sickFoodRequestDto.id>0}" type="checkbox" id="agreement2" value="option2" required>
+                                 <label class="form-check-label" for="agreement2">
+                                 <span th:text="#{message.label.sickfood.ledger.acknowledge}"></span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <!--Button Section-->
+                        <hr>
+                        <div class="row text-end">
+                           <div class="col-lg-12 mt-2 mb-4">
+                              <div class="d-flex align-items-center justify-content-end">
+										<a type="button" class="btn btn-secondary px-4 me-3"
+											id="cancel" th:href="@{#{url.sick.food.request}}"> <i
+											class="fa-solid fa-circle-arrow-left me-1"></i> <span
+											th:text="#{message.button.cancel}"></span>
+										</a>
+										<button type="button" id="sickFoodSave" class="btn px-4"
+                                          th:classappend="${sickFoodRequestDto.id > 0 ? 'btn-aqua' : 'btn-aqua'}" >
+                                          <i class="fa-solid fa-floppy-disk me-1"></i> <span
+                                          th:if="${sickFoodRequestDto.id > 0}"
+                                          th:text="#{message.button.update}"></span> <span
+                                          th:unless="${sickFoodRequestDto.id > 0}"
+                                          th:text="#{message.button.save}"></span>
+								       </button>
+
+							</div>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </main>
+      <!-- Footer-->
+      <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+         <script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+         <script th:src="@{/assets/js/mess/sick-food-request.js}"></script>
+         <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+         <script th:inline="javascript">
+            const baseURL = /*[[#{url.sick.food.request}]]*/ '';
+            const existURL = /*[[#{url.request.date.exist}]]*/ '';
+            
+         </script>
+      </th:block>
+      <!-- Footer-->
+   </body>
+</html>

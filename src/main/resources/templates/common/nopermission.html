@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta content="" name="descriptison">
+	<meta content="" name="keywords">
+	<!-- Title  & Favicons-->
+	<title>STACT Accounts Automation</title>
+	<link href="/stact/assets/img/IIT_Madras_Logo.svg.png}" rel="icon">
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap"
+		rel="stylesheet">
+	<!-- Font Awesome 6.3.0 -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+	<!-- Bootstrap CSS -->
+	<link href="/stact/assets/css/bootstrap.min.css}" rel="stylesheet">
+	<!-- Theme CSS File -->
+	<link href="/stact/assets/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+	<section id="login-sec">
+		<div class="container align-items-center" style="padding-top: 15%;">
+			<div class="row justify-content-center mb-5">
+				<div class="col-xl-7 col-lg-7 col-md-7 bg-light" style="width: 50%;">
+						<div class="mt-4">
+							<h2 style="text-align: center;" class="text-danger" th:text="#{message.label.no.permission.note}"></h2>
+							<h4 style="text-align: center;" class="my-4"><a class="text-primary" th:href="@{/}" style="border-bottom: solid 1px #1271fd;" th:text="#{message.label.click.here}"></a> <span th:text="#{message.label.no.permission.click.here.note}"></span></h4>
+						</div>
+				</div>
+			</div> 
+		</div>
+	</section>
+</body>
+
+</html>

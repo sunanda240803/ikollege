@@ -1,0 +1,122 @@
+<th:block th:fragment="title(headerForm,pagetitle,home,addNew,update,save,back,pageId,homeUrl,moduleUrl)">
+    <script th:src="@{/assets/js/common/mask-constant.js}" th:inline="javascript"></script>
+    <div class="page-loading mt-2" id="loader">
+        <div role="status">
+            <img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+            <h4 th:text="#{message.label.loading}"></h4>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="header fixed-top">
+        <nav class="navbar navbar-expand-lg p-0">
+            <div class="container-fluid justify-content-around p-0">
+                <div class="row w-100">
+                    <div class="col-lg-5">
+                        <!--Client Logo-->
+                        <div class="header-logo d-flex align-items-center justify-content-between">
+                            <a href="#" class="d-flex align-items-center">
+                                <img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+                                <span>
+									<th:block th:text="${institute.schoolName}"></th:block>
+									<br><th:block th:text="${institute.location}"></th:block>
+								</span>
+                            </a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                    aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="fa-solid fa-outdent"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 pe-lg-0">
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="">
+
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/index}" role="button">
+                                        <i class="ph-duotone ph-house-line"></i> Dashboard
+                                    </a>
+                                    <!--									<ul class="dropdown-menu dropdown-menu-arrow listMenu">-->
+                                    <!--										<li><a class="dropdown-item" href="/hosteldine/index"><i class="fa-solid fa-gauge"></i>-->
+                                    <!--												Dashboard</a></li>-->
+                                    <!--									</ul>-->
+                                </li>
+                                <li class="nav-item dropdown accountMenu">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        <i class="ph-duotone ph-user-square"></i> My Account
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-arrow listMenu">
+                                        <li class="dropdown-header d-flex align-items-center ">
+                                            <img    th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+                                                    th:src="@{#{url.file} + #{url.image} + '/student_Profile/1'}"
+                                                 alt="Profile" class="rounded-circle">
+                                            <span>
+												<h6><span th:text="${@securityCtxUtil.userName()}"></span></h6>
+												Student
+											</span>
+                                        </li>
+                                        <li><a class="dropdown-item" th:href="@{#{url.logout}}"> <i class="ph-duotone ph-power"></i> Logout </a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!--Page Title-->
+        <div class="pagetitle">
+            <div class="row align-items-center">
+                <div class="col-lg-4">
+                    <h1 th:text="${pagetitle}"></h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item text-secondary spaced-underline">
+                                <u><a href="javascript:void(0);" th:data-url="${homeUrl}" onclick="navigateWithContextPath(this.getAttribute('data-url'))" th:text="${home}"></a></u>
+                            </li>
+                            <li class="breadcrumb-item active"><a class="" th:text="${pagetitle}"></a></li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-4 text-center breadcrumb-item">
+                    <h1 class="d-inline"><span th:text="#{message.label.welcome} + '' + #{message.label.exclamation.mark}"></span>
+                        <span class="text-dark" th:text="${@securityCtxUtil.studentFullName()}"></span> <span class="text-dark text-uppercase">(<span th:text="${@securityCtxUtil.userName()}"></span>)</span></h1>
+                </div>
+                <div class="col-lg-4 text-lg-end" >
+                    <button  type="button" class="btn btn-success btn-sm" id="addNewId" data-bs-toggle="modal" th:data-bs-target="${'#'+pageId}" th:if="${addNew != null}">
+                        <i class="fa-solid fa-circle-plus me-1"></i> <span th:text="${addNew}"></span>
+                    </button>
+                    <button type="button" class="btn  btn-blue btn-sm" id="updateId" th:if="${update != null}">
+                        <i class="fa-solid fa-rotate me-1"></i> <span th:text="#{message.button.update}"></span>
+                    </button>
+                    <button type="button" class="btn  btn-aqua btn-sm" id="saveId" th:if="${save != null}">
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                        <span th:text="#{message.button.save}"></span>
+                    </button>
+					<th:block th:if="${headerForm != null}">
+						<button type="button" class="btn btn-sm"
+							th:classappend="${headerForm.additionalButtonColor != null ? headerForm.additionalButtonColor : ''}"
+							th:if="${headerForm.needAdditionalButton}" id="downloadId">
+							<i class="fa-solid me-1"
+								th:classappend="${headerForm.additionalButtonIcon != null ? headerForm.additionalButtonIcon : ''}"></i>
+							<span
+								th:text="${headerForm.additionalButtonLabel != null ? headerForm.additionalButtonLabel : ''}"></span>
+						</button>
+					</th:block>
+					<button type="button" id="cancelButton" onclick="window.history.back();" class="btn btn-secondary btn-sm" th:if="${back != null}">
+                        <i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- //Header -->
+    <script th:inline="javascript">
+        function navigateWithContextPath(url) {
+            window.location.href = contextPath + url;
+        }
+    </script>
+</th:block>

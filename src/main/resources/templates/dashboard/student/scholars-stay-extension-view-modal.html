@@ -1,0 +1,68 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="contents(text)">
+<div th:replace="~{common/modal-template ::
+   modal('scholars-stay-extension-view-modal', ~{::modalHeader}, ~{::modalBody}, 'Cancel', null, null, null, 'lg')}">
+  <modalHeader th:text="#{message.label.ms.phd.scholars.stay.extension.view}"></modalHeader>
+  <modalBody>
+    <form class="themeForm" id="scholars-stay-extension-form" th:object="${studentAppointmentRequestDto}">
+          <div class="row">
+            <input type="hidden" th:field="*{id}">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.category}"></label>
+              <div class="form-control form-graybox" th:text="*{category}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.ms.phd.period}"></label>
+              <div class="form-control form-graybox" th:text="*{thesisStatus}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.admission.date}"></label>
+              <div class="form-control form-graybox" th:text="*{#temporals.format(admissionDate, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.stay.from}"></label>
+
+              <div class="form-control form-graybox" th:text="*{#temporals.format(stayFrom, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.stay.to}"></label>
+
+              <div class="form-control form-graybox" th:text="*{#temporals.format(stayTo, #messages.msgOrNull('date.format'))}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.hod.name}"></label>
+              <div class="form-control form-graybox" th:text="*{hodName}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.hod.email}"></label>
+              <div class="form-control form-graybox" th:text="*{hodEmail}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.guide.name}"></label>
+              <div class="form-control form-graybox" th:text="*{validatingAuthority}"></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label" th:text="#{message.label.guide.email}"></label>
+              <div class="form-control form-graybox" th:text="*{validatingAuthorityEmail}"></div>
+            </div>
+            <div class="col-lg-12 mb-3">
+              <div class="text-center border rounded shadow-sm p-3">
+                <div class="bg-light py-2 px-3 rounded-top fw-bold">
+                  <label class="form-label mb-0" th:text="#{message.label.approval.status.details}"></label>
+                </div>
+                  <div class="row mt-2">
+                    <div class="col-lg-6" th:each="status : ${studentAppointmentRequestDto.studentWorkflowDto}"  th:if="${status.status != 'Default'}">
+                      <div class="card mt-3">
+                        <div class="card-body text-center">
+                          <div class="" th:text="${status.validatorName} + ' (' + ${status.validatorEmail} + ')'"></div>
+                          <th:block th:include="common/template/approval-status-badge :: statusBadge(${status.status},null)"></th:block>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+    </form>
+  </modalBody>
+</div>
+</th:block>

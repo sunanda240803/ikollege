@@ -1,0 +1,239 @@
+<div
+    th:replace="~{common/modal-template :: modal('wardenInfoModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader>
+        <span th:text="#{message.label.warden.info.add.edit}"></span>
+    </modalHeader>
+    <modalBody>
+        <!-- card -->
+            <form id="wardenDetailsForm" class="themeForm" th:action="@{#{url.warden.info} + #{url.save.warden.info}}"
+                method="post" th:object="${wardenInfoDto}">
+
+                <input type="hidden" name="id" id="id" th:value="${wardenInfoDto?.id}" />
+                <input type="hidden" name="imageContent" id="imageContent" />
+                <input type="hidden" name="imageName" id="imageName" />
+                <input type="hidden" name="imageFileName" id="imageFileName" />
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="wardenName">
+                                <span th:text="#{message.label.mess.inspection.warden.name}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+
+                            <input type="text" id="wardenName" name="wardenName" class="form-control required-input"
+                                maxlength="128" th:value="${wardenInfoDto?.wardenName}"
+                                placeholder = "Enter Warden Name"
+                                th:classappend="${#fields.hasErrors('wardenName')} ? 'is-invalid' : ''"
+                                th:attr="readonly=${wardenInfoDto?.wardenName != null and !#strings.isEmpty(wardenInfoDto.wardenName) ? 'readonly' : null}"
+                                required>
+                            <div class="invalid-feedback backendErrors" th:errors="*{wardenName}"></div>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.warden.name.required}"></div>
+                        </div>
+                    </div>
+                    <!-- Upload Photo -->
+                    <div class="col-md-6 mb-2">
+                        <div class="upload-box d-lg-block">
+                            <div class="box text-center has-validation">
+                                <span th:text="#{message.label.upload.documents.layout.photo}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                <input type="file" name="layout" id="layout" class="inputfile inputfile-4"
+                                    data-multiple-caption="{count} files selected" data-width="300" data-height="400"
+                                    th:accept="#{message.accepted.image.types}"
+                                    th:attr="disabled=${wardenInfoDto?.imageFileName != null and !#strings.isEmpty(wardenInfoDto.imageFileName) ? 'disabled' : null}"
+                                    th:classappend="${#fields.hasErrors('imageContent') or #fields.hasErrors('imageFileName')} ? 'is-invalid' : ''">
+                                <label for="layout">
+                                    <img class="img-fluid d-block mx-auto profile" id="layoutImage" alt="Image"
+                                        th:data-default="@{/assets/img/poster.png}"
+                                        th:src="@{#{url.file} + #{url.image} + '/WARDEN_IMAGE/'+ ${wardenInfoDto?.imageFileName}}"
+                                        th:attr="onerror='this.src=\'' + @{/assets/img/poster.png} + '\''">
+                                </label>
+                                <div class="invalid-feedback backendErrors" th:errors="*{imageContent}"></div>
+                                <div class="invalid-feedback backendErrors" th:errors="*{imageFileName}"></div>
+                                <div class="invalid-value-feedback d-none"
+                                    th:text="#{message.validation.upload.layout.picture}"></div>
+                                <div class="invalid-dimension-feedback d-none"
+                                    th:text="#{message.validation.profile.dimension}"></div>
+                                <div class="invalid-size-feedback d-none" th:text="#{message.validation.image.size}">
+                                </div>
+                                <div class="invalid-format-feedback d-none" th:text="#{message.invalid.file.format}">
+                                </div>
+                                <div class="invalid-feedback-frontEnd"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="officeNo">
+                                <span th:text="#{message.label.office.no}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <input type="text" id="officeNo" name="officeNo" class="form-control required-input"
+                                maxlength="32" th:value="${wardenInfoDto?.officeNo}" required
+                                placeholder = "Enter Office No"
+                                th:classappend="${#fields.hasErrors('officeNo')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback backendErrors" th:errors="*{officeNo}"></div>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.office.number.required}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="email">
+                                <span th:text="#{message.label.email}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <input type="email" id="wardenEmail" name="wardenEmail" class="form-control required-email"
+                                th:value="${wardenInfoDto?.wardenEmail}" maxlength="128" required
+                                placeholder = "Enter Email"
+                                th:classappend="${#fields.hasErrors('wardenEmail')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback backendErrors" th:errors="*{wardenEmail}"></div>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.warden.email.required}"></div>
+							<div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+						    <div class="invalid-domain-email d-none"
+								 th:text="#{message.validation.invalid.email.domain}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="phoneNo">
+                                <span th:text="#{message.label.phone.number}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <input type="text" id="phoneNumber" th:name="${phoneNumber}" th:value="${wardenInfoDto?.phoneNumber}"
+                                th:attr="placeholder=#{message.placeholder.phone.number}" th:data-mask="${mobileNumberMask}"
+                                class="form-control numeric required-mob-num" required maxlength="10"
+                                th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback backendErrors" th:errors="*{phoneNumber}"></div>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.phone.number.required}"></div>
+                            <div class="invalid-val-feedback d-none" th:text="#{message.validation.phone.number.valid}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="ldap">
+                                <span th:text="#{message.label.ldap.username}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <input type="text" id="ldapUsername" name="ldapUsername" class="form-control required-input"
+                                th:value="${wardenInfoDto?.ldapUsername}" maxlength="32" required
+                                placeholder = "Enter LDAP User Name"
+                                th:classappend="${#fields.hasErrors('ldapUsername')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback backendErrors" th:errors="*{ldapUsername}"></div>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.ldap.username.required}"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- Alternate Email -->
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="alternateEmail"
+                                th:text="#{message.label.alternate.email}"></label>
+                            <input type="email" id="alternateEmail" name="alternateEmail" class="form-control"
+                                th:value="${wardenInfoDto?.alternateEmail}" maxlength="128"
+                                placeholder = "Enter Alternate Email"
+                                th:classappend="${#fields.hasErrors('alternateEmail')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback backendErrors" th:errors="*{alternateEmail}"></div>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.alternate.email.valid}"></div>
+                            <div class="invalid-domain-email d-none"
+								 th:text="#{message.validation.invalid.email.domain}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Warden Info URL -->
+                    <div class="col-md-12 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="wardenInfoUrl"
+                                th:text="#{message.label.warden.info.url}"></label>
+                            <textarea id="wardenInfoUrl" name="wardenInfoUrl" class="form-control"
+                            	placeholder = "Enter Warden Infor URL"
+                                th:text="${wardenInfoDto?.wardenInfoUrl}" maxlength="250"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Associate Warden Name -->
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="associateWardenName"
+                                th:text="#{message.label.associate.warden.name}"></label>
+                            <input type="text" id="associateWardenName" name="associateWardenName" class="form-control"
+                            	placeholder = "Enter Associate Warden Name"
+                                th:value="${wardenInfoDto?.associateWardenName}" maxlength="128" />
+                        </div>
+                    </div>
+
+                    <!-- Associate LDAP Name -->
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label class="form-label" for="associateLdapName"
+                                th:text="#{message.label.associate.ldap.name}"></label>
+                            <input type="text" id="associateLdapName" name="associateLdapName" class="form-control"
+                            	placeholder = "Enter Associate LDAP Name"
+                                th:value="${wardenInfoDto?.associateLdapUsername}" maxlength="32" />
+                        </div>
+                    </div>
+
+                    <!-- Hostel Names -->
+                    <div class="col-md-12 mb-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span th:text="#{message.label.hostel.name}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <div class="form-check">
+                                <div class="row">
+                                    <div id="hostelDiv" class="col-md-3"
+                                        th:classappend="${#fields.hasErrors('hostelId')} ? 'is-invalid' : ''"
+                                        th:each="hostel : ${hostelList}" required>
+                                        <input type="checkbox" th:id="${hostel?.id}" th:name="hostelId"
+                                            th:value="${hostel?.id}" class="form-check-input"
+                                            th:checked="${wardenInfoDto?.hostelId == hostel?.id}" />
+                                        <label th:for="'hostel' + ${hostel?.id}" th:text="${hostel?.hostelName}"
+                                            class="form-check-label"></label>
+                                    </div>
+                                    <div class="invalid-feedback backendErrors" th:errors="*{hostelId}"></div>
+                                    <div class="invalid-feedback-frontEnd" th:text="#{message.validation.hostel.required}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    </modalBody>
+</div>
+
+<script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+<script th:src="@{/assets/js/warden/warden-info-modal.js}"></script>
+<script th:inline="javascript">
+    window.wardenInfoDto = /*[[${wardenInfoDto}]]*/ {};
+    var guideEmail = /*[[${guideEmail}]]*/ {};
+    previewBindings = [
+        { input: '#layout', previews: ['#layoutImage'] }
+
+    ];
+
+    previewBindings.forEach(function (binding) {
+        $(binding.input).on('change', function () {
+            previewImage(this, binding.previews);
+        });
+    });
+
+    $('#layout').on('change', function () {
+        const file = this.files[0];
+        if (file) {
+            $('#imageFileName').val(file.name);
+            $('#imageName').val(file.name);
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64 = e.target.result.split(',')[1];
+                $('#imageContent').val(base64);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#imageFileName').val('');
+            $('#imageName').val('');
+            $('#imageContent').val('');
+        }
+    });
+</script>

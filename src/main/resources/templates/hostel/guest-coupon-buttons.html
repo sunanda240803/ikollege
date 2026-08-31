@@ -1,0 +1,17 @@
+
+	<th:block th:if="*{requestId == null}">
+		<div class="col-lg-12 my-3 d-lg-flex align-items-lg-center justify-content-lg-end">
+		    <div class="d-flex align-items-center justify-content-center">
+				<a class="btn btn-secondary px-4 me-3"
+					th:href="@{#{url.hostel.guest.coupon.request}}"
+					id="cancelForm"> <i
+					class="fa-solid fa-xmark-circle me-1"></i> <span
+					th:text="#{message.button.cancel}"></span>
+				</a>
+                <button type="button" class="btn btn-aqua px-4 me-3" id="saveForm">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> <span
+                        th:text="#{message.button.save}"></span>
+                </button>
+           </div>
+		</div>
+	</th:block>

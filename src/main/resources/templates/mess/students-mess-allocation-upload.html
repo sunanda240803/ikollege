@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form class="themeForm mb-4" th:action="@{#{url.students.mess.allocation}+#{url.save}}" method="post"
+							enctype="multipart/form-data" th:object="${messAllottedListDTO}" id="studentMessAllocationId">
+							<div class="row" id="studentMessAllocation">
+								<div class="col-lg-6">
+									<div class="row">
+										<div class="col-lg-12 mb-3">
+											<label class="form-label"><span th:text="#{message.label.mess.period.radio}"></span> 
+												<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+											</label>
+											<div class="checkRadio-bg form-control" id="messPeriod"
+												th:classappend="${#fields.hasErrors('messPeriod')} ? 'is-invalid' : ''">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" type="radio"
+														name="messPeriod" id="current" value="Current" required th:disabled="${!currentMp}" 
+														th:checked="${messAllottedListDTO.messPeriod == 'Current'}">
+													<label class="form-check-label" for="current"
+														th:text="#{message.label.current}+' '+ #{message.label.mess.period.radio}"></label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" type="radio"
+														name="messPeriod" id="next" value="Next" required th:disabled="${!nextMp}"
+														th:checked="${messAllottedListDTO.messPeriod == 'Next'}">
+													<label class="form-check-label" for="next"
+														th:text="#{message.label.next}+' '+ #{message.label.mess.period.radio}"></label>
+												</div>
+											</div>
+											<div class="invalid-feedback backendErrors" th:errors="*{messPeriod}"></div>
+											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.mess.period.required}"></div>
+											<input type="hidden" id="currentMessPeriod" th:value="${!currentMp}">
+											<input type="hidden" id="nextMessPeriod" th:value="${!nextMp}">
+										</div>
+										<div class="col-lg-12 mb-3">
+											<label class="form-label"><span th:text="#{message.label.allocation.type}"></span> 
+												<th:block th:replace="~{common/template/mandatory-symbol}" /> 
+											</label>
+											<div class="checkRadio-bg form-control" id="allocationType"
+												th:classappend="${#fields.hasErrors('allocationType')} ? 'is-invalid' : ''">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" type="radio"
+														name="allocationType" id="regular" value="Regular" required
+														th:checked="${messAllottedListDTO.allocationType == 'Regular'}">
+													<label class="form-check-label" for="regular"
+														th:text="#{message.label.regular}"></label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" type="radio"
+														name="allocationType" id="change" value="Change" required
+														th:checked="${messAllottedListDTO.allocationType == 'Change'}">
+													<label class="form-check-label" for="change"
+														th:text="#{message.label.change}"></label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" type="radio"
+														name="allocationType" id="remove" value="Remove" required
+														th:checked="${messAllottedListDTO.allocationType == 'Remove'}">
+													<label class="form-check-label" for="remove"
+														th:text="#{message.label.remove}"></label>
+												</div>
+											</div>
+											<div class="invalid-feedback backendErrors" th:errors="*{allocationType}"></div>
+											<div class="invalid-feedback-frontEnd" th:text="#{message.label.allocation.type.required}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.download}"></span></h2>
+										</div>
+									</div>
+									<div class="col-lg-12 mb-3 d-flex align-items-center">
+										<span class="fs-5">
+											<u class="text-tmPrimary">
+												<a href="javascript:void(0);" 
+												   onclick="downloadTemplateURL()"
+												   th:text="#{message.label.click.here.caps}">
+												</a>
+											</u>
+											<span th:text="#{message.label.to.download.excel.template.mess.allocation}"></span>
+										</span>
+									</div>
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.upload.mess.allocation}"></span>
+											</h2>
+										</div>
+									</div>
+									<label class="form-label me-3" for="file">
+										<span th:text="#{message.label.bulk.upload.file}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="col-lg-12">
+										<th:block th:replace="~{common/template/drag-drop-file-upload-template::contents('uploadFile', 
+	                                       		'file', ${#messages.msg('message.accepted.document.types.xl')}, 'uploadDoc', 
+	                                       		null, ${#messages.msg('message.drag.drop.mess.allocation.file.upload')})}">
+	                                    </th:block>
+	                                    <div class="selectFile2 d-none">
+	                                    	<span class="text-danger" th:text="#{message.validation.choose.file}"></span>
+	                                    </div>
+										<div class="validFile d-none">
+											<span class="text-danger" th:text="#{message.validation.invalid.file.format}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 my-4">
+										<button type="button" onclick=" return validateFile()" id="uploadFileButton" class="btn btn-purple">
+											<i class="fa fa-upload" aria-hidden="true"></i>
+											<span th:text="#{message.button.upload.file}"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="errorText" th:if="${messAllottedListDTO != null 
+							    && messAllottedListDTO.errorList != null 
+							    && !messAllottedListDTO.errorList.isEmpty()}">
+								<ul>
+									<li th:each="error : ${messAllottedListDTO.errorList}">
+										<span th:text="${error}" class="text-danger"></span>
+									</li>
+								</ul>
+							</div>
+							<hr>
+							<th:block th:replace="~{common/log-content::content(${logTag})}"></th:block>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+		<script th:src="@{/assets/js/mess/students-mess-allocation-upload.js}"></script>
+		<script th:src="@{/assets/js/biometric/log.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.students.mess.allocation}]]*/ '';
+			const templateURL = /*[[#{url.template.download}]]*/ '';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

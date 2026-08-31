@@ -1,0 +1,33 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(headerForm)">
+	<div class="pagetitle">
+		<div class="row align-items-center">
+			<div class="col-lg-6">
+				<h1>
+					<span th:text="${headerForm.title}" id="pageTitle"></span>
+				</h1>
+				<!-- Breadcrumb -->
+				<!--<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item text-tmPrimary">
+							<a href="/dashboard">Dashboard</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							About
+						</li>
+					</ol>
+				</nav>-->
+			</div>
+
+			<div class="col-lg-6 text-lg-end">
+				<button type="button" class="btn btn-primary addRow" th:if="${headerForm.needAddNew} == true"
+					id="addNew">
+					<i class="fa-solid fa-circle-plus me-1"></i> <span th:text="${headerForm.addNewText}"></span>
+				</button>
+				<a type="button" th:href="@{${headerForm.url}}" class="btn  btn-secondary"
+					th:if="${headerForm.needBack} == true">
+					<i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</th:block>

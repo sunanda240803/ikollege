@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}">
+  <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+  <header th:replace="~{common/header:: title(${headerForm})}"></header>
+  <!-- //Main-->
+  <main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                <div th:if="${deanHdcComplaintDto != null}">
+                   <form class="themeForm mt-3" th:action="@{#{url.dean.approval.hdc.complaint}+#{url.save}}" method="post" 
+                    	th:object="${deanHdcComplaintDto}" id="hdcComplaintAddForm" enctype="multipart/form-data">
+                        <div class="row">
+                        	<div class="col-lg-12">
+                                <h2 class="tmsub-title">
+									<span th:text="#{message.label.category}"></span>
+								</h2>
+							</div>
+                       		<div class="col-lg-3 mb-3">
+								<div class="checkRadio-bg form-control" id="category">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input required-input" type="radio" value="Students" id="students"
+											   th:field="*{category}" th:checked="${category == 'students'}" required
+											   	onchange="validateStudentDetails(this);">
+										<label class="form-check-label" for="students">
+											<span th:text="#{message.label.iitm.students}"></span>
+										</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input required-input" type="radio" value="Others" id="others"
+											   th:field="*{category}" th:checked="${category == 'others'}" required
+											   onchange="validateStudentDetails(this);">
+										<label class="form-check-label" for="others">
+											<span th:text="#{message.label.others}"></span>
+										</label>
+									</div>
+								</div>
+								<div class="invalid-feedback"><span th:text="#{message.validation.category.required}"></span></div>
+							</div>
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.iitm.student} + ' ' + #{message.label.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.student.id.colon}"> </span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                    
+                                </label>
+                                <input type="text" class="form-control" th:field="*{studentId}" onblur="getStudentDetails(); getPreviousComplaints();"
+                                	required oninput="allowOnlyAlphabetsAndNumbers(this); agetUpperCase(this);" th:placeholder="#{message.label.enter}+' '+#{message.label.student.id}">
+                                <div class="invalid-feedback backendErrors" th:errors="*{studentId}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.student.id.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.student.name.colon}"> </span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                    
+                                </label>
+                                <input type="text" class="form-control" th:field="*{studentName}"
+                                       th:placeholder="#{message.label.enter}+' '+#{message.label.student.name}" required>
+                                <div class="invalid-feedback backendErrors" th:errors="*{studentName}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.student.name.required}"></div>
+                            </div>
+                        </div>
+                        <div class="row" id="hostelDetails" >
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hostel.name.colon}"> </span>  
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                  
+                                </label>
+                                <select class="selectpicker required-select-input" data-live-search="true" th:field="*{hostelId}"
+                                	required>
+									<option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+									<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+										th:text="${hostelList.hostelName}"></option>
+								</select>
+								<div class="invalid-feedback backendErrors" th:errors="*{hostelId}"></div>
+								<div class="invalid-feedback-frontEnd" th:text="#{message.validation.hostel.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.hostel.roomno.colon}"> </span> 
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                   
+                                </label>
+                                <input type="text" class="form-control" th:field="*{roomNo}" required oninput="validateNumberInput(this);"
+                                       th:placeholder="#{message.label.enter}+' '+#{message.label.room.no}">
+                                <div class="invalid-feedback backendErrors" th:errors="*{roomNo}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.room.no.required}"></div>
+                            </div>
+                        </div>
+                        
+						<div class="row previousComp d-none">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.previous.complaint.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row previousComp d-none" >
+                        	<div class="col-lg-6 mb-3">
+                        		<a href="#" class="complaint-link mt-2"></a>
+                        	</div>
+                        </div>
+						<div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.complaint.involved.students.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row" >
+                        	<div class="col-lg-6 mb-3">
+                            	<textarea class="form-control text-wrap" style="height: 99px; overflow: auto;" th:field="*{studenIds}"
+                            		oninput="allowOnlyAlphabetsNumbersComma(this); getUpperCase(this);"></textarea>
+                            	<small th:text="#{message.label.involved.students.info}"></small>
+                            	<div class="invalid-feedback-frontEnd" th:text="#{message.validation.involved.students.required}"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.complaint.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.violation.colon}">: </span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                    
+                                </label>
+                                <textarea class="form-control text-wrap" style="height: 99px; overflow: auto;" th:field="*{violation}"
+                                          th:placeholder="#{message.label.enter}+' '+#{message.label.hdc.violation}" required></textarea>
+                                <div class="invalid-feedback backendErrors" th:errors="*{violation}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.violation.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.warden.plea.colon}">: </span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                    
+                                </label>
+                                <textarea class="form-control text-wrap" style="height: 99px; overflow: auto;" th:field="*{wardenPlea}"
+                                          th:placeholder="#{message.label.enter}+' '+#{message.label.hdc.plea}" required></textarea>
+                                <div class="invalid-feedback backendErrors" th:errors="*{wardenPlea}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.warden.plea.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.warden.decision.colon}">: </span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                    
+                                </label>
+                                <textarea class="form-control text-wrap" style="height: 99px; overflow: auto;" th:field="*{wardenDecision}"
+                                          th:placeholder="#{message.label.enter}+' '+#{message.label.hdc.decision}" required></textarea>
+                                <div class="invalid-feedback backendErrors" th:errors="*{wardenDecision}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.warden.decision.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.remarks.colon}">: </span> 
+                                </label>
+                                <textarea class="form-control text-wrap" style="height: 99px; overflow: auto;" th:field="*{wardenRemarks}"
+                                          th:placeholder="#{message.label.enter}+' '+#{message.label.hdc.remarks}"></textarea>
+                                <div class="invalid-feedback backendErrors" th:errors="*{wardenRemarks}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.warden.remarks.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.dayscholar.involved.colon}">: </span>                                    
+                                </label>
+                                <textarea class="form-control text-wrap" style="height: 99px; overflow: auto;"
+                                          th:placeholder="#{message.label.enter}+' '+#{message.label.hdc.dayscholar.involved}" th:field="*{dayScholarInvolve}"></textarea>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.involved.day.scholor.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3" id="">
+                            <label class="form-label">
+                                    <span th:text="#{message.label.file.upload}+':'"> </span> 
+                                </label>
+                                <th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+									'uploadFile', 'file', ${#messages.msg('message.validation.accepted.document.types')}, 'uploadDoc', null, ${#messages.msg('message.drag.drop.here.document')})}">
+								</th:block>
+								<div class="invalid-feedback backendErrors" th:errors="*{file}"></div>
+                                 <div class="invalid-feedback-frontEnd" th:text="#{message.validation.document.required}"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:text="#{message.label.hdc.complaint.penalty.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.penalty.amount.colon}">: </span> 
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                   
+                                </label>
+                                <input class="form-control" type="text" th:field="*{penaltyAmount}"
+                                       th:placeholder="#{message.label.enter}+' '+#{message.label.penalty.amount}"
+                                	oninput="validateNumberInput(this); validateDueDate();" required>
+                                	<div class="invalid-feedback backendErrors" th:errors="*{penaltyAmount}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.penalty.amount.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3 dueDate d-none">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.hdc.complaint.due.date.colon}">: </span> 
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />                                   
+                                </label>
+                                <input class="form-control" type="date" th:field=*{penaltyDueDate}>
+                                <div class="invalid-feedback backendErrors" th:errors="*{penaltyDueDate}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.date.of.complaint.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mt-4">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.send.mail.to.parents.colon}">: </span>                                    
+                                </label>
+                            	<input type="hidden" th:field="*{mailToParent}"> 
+                            	<input class="form-check-input fa-2x" type="checkbox" id="parentMail"> 
+                            </div>
+                        </div>
+                       <hr/>
+                       <div class="row text-end ">
+                         	<div class="col-lg-12 mb-4">
+                             	<div class="d-flex align-items-center justify-content-end">
+                             	<span class="me-3 text-danger submitError"></span>
+                             		<button type="button"
+                                         class="btn btn-aqua px-4 me-3" id="hdcComplaintSave">
+                                     	<i class="fa-solid fa-floppy-disk me-1"></i>
+                                     	<span th:text="#{message.button.save}"></span>
+                                 	</button>
+                             	</div>
+                             </div>
+                          </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </main>
+  <!-- //Main-->
+  <!-- Footer-->
+  <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dean/dean-dashboard.js}"></script>
+    <script th:src="@{/assets/js/warden/hdc-complaint.js}"></script>
+    <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:inline="javascript">
+    	const baseUrl = /*[[#{url.dean.approval.hdc.complaint}]]*/ '';
+    	const studentUrl = /*[[#{url.student}]]*/ '';
+    	const addNewUrl = /*[[#{url.new}]]*/ '';
+    	const previousComplaints = /*[[#{url.previous.complaints}]]*/ '';
+    	const validStudentId = /*[[${#messages.msg('message.validation.student.id.exist.hdc')}]]*/'';
+	</script>
+</th:block>
+<!-- //Footer-->
+  </th:block>
+  <!-- //Footer-->
+</body>
+
+</html>

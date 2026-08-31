@@ -1,0 +1,24 @@
+<th:block xmlns:th="http://www.thymeleaf.org"
+	th:fragment="modal(id,buttonId, needCancel, needClear, needSaveOrUpdate, saveOrUpdateText)">
+	<div class="row  text-end">
+		<div class="col-lg-12 mt-2 mb-4">
+			<div class="d-flex align-items-center  justify-content-end">
+				<a type="button" th:href="@{${headerForm.url}}" class="btn btn-dark px-4 me-3" th:if="${needCancel == true && ((needSaveOrUpdate != null && needSaveOrUpdate != false) || (workFlow ==true && isProceedtoApproval ==true))} "
+					th:id="${buttonId + 'Cancel'}">
+					<i class="fa-solid fa-circle-xmark me-1"></i> <span th:text="#{message.button.cancel}"></span>
+				</a>
+<!--				th:if="${needSaveOrUpdate != null && needSaveOrUpdate != false} "
+-->				<button type="button" class="btn  px-4 me-3" th:id="${buttonId + 'Save'}" th:if="${saveOrUpdateText != null && needSaveOrUpdate != false} "
+					 th:classappend="${(id!=null && id!=0) ? 'btn-update' : 'btn-success'}">
+					<i class="fa-solid fa-floppy-disk me-1"></i>
+					<span th:text="${saveOrUpdateText}"></span>
+				</button>
+
+				<button type="button" class="btn btn-warning px-4 me-3" th:if="${workFlow ==true && isProceedtoApproval ==true}"
+					th:id="${buttonId + 'Proceed'}">
+					<i class="fa-solid fa-angles-right"></i> <span th:text="#{message.button.save.submit.for.approval}"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</th:block>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}">
+</header>
+
+<!-- //Main-->
+
+<main id="main" class="main">
+    <!--School Info Section-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title"><span th:text="#{message.label.late.fee.enrollment.list}"></span></h2>
+                        </div>
+                    </div>
+
+                    <!--<form action="#" method="get">
+                        <div class="row mb-3 justify-content-end">
+                            <div class="col-auto">
+                                <label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+                                    <i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+                                       th:data-bs-title="#{message.labelshow.event.master.search.title}">
+                                    </i>
+                                </label>
+                                <input type="text" class="form-control" name="search" id="search"
+                                       th:value="${form.search}">
+                            </div>
+                            <div class="col-auto mt-3">
+                                <button class="btn btn-secondary mt-4" type="submit">
+                                    <span th:text="#{message.label.search}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>-->
+                    <form class="themeForm g-3 needs-validation">
+                        <div class="table-responsive themeTable">
+                            <table id="lateFeeTable" class="table table-bordered  nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.sl.no.pdf}"></th>
+                                    <th th:text="#{message.label.studentID}"></th>
+                                    <th th:text="#{message.label.date}"></th>
+                                    <th th:text="#{message.label.hostel}"></th>
+                                    <th th:text="#{message.label.description}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                    th:each="fee, iter: ${form.paginationList.getContent()}">
+                                    <td th:text="${iter.index + 1}"></td>
+                                    <td th:text="${fee.studentId}"></td>
+                                    <td th:with="dateFormat=#{date.format}" th:text="${#temporals.format(fee.dueDate,dateFormat)}"></td>
+                                    <td th:text="${fee.hostelName}"></td>
+                                    <td th:text="${fee.description}"></td>
+                                </tr>
+                                <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                    <td colspan="11" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal-->
+<div th:id="modalDiv"></div>
+<!-- //Modal-->
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dean/late-fee-enrollment.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.dean.hostel.enrollment}]]*/ '';
+        const lateFeeEnrollment = /*[[#{url.late.fee.enrollment}]]*/ '';
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>
+

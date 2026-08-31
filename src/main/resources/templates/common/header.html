@@ -1,0 +1,389 @@
+<th:block th:fragment="title(headerForm)" xmlns:th="http://www.thymeleaf.org">
+	<script th:src="@{/assets/js/common/mask-constant.js}" th:inline="javascript"></script>
+	<div class="page-loading mt-2" id="loader">
+		<div role="status">
+			<img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+			<h4 th:text="#{message.label.loading}"></h4>
+		</div>
+	</div>
+	<!-- Header -->
+	<header class="header fixed-top">
+		<nav class="navbar navbar-expand-lg p-0">
+			<div class="container-fluid justify-content-around p-0">
+				<div class="row w-100">
+					<div class="col-lg-5">
+						<!--Client Logo-->
+						<div class="header-logo d-flex align-items-start">
+							<a href="#" class="d-flex align-items-center">
+								<img th:src="@{/assets/img/hm_iitm_logo.png}" alt="hmiitm">
+							</a>
+							<span class="w-100">
+								<h5 class="mb-0" th:text="${institute.schoolName}"></h5>
+								<h6 class="mb-0" th:text="${institute.location}"></h6>
+							</span>
+							<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+									data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+									aria-expanded="false" aria-label="Toggle navigation">
+								<i class="fa-solid fa-outdent"></i>
+							</button>
+						</div>
+					</div>
+					<div class="col-lg-7 pe-lg-0">
+						<div class="collapse navbar-collapse" id="navbarSupportedContent">
+							<ul class="navbar-nav ms-auto"
+							th:with="hasDashbaord=${headerForm.dashboardList ne null && !headerForm.dashboardList.isEmpty()},
+							multiDashboard=${headerForm.dashboardList ne null && #lists.size(headerForm.dashboardList) > 1}">
+								<li class="nav-item"
+									th:classappend="${multiDashboard} ? 'dropdown position-static' : ''"
+									th:if="${!@modelConstants.OTHER_LOGIN_TYPE.equalsIgnoreCase(@securityCtxUtil.accountType())}">
+									<a class="nav-link" th:href="${multiDashboard} ? '#' : @{/index}" role="button"
+									   th:classappend="${multiDashboard} ? 'dropdown-toggle' : ''"
+									   th:data-bs-toggle="${multiDashboard ? 'dropdown' : ''}"
+									   th:aria-expanded="${multiDashboard ? 'false' : ''}"
+									>
+										<i class="ph-duotone ph-house-line"></i> Dashboard
+									</a>
+									<ul th:if="${hasDashbaord}" class="dropdown-menu dropdown-menu-arrow listMenu">
+										<li th:each="dashboard: ${headerForm.dashboardList}">
+											<a class="dropdown-item" th:href="@{${dashboard.urlPath}}">
+												<i class="ph-duotone" th:classappend="${dashboard.iconName}"></i>
+												<span th:text="${dashboard.menuHeading}"></span>
+											</a>
+										</li>
+									</ul>
+								</li>
+
+								<!--MegaMenu-->
+								<li class="nav-item dropdown position-static"
+									th:if="${headerForm.menuList ne null && !headerForm.menuList.isEmpty()}">
+									<a class="nav-link dropdown-toggle" href="#" role="button"
+									   data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="ph-duotone ph-diamonds-four"></i> Modules
+									</a>
+									<ul class="dropdown-menu megaMenu">
+										<div class="container-fluid">
+										<!--Modules Search Row-->
+											<div class="row mt-2 mb-3">
+												<div class="col-lg-6 mx-auto">
+													<div class="input-group search-module">
+														<input type="text" class="form-control  form-control-sm"
+															   placeholder="Search Module Menu"
+															   id="dynamic-search-input"
+															   aria-label="Search Module Menu"
+															   aria-describedby="search-module">
+													</div>
+												</div>
+											</div>
+											<!--Menu Row-->
+											<div class="row mb-3"  id="dynamic-mega-menu">
+												<div class="col-lg-2 menu-section" th:each="mainMenu, mainIndex: ${headerForm.menuList}">
+													<ul>
+														<h3 class="title">
+															<i class="ph-duotone " th:classappend="${mainMenu.iconName}"></i>
+															<span th:text="${mainMenu.menuHeading}"></span>
+														</h3>
+														<li th:if="${!#lists.isEmpty(mainMenu.subMenu)}" th:each="subMenu, subIndex: ${mainMenu.subMenu}">
+															<a th:href="${#lists.isEmpty(subMenu.subMenu)} ? @{${subMenu.urlPath}} : 'javascript:void(0);'"
+															   onclick="expandSubMenu(this.id, false)" th:id="'menu_' + ${mainIndex.index} + '_' + ${subIndex.index}">
+																<i class="ph-duotone "
+																   th:classappend="${#lists.isEmpty(subMenu.subMenu)} ? 'ph-caret-right' : 'ph-caret-double-right'"></i>
+																<span th:text="${subMenu.menuHeading}"></span>
+															</a>
+															<ul th:if="${!#lists.isEmpty(subMenu.subMenu)}" class="pt-0 pb-0 d-none"
+																th:id="'submenu_' + ${mainIndex.index} + '_' + ${subIndex.index}">
+
+															<li th:each="subSubMenu: ${subMenu.subMenu}">
+																	<a th:href="@{${subSubMenu.urlPath}}">
+																		<i class="ph-duotone ph-caret-right"></i>
+																		<span th:text="${subSubMenu.menuHeading}"></span>
+																	</a>
+																</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</ul>
+								</li>
+								<!--//MegaMenu-->
+
+								<!--MegaTab-->
+								<li class="nav-item dropdown position-static"
+									th:if="${headerForm.tabList ne null && !headerForm.tabList.isEmpty()}">
+									<a class="nav-link dropdown-toggle" href="#" role="button"
+									   data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="ph-duotone ph-diamonds-four"></i> Modules
+									</a>
+									<ul class="dropdown-menu megaMenu">
+										<div class="container mt-4">
+											<div class="row g-3">
+												<div class="col-lg-3 col-md-4 col-sm-6" th:each="menu : ${headerForm.tabList}">
+													<a th:href="@{'/' + ${menu.urlPath}}" class="text-decoration-none menu-link">
+														<div class="menu-card">
+															<div class="menu-icon">
+																<i class="bi bi-grid"></i> <!-- Replace with relevant Bootstrap icons -->
+															</div>
+															<div class="menu-text" th:text="${menu.menuHeading}"></div>
+														</div>
+													</a>
+												</div>
+											</div>
+										</div>
+
+										<style>
+											/* Theme primary color */
+											:root {
+												--tmPrimary: #0300c4;
+											}
+
+											/* Grid Layout */
+											.menu-link {
+												display: block;
+												text-align: center;
+											}
+
+											/* Card-style menu items */
+											.menu-card {
+												display: flex;
+												flex-direction: column;
+												align-items: center;
+												justify-content: center;
+												padding: 12px; /* Slightly reduced height */
+												border-radius: 8px;
+												background: #f8f9fa;
+												box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+												transition: all 0.3s ease-in-out;
+												height: 90px; /* Reduced height */
+											}
+
+											/* Icon Styling */
+											.menu-icon i {
+												font-size: 1.5rem;
+												color: var(--tmPrimary);
+											}
+
+											/* Menu Text */
+											.menu-text {
+												margin-top: 6px;
+												font-size: 0.95rem;
+												font-weight: 600;
+												text-transform: uppercase;
+												color: var(--tmPrimary);
+											}
+
+											/* Hover Effects */
+											.menu-card:hover {
+												background: var(--tmPrimary);
+												transform: translateY(-3px);
+												box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+											}
+
+											.menu-card:hover .menu-icon i,
+											.menu-card:hover .menu-text {
+												color: #fff;
+											}
+										</style>
+
+
+
+										<div class="container-fluid d-none">
+											<!--Menu Row-->
+											<div class="row mb-3">
+												<div class="col-lg-2" th:each="mainMenu, mainIndex: ${headerForm.tabList}">
+													<ul class="">
+														<a th:href="@{${mainMenu.urlPath}}">
+															<h3 class="title2 p-0 m-0">
+																<i class="ph-duotone ph-caret-right"></i>
+																<span th:text="${mainMenu.menuHeading}"></span>
+															</h3>
+														</a>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</ul>
+								</li>
+								<!--//MegaTab-->
+
+								<!--MegaReport-->
+								<li class="nav-item dropdown position-static"
+									th:if="${headerForm.reportList ne null && !headerForm.reportList.isEmpty()}">
+									<a class="nav-link dropdown-toggle" href="#" role="button"
+									   data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="ph-duotone ph-list-checks"></i> Reports
+									</a>
+									<ul class="dropdown-menu megaMenu">
+										<div class="container-fluid">
+											<!--Modules Search Row-->
+											<div class="row mt-2 mb-3">
+												<div class="col-lg-6 mx-auto">
+													<div class="input-group search-module">
+														<input type="text" class="form-control  form-control-sm"
+															   placeholder="Search Module Menu"
+															   id="dynamic-search-input-report"
+															   aria-label="Search Module Menu"
+															   aria-describedby="search-module">
+													</div>
+												</div>
+											</div>
+											<!--Menu Row-->
+											<div class="row mb-3"  id="dynamic-mega-menu-report">
+												<div class="col-lg-2 menu-section-report" th:each="mainMenu, mainIndex: ${headerForm.reportList}">
+													<ul>
+														<h3 class="title">
+															<i class="ph-duotone " th:classappend="${mainMenu.iconName}"></i>
+															<span th:text="${mainMenu.menuHeading}"></span>
+														</h3>
+														<li th:if="${!#lists.isEmpty(mainMenu.subReport)}" th:each="subMenu, subIndex: ${mainMenu.subReport}">
+															<a th:href="${#lists.isEmpty(subMenu.subReport)} ? @{${subMenu.urlPath}} : 'javascript:void(0);'"
+															   onclick="expandSubMenu(this.id, false)" th:id="'menu_' + ${mainIndex.index} + '_' + ${subIndex.index}">
+																<i class="ph-duotone "
+																   th:classappend="${#lists.isEmpty(subMenu.subReport)} ? 'ph-caret-right' : 'ph-caret-double-right'"></i>
+																<span th:text="${subMenu.menuHeading}"></span>
+															</a>
+															<ul th:if="${!#lists.isEmpty(subMenu.subReport)}" class="pt-0 pb-0 d-none"
+																th:id="'submenu_' + ${mainIndex.index} + '_' + ${subIndex.index}">
+
+																<li th:each="subSubMenu: ${subMenu.subReport}">
+																	<a th:href="@{${subSubMenu.urlPath}}">
+																		<i class="ph-duotone ph-caret-right"></i>
+																		<span th:text="${subSubMenu.menuHeading}"></span>
+																	</a>
+																</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</ul>
+								</li>
+								<!--//MegaReport-->
+
+								<li class="nav-item dropdown accountMenu">
+									<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+										aria-expanded="false">
+										<i class="ph-duotone ph-user-square"></i> My Account
+									</a>
+									<ul class="dropdown-menu dropdown-menu-arrow listMenu">
+										<li class="dropdown-header d-flex align-items-center ">
+											<img th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+												 th:src="@{#{url.file} + #{url.image} + '/profile/1'}" alt="Profile" class="rounded-circle">
+											<span>
+												<h6><span th:text="${@securityCtxUtil.getProfileName()}"></span></h6>
+												<span th:text="${@securityCtxUtil.userRole()}"></span>
+											</span>
+										</li>
+										<li
+										th:if="${@modelConstants.OTHER_LOGIN_TYPE.equalsIgnoreCase(@securityCtxUtil.accountType())}">
+											<a class="dropdown-item"
+											   th:href="@{#{url.other.candidate.user}+'/'+${session.get('encryptedUserId')}}">
+												<i class="ph-duotone ph-pencil-line"></i>
+												<span th:text="#{message.edit.profile}"></span>
+											</a>
+										</li>
+										<li><a class="dropdown-item" onclick="viewResetPasswordModal();" href="#"> <i class="ph-duotone ph-lock-key-open"></i>
+											Change Password</a></li>
+										<li><a class="dropdown-item" th:href="@{#{url.logout}}"> <i class="ph-duotone ph-power"></i> Logout </a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<!--Page Title-->
+		<div class="pagetitle">
+			<div class="row align-items-center">
+				<div class="col-lg-6">
+					<th:block th:if="${headerForm} != null">
+						<h1 th:text="${headerForm.menuHeading}"></h1>
+						<nav aria-label="breadcrumb" th:if="${headerForm.breadCrumbs}">
+							<ol class="breadcrumb" >
+								<li th:each="menu: ${headerForm.breadCrumbs}" class="breadcrumb-item active"
+									aria-current="page">
+									<a  th:text="${menu.menuHeading}" th:href="@{${menu.menuUrl}}"></a>
+								</li>
+							</ol>
+						</nav>
+					</th:block>
+				</div>
+				<div class="col-lg-6 text-lg-end">
+					<th:block th:if="${headerForm} != null">
+						<button th:if="${headerForm.needAddNew}" type="button" class="btn btn-success btn-sm" id="addNewId">
+							<i class="fa-solid fa-circle-plus me-1"></i> <span th:text="#{message.button.add.new}"></span>
+						</button>
+					</th:block>
+					<th:block th:if="${headerForm} != null">
+						<button th:if="${headerForm.needUpdate}" type="button" class="btn  btn-blue btn-sm" id="updateId">
+							<i class="fa-solid fa-rotate me-1"></i> <span th:text="#{message.button.update}"></span>
+						</button>
+					</th:block>
+					<th:block th:if="${headerForm} != null">
+						<button th:if="${headerForm.needAdditionalButton}" type="button" class="btn btn-sm"
+							th:classappend="${headerForm.additionalButtonColor}" id="additionalButton">
+							<i class="me-1" th:classappend="${headerForm.additionalButtonIcon}"></i>
+							<span th:text="${headerForm.additionalButtonLabel}"></span>
+						</button>
+					</th:block>
+					<th:block th:if="${headerForm} != null">
+						<button th:if="${headerForm.needAdditionalButton2}" type="button" class="btn btn-sm"
+							th:classappend="${headerForm.additionalButtonColor2}" id="additionalButton2">
+							<i class="me-1" th:classappend="${headerForm.additionalButtonIcon2}"></i>
+							<span th:text="${headerForm.additionalButtonLabel2}"></span>
+						</button>
+					</th:block>
+					<th:block th:if="${headerForm} != null">
+						<button th:if="${headerForm.needBack}" type="button" id="cancelButton" onclick="window.history.back();" class="btn btn-secondary btn-sm">
+							<i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+						</button>
+					</th:block>
+				</div>
+			</div>
+		</div>
+
+		<!--New Modules List Menu-->
+		<nav class="navbar navbar-expand-lg modulesNavbar">
+			<div class="container-fluid">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+					<span> Menu</span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNavDropdown">
+					<ul class="navbar-MLnav">
+						<th:block th:each="mainMenu, mainIndex: ${headerForm.menuList}">
+							<th:block  th:if="${!#lists.isEmpty(mainMenu.subMenu) && #lists.size(headerForm.breadCrumbs) > 1}"
+									   th:each="subMenu, subIndex: ${mainMenu.subMenu}">
+								<th:block  th:if="${headerForm.breadCrumbs.get(1).menuHeading==mainMenu.menuHeading}">
+									<li class="nav-item" th:if="${#lists.isEmpty(subMenu.subMenu)}">
+										<a class="nav-link"
+										 th:classappend="${headerForm.breadCrumbs.get(2).menuHeading == subMenu.menuHeading} ? ' active' : ''"
+										 th:href="@{${subMenu.urlPath}}"><span th:text="${subMenu.menuHeading}"></span></a>
+									</li>
+									<li class="nav-item dropdown dd-submenuL1" th:if="${!#lists.isEmpty(subMenu.subMenu)}">
+										<a class="nav-link dropdown-toggle"
+										   th:classappend="${headerForm.breadCrumbs.get(2).menuHeading == subMenu.menuHeading} ? ' active' : ''"
+										   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+											<span th:text="${subMenu.menuHeading}"></span>
+										</a>
+										<ul class="dropdown-menu">
+											<th:block  th:if="${!#lists.isEmpty(subMenu.subMenu)}">
+												<li th:each="subSubMenu: ${subMenu.subMenu}">
+													<a class="dropdown-item" th:href="@{${subSubMenu.urlPath}}">
+														<span th:text="${subSubMenu.menuHeading}"></span>
+													</a>
+												</li>
+											</th:block>
+										</ul>
+									</li>
+								</th:block>
+							</th:block>
+						</th:block>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<!-- //Header -->
+</th:block>

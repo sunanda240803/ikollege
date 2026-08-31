@@ -1,0 +1,561 @@
+<div th:replace="~{common/modal-template ::
+   modal('occupiedModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'xl')}"
+     xmlns="http://www.w3.org/1999/html">
+    <modalHeader th:text="#{message.lable.room.allotment}"></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="occupiedModalForm">
+            <div class="row">
+                <div class="col-xl-auto mb-3">
+                    <input type="hidden" th:value="${hostelId}" id="selectedHostelId">
+                    <input type="hidden" th:value="${floorId}" id="selectedFloorId">
+                    <input type="hidden" th:value="${hostelRoomInfoDto.id}" id="selectedRoomId">
+                    <label class="form-label" th:text="#{message.label.hostel.information}"></label>
+                    <div class="row">
+                        <label class="form-control form-graybox">
+                            <span th:text="(${hostelMasterDto} != null ? ${hostelMasterDto.hostelName} : 'N/A')"></span>
+                            <i class="fa-solid fa-angles-right ms-2 me-2 text-primary"></i>
+                            <span th:text="(${hostelFloorName} != null ? ${hostelFloorName} : 'N/A')"></span>
+                            <i class="fa-solid fa-angles-right ms-2 me-2 text-primary"></i>
+                            <span th:text="(${hostelRoomInfoDto} != null ? ${hostelRoomInfoDto.roomNo} : 'N/A')"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xl-auto mb-3">
+                    <label class="form-label" th:text="#{message.lable.selected.date}"></label>
+                    <div class="form-control form-graybox" th:text="${date}" id="selectedDate"></div>
+                </div>
+                <div th:if="${isGuest}">
+                    <div class="row mt-2">
+                        <div class="col-lg-12" th:if="${!roomOccupancyDetails.isEmpty()}">
+                            <h2 class="tmsub-title" th:text="#{message.lable.occupant.details}"></h2>
+                        </div>
+                    </div>
+                    <div class="row mb-2" th:each="occupant, iter : ${roomOccupancyDetails}">
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label" th:text="#{message.label.book.from.date}"></label>
+                            <div class="form-control form-graybox" id="bookFromDate" th:text="${#temporals.format(occupant.stayFromDate, #messages.msgOrNull('date.format'))}"></div>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label" th:text="#{message.label.book.to.date}"></label>
+                            <div class="form-control form-graybox" id="bookToDate" th:text="${#temporals.format(occupant.stayToDate, #messages.msgOrNull('date.format'))}"></div>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label" th:text="#{message.label.no.of.days}"></label>
+                            <div class="form-control form-graybox" id="noOfDays" th:text="${occupant.noOfDays}"></div>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label" th:text="#{message.label.student.id}"></label>
+                            <div class="form-control form-graybox" id="guestStudentId" th:text="${occupant.studentId}"></div>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label" th:text="#{message.label.student.name}"></label>
+                            <div class="form-control form-graybox" id="guestStudentName" th:text="${occupant.studentName}"></div>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label class="form-label" th:text="#{message.label.no.of.guests}"></label>
+                            <div class="form-control form-graybox" id="noOfPersons" th:text="${occupant.noOfPerson}"></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.guest.details}"></h2>
+                            </div>
+                            <div class="col-lg-4" th:each="guestDetails : ${#strings.arraySplit(occupant.guestName, ',')}">
+                                <div class="card mt-2">
+                                    <div class="card-body text-center" th:each="guest, guestStat : ${#strings.arraySplit(guestDetails, '-')}">
+                                        <div th:if="${guestStat.index == 0}" th:text="${guest}" style="margin-bottom:0; line-height:1;"></div>
+                                        <div th:if="${guestStat.index == 1}" class="text-primary fw-bold" th:text="${guest}" style="margin-top:0; line-height:1;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${!isGuest}">
+                    <div class="row mt-2">
+                        <div class="col-lg-12">
+                            <h2 class="tmsub-title" th:text="#{message.lable.occupant.details}"></h2>
+                        </div>
+                    </div>
+                <div class="row d-flex justify-content-center">
+                    <div class=" col-4 mb-3 occupantSection" id="occupantSection" th:each="occupant, iter : ${roomOccupancyDetails}"
+                         th:with="stayFromDate = ${occupant.stayFromDate} eq null,stayEndDate = ${occupant.getStayEndDate()} eq null,
+                         screenTypeStudent = ${occupant.studentType} == 'Student' or ${occupant.studentType} == 'StudentApp'">
+                        <div class="card p-0 h-100 rounded-2 overflow-hidden">
+                            <input type="hidden" id="subRoomId">
+                            <div class="card-header"
+                                th:classappend="${stayFromDate} ? 'bg-success text-bg-success' : (${occupant.pwdStatus} ? 'bg-warning text-bg-warning' : 'bg-secondary text-bg-secondary')">
+                                <h5 class="card-title text-center" th:text="#{message.label.hostel.occupant} + ' ' + ${occupant.subRoomId}"></h5>
+                            </div>
+                            <div class="card-body" th:if="${!stayFromDate}">
+                                <label th:if="${!stayEndDate}" class="form-label fw-bold" th:text="#{message.label.period.of.stay}"></label>
+                                <label th:if="${stayEndDate}" class="form-label fw-bold" th:text="#{message.label.staying.since}"></label>
+                                <div th:with="dateFormat=#{date.format}">
+                                    <span th:text="${#temporals.format(occupant.stayFromDate, dateFormat)}"></span>
+                                    <i th:if="${!stayEndDate}" class="fa-solid fa-angles-right ms-2 me-2 text-primary"></i>
+                                    <span th:if="${!stayEndDate}" th:text="${#temporals.format(occupant.getStayEndDate(), dateFormat)}"></span>
+                                </div>
+                                <div class="row mt-3 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold" th:text="#{message.label.hostel.occupant}"></label>
+                                    </div>
+                                    <div class="col-6" th:if="${occupant.studentType == 'Student' || occupant.studentType == 'StudentApp'}">
+                                        <a href="javascript:void(0);" th:data-student-id="${occupant.studentId}"
+                                           onclick="viewStudentBioData(this);" class="text-primary w-100 text-end"
+                                           id="studentDetailsLink">
+                                            <span th:text="#{message.label.view.bio.data}"></span>
+                                            <i class="fa-solid fa-up-right-from-square"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="d-flex align-items-startjustify-content-evenly text-start font-weight-bold">
+                                            <span th:text="${occupant.studentName}" class="ellipsis me-1" data-bs-toggle="tooltip" th:data-bs-title="${occupant.studentName}"></span>
+                                            <span th:text="'[' + (${screenTypeStudent} ? ${occupant.studentId} : ${occupant.email})"
+                                                  th:classappend="${!screenTypeStudent} ? 'ellipsis ms-1' : 'ms-1'" data-bs-toggle="tooltip" th:data-bs-title="(${screenTypeStudent} ? ${occupant.studentId} : ${occupant.email})"></span>]
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body occupant-body d-flex align-items-center justify-content-center" th:if="${stayFromDate}">
+                                <button type="button" class="btn btn-tmPrimary btn-lg" th:id="${occupant.subRoomId} + '_allocateButton'" data-bs-toggle="tooltip" th:data-bs-title="#{message.button.allocate}" th:data-sub-room-id="${occupant.subRoomId}" onclick="setSubRoomId(this)">
+                                    <i class="fa-solid fa-user-check"></i> <span th:text="#{message.button.allocate}"></span>
+                                </button>
+                            </div>
+                            <div class="card-footer text-center hostel-swap-btn-group p-0" th:if="${!stayFromDate}">
+                                <button type="button" th:classappend="${!screenTypeStudent} ? 'd-none' : ''" class="btn btn-lg btn-tmPrimary d-flex align-items-center justify-content-center gap-1 swap-btn" id="swapButton" onclick="toggleSwapStudents(this)"
+                                        data-bs-toggle="tooltip" th:data-bs-title="#{message.button.swap}" th:data-student-id="${occupant.studentId}">
+                                    <i class="fa-solid fa-exchange-alt"></i> <span th:text="#{message.button.swap}"></span>
+                                </button>
+                                <button type="button" th:classappend="${!screenTypeStudent} ? 'd-none' : ''" class="btn btn-lg btn-tmSecondary d-flex align-items-center justify-content-center gap-1 swap-btn" onclick="toggleChangeStudent(this)"
+                                        data-bs-toggle="tooltip" th:data-bs-title="#{message.button.change}" th:id="${occupant.subRoomId} + '_changeButton'"
+                                        th:data-student-id="${occupant.studentId}"><i class="fa-solid fa-edit"></i> <span th:text="#{message.button.change}"></span></button>
+
+                                <button type="button" class="btn btn-lg btn-danger d-flex align-items-center justify-content-center gap-1 swap-btn" th:id="${occupant.subRoomId} + '_deleteButton'"
+                                        data-bs-toggle="tooltip" th:data-bs-title="#{message.button.remove}" th:data-student-id="${occupant.studentId}" th:data-email-id="${occupant.email}" onclick="toggleDeleteStudent(this)">
+                                    <i class="fa-solid fa-trash-can"></i> <span th:text="#{message.button.remove}"></span>
+                                </button>
+                                <input type="hidden" id="roomAllotmentId" th:value="${occupant.roomAllotmentId}">
+                                <input type="hidden" id="allocationType" th:value="${occupant.studentType}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedSubRoomId">
+                <div class="row d-none mb-3" id="deleteSection">
+                    <div class="col-3 mb-3">
+                        <label class="form-label" th:text="#{message.label.student.id}" id="deleteStudentIdOrEmailLabel"></label>
+                        <div class="form-control form-graybox fw-bold" id="deleteStudentIdOrEmail"></div>
+                    </div>
+                    <div class="col-12 mb-">
+                        <div class="text-danger" th:text="#{message.label.delete.room.allocation}"></div>
+                        <div class="form-text" th:text="#{message.label.delete.room.allocation.note}"></div>
+                    </div>
+                </div>
+                <div class="row d-none mb-3" id="changeSection">
+                    <div class="col-3 mb-3">
+                        <label class="form-label" th:text="#{message.label.student.id}"></label>
+                        <div class="form-control form-graybox fw-bold" id="changeStudentId"></div>
+                    </div>
+                    <div class="col-9 mb-3"></div>
+                    <div class="col-lg-3 mb-3">
+                        <label for="hostelNameOption" class="form-label">
+                            <span th:text="#{message.label.hostel.name}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <select class="form-select" id="hostelNameOption" onchange="loadFloorForChange()"></select>
+                        <div class="invalid-feedback"><span th:text="#{message.validation.hostel.name.required}"></span></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label for="roomNo" class="form-label">
+                            <span th:text="#{message.label.floor.name}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <select class="form-select" id="floorName" onchange="loadRoomForChange()"></select>
+                        <div class="invalid-feedback"><span th:text="#{message.validation.floor.name.required}"></span></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label for="roomNo" class="form-label">
+                            <span th:text="#{message.label.room.number}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <select class="form-select" id="roomNo" onchange="loadSeatForChange()"></select>
+                        <div class="invalid-feedback"><span th:text="#{message.validation.room.number.required}"></span></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label for="seatName" class="form-label">
+                            <span th:text="#{message.label.seat.name}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <select class="form-select" id="seatName" onchange="resetAllocateButton()"></select>
+                        <div class="invalid-feedback"><span th:text="#{message.validation.seat.name.required}"></span></div>
+                    </div>
+                    <input hidden id="changeHostelStatus">
+                    <div class="mb-1 invalid-feedback" th:text="#{message.error.hostel.allocation.change.exists}"></div>
+                    <div class="mb-1 valid-feedback" th:text="#{message.error.hostel.allocation.change.available}"></div>
+                    <div class="form-text" th:text="#{message.label.delete.room.allocation.note}"></div>
+
+                </div>
+                <div class="row d-none mb-3" id="swapSection">
+                    <div class="col-lg-6">
+                        <label class="form-label" th:text="#{message.label.current.student.id}"></label>
+                        <div class="form-control form-graybox fw-bold" id="currentStudentId"></div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <label class="form-label" for="studentId1">
+                            <span th:text="#{message.label.student.id}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <div class="input-group">
+                            <input type="text"  class="form-control"  id="studentId1" th:placeholder="#{message.placeholder.student.id}" required
+                                   oninput="toggleCheck(true,'checkBtn1');" maxlength="15">
+                            <div class="invalid-feedback"><span th:text="#{message.label.validation.student.id.is.required}"></span></div>
+
+                            <button class="btn btn-tmSecondary" id="checkBtn1" th:onclick="validateStudentDetails('studentId1',[[${roomId}]],[[${date}]],'swap')">
+                                <i class="fa-solid fa-exchange-alt me-1"></i>
+                                <span th:text="#{message.button.check}"></span>
+                            </button>
+                        </div>
+                        <div class="form-text" th:text="#{message.label.student.allotemnt.note}"></div>
+                    </div>
+
+                </div>
+
+                <div class="row d-none mb-3" id="allocateSection">
+                    <div class="col-lg-6 mb-3" id="studentTypeContainer">
+                        <label class="form-label">
+                            <span th:text="#{message.label.student.type}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                        </label>
+                        <div class="checkRadio-bg form-control " id="studentType">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="regular" name="studentType" required>
+                                <label class="form-check-label" for="regular"><span th:text="#{message.label.regular.student}"></span></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="vacation" type="radio" name="studentType" required>
+                                <label class="form-check-label" for="vacation"><span th:text="#{message.label.temporary.allotment}"></span></label>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback" th:text="#{message.validation.donate.amount.required}"></div>
+                    </div>
+                    <div class="col-lg-6 mb-3 d-none" id="regularStudentSection">
+                        <label class="form-label" for="studentId2">
+                            <span th:text="#{message.label.student.id}"></span>
+                            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="studentId2"
+                                   th:placeholder="#{message.placeholder.student.id}" required
+                                   oninput="toggleCheck(true,'checkBtn2');" maxlength="15">
+                            <div class="invalid-feedback"><span
+                                    th:text="#{message.label.validation.student.id.is.required}"></span></div>
+                            <button class="btn btn-tmSecondary" disabled id="checkBtn2" th:onclick="validateStudentDetails('studentId2',[[${roomId}]],[[${date}]],'regular')">
+                                <i class="fa-solid fa-exchange-alt me-1"></i>
+                                <span th:text="#{message.button.check}"></span>
+                            </button>
+                        </div>
+                        <div class="form-text" th:text="#{message.label.student.allotemnt.note}"></div>
+                    </div>
+
+
+                    <div class="row mb-3" id="vacationStudentSection">
+                        <div class="col-lg-6 mb-3" id="vacationStudentTypeContainer">
+                            <label class="form-label">
+                                <span th:text="#{message.label.vacation.student.type}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <div class="checkRadio-bg form-control " id="vacationStudentType">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="student" name="vacationStudentType" required>
+                                    <label class="form-check-label" for="student"><span th:text="#{message.label.student}"></span></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" id="candidate" type="radio" name="vacationStudentType" required>
+                                    <label class="form-check-label" for="candidate"><span th:text="#{message.label.temporary.guest}"></span></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" id="direct" type="radio" name="vacationStudentType" required>
+                                    <label class="form-check-label" for="direct"><span th:text="#{message.label.special.case}"></span></label>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback" th:text="#{message.validation.donate.amount.required}"></div>
+                        </div>
+
+                        <div class="form-control form-graybox d-none" id="hostelId" th:text="${hostelId}"></div>
+                        <div class="form-control form-graybox d-none" id="roomId" th:text="${roomId}"></div>
+                        <div class="form-control form-graybox d-none" id="candidateSubRoomId"></div>
+                        <div class="form-control form-graybox d-none" id="requestId"></div>
+                        <div class="form-control form-graybox d-none" id="candidateGender"></div>
+
+                        <div class="col-lg-6 mb-3" id="studentSection">
+                            <label class="form-label" for="vacationStudentId">
+                                <span th:text="#{message.label.student.id}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <div class="input-group">
+                                <input type="text"  class="form-control"  id="vacationStudentId" th:placeholder="#{message.placeholder.student.id}" required>
+                                <button type="button" class="btn btn-tmSecondary me-2 checkButton" id="studentCheckButton">
+                                    <i class="fa-solid fa-exchange-alt me-1"></i>
+                                    <span th:text="#{message.button.check}"></span>
+                                </button>
+                                <div class="invalid-feedback"><span th:text="#{message.label.validation.student.id.is.required}"></span></div>
+                                <div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+                                <div class="invalid-valid-feedback d-none" th:text="#{message.validation.invalid.email.id}"></div>
+                            </div>
+                        </div>
+                        <div id="studentDetails" class="d-none row">
+                            <div class="form-control form-graybox d-none" id="studentName"></div>
+                            <div class="form-control form-graybox d-none" id="studentEmail"></div>
+                            <div class="form-control form-graybox d-none" id="studentDob"></div>
+                            <div class="form-control form-graybox d-none" id="studentCategory"></div>
+                            <div class="form-control form-graybox d-none" id="studentStayFromDate"></div>
+                            <div class="form-control form-graybox d-none" id="studentStayToDate"></div>
+                            <div class="form-control form-graybox d-none" id="studentGender"></div>
+                            <div class="form-control form-graybox d-none" id="studentDining"></div>
+                        </div>
+                        <div class="col-lg-6 mb-3" id="candidateSection">
+                            <label class="form-label" for="email">
+                                <span th:text="#{message.label.email.id}"></span>
+                                <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="email" th:placeholder="#{message.placeholder.email}" required>
+                                <button type="button" class="btn btn-tmSecondary me-2" id="candidateCheckButton">
+                                    <i class="fa-solid fa-exchange-alt me-1"></i>
+                                    <span th:text="#{message.button.check}"></span>
+                                </button>
+                                <div class="invalid-feedback"><span th:text="#{message.validation.email.id.required}"></span></div>
+                                <div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+                                <div class="invalid-valid-feedback d-none" th:text="#{message.validation.invalid.email.id}"></div>
+                            </div>
+                        </div>
+                        <div id="candidateDetails" class="row d-none">
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.candidate.name}"></label>
+                                <div class="form-control form-graybox" id="candidateName"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.dob}"></label>
+                                <div class="form-control form-graybox" id="candidateDob"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.email.id}"></label>
+                                <div class="form-control form-graybox" id="candidateEmail"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.category}"></label>
+                                <div class="form-control form-graybox" id="candidateCategory"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.stay.from}"></label>
+                                <div class="form-control form-graybox" id="candidateStayFromDate"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.stay.to}"></label>
+                                <div class="form-control form-graybox" id="candidateStayToDate"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" th:text="#{message.label.dining}"></label>
+                                <div class="form-control form-graybox" id="candidateDining"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="directSection">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="directStudentName">
+                                    <span th:text="#{message.label.student.name}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <input type="text"  class="form-control"  id="directStudentName" th:placeholder="#{message.placeholder.student.name}" required>
+                                <div class="invalid-feedback"><span th:text="#{message.validation.student.name.required}"></span></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="directStudentId" >
+                                    <span th:text="#{message.label.student.id}"></span>
+                                </label>
+                                <input type="text"  class="form-control"  id="directStudentId" th:placeholder="#{message.placeholder.student.id}">
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="directEmail">
+                                    <span th:text="#{message.label.email.id}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <input type="text" class="form-control" id="directEmail" th:placeholder="#{message.placeholder.email}" required>
+                                <div class="invalid-feedback"><span th:text="#{message.validation.email.id.required}"></span></div>
+                                <div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+                                <div class="invalid-valid-feedback d-none" th:text="#{message.validation.invalid.email.id}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="directDOB">
+                                    <span th:text="#{message.label.dob}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <input type="date"  class="form-control"  id="directDOB" onkeydown="return false" th:placeholder="#{message.placeholder.dob}" required>
+                                <div class="invalid-feedback" th:text="#{message.validation.student.details.dob}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.gender}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <div class="checkRadio-bg form-control " id="gender">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input required-input" type="radio" id="male" name="gender" required>
+                                        <label class="form-check-label" for="male"><span th:text="#{message.label.male}"></span></label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input required-input" id="female" type="radio" name="gender" required>
+                                        <label class="form-check-label" for="female"><span th:text="#{message.label.female}"></span></label>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback" th:text="#{message.validation.gender.option.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="appointmentNature">
+                                    <span th:text="#{message.label.appointment.nature}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <select class="form-select required-input" id="appointmentNature" required>
+                                    <option value="0" th:text="#{message.label.select}+' '+#{message.label.appointment.nature}"></option>
+                                    <option th:each="appointmentNature : ${appointmentNature}"
+                                            th:value="${appointmentNature.value}"
+                                            th:text="${appointmentNature.value}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" th:text="#{message.validation.appointemnt.nature.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3 d-none" id="otherAppointmentNatureDiv">
+                                <label class="form-label" for="otherAppointmentNature">
+                                    <span th:text="#{message.label.other.reason}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <input type="text" class="form-control" id="otherAppointmentNature" th:placeholder="#{message.placeholder.other.reason}" required>
+                                <div class="invalid-feedback" th:text="#{message.validation.other.reason.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="directStayFrom">
+                                    <span th:text="#{message.label.stay.from}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <input type="date"  class="form-control required-input" th:attr="min=${maxDate}" onkeydown="return false" id="directStayFrom" required>
+                                <div class="invalid-feedback" th:text="#{message.validation.from.date.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="directStayTo">
+                                    <span th:text="#{message.label.stay.to}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <input type="date"  class="form-control required-input" th:attr="min=${maxDate}" onkeydown="return false" id="directStayTo" required>
+                                <div class="invalid-feedback" th:text="#{message.validation.to.date.required}"></div>
+                                <div class="invalid-req-feedback d-none" th:text="#{message.validation.to.date.required}"></div>
+                                <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.from.to.date.range}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.dining.required}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <div class="checkRadio-bg form-control " id="diningRequired">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input required-input" type="radio" id="yes" name="diningRequired" required>
+                                        <label class="form-check-label" for="yes"><span th:text="#{message.label.yes}"></span></label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input required-input" id="no" type="radio" name="diningRequired" required>
+                                        <label class="form-check-label" for="no"><span th:text="#{message.label.no}"></span></label>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback" th:text="#{message.validation.dining.status.required}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 d-none" id="existingStudentHostelDetails">
+                    <div class="mb-1" id="existingStudentHostelError" th:text="#{message.error.hostel.allocation.already.exists}"></div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label" th:text="#{message.label.hostel.name}"></label>
+                        <div class="form-control form-graybox" id="exHostelName"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label" th:text="#{message.label.hostel}+' '+#{message.label.floor.name}"></label>
+                        <div class="form-control form-graybox" id="exFloorName"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label" th:text="#{message.label.room.no}"></label>
+                        <div class="form-control form-graybox" id="exRoomNo"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <label class="form-label" th:text="#{message.label.seat.name}"></label>
+                        <div class="form-control form-graybox" id="exSubRoom"></div>
+                    </div>
+                    <div class="col-lg-12 mb-3 d-none" id="reAllocateStudentMsg">
+                        <span class="mb-1 text-danger" th:text="#{message.label.warning}+': '"></span>
+                        <span class="mb-1 text-danger" th:text="#{message.student.re.allocate}"></span>
+                        <div class="form-text" th:text="#{message.re.allocate.ms}"></div>
+                    </div>
+                    <div class="col-lg-12 mb-3 d-none" id="swapStudentMsg">
+                        <span class="mb-1 text-danger" th:text="#{message.label.warning}+': '"></span>
+                        <span class="mb-1 text-danger" th:text="#{message.student.swap}"></span>
+                        <div class="form-text" th:text="#{message.swap.ms}"></div>
+                    </div>
+                </div>
+
+                <div class="d-none d-flex justify-content-center" id="loadingHostelDetails">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only" th:text="#{message.label.loading}"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-1 me-2">
+                            <span class="fs-6" th:text="#{message.label.loading}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 mb-3 ms-auto">
+                    <button type="button" class="btn btn-tmPrimary btn-sm d-none" id="swapBtn"
+                    onclick="swapStudents()">
+                        <i class="fa-solid fa-exchange-alt me-1"></i>
+                        <span th:text="#{message.button.swap}"></span>
+                    </button>
+                    <button type="button" class="btn btn-tmSecondary btn-sm me-2 d-none" id="checkButton">
+                        <i class="fa-solid fa-exchange-alt me-1"></i>
+                        <span th:text="#{message.button.check}"></span>
+                    </button>
+                    <button type="button" class="btn btn-tmPrimary btn-sm me-2 d-none" id="submitButton">
+                        <i class="fa-solid fa-arrow-pointer me-1"></i>
+                        <span th:text="#{message.button.submit}"></span>
+                    </button>
+                    <button type="button" class="btn btn-tmSecondary btn-sm me-2 d-none" id="checkChangeButton">
+                        <i class="fa-solid fa-exchange-alt me-1"></i>
+                        <span th:text="#{message.button.check}"></span>
+                    </button>
+                    <button type="button" class="btn btn-tmPrimary btn-sm me-2 d-none" id="allocateChangeButton">
+                        <i class="fa-solid fa-user-check me-1"></i>
+                        <span th:text="#{message.button.allocate}"></span>
+                    </button>
+                    <button type="button" class="btn btn-tmPrimary btn-sm d-none" id="allocateStudentButton"
+                        th:onclick="allocateStudent('allocate',[[${roomId}]])">
+                        <i class="fa-solid fa-user-check me-1"></i>
+                        <span th:text="#{message.button.allocate}"></span>
+                    </button>
+                    <button type="button" class="btn btn-tmPrimary btn-sm d-none" id="re-AllocateStudentButton"
+                            th:onclick="allocateStudent('re-allocate',[[${roomId}]])">
+                        <i class="fa-solid fa-user-check me-1"></i>
+                        <span th:text="#{message.button.re.allocate}"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm d-none" id="deleteActionButton" onclick="deallocate()">
+                        <i class="fa-solid fa-trash-can me-1"></i>
+                        <span th:text="#{message.button.delete}"></span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm d-none" id="backButton">
+                        <i class="fa-solid fa-circle-arrow-left me-1"></i>
+                        <span th:text="#{message.button.back}"></span>
+                    </button>
+                </div>
+                </div>
+            </div>
+        </form>
+        <form class="themeForm" method="post" id="studentBioData"></form>
+    </modalBody>
+</div>

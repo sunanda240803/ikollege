@@ -1,0 +1,64 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('money-transfer-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+   <modalHeader>
+      <span th:text="#{message.label.add.mess.to.card.amount.transfer}"></span>
+   </modalHeader>
+   <modalBody>
+      <form class="themeForm" id="moneyTransferRequest" th:action="@{#{url.mess.to.card.transfer}}"  th:object="${messCardAmountTransferDto}"  novalidate method="post">
+         <input type="hidden" th:name="messtocardId" />
+         <!-- Information Section -->
+         <div class="row mb-3">
+            <div class="col-lg-12">
+               <div class="noteBox">
+                  <h4><i class="fa-solid fa-file-circle-exclamation me-1"></i> 
+                     <span th:text="#{message.label.information}"></span>:
+                  </h4>
+                  <ul>
+						<li><span
+							th:text="#{message.label.transferred.amount.not.exceed}"></span>
+							<span
+							th:text="${#numbers.formatDecimal(maxAmount, 2, 'COMMA', 2, 'POINT')}"></span>
+						</li>
+						<li>
+                        <span th:text="#{message.label.approval.transfer.info}"></span>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <!-- Account Details Section -->
+         <div class="row mt-2">
+            <div class="col-lg-12">
+               <h2 class="tmsub-title" th:text="#{message.label.mess.ledger.details}"></h2>
+            </div>
+         </div>
+         <div class="row mb-3">
+            <div class="col-lg-6 mb-3">
+               <label class="form-label" for="currenMessLedgerBalance">
+               <span th:text="#{message.label.current.mess.ledger.balance}"></span>
+               <i class="fa-solid fa-indian-rupee-sign"></i>
+               <span class="text-secondary mb-0 align-middle text-end">
+               <a th:href="@{#{url.ledger.report}}" class="ms-2">
+               <span th:text="'( ' + #{message.label.ledger.report} + ' )'"></span>
+               </a>
+               </span>
+               </label>
+               <input type="text" id="ledgerBalanceId" name="netBalance"
+                  class="form-control currency" th:disabled="disabled" th:value="${#numbers.formatDecimal(ledgerBalance, 2, 'COMMA', 2, 'POINT')}" required>
+            </div>
+            <div class="col-lg-6 mb-3">
+               <label class="form-label" for="amountTransferred">
+               <span th:text="#{message.amount.transferred.from.mess.to.card}"></span>
+               </label>
+               <input type="text" class="form-control asset-cost-validation numeric"  th:field="*{transferAmount}"  th:classappend="${#fields.hasErrors('transferAmount')} ? 'is-invalid' : ''"  id="amountTransferred" maxlength="8" 
+                  th:attr="placeholder=#{message.placeholder.amount.to.be.transferred}" onkeypress="validateAmountInput(event, this)">
+               <div class="invalid-feedback backendErrors" th:errors="*{transferAmount}"></div>
+               <div class="invalid-feedback-frontEnd amountTransferredReq errMsg" th:text="#{message.validation.amount.to.be.transferred.required}"></div>
+               <div class="invalid-feedback-frontEnd amountTransferredLn errMsg" th:text="#{message.validation.amount.to.be.transferred.length}"></div>
+            </div>
+            <input type="hidden" id="totalFinalAmount" th:name="totalFinalAmount" th:value="${totalfinalAmount}" />
+            <input type="hidden" id="maxAmount"  th:value="${maxAmount}" />
+         </div>
+      </form>
+   </modalBody>
+</div>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<th:block th:fragment="formInputs(filters)">
+	                    		<form class="themeForm" id="studentwellnessReport" method="get">
+	                    			<input type="hidden" id="pageVal" th:value="${form.pageVal}" /> 
+									<input type="hidden" id="sizeVal" th:value="${form.size}" />
+	                    			<input type="hidden" th:value='${filters}' id="filters">
+									<input type="hidden" id="search" name="search">
+		                            <div class="row">  
+		                            	<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.report.student.id}"></span>
+											</label>
+											<input type="text" class="form-control" th:name="studentId" id="studentId"
+												th:value="${filters.get('studentId')}">
+										</div>                          	
+										<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.visit.from.date}"></span>
+											</label>
+											<input type="date" class="form-control"
+												   th:name="visitFromDate" id="visitFromDate">
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.visit.to.date}"></span>
+											</label>
+											<input type="date" class="form-control"
+												   th:name="visitToDate" id="visitToDate">
+											<div class="invalid-feedback"
+                                                 th:text="#{message.label.to.date.validation}">
+                                            </div>
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.follow.up.from.date}"></span>
+											</label>
+											<input type="date" class="form-control"
+												   th:name="followUpFromDate" id="followUpFromDate">
+										</div>
+										<div class="col-lg-3 mb-3">
+											<label class="form-label">
+												<span th:text="#{message.label.follow.up.to.date}"></span>
+											</label>
+											<input type="date" class="form-control"
+												   th:name="followUpToDate" id="followUpToDate">
+											<div class="invalid-feedback"
+                                                 th:text="#{message.label.to.date.validation}">
+                                            </div>
+										</div>                                
+		                                <div class="col-lg-3">
+											<button type="button" id="getData" class="btn btn-lgtblue px-4"
+												style="margin-top: 38px" onclick="return checkAdvanceFilter('downloadExcel');">
+												<i class="fa-solid fa-database"></i> 
+												<span th:text="#{message.label.get.report}"></span>
+											</button>
+										</div>
+		                            </div>
+		                        </form>
+                    		</th:block>
+                    	</div>
+                    	<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>          	                    	                 
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer-->
+    <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/reports/student-wellness-report.js}"></script>
+		<script th:inline="javascript">
+		    const baseURL = /*[[#{url.student.wellness.report}]]*/ '';
+		    const excelURL = /*[[#{url.excel.report.download}]]*/ '';
+	    </script>
+	</th:block>
+</body>
+
+</html>

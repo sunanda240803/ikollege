@@ -1,0 +1,36 @@
+<th:block th:fragment="select(form, required, idSuffix)">
+    <label th:for="'bloodGroup' + idSuffix" class="form-label">
+        <span th:text="#{message.label.blood.group}"></span>
+        <th:block th:if="${required}" th:replace="~{common/template/mandatory-symbol}"/>
+    </label>
+	<th:block th:if="${form.bloodGroup == null || edit==true}">
+	    <div class="input-group mb-3">
+	        <select th:id="'bloodGroup' + ${idSuffix}" class="form-select required-input" name="bloodGroup" th:required="${required}" th:value="${form.bloodGroup}">
+	            <option value="" th:text="#{message.label.select.blood.group}"></option>
+	            <option value="O+"> O+</option>
+	            <option value="O-"> O-</option>
+	            <option value="A+"> A+</option>
+	            <option value="A-"> A-</option>
+	            <option value="B+"> B+</option>
+	            <option value="B-"> B-</option>
+	            <option value="A1+"> A1+</option>
+	            <option value="A1-"> A1-</option>
+	            <option value="B1+"> B1+</option>
+	            <option value="B1-"> B1-</option>
+	            <option value="AB+"> AB+</option>
+	            <option value="AB-"> AB-</option>
+	            <option value="AB1+"> AB1+</option>
+	            <option value="AB1-"> AB1-</option>
+	            <option value="A1B+"> A1B+</option>
+	            <option value="A1B-"> A1B-</option>
+	        </select>
+	        <div class="invalid-feedback" th:text="#{message.validation.student.details.blood.group.required}"></div>
+	    </div>
+	 </th:block>
+	<th:block th:if="${form.bloodGroup != null and edit==false}">
+		<div class="form-control form-graybox">
+			<span th:text="${form.bloodGroup}"></span>
+		</div>
+	</th:block>
+<!--    <script>loadBloodGroup('bloodGroup' + [[${idSuffix}]])</script>-->
+</th:block>

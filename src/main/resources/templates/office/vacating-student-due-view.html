@@ -1,0 +1,42 @@
+<div th:replace="~{common/modal-template :: modal('vacating-student-due-view-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+    <modalHeader th:text="#{message.label.approve} + ' ' + #{message.label.details}"></modalHeader>
+    <modalBody>
+        <form class="themeForm"  id="vacatingStudentDueRecord"
+              th:object="${vacatingStudentDueListRecord}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="tmsub-title" th:text="#{message.label.approve} + ' ' + #{message.label.details}"></h2>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-4 mb-4">
+                    <label for="studentId" class="form-label">
+                        <span th:text="#{message.label.student.id}"></span>
+                    </label>
+                    <input type="text" class="form-control" id="studentId" th:name="studentId" th:field="*{studentId}" disabled>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <label for="studentName" class="form-label">
+                        <span th:text="#{message.label.student.name}"></span>
+                    </label>
+                    <input type="text" class="form-control" id="studentName" th:name="studentName" th:field="*{studentName}" disabled>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <label for="dueAmount" class="form-label">
+                        <span th:text="#{message.label.due.amount}"></span>
+                    </label>
+                    <input type="text" class="form-control" id="dueAmount" th:name="studentName" th:field="*{studentBalance}" disabled>
+                </div>
+                <div class="col-lg-12 mb-4 modal-footer">
+                    <button type="button" class="btn btn-success" name="action" id="approveBtn"
+                            value="Approve" th:data-encrypted-details="${encryptedDetails}" th:data-baseurl="${baseUrl}" onclick="approveVacatingStudentDueDetails(this);">
+                        <i class="fa-solid fa-check-circle me-1"></i>
+                        <span th:text="#{message.button.approve}"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>

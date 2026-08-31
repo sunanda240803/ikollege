@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <!--<th:block th:replace="~{tabs}"></th:block>-->
+                    <form class="themeForm">
+                        <div class="row">
+                            <div class="col-lg-3" th:each="mess: ${messCountForm.getMessList()}">
+                                <div class="dataInfoCard mb-4">
+                                    <div class="card-header">
+                                        <div class="title" th:text="${mess.getMessName()}"></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-6">Students: <span
+                                                    th:text="${mess.totalStudentCount}"></span></div>
+                                            <div class="col-lg-6">Total Pushed: <span
+                                                    th:text="${mess.totalPushedCount}"></span></div>
+                                            <div class="col-lg-12">Students with facial Data: <span
+                                                    th:text="${mess.noFacialData}"></span></div>
+                                        </div>
+                                        <div class="sub-header">
+                                            <div class="col-lg-4"></div>
+                                            <div class="col-lg-4">To be Push</div>
+                                            <div class="col-lg-4">To be Remove</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">Total</div>
+                                            <div class="col-lg-4"><span th:text="${mess.totalToBePushedCount}"></span>
+                                            </div>
+                                            <div class="col-lg-4"><span th:text="${mess.totalToBeRemovedCount}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">Today</div>
+                                            <div class="col-lg-4"><span th:text="${mess.toBePushedTodayCount}"></span>
+                                            </div>
+                                            <div class="col-lg-4"><span th:text="${mess.toBeRemovedTodayCount}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{common/biometric-footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/biometric/liveStatus.js}"></script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+<body>
+<header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Hostel Room Vacating Form','Dashboard', null,null,null,'Back',null,#{url.dashboard}+#{url.student},null)}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <div class="row mb-3" th:classappend="${negBal ? '' : 'd-none'}">
+                        <div class="col-lg-12">
+                            <div class="infoBox">
+                                <h4><i class="fa-solid fa-file-circle-exclamation me-1"></i>
+                                    <span th:text="#{message.label.information}"></span> :</h4>
+                                <span class="fw-bold" th:text="${successNote}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3" th:classappend="${status == 'Validating' || status == 'Pending' && !negBal ? '' : 'd-none'}">
+                        <div class="col-lg-12">
+                            <div class="infoBox">
+                                <h4><i class="fa-solid fa-file-circle-exclamation me-1"></i>
+                                    <span th:text="#{message.label.information}"></span> :</h4>
+                                <span class="fw-bold" th:text="${successNote}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3" th:classappend="${!negBal && status == 'Approved' ? '' : 'd-none'}">
+                        <div class="col-lg-12">
+                            <div class="successBox">
+                                <h4><i class="fa-solid fa-check-circle me-1"></i>
+                                    <span th:text="#{response.status.success}"></span> :</h4>
+                                <span class="fw-bold" th:text="${successNote}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3" th:classappend="${status == 'Cancelled' || status == 'Rejected' ? '' : 'd-none'}">
+                        <div class="col-lg-12">
+                            <div class="dangerBox">
+                                <h4><i class="fa-solid fa-circle-xmark me-1"></i>
+                                    <span th:text="#{response.status.cancelled}" th:if="${status == 'Cancelled'}"></span>
+                                    <span th:text="#{response.status.rejected}" th:if="${status == 'Rejected'}"></span>
+                                    :</h4>
+                                <span class="fw-bold" th:text="${cancelOrRejectedNote}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="themeForm" th:object="${studentHostelRoomVacatingRequestDto}">
+                        <input type="hidden" th:value="${encryptedId}" id="encryptedId">
+                        <div class="row mt-2">
+                            <div class="col-lg-10">
+                                <h2 class="tmsub-title"><span th:text="#{message.label.student.details}"></span></h2>
+                            </div>
+                        </div>
+                        <input type="hidden" name="" th:field="*{student}" th:value="*{student}" id="studentId">
+                        <div class="row mb-5">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.student.name}"> </label>
+                                        <div th:text="*{acountName}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.mobile.number}"></label>
+                                        <div th:text="*{mobileNo}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.email.id}"></label>
+                                        <div th:text="*{emailId}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" for="address" th:text="#{message.label.address.communication}"></label>
+                                        <textarea type="text" id="address" rows="2" class="form-control" th:field="*{studentAddress}" readonly></textarea>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.vacating.hostel.date}"></label>
+                                        <div th:text="*{#temporals.format(vacatingDate, #messages.msgOrNull('date.format'))}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3" th:if="*{vacatingReason != 'Others'}">
+                                        <label class="form-label" th:text="#{message.label.reason.for.vacating}"></label>
+                                        <div th:text="*{vacatingReason}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3" th:if="*{vacatingReason == 'Others'}">
+                                        <label class="form-label" th:text="#{message.label.reason.for.vacating}"></label>
+                                        <div th:text="*{othersVacatingReason}" class="form-control form-graybox"></div>
+                                    </div>
+                                </div>
+                                <div class="row bankAndDonationContainer" th:classappend="*{vacatingReason != 'Exchange/Internship prog' && !#strings.isEmpty(vacatingReason) ? '':'d-none'}" id="bankDetails">
+                                    <div class="row mt-2">
+                                        <div class="col-lg-12">
+                                            <h2 class="tmsub-title" th:text="#{message.label.bank.details}"></h2>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.ifsc.code}"></label>
+                                        <div th:text="*{ifsCodeOne}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4" id="bankNameContainer">
+                                        <label class="form-label" th:text="#{message.label.bankName}"></label>
+                                        <div th:text="*{bankNameOne}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4" id="branchNameContainer">
+                                        <label class="form-label" th:text="#{message.label.branchName}"></label>
+                                        <div th:text="*{branchNameOne}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.bank.account.no}"></label>
+                                        <div th:text="*{bankAccountNoOne}" class="form-control form-graybox"></div>
+                                    </div>
+                                </div>
+                                <div class="row" id="periodOfAbsence" th:classappend="*{vacatingReason == 'Exchange/Internship prog' && !#strings.isEmpty(vacatingReason) ? '':'d-none'}">
+                                    <div class="row mt-2">
+                                        <div class="col-lg-12">
+                                            <h2 class="tmsub-title" th:text="#{message.label.period.of.absence}"></h2>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.from.date}"></label>
+                                        <div class="form-control form-graybox" id="exchangeProgFromDateId"
+                                             th:field="*{exchangeProgPeriodFromDate}"
+                                             th:text="*{#temporals.format(exchangeProgPeriodFromDate, #messages.msgOrNull('date.format'))}"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.to.date}"></label>
+                                        <div class="form-control form-graybox" id="exchangeProgToDateId" th:field="*{exchangeProgPeriodToDate}"
+                                             th:text="*{#temporals.format(exchangeProgPeriodToDate, #messages.msgOrNull('date.format'))}"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <label class="form-label" th:text="#{message.label.place.of.visit}"></label>
+                                        <div th:text="*{placeOfVisit}" class="form-control form-graybox"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-3 bankAndDonationContainer" th:classappend="*{vacatingReason != 'Exchange/Internship prog' && !#strings.isEmpty(vacatingReason) ? '':'d-none'}">
+                                    <label class="form-label" th:text="#{message.label.donate.amount}"></label>
+                                    <div th:text="#{message.label.yes}" th:if="*{donationStatus == true}" class="form-control form-graybox"></div>
+                                    <div th:text="#{message.label.no}" th:if="*{donationStatus == false}" class="form-control form-graybox"></div>
+                                </div>
+                                <div class="row" id="donationContainer" th:classappend="*{donationStatus == true ? '':'d-none'}">
+                                    <div class="col-lg-4 mb-3" th:if="*{!#strings.isEmpty(hostelOrWardenName)}">
+                                        <label class="form-label" th:text="#{message.label.to.whom}"></label>
+                                        <div th:text="#{message.label.hostel}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3" th:if="*{!#strings.isEmpty(othersDescription)}">
+                                        <label class="form-label" th:text="#{message.label.to.whom}"></label>
+                                        <div th:text="#{message.label.others}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3" th:if="*{#strings.isEmpty(hostelOrWardenName) && #strings.isEmpty(othersDescription)}">
+                                        <label class="form-label" th:text="#{message.label.to.whom}"></label>
+                                        <div th:text="#{message.label.alumni}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3" id="descriptionContainer" th:classappend="*{!#strings.isEmpty(othersDescription) ? '':'d-none'}" >
+                                        <label class="form-label" th:text="#{message.label.description}"></label>
+                                        <div th:text="*{othersDescription}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3" id="hostelNameContainer" th:classappend="*{!#strings.isEmpty(hostelOrWardenName) ? '':'d-none'}">
+                                        <label class="form-label" th:text="#{message.label.hostel.name}"></label>
+                                        <div th:text="*{hostelOrWardenName}" class="form-control form-graybox"></div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3 text-end" th:classappend="*{!#strings.isEmpty(donationAmount) ? '':'d-none'}">
+                                        <label class="form-label" th:text="#{message.label.donation.amount}"></label>
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        <div th:text="${formattedDonationAmount}" id="donationAmount" class="form-control form-graybox currency"></div>
+                                    </div>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" id="handOver" th:field="*{roomConditionDeclaration}" th:value="${roomConditionDeclaration == null ? false : true}" type="checkbox" disabled>
+                                    <label class="form-check-label" for="handOver" th:text="#{message.label.handed.over}"></label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" id="belongings" th:field="*{recollectDeclaration}" th:value="${recollectDeclaration == null ? false : true}" type="checkbox" disabled>
+                                    <label class="form-check-label" for="belongings" th:text="#{message.label.belongings}"></label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" id="dues" th:field="*{recoveryDuesDeclaration}" th:value="${recoveryDuesDeclaration == null ? false : true}" type="checkbox" disabled>
+                                    <label class="form-check-label" for="dues" th:text="#{message.label.dues}"></label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" id="bicycle" th:field="*{bicycleDeclaration}" th:value="${bicycleDeclaration == null ? false : true}" type="checkbox" disabled>
+                                    <label class="form-check-label" for="bicycle" th:text="#{message.label.bicycle}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:inline="javascript">
+        const downloadPdfUrl = /*[[#{url.pdf.download}]]*/ '';
+        const baseURL = /*[[#{url.hostel.room.vacating.form}]]*/ '';
+        $(document).ready(function (){
+            $("#downloadId").off('click').on('click', function (e) {
+                e.preventDefault();
+                const id = $('#encryptedId').val();
+                const studentId = $('#studentId').val();
+                window.location.href = `${contextPath}${baseURL}${downloadPdfUrl}?studentId=${studentId}&id=${id}`;
+            });
+        });
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

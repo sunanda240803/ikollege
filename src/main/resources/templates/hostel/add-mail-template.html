@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" th:action="@{#{url.mail.template}}" id="mail-template-form"
+                          th:object="${mailTemplateDto}" method='post'>
+                        <input type="hidden" th:field="*{activeFlag}">
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.mail.type}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input class="form-control required-input" type="text" th:field="*{mailType}" required
+                                       th:required="*{mailType eq null or mailType.isEmpty()}"
+                                       th:classappend="${#fields.hasErrors('mailType')} ? 'is-invalid' : ''"
+                                       th:readonly="*{activeFlag ne null and !activeFlag.isEmpty() and mailType ne null and !mailType.isEmpty}" maxlength="64">
+                                <div class="invalid-feedback backendErrors" th:errors="*{mailType}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.mail.type.required}"></div>
+                                <div class="invalid-feedback-req d-none" th:text="#{message.validation.mail.type.required}"></div>
+                                <div class="invalid-feedback-exists d-none" th:text="#{message.validation.mail.type.exists}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="approvalLevel">
+                                    <span th:text="#{message.label.approval.level}"></span>
+                                </label>
+                                <input type="text" class="form-control" id="approvalLevel" th:field="*{approvalLevel}"
+                                       oninput="validateNumberInput(this)" maxlength="1">
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="category">
+                                    <span th:text="#{message.label.authority.type}"></span>
+                                </label>
+                                <input type="text" class="form-control" id="authority" th:field="*{authorityType}"
+                                       th:placeholder="#{message.label.authority.type}" maxlength="128">
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="category">
+                                    <span th:text="#{message.label.category}"></span>
+                                </label>
+                                <input type="text" class="form-control" id="category" th:field="*{category}"
+                                       th:placeholder="#{message.label.category}" maxlength="128">
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="mailSubject">
+                                    <span th:text="#{message.label.mail.subject}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" class="form-control required-input" id="mailSubject" th:field="*{mailSubject}"
+                                       th:placeholder="#{message.label.mail.subject}" required maxlength="128"
+                                       th:classappend="${#fields.hasErrors('mailSubject')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors" th:errors="*{mailSubject}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.mail.subject.required}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="description">
+                                    <span th:text="#{message.label.description}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <textarea type="text" id="description" rows="2" class="form-control required-input"
+                                          th:name="description" th:placeholder="#{message.label.description}"
+                                          required th:field="*{description}" maxlength="300"
+                                          th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"></textarea>
+                                <div class="invalid-feedback backendErrors" th:errors="*{description}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.description.required}"></div>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <label class="form-label" for="contentId">
+                                    <span th:text="#{message.label.mail.content}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <textarea class="form-control" rows="5" id="contentId" th:field="*{mailTemplate}"
+                                          th:classappend="${#fields.hasErrors('mailTemplate')} ? 'is-invalid' : ''">
+								</textarea>
+                                <div class="invalid-feedback backendErrors" th:errors="*{mailTemplate}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.mail.content.required}"></div>
+                            </div>
+                        </div>
+                        <div class="row text-end">
+                            <div class="col-lg-12 mt-2 mb-4">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <a href="#" onclick="window.history.back();" class="btn btn-secondary px-4 me-3" id="cancel">
+                                        <i class="fa-solid fa-circle-arrow-left me-1"></i>
+                                        <span th:text="#{message.button.cancel}"></span>
+                                    </a>
+                                    <button th:if="*{activeFlag ne null and !activeFlag.isEmpty()}" type="button"
+                                            class="btn btn-aqua px-4" id="mailTemplateSave">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                                        <span th:text="#{message.button.update}"></span>
+                                    </button>
+
+                                    <button th:unless="*{activeFlag ne null and !activeFlag.isEmpty()}" type="button"
+                                            class="btn btn-tmSecondary px-4" id="mailTemplateSave">
+                                        <i class="fa-solid fa-arrow-pointer me-1"></i>
+                                        <span th:text="#{message.button.save}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/mail-template.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.mail.template}]]*/ '';
+        const validatingUrl = /*[[#{url.validate.mail.type}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>
+  

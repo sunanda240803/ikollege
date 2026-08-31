@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form id="receipt-entry-form" class="form-horizontal" role="form" th:action="@{#{url.receipt.entry}}" method="post"
+                          th:object="${receiptEntryDto}">
+                        <div class="row">
+                            <!-- Account Type -->
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.account.type}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <div class="checkRadio-bg" th:classappend="${#fields.hasErrors('bookType')} ? 'is-invalid' : ''">
+                                    <div class="form-check form-check-inline">
+                                        <label for="mess" class="form-label"><span th:text="#{message.label.mess}"></span></label>
+                                        <input class="form-check-input" type="radio" th:name="|bookType|" id="mess"
+                                               th:placehoder="#{message.label.mess}" value="MS" required/>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label for="card" class="form-label"><span th:text="#{message.label.card}"></span></label>
+                                        <input class="form-check-input" type="radio" th:name="|bookType|" id="card"
+                                               th:placehoder="#{message.label.card}" value="CC" required/>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback backendErrors" th:errors="*{bookType}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.label.account.type} + ' ' + #{message.validation.is.required}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Select Bank: * -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="selectBank" class="form-label"><span th:text="#{message.label.select.bank}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <select id="selectBank" class="form-select" required th:field="*{accHead}"
+                                        th:classappend="${#fields.hasErrors('accHead')} ? 'is-invalid' : ''">
+                                    <option value="" th:text="#{message.label.select}" selected></option>
+                                    <option th:each="bank : ${bankList}" th:value="${bank.id.acchead}" th:text="${bank.accname}"></option>
+                                </select>
+                                <div class="invalid-feedback backendErrors" th:errors="*{accHead}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.select.bank}"></div>
+                            </div>
+                            <!-- Date: -->
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label"><span th:text="#{message.label.date}"></span></label>
+                                <div class="form-control form-graybox" th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"></div>
+                            </div>
+                            <!-- Student ID* -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="studentId" class="form-label"><span th:text="#{message.label.student.id}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" id="studentId" class="form-control isAlphanumeric" th:field="*{studentId}" maxlength="32"
+                                       oninput="this.value = this.value.toUpperCase()"  th:placeholder="#{message.placeholder.student.id}"
+                                       th:title="#{message.label.student.id}" required
+                                       th:classappend="${#fields.hasErrors('studentId')} ? 'is-invalid' : ''"/>
+                                <div class="invalid-feedback backendErrors" th:errors="*{studentId}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.label.student.id} + ' ' + #{message.validation.is.required}"></div>
+                            </div>
+                            <!-- Amount: * -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="amount" class="form-label"><span th:text="#{message.label.amount}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" id="amount" maxlength="8" class="form-control currency numeric" th:field="*{amount}"
+                                       th:placeholder="#{message.placeholder.amount}" th:title="#{message.label.amount}" required
+                                       th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''"/>
+                                <div class="invalid-feedback backendErrors" th:errors="*{amount}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.validation.select.bank}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- DD/Cheque No: * -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="ddChequeNo" class="form-label"><span th:text="#{message.label.dd.cheque.no}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" id="ddChequeNo" class="form-control isAlphanumeric" th:field="*{chequeNo}" maxlength="32"
+                                       th:placeholder="#{message.placeholder.dd.cheque.no}" th:title="#{message.label.dd.cheque.no}"
+                                       th:classappend="${#fields.hasErrors('chequeNo')} ? 'is-invalid' : ''" required/>
+                                <div class="invalid-feedback backendErrors" th:errors="*{chequeNo}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.label.dd.cheque.no} + ' ' + #{message.validation.is.required} "></div>
+                            </div>
+                            <!-- DD/Cheque Date: * -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="ddChequeDate" class="form-label"><span th:text="#{message.label.dd.cheque.date}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" id="ddChequeDate" class="form-control" th:field="*{chequeDate}"
+                                       th:title="#{message.label.dd.cheque.date}"
+                                       th:classappend="${#fields.hasErrors('chequeDate')} ? 'is-invalid' : ''" required/>
+                                <div class="invalid-feedback backendErrors" th:errors="*{chequeDate}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.label.dd.cheque.date} + ' ' + #{message.validation.is.required}"></div>
+                            </div>
+                            <!-- Bank Name: * -->
+                            <div class="col-lg-3 mb-3">
+                                <label for="bankName" class="form-label"><span th:text="#{message.label.bank.name}"></span></label>
+                                <input type="text" id="bankName" class="form-control isAlphanumeric" th:field="*{bankName}" maxlength="64"
+                                       th:placeholder="#{message.placeholder.bank.name}" th:title="#{message.label.bank.name}"
+                                       th:classappend="${#fields.hasErrors('chequeDate')} ? 'is-invalid' : ''" required/>
+                                <div class="invalid-feedback backendErrors" th:errors="*{bankName}"></div>
+                                <div class="invalid-feedback-frontEnd" th:text="#{message.label.bank.name} + ' ' + #{message.validation.is.required}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+								<div class="d-flex align-items-center justify-content-end">
+                                	<th:block th:replace="~{common/template/button :: build(
+				                        id='saveButton',
+				                        type='submit',
+				                        buttonType='save',
+				                        size=null,
+				                        tooltip=null,
+				                        buttonText=#{message.label.save},
+				                        extraClass='mt-3'
+				                      )}"/>
+                      			</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/base/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/base/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/assets/js/collegeInfo/sims-config.js}"></script>
+    <script th:src="@{/assets/js/hostel/receipt-entry.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.receipt.entry}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+</body>
+
+</html>

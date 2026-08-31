@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+    <main id="main" class="main">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card main-card mt-4">
+                    <div class="card-body themeForm">
+						<form action="#" method="get" id="generalLedgerId" th:object="${generalLedger}">
+                            <div class="row">
+                                <div class="col-lg-3 mb-3">
+                                    <label for="accountHead" class="form-label">
+                                        <span th:text="#{message.label.account.head}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+									<select id="accHead" class="selectpicker required-select-input" th:field="*{accHead}"
+										data-live-search="true" required>
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.account.head}"></option>
+										<option th:each="accHead : ${accHeadList}" th:value="${accHead.id.acchead}" th:text="${accHead.accname}"
+											th:selected="${accHead.id.acchead == accHeadId}">
+										</option>
+									</select>
+									<div class="invalid-feedback" th:text="#{message.label.account.head} + ' ' + #{message.validation.is.required}"></div>
+								</div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="hostelName" class="form-label">
+                                        <span th:text="#{message.label.hostel.name}"></span>
+                                    </label>
+									<select id="hostelName" class="selectpicker required-select-input" th:field="*{hostelId}"
+										data-live-search="true" required>
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+										<option th:each="hostel : ${hostelList}" th:value="${hostel.id}" th:text="${hostel.hostelName}"
+											th:selected="${hostel.id == hostelId}">
+										</option>
+										<option value="-2" th:text="#{message.label.day.scholar}"></option>
+									</select>
+                                    <div class="invalid-feedback" th:text="#{message.label.hostel.name} + ' ' + #{message.validation.is.required}"></div>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="fromDate" class="form-label">
+                                        <span th:text="#{message.label.from.date}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="date" id="fromDate" class="form-control required-input" th:field="*{fromDate}">
+                                    <div class="invalid-feedback" th:text="#{message.label.from.date} + ' ' + #{message.validation.is.required}"></div>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="toDate" class="form-label">
+                                        <span th:text="#{message.label.to.date}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="date" id="toDate" class="form-control required-input" th:field="*{toDate}">
+                                    <div class="invalid-feedback" th:text="#{message.label.to.date} + ' ' + #{message.validation.is.required}"></div>
+                                    <div class="invalid-req-feedback d-none" th:text="#{message.label.to.date} + ' ' + #{message.validation.is.required}"></div>
+				                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.to.date}"></div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-lg-6">
+                                    <label for="type" class="form-label">
+                                        <span th:text="#{message.label.transaction.type}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <div class="checkRadio-bg form-control">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input required-input" type="radio"
+                                                name="bookType" id="mess" value="MS" th:checked="${bookType == 'MS'}" required>
+                                            <label class="form-check-label required-input" for="mess">
+                                                <span th:text="#{message.label.mess}"></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input required-input" type="radio"
+                                                name="bookType" id="card" value="CC" th:checked="${bookType == 'CC'}" required>
+                                            <label class="form-check-label" for="card">
+                                                <span th:text="#{message.label.card}"></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input required-input" type="radio"
+                                                name="bookType" id="tempAccom" value="TC" th:checked="${bookType == 'TC'}" required>
+                                            <label class="form-check-label" for="tempAccom">
+                                                <span th:text="#{message.label.temporary.accommodation}"></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input required-input" type="radio"
+                                                name="bookType" id="guestCoupon" value="GC" th:checked="${bookType == 'GC'}" required>
+                                            <label class="form-check-label" for="guestCoupon">
+                                                <span th:text="#{message.label.guest.coupon}"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback" th:text="#{message.validation.please.select} + ' ' + #{message.label.transaction.type}"></div>
+                                </div>
+                                <div class="col-lg-3">
+									<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+									<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+									<button type="button" id="getData" class="btn btn-lgtblue px-4" 
+										onclick="getGeneralList('get')" style="margin-top: 38px">
+										<i class="fa-solid fa-database"></i>
+										<span th:text="#{message.button.get.data}"></span>
+									</button>
+								</div>
+                            </div>
+		                    <div class="my-5">
+		                        <th:block th:if="${form != null && form.paginationList != null and form.paginationList.content != null 
+		                        	&& (bookType == 'MS' || bookType == 'CC')}">
+									<div class="row">
+										<div class="col-lg-9">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.ledger.details}"></span>
+											</h2>
+										</div>
+										<div class="col-lg-3 text-lg-end">
+											<span class="fw-bold" th:text="#{message.label.opening.balance}"></span> 
+												<i class="fa-solid fa-indian-rupee-sign"></i> 
+												<span class="fw-bold">: </span> 
+												<span class="fw-bold" th:text="${opBal}"></span>
+										</div>
+									</div>
+									<div class="table-responsive themeTable">
+		                                <table id="generalLedgerTable" class="table table-bordered nowrap w-100">
+		                                    <thead>
+		                                        <tr>
+		                                            <th th:text="#{message.label.voucher.date}"></th>
+		                                            <th th:text="#{message.label.voucher.no}"></th>
+		                                            <th th:text="#{message.label.description}"></th>
+		                                            <th th:text="#{message.label.hostel.name}"></th>
+		                                            <th th:text="#{message.label.room.no}"></th>
+		                                            <th th:text="#{message.label.ref.account}"></th>
+		                                            <th th:text="#{message.label.student.name}"></th>
+		                                            <th th:text="#{message.label.ref.subaccount}"></th>
+		                                            <th>
+		                                            	<span class="fw-bold" th:text="#{message.label.debit}"></span> 
+														<i class="fa-solid fa-indian-rupee-sign"></i> 
+													</th>
+		                                            <th>
+		                                            	<span class="fw-bold" th:text="#{message.label.credit}"></span> 
+														<i class="fa-solid fa-indian-rupee-sign"></i> 
+													</th>
+		                                            <th>
+		                                            	<span class="fw-bold" th:text="#{message.label.closing.balance}"></span> 
+														<i class="fa-solid fa-indian-rupee-sign"></i> 
+													</th>
+		                                        </tr>
+		                                    </thead>
+		                                    <tbody>
+												<th:block th:if="${form.paginationList != null and !#lists.isEmpty(form.paginationList.getContent())}"
+												          th:each="entry, iterStat : ${form.paginationList.getContent()}">
+												    <!-- Normal row -->
+												    <tr th:if="${!entry.summaryRow}">
+													    <td>
+													        <span th:text="${#temporals.format(entry.voucherDate, #messages.msg('date.format'))}"></span>
+													    </td>
+													    <td th:text="${entry.voucherNo}"></td>
+													    <td th:text="${entry.description}"></td>
+													    <td th:text="${entry.hostelName}"></td>
+													    <td th:text="${entry.roomNo}"></td>
+													    <td th:text="${entry.refAccount}"></td>
+													    <td th:text="${entry.studentName}"></td>
+													    <td th:text="${entry.refSubAccount}"></td>
+													    <td class="text-end" th:text="${entry.debit}"></td>
+													    <td class="text-end" th:text="${entry.credit}"></td>
+													    <td class="text-end">
+													        <span th:if="${entry.closingBal != null}">
+													            <span th:text="${entry.closingBal}"></span>
+													        </span>
+													    </td>
+													</tr>
+												
+												    <!-- Daily Total -->
+													<tr th:if="${entry.summaryRow and entry.summaryType == null}">
+													    <td colspan="8" class="text-end fw-bold" th:text="${entry.description}"></td>
+													    <td class="text-end fw-bold" th:text="${entry.totalDebitForTheDay}"></td>
+													    <td class="text-end fw-bold" th:text="${entry.totalCreditForTheDay}"></td>
+													    <td class="text-end fw-bold">
+													        <span th:text="${entry.closingBalanceForTheDay}"></span>
+													    </td>
+													</tr>
+												
+												    <!-- Grand Total -->
+												    <tr th:if="${entry.summaryRow and entry.summaryType == 'grand'}">
+													    <td colspan="8" class="text-end fw-bold" th:text="${entry.description}"></td>
+													    <td class="text-end fw-bold" th:text="${entry.totalDebitForTheDay}"></td>
+													    <td class="text-end fw-bold" th:text="${entry.totalCreditForTheDay}"></td>
+													    <td class="text-end fw-bold">
+													        <span th:text="${entry.closingBalanceForTheDay}"></span>
+													    </td>
+													</tr>
+												</th:block>
+										    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+													<td colspan="10" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+												</tr>
+		                                    </tbody>
+		                                </table>
+		                            </div>
+	                        	</th:block>
+	                        	<th:block th:if="${form != null && form.paginationList != null and form.paginationList.content != null
+	                        		&& bookType == 'TC'}"><div class="table-responsive themeTable">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.temporary.accommodation.ledger.details}"></span>
+											</h2>
+										</div>
+									</div>
+	                                <table id="generalLedgerTable" class="table table-bordered nowrap w-100">
+	                                    <thead>
+	                                        <tr>
+	                                            <th th:text="#{message.label.voucher.date}"></th>
+	                                            <th th:text="#{message.label.candidate.name}"></th>
+	                                            <th th:text="#{message.label.mess.name}"></th>
+	                                            <th th:text="#{message.label.card}"></th>
+	                                            <th th:text="#{message.label.breakfast}"></th>
+	                                            <th th:text="#{message.label.lunch}"></th>
+	                                            <th th:text="#{message.label.dinner}"></th>
+	                                            <th th:text="#{message.label.payable.count}"></th>
+	                                        </tr>
+	                                    </thead>
+	                                    <tbody>
+											<th:block th:if="${form.paginationList != null and !#lists.isEmpty(form.paginationList.getContent())}"
+										          th:each="entry : ${form.paginationList.getContent()}">
+									
+										    <!-- Normal row -->
+										    <tr th:if="${!entry.summaryRow}">
+										        <td>
+										            <span th:text="${#temporals.format(entry.voucherDate, #messages.msg('date.format'))}"></span>
+										        </td>
+										        <td th:text="${entry.studentName}"></td>
+										        <td th:text="${entry.messName}"></td>
+										        <td th:text="${entry.refAccount}"></td>
+										        <td th:text="${entry.bf}"></td>
+										        <td th:text="${entry.ln}"></td>
+										        <td th:text="${entry.dn}"></td>
+										        <td th:text="${entry.payableCount}"></td>
+										    </tr>
+									
+										    <!-- Daily Total -->
+										    <tr th:if="${entry.summaryRow and entry.summaryType == null}"
+										        style="background-color: #f0f0f0; font-weight: bold;">
+										        <td colspan="4" style="text-align: right;" th:text="${entry.description}"></td>
+										        <td th:text="${entry.bf}"></td>
+										        <td th:text="${entry.ln}"></td>
+										        <td th:text="${entry.dn}"></td>
+										        <td th:text="${entry.payableCount}"></td>
+										    </tr>
+									
+										    <!-- Grand Total -->
+										    <tr th:if="${entry.summaryRow and entry.summaryType == 'grand'}"
+										        style="background-color: #ddd; font-weight: bold;">
+										        <td colspan="4" style="text-align: right;" th:text="${entry.description}"></td>
+										        <td th:text="${entry.bf}"></td>
+										        <td th:text="${entry.ln}"></td>
+										        <td th:text="${entry.dn}"></td>
+										        <td th:text="${entry.payableCount}"></td>
+										    </tr>
+									
+										</th:block>
+									    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="10" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>
+	                                    </tbody>
+	                                </table>
+	                        	</th:block>
+	                        	<th:block th:if="${form != null && form.paginationList != null and form.paginationList.content != null
+	                        		&& bookType == 'GC'}"><div class="table-responsive themeTable">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.guest.coupon.ledger.details}"></span>
+											</h2>
+										</div>
+									</div>
+	                                <table id="generalLedgerTable" class="table table-bordered nowrap w-100">
+	                                    <thead>
+	                                        <tr>
+	                                            <th th:text="#{message.label.voucher.date}"></th>
+	                                            <th th:text="#{message.label.candidate.name}"></th>
+	                                            <th th:text="#{message.label.mess.name}"></th>
+	                                            <th th:text="#{message.label.coupon}"></th>
+	                                            <th th:text="#{message.label.breakfast}"></th>
+	                                            <th th:text="#{message.label.lunch}"></th>
+	                                            <th th:text="#{message.label.dinner}"></th>
+	                                            <th th:text="#{message.label.snacks}"></th>
+	                                        </tr>
+	                                    </thead>
+	                                    <tbody>
+											<th:block th:if="${form.paginationList != null and !#lists.isEmpty(form.paginationList.getContent())}"
+										          th:each="entry : ${form.paginationList.getContent()}">
+									
+										    <!-- Normal row -->
+										    <tr th:if="${!entry.summaryRow}">
+										        <td>
+										            <span th:text="${#temporals.format(entry.voucherDate, #messages.msg('date.format'))}"></span>
+										        </td>
+										        <td th:text="${entry.studentName}"></td>
+										        <td th:text="${entry.messName}"></td>
+										        <td th:text="${entry.refAccount}"></td>
+										        <td th:text="${entry.bf}"></td>
+										        <td th:text="${entry.ln}"></td>
+										        <td th:text="${entry.dn}"></td>
+										        <td th:text="${entry.sn}"></td>
+										    </tr>
+									
+										    <!-- Daily Total -->
+										    <tr th:if="${entry.summaryRow and entry.summaryType == null}"
+										        style="background-color: #f0f0f0; font-weight: bold;">
+										        <td colspan="4" style="text-align: right;" th:text="${entry.description}"></td>
+										        <td th:text="${entry.bf}"></td>
+										        <td th:text="${entry.ln}"></td>
+										        <td th:text="${entry.dn}"></td>
+										        <td th:text="${entry.sn}"></td>
+										    </tr>
+									
+										    <!-- Grand Total -->
+										    <tr th:if="${entry.summaryRow and entry.summaryType == 'grand'}"
+										        style="background-color: #ddd; font-weight: bold;">
+										        <td colspan="4" style="text-align: right;" th:text="${entry.description}"></td>
+										        <td th:text="${entry.bf}"></td>
+										        <td th:text="${entry.ln}"></td>
+										        <td th:text="${entry.dn}"></td>
+										        <td th:text="${entry.sn}"></td>
+										    </tr>
+									
+										</th:block>
+									    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="10" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>
+	                                    </tbody>
+	                                </table>
+	                        	</th:block>
+	                        	<div class="d-none">
+		                        	<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+		                        </div>
+		                    </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+        <script th:src="@{/assets/js/hostel/general-ledger.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.general.ledger}]]*/ '';
+			const downloadReportURL = /*[[#{url.download.general.ledger.report}]]*/'';
+		</script>
+    </th:block>
+    <!-- Footer -->
+</body>
+
+</html>

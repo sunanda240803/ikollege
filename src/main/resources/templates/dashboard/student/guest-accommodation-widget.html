@@ -1,0 +1,42 @@
+<div th:replace="~{common/widget-template :: content('guestRequestId', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+    <!-- Modal Header -->
+    <modalHeader>
+        <span th:text="#{message.label.guest.room.accommodation}"></span>
+    </modalHeader>
+    
+    <!-- Modal Body -->
+    <modalBody>
+      <form th:object="${guestRequestDto}">
+	      <div class="row text-center">
+			<div class="col-6">
+				<span class="fw-bold text-tmPrimary" th:text="#{message.label.status}"></span><br>
+				<th:block th:if="${guestRequestDto.wardenApprovalStatus == null}">
+					<div class="fw-bold text-primary" th:text="${'-'}"></div>
+				</th:block>
+				<th:block th:if="${guestRequestDto.wardenApprovalStatus != null && !#strings.isEmpty(guestRequestDto.wardenApprovalStatus)}">
+					<th:block th:include="common/template/approval-status-badge :: statusBadge(${guestRequestDto.wardenApprovalStatus},null)"></th:block>
+				</th:block>
+			</div>
+			<div class="col-6">
+				<span class="fw-bold text-tmPrimary" th:text="#{message.label.payment.status}"></span><br>
+				<th:block th:if="${guestRequestDto.paymentStatus == null}">
+					<div class="fw-bold text-primary" th:text="${'-'}"></div>
+				</th:block>
+				<th:block th:if="${guestRequestDto.paymentStatus != null && !#strings.isEmpty(guestRequestDto.paymentStatus)}">
+					<div th:include="common/template/approval-status-badge :: statusBadge(null, ${guestRequestDto.paymentStatus})"/>
+				</th:block>
+			</div>
+		</div>
+    </form>
+    </modalBody>
+    
+    <!-- Modal Footer -->
+    <modalFooter>
+        <div class="text-end">
+            <a th:href="@{#{url.guest.accommodation.request}}" class="text-secondary mb-0 align-middle">
+                <span th:text="#{message.label.click.view.apply}"></span>
+                <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </modalFooter>
+</div>

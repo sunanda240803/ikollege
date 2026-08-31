@@ -1,0 +1,29 @@
+<!-- fragments/mess-priority-fragment.html -->
+<th:block th:fragment="messListFragment(messRegistrationList)">
+	<div class="row mt-5">
+		<div class="col-lg-12 mb-3">
+			<h2 class="tmsub-title"><span th:text="#{message.label.choose.preference}"></span>
+			</h2>
+		</div>
+	</div>
+
+	<div class="row mb-5">
+		<th:block th:each="registration, index : ${messRegistrationList}">
+			<div class="col-lg-4 col-md-4 mb-3 RadioCheckToggle"
+				 th:each="mess, iterStat : ${registration.messList}">
+				<input type="radio" class="btn-check"
+					   th:id="'CheckToggle_'+ ${index.index}+ '_'+ ${mess.id}"
+					   th:name="|id.priorityMessId|"
+					   th:checked="${mess.check}"
+					   autocomplete="off"
+					   th:value="${mess.id}">
+				<label th:classappend="${mess.messName.contains('Protien')} ? 'btn-outline-orange btn-blink-orange' : 'btn-outline-tmPrimary'"
+					   class="btn text-start d-flex flex-column hover-fill"
+					   th:for="'CheckToggle_'+ ${index.index}+ '_'+ ${mess.id}">
+					<span class="fw-bold" th:text="${mess.messName}"></span>
+					<span class="mt-1 small" th:text="${mess.description}"></span>
+				</label>
+			</div>
+		</th:block>
+	</div>
+</th:block>

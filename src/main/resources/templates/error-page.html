@@ -1,0 +1,39 @@
+<head th:replace="~{common/head :: common_header(~{})}"></head>
+<header th:replace="~{common/error-header}"></header>
+<!-- //Main-->
+<main id="main" class="main" style="margin-top: 80px">
+    <!--Page Section-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card">
+                <div class="card-body text-center mt-lg-5">
+                    <div class="notfound">
+                        <h3>Oops! <span th:text="${redirect.getTitle()}"></span></h3>
+                        <div class="notfound-404">
+                            <h1>
+                                <span th:each="char : ${redirect.getHttpCode()}" th:text="${char}"></span>
+                            </h1>
+                        </div>
+                        <h3 th:text="${redirect.getMessage()}"></h3>
+                        <h4 th:if="${redirect.getRedirectPageName() != null && redirect.getRedirectPageName() != ''}"
+                            th:text="'Redirecting to ' + ${redirect.getRedirectPageName()} + '...'"></h4>
+                        <th:block th:if="${redirect.getRedirectPageName() == null || redirect.getRedirectPageName() == ''}">
+
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+<span th:replace="~{common/footer :: scripts(~{::script}, null)}">
+    <script th:if="${redirect.getRedirectUrl() != null}" th:inline="javascript">
+        setTimeout(function() {
+            const hrefStr = "" + [[#{${redirect.getRedirectUrl()}}]];
+            if (hrefStr !== '') {
+                window.location.replace(contextPath + hrefStr);
+            }
+        }, [[${redirectDuration}]]);
+    </script>
+</span>

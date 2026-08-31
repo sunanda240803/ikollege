@@ -1,0 +1,47 @@
+<th:block th:fragment="student">
+	<div class="row mt-2">
+		<div class="col-lg-12">
+			<h2 class="tmsub-title"><span th:text="#{message.label.student.details}"></span>
+			</h2>
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col-lg-12">
+			<div class="row">
+				<div class="col-lg-auto mb-3">
+					<label class="form-label" for="studentId"> <span
+						th:text="#{message.label.studentID}"></span>
+					</label> <input type="text" id="studentId" name="studentId"
+						class="form-control"
+						th:value="${#strings.toUpperCase(@securityCtxUtil.userName())}"
+						readonly>
+				</div>
+				<div class="col-lg-auto mb-3">
+					<label class="form-label" for="studentName"> <span
+						th:text="#{message.label.studentName}"></span>
+					</label> <input type="text" name="studentName" id="studentName"
+						class="form-control" th:readonly="true"
+						th:value="${@securityCtxUtil.studentFullName()}" />
+				</div>
+
+			
+				<div class="col-lg-auto mb-3">
+					<label class="form-label" for="hostelName"> <span
+						th:text="#{message.label.hostelName}"></span>
+					</label> <input type="text" id="hostelName" name="hostelName"
+						class="form-control"
+						th:value="${#strings.toUpperCase(@securityCtxUtil.hostelName())}"
+						th:readonly="true">
+				</div>
+
+				<div class="col-lg-auto mb-3">
+					<label class="form-label" for="roomNo"> <span
+						th:text="#{message.label.room.no}"></span>
+					</label> <input type="text" id="roomNo" name="roomNo" class="form-control"
+						th:readonly="true" th:value="${@securityCtxUtil.roomNumber()}" />
+				</div>
+
+			</div>
+		</div>
+	</div>
+</th:block>

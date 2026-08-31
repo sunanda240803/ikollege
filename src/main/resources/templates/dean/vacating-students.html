@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+ <header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form th:action="@{#{url.student.vacating}}" method="get" class="themeForm">
+							<div class="row">
+								<div class="col-lg-12 mb-3">
+									<button type="button" id="toggleFilter" class="btn btn-primary collapsed" data-bs-toggle="collapse"
+											data-bs-target="#advancedFilter" aria-expanded="false" aria-controls="advancedFilter">
+										<span id="toggleFilterText" th:text="${form.hasSearchParam} ?
+										#{message.label.hide.advanced.filter} : #{message.label.show.advanced.filter}"></span>
+									</button>
+								</div>
+								<div class="row" th:classappend="${form.hasSearchParam} ? '' : 'collapse'" id="advancedFilter">
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" for="approvalStatus">
+											<span th:text="#{message.label.approval.status}"></span>
+										</label>
+										<select class="form-select" id="approvalStatus" th:name="approvalStatus" th:value="${wardenApprovalStatus}">
+											<option value="" th:text="#{message.label.select}+' '+#{message.label.approval.status}"></option>
+											<option th:each="approvalStatus : ${approvalStatus}"
+													th:value="${approvalStatus.value}"
+													th:text="${approvalStatus.value}">
+											</option>
+										</select>
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" for="vacatingReason">
+											<span th:text="#{message.label.reason.for.vacating}"></span>
+										</label>
+										<select name="vacatingReason" class="form-select" id="vacatingReason" th:value="${vacatingReason}">
+											<option value="" th:text="#{message.label.select}+' '+#{message.label.reason.for.vacating}"></option>
+											<option th:each="reasonForVacation : ${reasonForVacatingList}"
+													th:value="${reasonForVacation.value}"
+													th:text="${reasonForVacation.value}" th:selected="${vacatingReason} eq ${reasonForVacation.value}">
+											</option>
+										</select>
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.submitted}+' '+#{message.label.from.date}"></span>
+										</label>
+										<input type="date" class="form-control"
+											   th:name="submittedFromDate" id="submittedFromDate" th:value="${submittedFromDate}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.submitted}+' '+#{message.label.to.date}"></span>
+										</label>
+										<input type="date" class="form-control"
+											   th:name="submittedToDate" id="submittedToDate" th:value="${submittedToDate}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.vacating}+' '+#{message.label.from.date}"></span>
+										</label>
+										<input type="date" class="form-control"
+											   th:name="vacatingFromDate" id="vacatingFromDate" th:value="${vacatingFromDate}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.vacating}+' '+#{message.label.to.date}"></span>
+										</label>
+										<input type="date" class="form-control"
+											   th:name="vacatingToDate" id="vacatingToDate" th:value="${vacatingToDate}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.student.name}"></span>
+										</label>
+										<input type="text" class="form-control"
+											   th:name="studentName" id="studentName"
+											   th:placeholder="#{message.placeholder.student.name}" th:value="${studentName}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label">
+											<span th:text="#{message.label.student.id}"></span>
+										</label>
+										<input type="text" class="form-control"
+											   th:name="studentId" id="studentId"
+											   th:placeholder="#{message.placeholder.student.id}" th:value="${studentId}">
+									</div>
+									<div class="col-lg-3 mb-3">
+										<label class="form-label" for="hostelName">
+											<span th:text="#{message.label.hostel.name}"></span>
+										</label>
+										<select class="selectpicker" data-live-search="true" th:value="${hostelId}" name="hostelId" id="hostelName">
+											<option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+											<option th:each="hostelList : ${hostelList}" th:value="${hostelList.id}"
+													th:text="${hostelList.hostelName}"
+													th:selected="*{hostelId} eq ${hostelList.id}">
+											</option>
+										</select>
+									</div>
+									<div class="col-lg-3">
+										<input type="hidden" id="pageVal" th:value="${form.pageVal}"/>
+										<input type="hidden" id="sizeVal" th:value="${form.size}"/>
+										<button type="button" id="getData" class="btn btn-lgtblue px-4" style="margin-top: 38px" onclick="return getStudentVacatingListValidate()">
+											<i class="fa-solid fa-database"></i>
+											<span th:text="#{message.button.get.data}"></span>
+										</button>
+									</div>
+									<hr class="my-4">
+								</div>
+							</div>
+						</form>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="table-responsive themeTable">
+									<table id="messToCardTableId" class="table table-bordered nowrap w-100">
+										<thead>
+											<tr>
+	                                    		<th class="text-center" th:text="#{message.label.action}"></th>
+			                                    <th th:text="#{message.label.sl.no}"></th>
+			                                    <th th:text="#{message.label.student.id}"></th>
+			                                    <th th:text="#{message.label.student.name}"></th>
+			                                    <th th:text="#{message.label.hostel.name}"></th>
+			                                    <th th:text="#{message.label.room.number}"></th>
+	                                    		<th th:text="#{message.label.date.of.vacating}"></th>
+	                                    		<th th:text="#{message.label.reason.for.vacating}"></th>
+	                                    	</tr>
+										</thead>
+										<tbody>
+									    	<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+												th:each="vacatingStudent, iter: ${form.paginationList.getContent()}">
+												<td>
+													<div class="d-flex justify-content-center">
+														<button type="button" class="btn btn-sm btn-pink me-2" data-bs-toggle="tooltip"
+															data-bs-title="Download Pdf" th:if="${@securityCtxUtil.userRole().equals(#messages.msgOrNull('message.label.hostel.check.in'))}">
+															<i class="fa-solid fa-file-download"></i>
+														</button>
+<!--														<button type="button" class="btn btn-sm btn-bluegray me-2"-->
+<!--															onclick="viewVacatingRequestModal()" data-bs-toggle="tooltip"-->
+<!--															data-bs-title="View Details">-->
+<!--															<i class="fa-solid fa-eye"></i>-->
+<!--														</button>-->
+<!--														<button type="button" class="btn btn-sm btn-success me-2"-->
+<!--															data-bs-toggle="tooltip" data-bs-title="Approve Complete">-->
+<!--															<i class="fa-solid fa-check"></i>-->
+<!--														</button>-->
+<!--														<button type="button" class="btn btn-sm btn-warning me-2"-->
+<!--															data-bs-toggle="tooltip" data-bs-title="Pending">-->
+<!--															<i class="fa-solid fa-hourglass-half"></i>-->
+<!--														</button>-->
+													</div>
+												</td>
+												<td th:text="${(form.paginationList.number * form.paginationList.size) + iter.count}"></td>
+									    		<td th:text="${vacatingStudent.studentId}"></td>
+									    		<td th:text="${vacatingStudent.studentName}"></td>
+									    		<td th:text="${vacatingStudent.hostelName}"></td>
+									    		<td th:text="${vacatingStudent.roomNo}">210</td>
+												<td th:text="${#temporals.format(vacatingStudent.vacatingDate, #messages.msg('date.format'))}"></td>
+									    		<td th:text="${vacatingStudent.vacatingReason}"></td>
+											</tr>
+									    	<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="12" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/dean/vacating-students.js}"></script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

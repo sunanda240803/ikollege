@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form id="showWiseReportForm"
+                          th:action="@{#{url.show.wise.report}}"
+                          th:object="${searchForm}" method="post" class="form-horizontal">
+
+                        <div class="row mb-4">
+                            <div class="col-lg-3 mb-3">
+                                <label for="fromDate" th:text="#{message.label.event.from.date}"></label>
+                                <input type="date" id="fromDate" th:field="*{fromDate}" class="form-control required-input" required>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label for="toDate" th:text="#{message.label.event.to.date}"></label>
+                                <input type="date" id="toDate" th:field="*{toDate}" class="form-control required-input" required>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label for="eventId" th:text="#{message.label.event.type}"></label>
+                                <select id="eventId" th:field="*{eventId}" class="form-control required-input" onchange="loadShows(this.value)" required>
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                    <option th:each="event : ${events}"
+                                            th:value="${event.id}"
+                                            th:text="${event.eventName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label for="showId" th:text="#{message.label.show.name.list}"></label>
+                                <select id="showId" th:field="*{showId}" class="form-control" onchange="loadSeats(this.value)" disabled>
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label for="seatId"th:text="#{message.label.seat.seating.list}"></label>
+                                <select id="seatId" th:field="*{seatId}" class="form-control" disabled>
+                                    <option value="" selected="selected" th:text="#{message.label.select}"></option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-lg-3 row">
+                                <div class="col-lg-4">
+                                    <button type="button" id="downloadReport" class="btn btn-lgtblue mt-4" onclick="downloadRequestReport()">
+                                        <i class="fa-solid fa-file-excel"></i>
+                                        <span>Export</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/show-wise-report.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.show.wise.report}]]*/ '';
+        const excelDownloadUrl = /*[[#{url.show.wise.report.excel.report.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>

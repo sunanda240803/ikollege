@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<th:block th:if="${temporaryAccomodationDto != null}">
+							<form class="themeForm">
+								<input type="hidden" id="requestId" th:value="${temporaryAccomodationDto.requestId}" />
+								<input type="hidden" id="candidateId" th:value="${temporaryAccomodationDto.candidateId}" />
+								<input type="hidden" id="gender" th:value="${temporaryAccomodationDto.gender}" />
+								<div class="row">
+									<div class="col-lg-12">
+										<h2 class="tmsub-title">
+											<span th:text="#{message.label.payment.details}"></span>
+										</h2>
+									</div>
+								</div>
+								<div class="row" style="padding-left: 20px;">
+									<div class="col-lg-4 mb-3">
+									    <label class="form-label"> 
+									        <span th:text="#{message.label.candidate.name}"> </span>
+									    </label>
+									    <div class="form-control form-graybox">
+									        <span class="normal-font"
+									            th:text="${#strings.isEmpty(temporaryAccomodationDto.firstName) && #strings.isEmpty(temporaryAccomodationDto.lastName) ? #messages.msg('message.label.na') : temporaryAccomodationDto.firstName + ' ' + temporaryAccomodationDto.lastName}"></span>
+									    </div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span th:text="#{message.label.candidate.category}">
+											</span>
+										</label>
+										<div class="form-control form-graybox">
+											<span class="normal-font"
+												th:text="${#strings.isEmpty(temporaryAccomodationDto.candidateCategory) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.candidateCategory}"></span>
+										</div>
+									</div>
+									<div class="col-lg-4 mb-3">
+										<label class="form-label"> <span th:text="#{message.label.email.address}">
+											</span>
+										</label>
+										<div class="form-control form-graybox">
+											<span class="normal-font"
+												th:text="${#strings.isEmpty(temporaryAccomodationDto.email) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.email}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="accordion" id="paymentAccordian">
+									<div class="accordion-item">
+										<div class="row accordion-header" id="headingOne" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="cursor: pointer;">
+								            <div class="col-lg-12">
+								                <h2 class="tmsub-title">
+								                    <span th:text="#{message.label.view.candidate.details}"></span>
+								                </h2>
+								            </div>
+								        </div>
+								        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#paymentAccordian">
+	            							<div class="accordion-body">
+	            								<div class="row" style="padding-left: 20px;">
+	            									<div class="col-lg-2 mb-3">
+														<div class="upload-box">
+															<div class="box text-center">
+																<label> 
+																<img class="img-fluid d-block mx-auto profile"
+																	 th:data-default="@{/assets/img/id-proof.png}" alt=""
+																	 th:src="@{#{url.file} + #{url.image} + '/CANDIDATE_PROFILE/'+ ${temporaryAccomodationDto.imageId}}"
+																	 th:attr="onerror='this.src=\'' + @{/assets/img/id-proof.png} + '\''">
+																</label>
+															</div>
+														</div>
+													</div>
+													<div class="col-lg-10 mb-3">
+														<div class="row">
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.dob}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.dob) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.dob}"></span>
+																</div>
+															</div>													
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.gender}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.gender) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.gender}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.address1}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.address1) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.address1}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.address2}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.address2) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.address2}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.city.town}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.city) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.city}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.state}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.state) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.state}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.pin.code}"> </span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.pincode) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.pincode}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.phone.number}">
+																	</span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.phoneNumber) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.phoneNumber}"></span>
+																</div>
+															</div>
+															<div class="col-lg-4 mb-3">
+																<label class="form-label"> <span th:text="#{message.label.mobile.number}">
+																	</span>
+																</label>
+																<div class="form-control form-graybox">
+																	<span class="normal-font"
+																		th:text="${#strings.isEmpty(temporaryAccomodationDto.mobileNumber) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.mobileNumber}"></span>
+																</div>
+															</div>
+														</div>														
+													</div>													
+												</div>
+	            							</div>
+	            						</div>
+									</div>
+									<div class="accordion-item">
+										<div class="row accordion-header" id="headingTwo" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" style="cursor: pointer;">
+								            <div class="col-lg-12">
+								                <h2 class="tmsub-title">
+								                    <span th:text="#{message.label.view.appointment.details}"></span>
+								                </h2>
+								            </div>
+								        </div>
+								        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#paymentAccordian">
+	            							<div class="accordion-body">
+	            								<div class="row" style="padding-left: 20px;">
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.appointment.from}">
+															</span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.appointmentFrom) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.appointmentFrom}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.appointment.to}">
+															</span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.appointmentTo) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.appointmentTo}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.stay.request.from}">
+															</span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.stayRequestFrom) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.stayRequestFrom}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.stay.request.to}">
+															</span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.stayRequestTo) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.stayRequestTo}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.stipend.pay}"> </span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.grossPay) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.grossPay}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.appointment.nature}">
+															</span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.natureOfAppointment) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.natureOfAppointment}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span
+																th:text="#{message.label.validating.authority.name}">
+															</span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.validatingAuthorityName) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.validatingAuthorityName}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.email}"> </span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.validatingAuthorityEmail) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.validatingAuthorityEmail}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.mess.option}"> </span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.messOption) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.messOption}"></span>
+														</div>
+													</div>
+													<div class="col-lg-4 mb-3">
+														<label class="form-label"> <span th:text="#{message.label.purpose}"> </span>
+														</label>
+														<div class="form-control form-graybox">
+															<span class="normal-font"
+																th:text="${#strings.isEmpty(temporaryAccomodationDto.purpose) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.purpose}"></span>
+														</div>
+													</div>
+													<div class="col-lg-12 mb-3">
+														<label class="form-label"> <span
+																th:text="#{message.label.candidate.status.details}"> </span>
+														</label>
+														<div class="col-lg-6 mb-3">
+															<div class="form-control form-graybox text-wrap"
+																style="height: 99px; overflow: auto;">
+																<span class="normal-font"
+																	th:utext="${#strings.isEmpty(temporaryAccomodationDto.approvalStatusDetails) ?  #messages.msg('message.label.na') : temporaryAccomodationDto.approvalStatusDetails}"></span>
+															</div>
+														</div>
+													</div>
+												</div>
+	            							</div>
+	            						</div>
+	            					</div>
+	            					<div class="accordion-item">
+										<div class="row accordion-header" id="headingThree" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree" style="cursor: pointer;">
+								            <div class="col-lg-12">
+								                <h2 class="tmsub-title">
+								                    <span th:text="#{message.label.stay.details}"></span>
+								                </h2>
+								            </div>
+								        </div>
+								        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#paymentAccordian">
+	            							<div class="accordion-body">
+	            								<div class="row" style="padding-left: 20px;">
+													<div class="table-responsive themeTable">
+														<table class="table table-bordered nowrap w-100">
+															<thead>
+																<tr>
+																	<th th:text="#{message.label.stay.from}"></th>
+																	<th th:text="#{message.label.stay.to}"></th>
+																	<th th:text="#{message.label.approval.notes}"></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr class="normal-font"
+																	th:each="stayExtension : ${temporaryAccomodationDto.stayExtensionList}">
+																	<td th:text="${stayExtension.stayFrom}"></td>
+																	<td th:text="${stayExtension.stayTo}"></td>
+																	<td th:text="${stayExtension.approvalStatus}"></td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+	            							</div>
+	            						</div>
+	            					</div>
+								</div>								
+								<div id="paymentAdvice">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.payment.advice}"></span>
+											</h2>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-6 mb-3">
+											<label class="form-label" th:text="#{message.label.category}"></label>
+											<select class="form-select" id="category" name="category" onchange="updatePaymentDetails();">
+												<option value="" th:text="#{message.label.select} + ' ' + #{message.label.category}"></option>
+												<option th:each="accomodation : ${temporaryAccomodationDto.accomodationList}"
+														th:value="${accomodation.id}"
+														th:data-stay-amount="${accomodation.paymentPerDay}"
+														th:data-breakfast-coupon-rate="${accomodation.breakfastCoupon}"
+														th:data-lunch-coupon-rate="${accomodation.lunchCoupon}"
+														th:data-dinner-coupon-rate="${accomodation.dinnerCoupon}"
+														th:text="${accomodation.categoryName}"></option>
+											</select>
+										</div>
+										<div class="col-lg-6 mb-3">
+											<label class="form-label" th:text="#{message.label.dining}"></label>
+											<div class="checkRadio-bg form-control">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" th:onclick="toggleSections([[${T(com.iitm.hosteldine.constant.mess.MessOption).BOTH.value}]])" type="radio" th:name="diningType" id="diningTypeBoth"
+														   th:value="${T(com.iitm.hosteldine.constant.mess.MessOption).BOTH.value}"
+														   th:checked="${temporaryAccomodationDto.messOption == T(com.iitm.hosteldine.constant.mess.MessOption).BOTH.value}" />
+													<label class="form-check-label" for="diningTypeBoth" th:text="${T(com.iitm.hosteldine.constant.mess.MessOption).BOTH.value}"></label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" th:onclick="toggleSections([[${T(com.iitm.hosteldine.constant.mess.MessOption).ACCOMODATION.value}]])" type="radio" th:name="diningType" id="diningTypeAccommodation"
+														   th:value="${T(com.iitm.hosteldine.constant.mess.MessOption).ACCOMODATION.value}"
+														   th:checked="${temporaryAccomodationDto.messOption == T(com.iitm.hosteldine.constant.mess.MessOption).ACCOMODATION.value}" />
+													<label class="form-check-label" for="diningTypeAccommodation" th:text="${T(com.iitm.hosteldine.constant.mess.MessOption).ACCOMODATION.value}"></label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input required-input" th:onclick="toggleSections([[${T(com.iitm.hosteldine.constant.mess.MessOption).MESS.value}]])" type="radio" th:name="diningType" id="diningTypeMess"
+														   th:value="${T(com.iitm.hosteldine.constant.mess.MessOption).MESS.value}"
+														   th:checked="${temporaryAccomodationDto.messOption == T(com.iitm.hosteldine.constant.mess.MessOption).MESS.value}" />
+													<label class="form-check-label" for="diningTypeMess" th:text="${T(com.iitm.hosteldine.constant.mess.MessOption).MESS.value}"></label>
+												</div>
+											</div>
+										</div>
+										<div id="messCheck" class="col-lg-6 mb-3">
+											<label class="form-label" th:text="#{message.label.select}"></label>
+											<div class="checkRadio-bg form-control" id="genderChecks">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" id="cardChargesCheckbox" type="checkbox" checked onchange="updateCardCharges()"/>
+													<label class="form-check-label" for="cardChargesCheckbox" th:text="#{message.label.card.charges.applicable}"></label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="checkbox" id="deductMessAmountCheckbox" onchange="updateDeductMessAmount()"/>
+													<label class="form-check-label" for="deductMessAmountCheckbox" th:text="#{message.label.deduct.mess.amount}"></label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="hostelSection" >
+										<div class="row mt-2">
+											<div class="col-lg-12">
+												<h2 class="tmsub-title" th:text="#{message.label.hostel.section}"></h2>
+											</div>
+										</div>
+										<div class="row" style="padding-left: 20px;">
+											<div class="col-lg-2 mb-3 d-flex align-items-end">
+											    <label class="form-label w-100">
+											        <span th:text="#{message.button.hostel.fee.payment}"> </span>
+											    </label>
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.stay.from}"> </span>
+												</label>
+												<input type="date" class="form-control" id="stayFromDate" name="stayFromDate" onchange="calculateStayDays()">
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.stay.to}"> </span>
+												</label>
+												<input type="date" class="form-control" id="stayToDate" name="stayToDate" onblur="checkDates()" onchange="calculateStayDays()">
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.stay.no.of.days}"> </span>
+												</label>
+												<input id="stayNoOfDays" class="form-control" readonly /> 
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.payment.day}"> </span>
+												</label>
+												<input id="payment" class="form-control" readonly/>
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.stay.amount}"> </span>
+												</label>
+												<input id="stayAmount" class="form-control" readonly/>
+											</div>
+										</div>
+									</div>
+									<div id="messSection">
+										<div class="row">
+											<div class="col-lg-12">
+												<h2 class="tmsub-title" th:text="#{message.label.mess.section}"></h2>
+											</div>
+										</div>
+										<div class="row" style="padding-left: 20px;">
+											<div class="col-lg-2 mb-3">
+											    <label class="form-label">
+													<span th:text="#{message.label.mess.name}"> </span>
+												</label>
+												<div class="form-control form-graybox">
+													<select class="form-select" id="messName" name="messName" onchange="">
+														<option value="" th:text="#{message.label.select}"></option>
+														<option th:each="entry : ${temporaryAccomodationDto.messMap}" th:value="${entry.key}"
+															th:text="${entry.value}"></option>
+													</select>
+												</div>
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.dining.from}"> </span>
+												</label>
+												<input type="date" class="form-control" id="diningFromDate" name="diningFromDate" onchange="updateMessDetails()">
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.dining.to}"> </span>
+												</label>
+												<input type="date" class="form-control" id="diningToDate" name="diningToDate" onblur="checkDates()" onchange="updateMessDetails()">
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.coupons}"> </span>
+												</label>
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.coupons.rate}"> </span>
+												</label>
+											</div>
+											<div class="col-lg-2 mb-3">
+												<label class="form-label">
+													<span th:text="#{message.label.mess.amount}"> </span>
+												</label>
+											</div>
+										</div>
+										<div class="row d-flex justify-content-end" style="padding-left: 20px;">
+											<div class="col-lg-2 mb-3 d-flex align-items-center justify-content-end">
+										        <span th:text="#{message.label.break.fast.coupon}" class="me-2"> </span>
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="breakfastCoupon" class="form-control" readonly />
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="breakfastCouponRate" class="form-control" readonly />
+										    </div>
+										    <div class="col-lg-2 mb-3 ">
+										        <input id="breakfastMessAmount" class="form-control" readonly />
+										    </div>
+										</div>
+										<div class="row d-flex justify-content-end" style="padding-left: 20px;">
+											<div class="col-lg-2 mb-3 d-flex align-items-center justify-content-end">
+										        <span th:text="#{message.label.lunch.coupon}" class="me-2"> </span>
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="lunchCoupon" class="form-control" readonly />
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="lunchCouponRate" class="form-control" readonly />
+										    </div>
+										    <div class="col-lg-2 mb-3 ">
+										        <input id="lunchMessAmount" class="form-control" readonly />
+										    </div>
+										</div>
+										<div class="row d-flex justify-content-end" style="padding-left: 20px;">
+											<div class="col-lg-2 mb-3 d-flex align-items-center justify-content-end">
+										        <span th:text="#{message.label.dinner.coupon}" class="me-2"> </span>
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="dinnerCoupon" class="form-control" readonly />
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="dinnerCouponRate" class="form-control" readonly />
+										    </div>
+										    <div class="col-lg-2 mb-3 ">
+										        <input id="dinnerMessAmount" class="form-control" readonly />
+										    </div>
+										</div>
+									</div>
+									<div id="cardChargesDiv" class="row" style="padding-left: 40px">
+										<div class="row d-flex justify-content-end">
+											<div class="col-lg-2 mb-3 d-flex align-items-center justify-content-end">
+										        <span th:text="#{message.label.card.charges}" class="me-2"> </span>
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="cardCharges" class="form-control" readonly th:value="${cardCharges}"/>
+										    </div>
+										</div>
+									</div>
+									<div id="messAccountAmountDiv" class="row"  style="padding-left: 40px">
+										<div class="row d-flex justify-content-end">
+											<div class="col-lg-2 mb-3 d-flex align-items-center justify-content-end">
+										        <span th:text="#{message.label.mess.account.amount}" class="me-2"> </span>
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="messAccountAmount" class="form-control" onchange="updateDeductMessAmount()"/>
+										    </div>
+										</div>
+									</div>
+									<div class="row"  style="padding-left: 40px">
+										<div class="row d-flex justify-content-end">
+											<div class="col-lg-2 mb-3 d-flex align-items-center justify-content-end">
+										        <span th:text="#{message.label.total.amount}" class="me-2"> </span>
+										    </div>
+										    <div class="col-lg-2 mb-3">
+										        <input id="totalAmount" class="form-control" readonly />
+										    </div>
+										</div>
+									</div>
+									<div class="row" style="padding-left: 20px;">										
+									    <div class="col-lg-12 d-flex justify-content-end">	
+									    	<div id="errorMsg" style="width: 28%;">
+									    		 <span th:text="#{message.validation.date.overlap}"></span>
+									    	</div>				    	
+									        <button type="button" class="btn btn-aqua" id="saveButton" onclick="saveTemporaryAccommodation()">
+												<i class="fa-solid fa-floppy-disk me-1"></i>
+									            <span th:text="#{message.label.save}"></span>
+									        </button>
+									    </div>
+									</div>
+								</div>
+								<div id="paymentAdviceList" th:if="${temporaryAccomodationDto.paymentAdviceList != null && temporaryAccomodationDto.paymentAdviceList.size() > 0}">
+									<div class="row">
+										<div class="col-lg-8">
+											<h2 class="tmsub-title">
+												<span th:text="#{message.label.payment.advice.list}"></span>
+											</h2>
+										</div>
+										<div class="col-lg-4 modal-footer" style="padding-right: 20px;">
+											<a href="javascript:void(0);" class="btn btn-sm btn-success" onclick="showPaymentAdviceDiv(true)">
+												<i class="fa-solid fa-circle-plus"></i>
+												<span th:text="#{message.label.add.payment.advice}"></span>
+											</a>
+										</div>
+									</div>
+									<div class="row" style="padding-left: 20px;">
+										<div class="table-responsive themeTable">
+											<table class="table table-bordered nowrap w-100">
+												<thead>
+													<tr>
+														<th th:text="#{message.label.sl.no}"></th>
+														<th th:text="#{message.label.type}"></th>
+														<th th:text="#{message.label.payment.date}"></th>
+														<th th:text="#{message.label.hostel.category}"></th>
+														<th th:text="#{message.label.stay.from}"></th>
+														<th th:text="#{message.label.stay.to}"></th>
+														<th th:text="#{message.label.dining.from}"></th>
+														<th th:text="#{message.label.dining.to}"></th>
+														<th th:text="#{message.label.total.penalty.amount}"></th>
+														<th th:text="#{message.label.payment.status}"></th>
+														<th th:text="#{message.label.action}" class="text-center"></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr class="normal-font" th:each="paymentAdvice : ${temporaryAccomodationDto.paymentAdviceList}">
+														<td th:text="${paymentAdvice.slNo}"></td>
+														<td th:text="${paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status || 
+															paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status || 
+															paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).ABORTED.status ? 
+															T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PAYMENT.status : paymentAdvice.paymentStatus}">
+														</td>
+														<td th:text="${paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status || 
+															paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).REBATE.status ? 
+															paymentAdvice.paymentDate : '-' }">
+											  			</td>
+														<td th:text="${paymentAdvice.categoryName}"></td>
+														<td th:text="${#temporals.format(paymentAdvice.hostelPayFromDate,#messages.msg('date.format'))}"></td>
+														<td th:text="${#temporals.format(paymentAdvice.hostelPayToDate,#messages.msg('date.format'))}"></td>
+														<td th:text="${#temporals.format(paymentAdvice.messPayFromDate,#messages.msg('date.format'))}"></td>
+														<td th:text="${#temporals.format(paymentAdvice.messPayToDate,#messages.msg('date.format'))}"></td>
+														<td th:text="${paymentAdvice.overallAmount}"></td>
+														<td th:text="${paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status || 
+															paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).APPROVED.status ? 
+														    T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status : 
+														    (paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status || 
+														    paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).ABORTED.status ? 
+														    T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status : paymentAdvice.paymentStatus)}">
+														</td>
+														<td class="text-center">
+															<a th:if="${paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status ||
+															           paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status ||
+															           paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).ABORTED.status}"
+															   th:href="@{/tempAccomodationList/paymentAdviceView/{requestId}/{candidateId}/{id}(requestId=${temporaryAccomodationDto.requestId}, candidateId=${temporaryAccomodationDto.candidateId}, id=${paymentAdvice.id})}"
+															   onclick="openPopup(this.href); return false;" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" th:title="#{message.label.payment.link}">
+																<i class="fa fa-solid fa-credit-card"></i>
+															</a>
+															<a th:if="${paymentAdvice.paymentApprovalStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).APPROVED.status}"
+															   href="javascript:void(0);" class="btn btn-sm btn-outline-bluegray" data-bs-toggle="tooltip"
+															   th:title="#{message.label.hostel.link}"
+															   th:onclick="openHostelPopup([[${paymentAdvice.getHostelViewUrl}]]); return false;">
+                                                                <i class='ph-duotone  ph-buildings'></i>
+															</a>
+															<button class="btn btn-sm btn-outline-pink" type="button" data-bs-toggle="tooltip"
+																	th:if="${paymentAdvice.paymentApprovalStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).APPROVED.status}"
+																	data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+																	th:onclick="openPdf([[${paymentAdvice.getPdfUrl}]])"
+																	th:attr="data-bs-title=#{message.label.open.pdf}">
+																<i class='fa fa-solid fa-file-pdf'></i>
+															</button>
+															<button type="button"
+																	th:if="${paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status}"
+																	class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" th:title="#{message.label.assign.card}"
+																	th:onclick="deleteData([[${paymentAdvice.id}]])">
+																<i class="fa-solid fa-trash-can"></i>
+															</button>
+															<th:block th:if="${@securityCtxUtil.isAdmin()}">
+																<button type="button"
+														            th:if="${paymentAdvice.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status
+                                                                    	&& !(paymentAdvice.paymentApprovalStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).APPROVED.status)}"
+														            class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" th:title="#{message.label.approve}"
+														            th:onclick="approveData([[${paymentAdvice.id}]])">
+														        <i class="fa-solid fa-check"></i>
+														    </button>
+															</th:block>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>					
+							</form>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- //Main-->
+	<div th:id="modalMailDiv"></div>
+	<div th:id="modalDiv"></div>
+	
+	<!-- Delete Modal-->
+	<th:block
+		th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+	</th:block>
+	
+	<!-- Approval Modal-->
+	<th:block 
+		th:replace="~{common/modal/approval-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.approve.confirmation.message})}">
+	</th:block>
+	
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/mess/temp-accomodation-list.js}"></script>
+		<script th:inline="javascript">
+			window.temporaryAccomodationDto = /*[[${temporaryAccomodationDto}]]*/ {};
+			const temporaryAccomodationURL = /*[[#{url.temporary.accomodation.list}]]*/ '';
+			const saveUrl= /*[[#{url.save}]]*/ '';
+			const deleteUrl= /*[[#{url.delete}]]*/ '';
+			const approveUrl= /*[[#{url.approve}]]*/ '';
+			const checkDatesURL= /*[[#{url.check.dates}]]*/ '';
+			const categoryRequired = /*[[#{message.validation.category.required}]]*/ '';
+			const stayFromDateRequired = /*[[#{message.validation.stay.from.date.required}]]*/ '';
+			const stayToDateRequired = /*[[#{message.validation.stay.to.date.required}]]*/ '';
+			const stayDateCondtion1 = /*[[#{message.validation.stay.date.condition1}]]*/ '';
+			const stayDateCondtion2 = /*[[#{message.validation.stay.date.condition2}]]*/ '';
+			const messNameRequired = /*[[#{message.validation.mess.name.required}]]*/ '';
+			const messFromDateRequired = /*[[#{message.validation.dining.from.date.required}]]*/ '';
+			const messToDateRequired = /*[[#{message.validation.dining.to.date.required}]]*/ '';
+			const messDateCondtion1 = /*[[#{message.validation.dining.date.condition1}]]*/ '';
+			const messDateCondtion2 = /*[[#{message.validation.dining.date.condition2}]]*/ '';
+		</script>
+	</th:block>
+	<!-- //Footer-->
+</body>
+
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+<body>
+<header th:replace="~{common/headerdev:: title(${headerForm},
+   'Mess Rebate Request', 'Dean', null, null, 'Back', 'hostel-accommodation-modal')}">
+</header><!-- Main -->
+<main id="main" class="main">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card main-card mt-4">
+        <div class="card-body">
+          <form class="themeForm needs-validation" id="editProfile">
+            <div class="row mt-2">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.student.details}"></h2>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="row mt-4">
+                <div class="col-lg-2 mb-2">
+                  <div class="upload-box d-sm-block">
+                    <div class="box text-center has-validation">
+                      <label>
+                        <img class="img-fluid d-block mx-auto profile" id="studentProfileImage" data-default="/hosteldine/assets/img/user-img1.png" src="/hosteldine/assets/img/user-img1.png" alt="">
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 mb-3">
+                  <div class="row">
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.student.name}"></label>
+                      <div class="form-control form-graybox" th:text="'KALIDOSS SRI PRIYA TULASI'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.dob}"></label>
+                      <div class="form-control form-graybox" th:text="'Sep 24, 1993'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.gender}"></label>
+                      <div class="form-control form-graybox" th:text="'Female'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.address}"></label>
+                      <div class="form-control form-graybox" th:text="'No:test, Test Street, Test Post, Test District'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.city.or.town}"></label>
+                      <div class="form-control form-graybox" th:text="'N/A'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.city.or.town}"></label>
+                      <div class="form-control form-graybox" th:text="'N/A'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.state}"></label>
+                      <div class="form-control form-graybox" th:text="'N/A'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.contact.number}"></label>
+                      <div class="form-control form-graybox" th:text="'9876543215'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.email.id}"></label>
+                      <div class="form-control form-graybox" th:text="'N/A'"></div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                      <label class="form-label" th:text="#{message.label.pin.code}"></label>
+                      <div class="form-control form-graybox" th:text="'-'"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.mess.rebate.details}"></h2>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.leave.from.date}"></label>
+                <div class="form-control form-graybox" th:text="'-'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.leave.to.date}"></label>
+                <div class="form-control form-graybox" th:text="'-'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.rebate.from.date}"></label>
+                <div class="form-control form-graybox" th:text="'May 15, 2019'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.rebate.to.date}"></label>
+                <div class="form-control form-graybox" th:text="'May 16, 2020'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.rebate.reason}"></label>
+                <div class="form-control form-graybox" th:text="'Leaving to home'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.no.of.days}"></label>
+                <div class="form-control form-graybox" th:text="'12'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.guide.name}"></label>
+                <div class="form-control form-graybox" th:text="'Elamurugan R'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.email.id}"></label>
+                <div class="form-control form-graybox" th:text="'bs21b014@smail.iitm.ac.in'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.document.type}"></label>
+                <div class="form-control form-graybox" th:text="'Attach Document'"></div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.reported.document}"></label>
+                <div class="form-control form-graybox" th:text="'-'"></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-lg-4 mb-3">
+                  <ul class="list-group">
+                    <li class="list-group-item" >
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span th:text="'sample.pdf'" data-bs-toggle="tooltip" data-bs-placement="top"
+                              th:attr="title='sample.pdf'">
+                        </span>
+                        <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+                                data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+                                th:attr="data-bs-title=#{message.label.download.document}"
+                                th:data-filename="'sample.pdf'" th:onclick="triggerDownload(this)">
+                          <i class="fa fa-download pdf text-white"></i>
+                        </button>
+                        <input type="hidden" id="fileName" th:value="'sample.pdf'">
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-lg-12">
+                <h2 class="tmsub-title" th:text="#{message.label.approval.status.details}"></h2>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 mb-3">
+                <div class="text-center">
+                  <div class="row mt-2">
+                    <div class="col-lg-4">
+                      <div class="card mt-3">
+                        <div class="flex-grow-1 p-3 text-body">
+                          <div class="" th:text="'geethapriya@triesten.com, gsaranya@triesten.com'"></div>
+                          <th:block th:include="common/template/approval-status-badge :: statusBadge('Approved',null)"></th:block>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 mb-3">
+                <label class="form-label" th:text="#{message.label.approval.notes}" for="approvalNote"></label>
+                <textarea type="text" id="approvalNote" class="form-control"></textarea>
+              </div>
+            </div>
+            <!-- Button Section -->
+
+            <div class="row text-end">
+              <div class="col-lg-12">
+                <button type="button" class="btn btn-primary px-4" id="profileSave">
+                  <i class="fa-solid fa-arrows-rotate me-1"></i>
+                  <span th:text="#{message.button.ovveride.approve}"></span>
+                </button>
+                <button type="submit" class="btn btn-secondary px-4 me-3" id="cancel" onclick="window.history.back();">
+                  <i class="fa-solid fa-circle-xmark me-1"></i>
+                  <span th:text="#{message.button.cancel}"></span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+  <script th:src="@{/assets/js/base/jquery.inputmask.min.js}"></script>
+  <script th:src="@{/assets/js/collegeInfo/edit-profile.js}"></script>
+  <!--  <script th:src="@{/assets/js/student-registration.js}"></script> -->
+</th:block>
+</body>
+</html>

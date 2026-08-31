@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+	<title><span th:text="#{message.label.response.page}"></span></title>
+	<link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"/>
+	<link th:href="@{/assets/css/payment-gateway-cc.css}" rel="stylesheet" />
+	
+</head>
+
+<body>
+	<div class="container transaction-container">
+		<div class="transaction-details">
+			<div th:if="${paymentGatewayDto.orderStatus == 'Success'}" class="transaction-success">
+				<h3><span th:text="#{message.transaction.success}"></span></h3>
+			</div>
+			<div th:if="${paymentGatewayDto.orderStatus != 'Success'}" class="transaction-failure text-center">
+				<h3><span th:text="#{message.transaction.failure}"></span></h3>
+			</div>
+
+			<div class="table-responsive">
+				<table class="table table-borderless transaction-table">
+					<tbody>
+						<tr>
+							<th><span th:text="#{message.label.billing.name}"></span></th>
+							<td> : </td>
+							<td th:text="${paymentGatewayDto.billingName}"></td>
+						</tr>
+						<tr>
+							<th><span th:text="#{message.label.net.payable}"></span></th>
+							<td> : </td>
+							<td th:text="${paymentGatewayDto.currency} + ' ' + ${paymentGatewayDto.totalAmount}">
+							</td>
+						</tr>
+						<tr>
+							<th><span th:text="#{message.label.payment.mode}"></span></th>
+							<td> : </td>
+							<td th:text="${paymentGatewayDto.paymentMode}"></td>
+						</tr>
+						<tr>
+							<th><span th:text="#{message.label.order.id}"></span></th>
+							<td> : </td>
+							<td th:text="${paymentGatewayDto.orderId}"></td>
+						</tr>
+						<tr>
+							<th><span th:text="#{message.label.transaction.id}"></span></th>
+							<td> : </td>
+							<td th:text="${paymentGatewayDto.transactionId}"></td>
+						</tr>
+						<tr>
+							<th><span th:text="#{message.label.ccav.referencenum}"></span></th>
+							<td> : </td>
+							<td th:text="${paymentGatewayDto.ccavRefNum}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			 <div class="center-content">
+				 <a class="btn btn-info back-btn" 
+				 	 th:href="@{${backToList}}" href="javascript:void(0);">
+					Click Here to Go Back
+				</a>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

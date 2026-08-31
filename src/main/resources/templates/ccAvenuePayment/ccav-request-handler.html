@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:text="#{message.label.checkout.page}"></span></title>
+</head>
+<body>
+<!--    <form id="nonseamless" method="post" name="redirect" action="https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction">-->
+	<form id="nonseamless" method="post" name="redirect" th:action="${pgDto.actionUrl}">
+        <input type="hidden" id="encRequest" name="encRequest" th:value="${pgDto.encRequest}">>
+        <input type="hidden" id="access_code" name="access_code" th:value="${pgDto.accessCode}">
+    </form>
+    
+    <script>
+        // Automatically submit the form to the payment gateway
+        document.getElementById('nonseamless').submit();
+    </script>
+</body>
+</html>

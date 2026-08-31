@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form class="themeForm" method="get" id="hostelAccommodationRebateRequestReport">
+                        <div class="row mb-3">
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="applicationType">
+                                    <span th:text="#{message.label.application.type}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                </label>
+                                <select class="form-select required-input additional-param" id="applicationType" th:name="additionalParam.applicationType" required>
+                                    <option value="" th:text="#{message.label.select} + ' ' + #{message.label.application.type}"></option>
+                                    <option th:each="applicationType : ${applicationType}"
+                                            th:value="${applicationType.id}"
+                                            th:text="${applicationType.value}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback" th:text="#{message.label.application.type} + ' ' + #{message.label.is} + ' ' + #{message.label.required}"></div>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="validationStatus" th:text="#{message.label.validation.status}"></label>
+                                <select class="form-select additional-param" id="validationStatus" th:name="additionalParam.validationStatus">
+                                    <option value="" th:text="#{message.label.select}+' '+#{message.label.validation.status}"></option>
+                                    <option th:each="status : ${validationStatusList}" th:value="${status}" th:text="${status}"></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="approvalFromDate" th:text="#{message.label.approval.from.date}"></label>
+                                <input type="date"  class="form-control additional-param" th:name="additionalParam.approvalFromDate" id="approvalFromDate" onkeydown="return false">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="approvalToDate" th:text="#{message.label.approval.to.date}"></label>
+                                <input type="date"  class="form-control additional-param" th:name="additionalParam.approvalToDate" id="approvalToDate" onkeydown="return false">
+                            </div>
+                            <div class="col-lg-3 mb-3" >
+                                <label class="form-label" for="submittedFromDate" th:text="#{message.label.submitted.from}"></label>
+                                <input type="date"  class="form-control additional-param" th:name="additionalParam.submittedFromDate" id="submittedFromDate" onkeydown="return false">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="submittedToDate" th:text="#{message.label.submitted.to}"></label>
+                                <input type="date"  class="form-control additional-param" th:name="additionalParam.submittedToDate"  id="submittedToDate" onkeydown="return false">
+                            </div>
+                            <div class="col-lg-3 mb-3 d-none messRebate">
+                                <label class="form-label" for="rebateFrom" th:text="#{message.label.rebate.from.date}"></label>
+                                <input type="date" class="form-control additional-param" th:name="additionalParam.rebateFrom" id="rebateFrom" onkeydown="return false">
+                            </div>
+                            <div class="col-lg-3 mb-3 d-none messRebate">
+                                <label class="form-label" for="rebateTo" th:text="#{message.label.rebate.to.date}"></label>
+                                <input type="date" class="form-control additional-param" th:name="additionalParam.rebateTo" id="rebateTo" onkeydown="return false">
+                            </div>
+                            <div class="col-auto mt-4">
+                                <input type="hidden" id="pageVal" th:value="${form.pageVal}" />
+                                <input type="hidden" id="sizeVal" th:value="${form.size}" />
+                                <button type="button" id="getData" class="btn btn-success mt-3" onclick="return getExcelFile()">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                    <span th:text="#{message.label.download.excel}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dashboard/student/student-hostel-accommodation.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.hostel.accommo.rebate.request}]]*/ '';
+        const downloadURL = /*[[#{url.download}]]*/ '';
+    </script>
+</th:block>
+</body>
+</html>

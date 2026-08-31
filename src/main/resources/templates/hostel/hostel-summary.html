@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <h4 class="text-end"><span th:text="#{message.label.total.allotted.students.candidate}"></span> : <b class="text-danger" th:text="${summaryPageDto.allottedSeats}"></b></h4>
+                    <div class="mb-4">
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.rooms.availability.occupancy.status}"></h2>
+                            </div>
+                        </div>
+                        <div class="table-responsive themeTable">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center" th:text="#{message.label.total.rooms}"></th>
+                                <th class="text-center" th:text="#{message.label.rooms.allotted}"></th>
+                                <th class="text-center" th:text="#{message.label.rooms.vacant}"></th>
+                                <th class="text-center" th:text="#{message.label.total.seats}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.allotted.seats.including.overload}"></th>
+                                <th class="text-center" th:text="#{message.label.seats.vacant}"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr class="text-start">
+                                <td><span class="ps-3"><span th:text="#{message.coupon.category.general}"></span>: <span th:text="${summaryPageDto.general}"></span></span></td>
+                                <td rowspan="6" valign="middle" class="text-center align-middle"><span><span th:text="${summaryPageDto.roomsAllotted}"></span></span></td>
+                                <td rowspan="6" valign="middle" class="text-center align-middle"><span><span th:text="${summaryPageDto.roomsVacant}"></span></span></td>
+                                <td rowspan="6" valign="middle" class="text-center align-middle"><span><span th:text="${summaryPageDto.totalNoOfSeats}"></span></span></td>
+                                <td rowspan="6" valign="middle" class="text-center align-middle"><span><span th:text="${summaryPageDto.allottedSeats}"></span></span></td>
+                                <td rowspan="6" valign="middle" class="text-center align-middle"><span><span th:text="${summaryPageDto.seatsVacant}"></span></span></td>
+                            </tr>
+                            <tr class="text-start"><td><span class="ps-3"><span th:text="#{message.label.official}"></span>: <span th:text="${summaryPageDto.official}"></span></span></td></tr>
+                            <tr class="text-start"><td><span class="ps-3"><span th:text="#{message.label.guest}"></span>: <span th:text="${summaryPageDto.guest}"></span></span></td></tr>
+                            <tr class="text-start"><td><span class="ps-3"><span th:text="#{message.label.icsr}"></span>: <span th:text="${summaryPageDto.icsr}"></span></span></td></tr>
+                            <tr class="text-start"><td><span class="ps-3"><span th:text="#{message.label.not.fit}"></span>: <span th:text="${summaryPageDto.notFit}"></span></span></td></tr>
+                            <tr class="text-start"><td><span class="ps-3"><span th:text="#{message.label.pd.room}"></span>: <span th:text="${summaryPageDto.pd}"></span></span></td></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="" th:value="#{message.lable.other}" id="other">
+                    <input type="hidden" name="" th:value="#{message.lable.scholar}" id="scholar">
+                    <input type="hidden" name="" th:value="#{message.lable.vacation}" id="vacation">
+                    <input type="hidden" name="" th:value="#{message.lable.candidate}" id="candidate">
+                    <th:block th:with="workflow = ${T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus)}">
+                        <input type="hidden" name="" th:value="${workflow.ALLOTTED.getStatus()}" id="allotted">
+                        <input type="hidden" name="" th:value="${workflow.CHECKED_IN.getStatus()}" id="checkIn">
+                        <input type="hidden" name="" th:value="${workflow.CHECKED_OUT.getStatus()}" id="checkOut">
+                    </th:block>
+                    <div class="mb-4">
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.temp.allotment.students.scholar}"></h2>
+                            </div>
+                        </div>
+                        <div class="table-responsive themeTable">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center" th:text="#{message.label.accommodation.type}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.allotted.students.as.of.today}"></th>
+                                <th class="text-center" th:text="#{message.label.checked.in}"></th>
+                                <th class="text-center" th:text="#{message.label.pending.check.in}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.total.students.to.be.checked.out.today}"></th>
+                                <th class="text-center" th:text="#{message.label.checked.out.today}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.pending.check.out.last.thirty.days}"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="accommodationList, iter : ${studentList}">
+                                <td class="text-center" th:text="${accommodationList.accommodationType}" th:data-row="${accommodationList.accommodationType}"></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.allottedTotal}" th:data-column="'allottedTotal'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.checkedIn}" th:data-column="'checkedIn'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-danger"  th:text="${accommodationList.pendingCheckedIn}" th:data-column="'pendingCheckedIn'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.tobCheckedOutToday}" th:data-column="'tobCheckedOutToday'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.checkedOutToday}" th:data-column="'checkedOutToday'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.pendingCheckedOut}" th:data-column="'pendingCheckedOut'" onclick="getList(this);"></a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="row mt-2">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title" th:text="#{message.label.candidate.project.staffs}"></h2>
+                            </div>
+                        </div>
+                        <div class="table-responsive themeTable">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center" th:text="#{message.label.accommodation.type}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.allotted.candidates.as.of.today}"></th>
+                                <th class="text-center" th:text="#{message.label.checked.in}"></th>
+                                <th class="text-center" th:text="#{message.label.pending.check.in}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.total.candidates.to.be.checked.out.today}"></th>
+                                <th class="text-center" th:text="#{message.label.checked.out.today}"></th>
+                                <th class="text-center"
+                                    th:text="#{message.label.pending.check.out.last.thirty.days}"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="accommodationList, iter : ${candidateList}">
+                                <td class="text-center" th:text="${accommodationList.accommodationType}"></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.allottedTotal}" th:data-column="'allottedTotal'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.checkedIn}" th:data-column="'checkedIn'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-danger"  th:text="${accommodationList.pendingCheckedIn}" th:data-column="'pendingCheckedIn'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.tobCheckedOutToday}" th:data-column="'tobCheckedOutToday'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.checkedOutToday}" th:data-column="'checkedOutToday'" onclick="getList(this);"></a></td>
+                                <td class="text-center"><a href="#" class="text-primary" th:text="${accommodationList.pendingCheckedOut}" th:data-column="'pendingCheckedOut'" onclick="getList(this);"></a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-4 col-lg-6">
+                            <div class="row mt-2">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title" th:text="#{message.label.enrollment.form}"></h2>
+                                </div>
+                            </div>
+                            <div class="table-responsive themeTable">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" th:text="#{message.label.total.applied.count}"></th>
+                                        <th class="text-center" th:text="#{message.label.approved.count}"></th>
+                                        <th class="text-center" th:text="#{message.label.pending.count}"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center"><a href="#" class="text-primary" th:text="${hostelEnrollmentTotalCount}" th:data-row="'enroll'" th:data-column="'total'" onclick="getEnrollAndVacatingScreen(this);"></a></td>
+                                        <td class="text-center"><a href="#" class="text-primary" th:text="${approvedHostelEnrollmentCount}" th:data-row="'enroll'" th:data-column="'Approved'" onclick="getEnrollAndVacatingScreen(this);"></a></td>
+                                        <td class="text-center"><a href="#" class="text-danger" th:text="${pendingHostelEnrollmentCount}" th:data-row="'enroll'" th:data-column="'Pending'" onclick="getEnrollAndVacatingScreen(this);"></a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 col-lg-6">
+                            <div class="row mt-2">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title" th:text="#{message.label.vacating.form}"></h2>
+                                </div>
+                            </div>
+                            <div class="table-responsive themeTable">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" th:text="#{message.label.total.applied.count}"></th>
+                                        <th class="text-center" th:text="#{message.label.approved.count}"></th>
+                                        <th class="text-center" th:text="#{message.label.pending.count}"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center"><a href="#" class="text-primary" th:text="${vacantTotalCount}" th:data-row="'vacant'" th:data-column="'total'" onclick="getEnrollAndVacatingScreen(this);"></a></td>
+                                        <td class="text-center"><a href="#" class="text-primary" th:text="${approvedVacantCount}" th:data-row="'vacant'" th:data-column="'Approved'" onclick="getEnrollAndVacatingScreen(this);"></a></td>
+                                        <td class="text-center"><a href="#" class="text-danger" th:text="${pendingVacantCount}" th:data-row="'vacant'" th:data-column="'Pending'" onclick="getEnrollAndVacatingScreen(this);"></a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/summary-page.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.summary.page}]]*/ '';
+        const redirectPageURL = /*[[#{url.redirect.page}]]*/ '';
+        const checkHostelNameExistURL = /*[[#{url.hostel.name.exist}]]*/ '';
+        const checkHostelCodeExistURL = /*[[#{url.hostel.code.exist}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer-->
+</body>
+</html>

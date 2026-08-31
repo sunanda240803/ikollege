@@ -1,0 +1,126 @@
+<div th:replace="~{common/modal-template ::
+   modal('hostelWardenInOutForm', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+    <modalHeader><span id="modalHeaderText" th:text="#{message.label.hostel.warden.in.out.registration.addEdit}"></span></modalHeader>
+    <modalBody>
+        <!-- card -->
+        <div class="p-3">
+            <form id="hostelWardenDetailForm" class="themeForm" th:action="@{#{url.warden.in.out.registration}+#{url.save}}" 
+            	method="POST" th:object="${wardenInfoDto}">
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <div class="col-md-6 mb-2">
+                            <div class="form-group">
+                                <label for="hostelName" th:text="#{message.label.hostel.name}"></label>
+                                <p class="form-control form-graybox" id="hostelNameDisplay" th:text="${wardenInfo.hostelName}"></p>
+                                <div class="invalid-feedback" th:text="#{message.validation.hostel.name}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="awayFromDate" th:text="#{message.label.away.from.date}"></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <input type="hidden" th:field="*{inchargeDetailsId}">
+                            <input type="hidden" name="id" th:value="${wardenInfo.id}">
+                            <input type="date" id="awayFromDate" class="form-control required-input" required
+                            	th:field="*{awayFrom}">
+                            <div class="invalid-feedback"
+                                th:text="#{message.label.away.from.date} + ' ' + #{message.validation.is.required}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="awayToDate"><span th:text="#{message.label.away.to.date}"></span></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <input type="date" id="awayToDate" class="form-control required-input" required
+                            	th:field="*{awayTo}">
+                            <div class="invalid-feedback backendErrors" th:errors="*{awayTo}"></div>
+                            <div class="invalid-feedback-frontEnd"
+                                th:text="#{message.label.away.to.date} + ' ' + #{message.validation.is.required}"></div>
+                            <small class="text-danger awayToDate"></small>    
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <div class="form-group">
+                            <label for="awayDescription"><span
+                                    th:text="#{message.label.away.description}"></span></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <textarea id="awayDescription" class="form-control required-input"
+                                required th:field="*{awayDescription}">
+                            </textarea>
+                            <div class="invalid-feedback-frontEnd"
+                                th:text="#{message.label.away.description} + ' ' + #{message.validation.is.required}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12 tmsub-title">
+                        <h5 class="mt-1" th:text="#{message.label.alternate.hostel.details}"></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="alternateHostelName" th:text="#{message.label.alternate.hostel.name}"></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}"></th:block>
+                            <select class="form-control" data-live-search="true" required 
+                            	id="alterHostelName" onchange="getInchargeDetails();" th:field="*{hostelId}">
+                                <option value="" th:text="#{message.label.select}+' '+#{message.label.hostel.name}"></option>
+								<option th:each="hostelList : ${hostelList}" 
+									th:if="${hostelList.id != wardenInfo.hostelId}" 
+									th:value="${hostelList.id}"
+									th:text="${hostelList.hostelName}"></option>
+                            </select>
+                            <div class="invalid-feedback-frontEnd" th:text="#{message.validation.hostel.name}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="inchargeName" th:text="#{message.label.incharge.name}"></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <input type="hidden" th:field="*{inchargeId}">
+                            <input type="hidden" th:field="*{wardenId}">
+                            <input type="text" id="inchargeName" class="form-control required-input" required
+                            	th:placeholder="#{message.label.incharge.name}" th:field="*{inchargeName}">
+                            <div class="invalid-feedback-frontEnd"
+                                th:text="#{message.label.incharge.name} + ' ' + #{message.validation.is.required}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="inchargeEmail" th:text="#{message.label.incharge.email}"></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <input type="email" id="inchargeEmail" class="form-control required-input required-email" required
+                            	th:placeholder="#{message.label.incharge.email}" th:field="*{inchargeEmail}">
+                            <div class="invalid-feedback-frontEnd"
+                                th:text="#{message.label.incharge.email} + ' ' + #{message.validation.is.required}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="mobilePhone" th:text="#{message.label.mobile.phone}"></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <input type="text" id="mobilePhone" class="form-control required-input required-mob-num" required
+                            	th:placeholder="#{message.label.mobile.phone}" th:field="*{inchargePhone}">
+                            <div class="invalid-feedback-frontEnd"
+                                th:text="#{message.label.mobile.phone} + ' ' + #{message.validation.is.required}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="officePhone" th:text="#{message.label.office.phone}"></label>
+                            <th:block th:replace="~{common/template/mandatory-symbol}" />
+                            <input type="text" id="officePhone" class="form-control required-input" required
+                            	th:placeholder="#{message.label.office.phone}" th:field="*{inchargeOfficeNo}">
+                            <div class="invalid-feedback-frontEnd"
+                                th:text="#{message.label.office.phone} + ' ' + #{message.validation.is.required}"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </modalBody>
+</div>

@@ -1,0 +1,78 @@
+<div th:replace="~{common/modal-template ::
+   modal('mess-vendor-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader th:text="#{message.label.mess.allocation}"></modalHeader>
+	<modalBody>
+	<form id="messAllocation" class="themeForm" th:action="@{#{url.mess.vendor.allocation}}" method="post" th:object="${allocation}">
+		<div class="row">
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="floorId"><span th:text="#{message.label.floor.name}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" /></label>
+				<select class="selectpicker required-select-input" data-live-search="true" id="floorId"
+						th:field="*{messId}" th:onchange="updateFloorName()">
+					<option value="" th:text="#{message.label.select}+' '+#{message.label.mess.name}"></option>
+					<option th:each="mess: ${messes}" th:value="${mess.id}" th:text="${mess.messName}+' - '+${mess.messFloorName}+' - '+${mess.description}"></option>
+				</select>
+				<input type="hidden" th:field="*{floorName}" id="floorName">
+			<div class="invalid-feedback" id="floorInputVal" th:text="#{message.validation.floor.name.required}" ></div>
+		</div>
+
+		  <div class="col-lg-6 mb-3">
+			<label class="form-label" for="catererId">
+				<span th:text="#{message.label.caterer}"></span>
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label>
+				<select class="selectpicker required-select-input" data-live-search="true" id="catererId"
+						 th:field="*{vendorCode}" th:onchange="updateVendorName()">
+					<option value="" th:text="#{message.label.select}+' '+#{message.label.caterer}"></option>
+					<option th:each="vendor: ${vendors}" th:value="${vendor.vendorCode}" th:text="${vendor.caterer}"></option>
+				</select>
+			  	<input type="hidden" th:field="*{caterer}" id="vendorName">
+			<div class="invalid-feedback" id="catererRequired" th:text="#{message.validation.caterer.required}" ></div>
+		  </div>
+
+			<div class="col-lg-6 mb-3">
+				<label class="form-label mt-3" for="fromDate">
+					<span th:text="#{message.label.from.date}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<input type="date" class="form-control required-input" id="fromDate" th:field="*{fromDate}" required
+					   onchange="validateDateChange()">
+				<div class="invalid-feedback" th:text="#{message.validation.fromDate.required}"></div>
+			</div>
+
+			<div class="col-lg-6 mb-3">
+				<label class="form-label mt-3" for="toDate">
+					<span th:text="#{message.label.to.date}"></span>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<input type="date" class="form-control required-input" id="toDate" th:field="*{toDate}" required
+					   onchange="validateDateChange()">
+				<div class="invalid-feedback" th:text="#{message.validation.toDate.required}"></div>
+				<div class="invalid-feedback-date-compare d-none text-danger" th:text="#{message.validation.to.date.range}"></div>
+
+				<!-- Error message for date comparison -->
+			</div>
+
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="rate">
+					<span th:text="#{message.label.rate}"></span>
+					<i class="fa-solid fa-indian-rupee-sign"></i>
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label>
+				<input type="text" class="form-control required-input" id="rate" th:placeholder="#{message.label.rate}"
+					   th:field="*{rate}" oninput="checkInputLength(this)" data-maxlength="8" required>
+				<div class="invalid-feedback" id="rateRequired" th:text="#{message.validation.rate.required}"></div>
+			</div>
+
+			<div class="col-lg-6 mb-3">
+				<label class="form-label" for="gst">
+					<span th:text="#{message.label.gst}"></span>
+				</label>
+				<div class="form-control form-graybox">
+					<span th:text="${allocation.gst}"></span>
+				</div>
+			</div>
+		</div>
+	</form>
+	</modalBody>
+</div>

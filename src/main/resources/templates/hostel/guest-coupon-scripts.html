@@ -1,0 +1,30 @@
+<th:block th:fragment="guestCouponScripts(footerForm)" xmlns:th="http://www.w3.org/1999/xhtml">
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:inline="javascript">
+			const dateFormat = /*[[#{date.format}]]*/ '';
+            const baseURL = /*[[#{url.hostel.guest.coupon.request}]]*/'';
+            const viewURL = /*[[#{url.view}]]*/ '';
+            const studentInfoURL = /*[[#{url.student}]]*/'';
+            const configRateURL = /*[[#{url.coupon.config.rate}]]*/'';
+            const checkSessionURL = /*[[#{url.check.same.session}]]*/'';
+            const checkMessAvailURL = /*[[#{url.check.mess.availability}]]*/'';
+            const checkAllottedMessURL = /*[[#{url.check.student.allotted.mess}]]*/'';
+            const checkSameSessionAndMessAvail = /*[[#{url.check.samesession.messavail.within.dates}]]*/'';
+
+            const dto = [[${guestCouponRequestDTO}]];
+            const messPeriodDto = [[${messPeriodDto}]];
+            const vegDiscountedAmt = [[${vegDiscountedAmt}]];
+            const nonVegDiscountedAmt = [[${nonVegDiscountedAmt}]];
+            const vegMaxDays = [[${vegMaxDays}]];
+            const nonVegMaxDays = [[${nonVegMaxDays}]];
+            const cutoffTime = [[${cutoffTime}]];
+			const allMesses = /*[[${messes}]]*/ [];
+			const vegMessIds = /*[[${vegMessIds}]]*/ [];
+    		const nonVegMessIds = /*[[${nonVegMessIds}]]*/ [];
+		</script>
+		<script th:src="@{/assets/js/guest/guest-coupon-request.js}"></script>
+	</th:block>
+
+	<script th:src="@{/assets/js/guest/guest-coupon-request.js}"></script>
+</th:block>
+</html>

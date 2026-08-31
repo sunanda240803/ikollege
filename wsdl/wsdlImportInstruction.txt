@@ -1,0 +1,10 @@
+1. Download and install Apache CXF.
+2. Unzip the downloaded zip to a location. Eg: C:.
+3. Goto the bin folder inside of it. Eg: C:\apache-cxf\bin
+4. Look for the WSDL file from the assets folder or Download the WSDL file from the device by the command:
+    http://<device.ip>/soap/document/ACTAtek.wsdl
+5. Copy the file to bin folder in Step 3.
+6. Run the command:
+    wsdl2java ACTAtek.wsdl
+7. This will generate all the necessary packages in Java code.
+8. Copy it or convert it to a jar and use it in the application.

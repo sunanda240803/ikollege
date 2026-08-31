@@ -1,0 +1,116 @@
+<th:block th:fragment="familyDetailsRowTemplate">
+<!-- Form Template -->
+	<div hidden="hidden">
+		<table>
+			<tbody>
+			<tr id="parentDetailsTemplate">
+				<td class="col-lg-2">
+					<select class="form-select required-input" id="relationType" onchange="updateHiddenInput(this), checkProofUpload(this)"
+							required data-template="true" data-name="relationType">
+						<option value="" th:text="#{message.label.select}+' '+#{message.label.relation}"></option>
+						<option value="Father">Father</option>
+						<option value="Mother">Mother</option>
+						<option value="Brother">Brother</option>
+						<option value="Sister">Sister</option>
+						<option value="Spouse">Spouse</option>
+						<option value="Guardian">Guardian</option>
+					</select>
+					 <input type="hidden" id="relationIdHidden" name="familyDetails[<index>].id" data-name="id">
+					 <input type="hidden" id="relationTypeHidden" name="familyDetails[<index>].relationType" value="" data-name="relationType">
+					<div class="invalid-feedback" th:text="#{message.validation.family.details.type}"></div>
+				</td>
+				<td>
+					<input type="text" class="form-control uppercase relationName" id="relationName" data-required-class="required-input"
+						   name="familyDetails[<index>].relationName" th:placeholder="#{message.placeholder.name}" data-template="true"
+						   list="parentNameList" maxlength="120" onchange="checkProofUpload(this)" data-name="relationName">
+					<div class="invalid-feedback" th:text="#{message.validation.family.details.name}"></div>
+				</td>
+				<td>
+					<input type="text" class="form-control relationContact numeric" id="relationContact" th:data-mask="${mobileNumberMask}"
+						   name="familyDetails[<index>].mobileNo"  th:placeholder="#{message.placeholder.mobile.number}"
+						   data-template="true" data-required-class="required-mob-num relationConReq"
+						   data-name="mobileNo">
+					<div class="invalid-feedback" th:text="#{message.validation.student.details.mob.no.required}"></div>
+					<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.student.details.mob.no.required}"></span>
+					</div>
+					<div class="invalid-val-feedback d-none"><span
+							th:text="#{message.validation.family.details.mob.no}"></span></div>
+	
+				</td>
+				<td>
+					<input type="text" class="form-control relationEmail" id="relationEmail" name="familyDetails[<index>].email"
+						   th:placeholder="#{message.placeholder.email.id}" data-template="true" maxlength="256"
+						   data-name="email">
+					<div class="invalid-feedback" th:text="#{message.validation.email.id.required}"></div>
+					<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.email.id.required}"></span></div>
+					<div class="invalid-valid-feedback d-none" th:text="#{message.validation.family.details.email}">
+					</div>
+				</td>
+				<td>
+					<input type="text" class="form-control numeric relationAge" id="relationAge" name="familyDetails[<index>].age"
+						   th:placeholder="#{message.placeholder.age}" data-template="true" maxlength="2"
+						   data-required-class="required-input" data-name="age">
+					<div class="invalid-feedback" th:text="#{message.validation.family.details.age}"></div>
+					<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.family.details.age}"></span></div>
+				</td>
+				<td>
+					<input type="text" class="form-control required-input" id="relationOccupation"
+						   name="familyDetails[<index>].occupation" th:placeholder="#{message.placeholder.occupation}" data-template="true"
+						   maxlength="64" data-name="occupation">
+					<div class="invalid-feedback" th:text="#{message.validation.family.details.occupation}"></div>
+				</td>
+				<td>
+					<input type="text" class="form-control numeric" id="relationIncome" name="familyDetails[<index>].income"
+						   th:placeholder="#{message.placeholder.income}" data-template="true" maxlength="8"
+						   data-name="income">
+					<div class="invalid-feedback" th:text="#{message.validation.family.details.income.required}"></div>
+					<div class="invalid-req-feedback d-none"><span th:text="#{message.validation.family.details.income.required}"></span></div>
+					<div class="invalid-valid-feedback d-none" th:text="#{message.validation.family.details.income}"></div>
+				</td>
+				<td>
+					<div class="d-flex align-items-center">
+						<input type="text" class="form-control me-2" id="familyAddress"
+							   name="familyDetails[<index>].address"
+						th:placeholder="#{message.placeholder.address}" data-template="true"
+						data-name="address">
+						<div class="invalid-feedback" th:text="#{message.validation.address.required}"></div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="addressCheckbox_"
+								   onclick="updateFamilyAddress(this)"
+								   data-bs-toggle="tooltip" data-name="address"
+								   data-bs-title="same as student address">
+						</div>
+					</div>
+				</td>
+	
+				<td>
+					<div class="d-flex justify-content-center">
+						<button type="button" class="btn btn-danger btn-sm me-2 deleteBtn" id="relationDelete"
+								data-bs-placement="bottom" data-bs-toggle="tooltip" title="Delete" data-name="delete">
+							<i class="fa-solid fa-trash"></i>
+						</button>
+					</div>
+				</td>
+			</tr>
+			<tr id="parentDetailsValueTemplate">
+				<td>
+					<div class="form-control form-graybox"><span data-name="relationType"></span></div>
+					<input type="hidden" id="relationId" name="familyDetails[<index>].id" data-template="true" data-name="id">
+				</td>
+				<td><div class="form-control form-graybox"><span data-name="relationName"></span>
+					<input type="hidden" id="relationName" class="relationName" name="familyDetails[<index>].relationName" data-template="true" data-name="relationName">
+				</div></td>
+				<td><div class="form-control form-graybox"><span data-name="mobileNo"></span>
+					<input type="hidden" id="relationContact" name="familyDetails[<index>].mobileNo" data-template="true" data-name="mobileNo">
+				</div></td>
+				<td><div class="form-control form-graybox"><span data-name="email"></span></div></td>
+				<td><div class="form-control form-graybox"><span data-name="age"></span></div></td>
+				<td><div class="form-control form-graybox"><span data-name="occupation"></span></div></td>
+				<td><div class="form-control form-graybox"><span data-name="income"></span></div></td>
+				<td><div class="form-control form-graybox"><span data-name="address"></span></div></td>
+				<td></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</th:block>

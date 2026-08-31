@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+    <main id="main" class="main">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card main-card mt-4">
+                    <div class="card-body themeForm">
+                        <form action="#" method="get">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="studentId" class="form-label">
+                                        <span th:text="#{message.placeholder.enter.student.id}"></span>
+                                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                                    </label>
+                                    <input type="text" class="form-control required-input additional-param" name="additionalParam.studentId" th:value="${studentId}"
+                                        id="studentId" th:placeholder="#{message.label.student.id}" required>
+                                    <div class="invalid-feedback" th:text="#{message.label.student.id} + '' + #{message.validation.is.required}"></div>
+                                </div>
+                                <div class="col-auto mt-4">
+                                    <input type="hidden" id="pageVal" th:value="${form.pageVal}" />
+                                    <input type="hidden" id="sizeVal" th:value="${form.size}" />
+                                    <button type="button" id="searchButton" class="btn btn-lgtblue mt-3" onclick="return validateSearchField()">
+                                        <i class="fa-solid fa-database"></i>
+                                        <span th:text="#{message.button.get.data}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="mb-4">
+                            <div class="table-responsive themeTable">
+                                <table id="studentRollNoHistoryTable" class="table table-bordered nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th th:text="#{message.label.sl.no}"></th>
+                                            <th th:text="#{message.label.student} + ' ' + #{message.label.current.id}"></th>
+                                            <th th:text="#{message.label.student.name}"></th>
+                                            <th th:text="#{message.label.hostel.name}"></th>
+                                            <th th:text="#{message.label.room.no}"></th>
+                                            <th th:text="#{message.label.student} + ' ' + #{message.label.previous.id}"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                            th:each="detail, iter : ${form.paginationList.getContent()}">
+                                            <td th:text="${(form.paginationList.number * form.paginationList.size) + iter.count}"></td>
+                                            <td th:text="${detail.studentId != null ? detail.studentId : '-'}"></td>
+                                            <td th:text="${detail.studentName != null ? detail.studentName : '-'}"></td>
+                                            <td th:text="${detail.hostelName != null ? detail.hostelName : '-'}"></td>
+                                            <td th:text="${detail.roomNumber != null ? detail.roomNumber : '-'}"></td>
+                                            <td th:text="${detail.previousId != null ? detail.previousId : '-'}"></td>
+                                        </tr>
+                                        <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+                                            <td colspan="6" class="text-center">
+                                                <span th:text="#{message.label.no.data.available}"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+        <script th:src="@{/assets/js/hostel/student-roll-no-history.js}"></script>
+    </th:block>
+    <!-- Footer -->
+</body>
+</html>

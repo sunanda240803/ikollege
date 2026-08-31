@@ -1,0 +1,6 @@
+.hostelname {
+    max-height: 200px; /* Adjust this value as needed */
+    overflow-y: auto;
+    border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+    padding: 10px;
+}

@@ -1,0 +1,230 @@
+<div
+	th:replace="~{common/modal-template :: modal('payment-advice-view-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.payment}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm">
+			<input type="hidden" id="modalRequestId" th:value="${tempAccomPaymentAdviceDto.requestId}" />
+			<input type="hidden" id="modalcandidateId" th:value="${tempAccomPaymentAdviceDto.candidateId}" />							
+			<input type="hidden" id="modalId" th:value="${tempAccomPaymentAdviceDto.id}" />
+			<input type="hidden" id="modalTotalAmount" th:value="${tempAccomPaymentAdviceDto.overallAmount}" />
+			<input type="hidden" id="modalBalanceAmount" th:value="${tempAccomPaymentAdviceDto.balanceAmount}" />
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.stay.payment.details}"></span>
+					</h2>									
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.requested.stay.from.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.requestedStayFrom == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.requestedStayFrom,#messages.msg('date.format'))}"></span>								    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.requested.stay.to.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.requestedStayTo == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.requestedStayTo,#messages.msg('date.format'))}"></span>								    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.hostel.pay.from.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.hostelPayFromDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.hostelPayFromDate,#messages.msg('date.format'))}"></span>						    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.hostel.pay.to.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.hostelPayToDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.hostelPayToDate,#messages.msg('date.format'))}"></span>							    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.dining.pay.from.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.messPayFromDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.messPayFromDate,#messages.msg('date.format'))}"></span>								    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.dining.pay.to.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.messPayToDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.messPayToDate,#messages.msg('date.format'))}"></span>								    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.total.amount.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.overallAmount == null ?  #messages.msg('message.label.na') : tempAccomPaymentAdviceDto.overallAmount}"></span>								    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.balance.amount.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.balanceAmount == null ?  #messages.msg('message.label.na') : tempAccomPaymentAdviceDto.balanceAmount}"></span>									    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.payment.details}"></span>
+					</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="table-responsive themeTable">
+					<table class="table table-bordered nowrap w-100">
+						<thead>
+							<tr>
+								<th th:text="#{message.label.paymentType}"></th>
+								<th th:text="#{message.label.payment.date}"></th>
+								<th th:text="#{message.label.payment.referenceno}"></th>
+								<th class="text-end">
+									<span th:text="#{message.label.payment.amount}"></span>
+										<i class="fa-solid fa-indian-rupee-sign"></i>
+								</th>
+							</tr>											
+						<tbody th:if="${tempAccomPaymentAdviceDto.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status}">
+						    <tr>
+						        <td>
+						            <input type="checkbox" class="form-check-input square-checkbox" id="icollectPayment" name="paymentType" value="icollect">
+						            <label for="icollectPayment" th:text="#{message.label.icollect.payment}"></label>
+						        </td>
+						        <td><input type="date" class="form-control" id="paymentDate1" name="paymentDate1"></td>
+						        <td><input type="text" class="form-control" id="referenceNo1" name="referenceNo1" onblur="checkReferenceNo(this.id)"></td>
+						        <td><input type="text" class="form-control" id="paymentAmount1" name="paymentAmount1"></td>
+						    </tr>
+						    <tr>
+						        <td>
+						            <input type="checkbox" class="form-check-input square-checkbox" id="posMachine" name="paymentType" value="posmachine">
+						            <label for="posMachine" th:text="#{message.label.posmachine}"></label>
+						        </td>
+						        <td><input type="date" class="form-control" id="paymentDate2" name="paymentDate2"></td>
+						        <td><input type="text" class="form-control" id="referenceNo2" name="referenceNo2" onblur="checkReferenceNo(this.id)"></td>
+						        <td><input type="text" class="form-control" id="paymentAmount2" name="paymentAmount2"></td>
+						    </tr>
+						    <tr>
+						        <td>
+						            <input type="checkbox" class="form-check-input square-checkbox" id="cash" name="paymentType" value="cash">
+						            <label for="cash" th:text="#{message.label.cash}"></label>
+						        </td>
+						        <td><input type="date" class="form-control" id="paymentDate3" name="paymentDate3"></td>
+						        <td><input type="text" class="form-control" id="referenceNo3" name="referenceNo3" onblur="checkReferenceNo(this.id)"></td>
+						        <td><input type="text" class="form-control" id="paymentAmount3" name="paymentAmount3"></td>
+						    </tr>
+						    <tr>
+						        <td>
+						            <input type="checkbox" class="form-check-input square-checkbox" id="dd" name="paymentType" value="dd">
+						            <label for="dd" th:text="#{message.label.DD}"></label>
+						        </td>
+						        <td><input type="date" class="form-control" id="paymentDate4" name="paymentDate4"></td>
+						        <td><input type="text" class="form-control" id="referenceNo4" name="referenceNo4" onblur="checkReferenceNo(this.id)"></td>
+						        <td><input type="text" class="form-control" id="paymentAmount4" name="paymentAmount4"></td>
+						    </tr>
+						</tbody>
+						<tbody th:if="${tempAccomPaymentAdviceDto.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status}">
+						    <tr>
+						        <td th:if="${tempAccomPaymentAdviceDto.paymentType1?.toLowerCase() == 'icollect'}">
+						            <input type="checkbox" class="form-check-input square-checkbox" id="icollectPayment" name="paymentType" value="icollect" checked>
+						            <label for="icollectPayment" th:text="#{message.label.icollect.payment}"></label>
+						        </td>
+						        <td th:if="${tempAccomPaymentAdviceDto.paymentType1?.toLowerCase() == 'posmachine'}">
+						            <input type="checkbox" class="form-check-input square-checkbox" id="icollectPayment" name="paymentType" value="posmachine" checked>
+						            <label for="icollectPayment" th:text="#{message.label.posmachine}"></label>
+						        </td>
+						        <td th:if="${tempAccomPaymentAdviceDto.paymentType1?.toLowerCase() == 'cash'}">
+						            <input type="checkbox" class="form-check-input square-checkbox" id="icollectPayment" name="paymentType" value="cash" checked>
+						            <label for="icollectPayment" th:text="#{message.label.cash}"></label>
+						        </td>
+						        <td th:if="${tempAccomPaymentAdviceDto.paymentType1?.toLowerCase() == 'dd'}">
+						            <input type="checkbox" class="form-check-input square-checkbox" id="icollectPayment" name="paymentType" value="dd" checked>
+						            <label for="icollectPayment" th:text="#{message.label.DD}"></label>
+						        </td>
+								<td>
+								    <input type="date" 
+								           class="form-control" 
+								           id="paymentDate1" 
+								           name="paymentDate1"
+								           th:value="${tempAccomPaymentAdviceDto.paymentDate1 != null ? 
+								                      #temporals.format(tempAccomPaymentAdviceDto.paymentDate1, 'yyyy-MM-dd') : ''}" />
+								</td>
+						        <td><input type="text" class="form-control" id="referenceNo1" name="referenceNo1" th:value="${tempAccomPaymentAdviceDto.paymentReferenceNo1}" readonly></td>
+						        <td><input type="text" class="form-control" id="paymentAmount1" name="paymentAmount1" th:value="${tempAccomPaymentAdviceDto.paymentAmount1}"></td>
+						    </tr>
+						    <tr th:if="${tempAccomPaymentAdviceDto.paymentType2 != null && tempAccomPaymentAdviceDto.paymentType2 != ''}">
+						        <td th:if="${tempAccomPaymentAdviceDto.paymentType2?.toLowerCase() == 'icollect'}">
+								    <input type="checkbox" class="form-check-input square-checkbox" id="icollectPayment" name="paymentType" value="icollect" checked>
+								    <label for="icollectPayment" th:text="#{message.label.icollect.payment}"></label>
+								</td>
+								<td th:if="${tempAccomPaymentAdviceDto.paymentType2?.toLowerCase() == 'posmachine'}">
+								    <input type="checkbox" class="form-check-input square-checkbox" id="posMachine" name="paymentType" value="posmachine" checked>
+								    <label for="posMachine" th:text="#{message.label.posmachine}"></label>
+								</td>
+								<td th:if="${tempAccomPaymentAdviceDto.paymentType2?.toLowerCase() == 'cash'}">
+								    <input type="checkbox" class="form-check-input square-checkbox" id="cash" name="paymentType" value="cash" checked>
+								    <label for="cash" th:text="#{message.label.cash}"></label>
+								</td>
+								<td th:if="${tempAccomPaymentAdviceDto.paymentType2?.toLowerCase() == 'dd'}">
+								    <input type="checkbox" class="form-check-input square-checkbox" id="dd" name="paymentType" value="dd" checked>
+								    <label for="dd" th:text="#{message.label.DD}"></label>
+								</td>
+						        <td><input type="date" class="form-control" id="paymentDate2" name="paymentDate2" th:value="${#dates.format(tempAccomPaymentAdviceDto.paymentDate2, 'yyyy-MM-dd')}"></td>
+						        <td><input type="text" class="form-control" id="referenceNo2" name="referenceNo2" th:value="${tempAccomPaymentAdviceDto.paymentReferenceNo2}" readonly></td>
+						        <td><input type="text" class="form-control" id="paymentAmount2" name="paymentAmount2" th:value="${tempAccomPaymentAdviceDto.paymentAmount2}"></td>
+						    </tr>										    
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row" style="padding-left: 20px;" th:if="${!@securityCtxUtil.isAdmin()}">
+				<div class="col-lg-8">
+			        <span id="errorMessages" style="color: red;"></span>
+			    </div>
+			    <div class="col-lg-12 d-flex justify-content-end" th:if="${tempAccomPaymentAdviceDto.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).PENDING.status}">
+			        <button type="button" class="btn btn-primary" id="saveButton" onclick="savePaymentForm('save')"> 
+			            <span th:text="#{message.label.save}"></span>
+			        </button>
+			    </div>
+			    <div class="col-lg-12 d-flex justify-content-end" th:if="${tempAccomPaymentAdviceDto.paymentStatus == T(com.iitm.hosteldine.constant.dashboard.student.WorkflowStatus).COMPLETED.status}">
+			        <button type="button" class="btn btn-primary" id="updateButton" onclick="savePaymentForm('update')"> 
+			            <span th:text="#{message.label.update}"></span>
+			        </button>
+			    </div>
+			</div>
+		</form>
+	</modalBody>
+</div>
+
+<script th:inline="javascript">
+	const paymentTypeCheck = /*[[#{message.validation.payment.type.check}]]*/ '';
+	const paymentTypeCondition = /*[[#{message.validation.payment.type.condition}]]*/ '';
+	const paymentDateRequired = /*[[#{message.validation.payment.date.required}]]*/ '';
+	const referenceNumberRequired = /*[[#{message.validation.payment.reference.number.required}]]*/ '';
+	const paymentAmountRequired = /*[[#{message.validation.payment.amount.required}]]*/ '';
+	const paymentDateCondition = /*[[#{message.validation.payment.date.condition}]]*/ '';
+	const referenceNumberCondition = /*[[#{message.validation.reference.number.condition}]]*/ '';
+	const paymentAmountCondition1 = /*[[#{message.validation.payment.amount.condtion1}]]*/ '';
+	const paymentAmountCondition2 = /*[[#{message.validation.payment.amount.condtion2}]]*/ '';
+	const referenceNumberExists = /*[[#{message.validation.reference.number.exists}]]*/ '';
+	const savePaymentURL = /*[[#{url.save.payment}]]*/ '';
+	const updatePaymentURL = /*[[#{url.update.payment}]]*/ '';
+	const checkReferenceNumberURL = /*[[#{url.check.reference.number}]]*/ '';
+</script>
+

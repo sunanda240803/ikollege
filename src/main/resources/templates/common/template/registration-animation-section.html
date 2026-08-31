@@ -1,0 +1,21 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="title(regAnimationSec)">
+    <div class="row btn-container mb-4 mt-3" >
+        <div class="col-lg-1 click-here-animation">
+            <div class="click-here-wrapper" aria-label="Click Here animation">
+                <span th:text="#{message.label.registration.click.here}"></span> <span class="right-hand ms-2">👉</span>
+            </div>
+        </div>
+        <div class="col-lg-5 register-btn" th:if="${loginType=='e000611cee6384acac7ce443e422947d'}">
+            <a th:href="@{#{url.student.registration}}" type="button" class="btn btn-sm btn-tmPrimary px-3 me-5 mb-1">
+                <i class="fa-solid fa-pen-to-square me-1"></i>
+                <span th:text="#{message.button.register.now}"></span>
+            </a>
+        </div>
+        <div class="col-lg-5 register-btn" th:if="${loginType!='e000611cee6384acac7ce443e422947d'}">
+            <a th:href="@{#{url.online.registration}}" type="button" class="btn btn-sm btn-tmPrimary px-3 me-5 mb-1">
+                <i class="fa-solid fa-pen-to-square me-1"></i>
+                <span th:text="#{message.button.register.now}"></span>
+            </a>
+        </div>
+    </div>
+</th:block>

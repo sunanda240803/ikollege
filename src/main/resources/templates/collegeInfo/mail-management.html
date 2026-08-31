@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+ <header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<form class="themeForm" th:action="@{#{url.mail.management}}" method="get" id="mailManagementId">
+	                        <div class="row mb-3">
+								<div class="col-auto mb-3">
+									<label class="form-label" for="fromDate">
+										<span th:text="#{message.label.from.date}"></span>
+									</label>
+									<input type="date" class="form-control" name="additionalParam.fromDate" id="fromDate" th:value="${form.additionalParam.fromDate}">
+								</div>
+								<div class="col-auto mb-3">
+									<label class="form-label" for="toDate">
+										<span th:text="#{message.label.to.date}"></span>
+									</label>
+									<input type="date" class="form-control" name="additionalParam.toDate" id="toDate" th:value="${form.additionalParam.toDate}">
+				                 	<div class="invalid-feedback" th:text="#{message.validation.to.date}"></div>
+				                    <div class="invalid-feedback-date-compare d-none" th:text="#{message.validation.to.date}"></div>
+								</div>
+		        				<div class="col-auto">
+		        					<label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+		        						<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+		        							data-bs-title="Use Submitted Module, Subject, From, To, CC or BCC to search"></i>
+		        					</label>
+	                            	<input type="text" class="form-control" name="search" id="search" th:field="*{form.search}">
+	                             </div>
+		        				<div class="col-auto">
+		        					<label for="status" class="form-label" th:text="#{message.label.status}"></label>
+									<select class="form-select" name="additionalParam.status" id="status" th:value="${form.additionalParam.status}">
+										<option value=""  th:text="#{message.label.select}"></option>
+										<option th:text="#{message.label.pending}"></option>
+										<option th:text="#{message.label.sent}"></option>
+										<option th:text="#{message.label.error}"></option>
+									</select>
+	                             </div>
+	                             <div class="col-auto mt-3">
+	                            	<button class="btn btn-secondary mt-4" type="button" onclick="getMailDetails()">
+	                            		<span th:text="#{message.label.search}"></span>
+	                            	</button>
+	                            </div>
+	                        </div>
+                   		</form>
+						
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="mailTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+											<th class="text-center" th:text="#{message.label.action}"></th>
+		                                    <th th:text="#{message.label.id}"></th>
+		                                    <th th:text="#{message.label.date}"></th>
+		                                    <th th:text="#{message.label.submitted.module}"></th>
+		                                    <th th:text="#{message.label.mail.subject}"></th>
+		                                    <th th:text="#{message.label.from}"></th>
+		                                    <th th:text="#{message.label.To}"></th>
+		                                    <th th:text="#{message.label.CC.BCC}"></th>
+		                                    <th th:text="#{message.label.priority}"></th>
+		                                    <th th:text="#{message.label.status}"></th>
+		                                    <th th:text="#{message.label.has.attachment}"></th>
+		                                    <th th:text="#{message.label.error}"></th>
+                                    	</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											th:each="mail, iter: ${form.paginationList.getContent()}">
+											<td class="text-center">
+												<div class="d-flex justify-content-center">
+													<button class="btn btn-">
+														<i class="fa-solid fa-eye" style="cursor: pointer;"  title="Mail Content"
+														   data-bs-target="#contentModal" data-bs-toggle="modal"
+														   th:data-content="${mail.mailContent}"></i>
+													</button>
+												</div>
+											</td>
+											<td th:text="${mail.id}"></td>
+											<td th:text="${#temporals.format(mail.createdAt, #messages.msgOrNull('date.format'))}"></td>
+											<td th:text="${mail.submittedModule}"></td>
+											<td th:text="${mail.mailSubject}" class="ellipsis"></td>
+											<td th:text="${mail.mailFrom}"></td>
+											<td th:text="${mail.mailTo}" class="ellipsis"></td>
+											<td th:text="${mail.mailCc != null ? mail.mailCc : ''} +
+											${(mail.mailCc != null && mail.mailBcc != null) ? ', ' : ''} +
+											${mail.mailBcc != null ? mail.mailBcc : ''}" class="ellipsis"></td>
+											<td th:text="${mail.mailPriority}"></td>
+											<td th:text="${mail.mailStatus}"></td>
+											<td class="text-center"><i class="fa-solid" th:classappend="${mail.attachFile != null && !mail.attachFile.isEmpty()}
+											? 'fa-check text-success' : 'fa-close text-danger'"></i></td>
+											<td th:text="${mail.errorDef}" class="ellipsis"></td>
+										</tr>
+										<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="12" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+										</tr>
+										
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+	<script th:src="@{/assets/js/collegeInfo/mail-management.js}"></script>
+	<script th:inline="javascript">
+		const baseURL = /*[[#{url.mail.management}]]*/ '';
+	</script>
+</th:block>
+<!-- Footer-->
+
+ <div th:replace="~{common/modal-template :: modal('contentModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, null, null, 'lg')}">
+	 <modalHeader><span th:text="#{message.label.mail.view}"></span></modalHeader>
+	 <modalBody><p id="modalContent"></p></modalBody>
+ </div>
+ 
+</body>
+
+</html>

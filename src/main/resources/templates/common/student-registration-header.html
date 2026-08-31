@@ -1,0 +1,71 @@
+<th:block th:fragment="title(titleText, needSave, backAction, action)">
+	<script th:src="@{/assets/js/common/mask-constant.js}" th:inline="javascript"></script>
+
+	<div class="page-loading mt-3" id="loader">
+		<div role="status">
+			<img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+			<h4>Loading...</h4>
+		</div>
+	</div>
+	<!-- Header -->
+	<header class="header fixed-top">
+		<nav class="navbar navbar-expand-lg p-0">
+			<div class="container-fluid justify-content-around p-0">
+				<div class="row w-100">
+					<div class="col-lg-5">
+						<!--Client Logo-->
+						<div class="header-logo d-flex align-items-center justify-content-between">
+							<a href="#" class="d-flex align-items-center">
+								<img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+								<span>
+									<span th:text="${institute.schoolName}"></span><br>
+									<span class="text-secondary" th:text="${institute.location}"></span>
+								</span>
+							</a>
+							<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+									data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+									aria-expanded="false" aria-label="Toggle navigation">
+								<i class="fa-solid fa-outdent"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<!--Page Title-->
+		<div class="pagetitle">
+			<div class="row align-items-center">
+				<div class="col-lg-4">
+					<h1 th:text="${titleText}"></h1>
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item active" aria-current="page">
+								<a href="#" th:text="${titleText}"></a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+				<div class="col-lg-4 text-center breadcrumb-item">
+					<h1 th:if="${action == 'update'}" class="d-inline"><span th:text="#{message.label.welcome} + '' + #{message.label.exclamation.mark}"></span>
+						<span class="text-dark" th:text="${@securityCtxUtil.studentFullName()}"></span>
+						<span class="text-dark text-uppercase">(<span th:text="${@securityCtxUtil.userName()}"></span>)</span>
+					</h1>
+				</div>
+				<div class="col-lg-4 text-end">
+					<th:block th:if="${action != 'view'}">
+						<button th:if="${needSave} != null" type="button" class="btn btn-tmPrimary btn-sm" id="save">
+							<i class="fa-solid fa-arrow-pointer me-1"></i> <span th:text="${needSave}"></span>
+						</button>
+					</th:block>
+					<button th:if="${action != 'new'}" type="button" id="cancelButton" onclick="window.history.back();" class="btn btn-secondary btn-sm">
+						<i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+					</button>
+					<a th:if="${action == 'new'}" th:href="@{${backAction}}" class="btn btn-secondary btn-sm">
+						<i class="fa-solid fa-circle-arrow-left me-1"></i> <span th:text="#{message.button.back}"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- //Header -->
+</th:block>

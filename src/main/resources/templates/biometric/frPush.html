@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <!--<th:block th:replace="~{tabs}"></th:block>-->
+                    <div class="">
+                        <form method="post" th:object="${frForm}" id="fr-form"
+                              class="themeForm">
+                            <h2 class="tmsub-title">
+                                <span th:text="'Push by Mess or Mess Device IP'"></span>
+                            </h2>
+                            <div class="row">
+                                <div class="col-lg-4 mb-3">
+                                    <label class="form-label" for="messId">Push to Mess</label>
+                                    <select type="text" class="form-select" onchange="loadMessDevices()" id="messId"
+                                            name="messId" th:value="${frForm.messId}">
+                                        <option value="">Select Mess</option>
+                                        <option value="0">All Messes</option>
+                                        <option th:each="mess: ${frForm.messList}" th:text="${mess.messName}"
+                                                th:value="${mess.messMasterId}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="messDeviceIp">Push to IP</label>
+                                    <select type="text" class="form-select" onchange="" id="messDeviceIp"
+                                            name="pushIp" th:value="${frForm.pushIp}" th:disabled="disabled">
+                                    </select>
+                                </div>
+                                <div class="col-auto mt-3">
+                                    <button type="button" onclick="pushDataRequest()" class="btn btn-info text-light mt-3"
+                                            id="pushData">
+                                        <i class="fa fa-right-to-bracket me-1"></i> Push
+                                    </button>
+                                </div>
+                            </div>
+                            <hr>
+                            <th:block th:replace="~{common/log-content::content('frPushByIP')}"></th:block>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{common/biometric-footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/biometric/frPush.js}"></script>
+    <script th:src="@{/assets/js/biometric/log.js}"></script>
+</th:block>
+</body>
+</html>

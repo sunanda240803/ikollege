@@ -1,0 +1,248 @@
+<div
+	th:replace="~{common/modal-template :: modal('payment-advice-hostel-view-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.payment}"></span>
+	</modalHeader>
+	<modalBody>
+		<div class="page-loading mt-2" id="modalLoader" style="display: none;">
+			<div role="status">
+				<img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+				<h4>Loading...</h4>
+			</div>
+		</div>
+		<form class="themeForm">
+			<input type="hidden" id="modalRequestId" th:value="${tempAccomPaymentAdviceDto.requestId}" />
+			<input type="hidden" id="modalcandidateId" th:value="${tempAccomPaymentAdviceDto.candidateId}" />							
+			<input type="hidden" id="modalId" th:value="${tempAccomPaymentAdviceDto.id}" />
+			<input type="hidden" id="modalTotalAmount" th:value="${tempAccomPaymentAdviceDto.overallAmount}" />
+			<input type="hidden" id="modalBalanceAmount" th:value="${tempAccomPaymentAdviceDto.balanceAmount}" />
+			<input type="hidden" id="messPayFrom" th:value="${tempAccomPaymentAdviceDto.messPayFromDate}" />
+			<input type="hidden" id="messPayTo" th:value="${tempAccomPaymentAdviceDto.messPayToDate}" />
+			<input type="hidden" id="currentMessId" th:value="${tempAccomPaymentAdviceDto.messId}" />
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="tmsub-title">
+						<span th:text="#{message.label.hostel.allotment}"></span>
+					</h2>									
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.requested.stay.from.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.requestedStayFrom == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.requestedStayFrom,#messages.msg('date.format'))}"></span>								    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.requested.stay.to.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.requestedStayTo == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.requestedStayTo,#messages.msg('date.format'))}"></span>								    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.hostel.pay.from.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.hostelPayFromDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.hostelPayFromDate,#messages.msg('date.format'))}"></span>						    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.hostel.pay.to.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.hostelPayToDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.hostelPayToDate,#messages.msg('date.format'))}"></span>							    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.dining.pay.from.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.messPayFromDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.messPayFromDate,#messages.msg('date.format'))}"></span>								    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.dining.pay.to.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.messPayToDate == null ?  #messages.msg('message.label.na') : #temporals.format(tempAccomPaymentAdviceDto.messPayToDate,#messages.msg('date.format'))}"></span>								    
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.total.amount.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.overallAmount == null ?  #messages.msg('message.label.na') : tempAccomPaymentAdviceDto.overallAmount}"></span>								    
+				</div>
+				<div class="col-lg-6 mb-3">
+				    <label class="form-label"> 
+				        <span th:text="#{message.label.balance.amount.colon}"> </span>
+				    </label>
+				    <span class="normal-font"
+						th:text="${tempAccomPaymentAdviceDto.balanceAmount == null ?  #messages.msg('message.label.na') : tempAccomPaymentAdviceDto.balanceAmount}"></span>									    
+				</div>
+			</div>			
+			<th:block th:if="${#strings.isEmpty(tempAccomPaymentAdviceDto.hostelName)}">
+				<div class="row">
+					<div class="col-lg-12">
+						<h2 class="tmsub-title">
+							<span th:text="#{message.label.hostel.allotment}"></span>
+						</h2>
+					</div>
+				</div>
+				<div class="row">				
+					<div class="col-lg-4 mb-3">
+						<label class="form-label"> <span th:text="#{message.label.hostel.name}"> </span>
+						</label>
+						<div class="form-control form-graybox">
+							<select class="form-select" id="hostelName" name="hostelName" onchange="getRoomList(this);">
+								<option value="" th:text="#{message.label.select}"></option>
+								<option th:each="hostel : ${hostelList}"
+								        th:if="${(gender == 'Male' and hostel?.hostelGenderType == 'M') 
+								                or (gender == 'Female' and hostel?.hostelGenderType == 'F')}"  
+								        th:value="${hostel?.id}" 
+								        th:data-gender="${hostel?.hostelGenderType}" 
+								        th:text="${hostel?.hostelName}">
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 mb-3">
+						<label class="form-label"> <span th:text="#{message.label.room.no}"> </span>
+						</label>
+						<div class="form-control form-graybox">
+							<select class="form-select" id="roomNo" name="roomNo" onchange="getSeatList();">
+								<option value="" th:text="#{message.label.select}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 mb-3">
+						<label class="form-label"> <span th:text="#{message.label.seat}"> </span>
+						</label>
+						<div class="form-control form-graybox">
+							<select class="form-select" id="seat" name="seat">
+								<option value="" th:text="#{message.label.select}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="padding-left: 20px;">
+				    <div class="col-lg-12 d-flex justify-content-end">
+				        <button type="button" class="btn btn-primary" id="saveButton" onclick="saveHostel()"> 
+				            <span th:text="#{message.label.save}"></span>
+				        </button>
+				    </div>
+				</div>
+			</th:block>
+			<th:block th:if="${!#strings.isEmpty(tempAccomPaymentAdviceDto.hostelName)}">
+				<div class="row">
+					<div class="col-lg-12">
+						<h2 class="tmsub-title">
+							<span th:text="#{message.label.hostel.allotment}"></span>
+						</h2>
+					</div>
+				</div>
+				<div class="row">				
+					<div class="col-lg-4 mb-3">
+						<label class="form-label"> <span th:text="#{message.label.hostel.name}"> </span>
+						</label>
+						<div class="form-control form-graybox">
+							<span class="normal-font"
+								th:text="${tempAccomPaymentAdviceDto.hostelName}"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 mb-3">
+						<label class="form-label"> <span th:text="#{message.label.room.no}"> </span>
+						</label>
+						<div class="form-control form-graybox">
+							<span class="normal-font"
+								th:text="${#strings.isEmpty(tempAccomPaymentAdviceDto.roomNo) ?  #messages.msg('message.label.na') : tempAccomPaymentAdviceDto.roomNo}"></span>								
+						</div>
+					</div>
+					<div class="col-lg-4 mb-3">
+						<label class="form-label"> <span th:text="#{message.label.seat}"> </span>
+						</label>
+						<div class="form-control form-graybox">
+							<span class="normal-font"
+								th:text="${#strings.isEmpty(tempAccomPaymentAdviceDto.seat) ?  #messages.msg('message.label.na') : tempAccomPaymentAdviceDto.seat}"></span>
+						</div>
+					</div>
+				</div>
+				<th:block th:if="${tempAccomPaymentAdviceDto.messPayFromDate != null}">
+					<div class="row">
+						<div class="col-lg-12">
+							<h2 class="tmsub-title">
+								<span th:text="#{message.label.mess.details}"></span>
+							</h2>
+						</div>
+					</div>
+					<div class="row">				
+						<div class="col-lg-4 mb-3">
+							<label class="form-label"> <span th:text="#{message.label.mess.name}"> </span>
+							</label>
+							<div class="form-control form-graybox">
+								<span class="normal-font"
+									th:text="${tempAccomPaymentAdviceDto.messName}"></span>
+							</div>
+						</div>
+						<div class="col-lg-4 mb-3">
+							<label class="form-label"> <span th:text="#{message.label.from.date}"> </span>
+							</label>
+							<input type="date" class="form-control" id="fromDate" name="fromDate">
+						</div>
+						<div class="col-lg-4 mb-3">
+							<label class="form-label"> <span th:text="#{message.label.mess.name}"> </span>
+							</label>
+							<div class="form-control form-graybox">
+								<select class="form-select" id="messNameDrpdwn" name="messNameDrpdwn">
+									<option value="" th:text="#{message.label.select}"></option>
+									<option th:each="entry : ${messMap}" th:value="${entry.key}"
+										th:text="${entry.value}"></option>
+								</select>
+							</div>
+						</div>						
+					</div>					
+					<div class="row" style="padding-left: 20px;">
+						<div class="col-lg-8">
+					        <span id="errorMessages" style="color: red;"></span>
+					    </div>
+					    <div class="col-lg-12 d-flex justify-content-end">
+					        <button type="button" class="btn btn-primary" id="changeMessButton" onclick="changeMess();"> 
+					            <span th:text="#{message.label.change.mess}"></span>
+					        </button>
+					    </div>
+					</div>
+				</th:block>
+			</th:block>
+		</form>
+	</modalBody>
+</div>
+
+<script th:inline="javascript">
+	const paymentTypeCheck = /*[[#{message.validation.payment.type.check}]]*/ '';
+	const paymentTypeCondition = /*[[#{message.validation.payment.type.condition}]]*/ '';
+	const paymentDateRequired = /*[[#{message.validation.payment.date.required}]]*/ '';
+	const referenceNumberRequired = /*[[#{message.validation.payment.reference.number.required}]]*/ '';
+	const paymentAmountRequired = /*[[#{message.validation.payment.amount.required}]]*/ '';
+	const paymentDateCondition = /*[[#{message.validation.payment.date.condition}]]*/ '';
+	const referenceNumberCondition = /*[[#{message.validation.reference.number.condition}]]*/ '';
+	const paymentAmountCondition1 = /*[[#{message.validation.payment.amount.condtion1}]]*/ '';
+	const paymentAmountCondition2 = /*[[#{message.validation.payment.amount.condtion2}]]*/ '';
+	const referenceNumberExists = /*[[#{message.validation.reference.number.exists}]]*/ '';
+	const savePaymentURL = /*[[#{url.save.payment}]]*/ '';
+	const updatePaymentURL = /*[[#{url.update.payment}]]*/ '';
+	const checkReferenceNumberURL = /*[[#{url.check.reference.number}]]*/ '';
+	const getRoomListUrl = /*[[#{url.get.room.list}]]*/ '';
+	const getSeatUrl = /*[[#{url.get.seat}]]*/ '';
+	const saveHostelUrl = /*[[#{url.save.hostel}]]*/ '';
+	const changeMessUrl = /*[[#{url.change.mess}]]*/ '';
+</script>
+

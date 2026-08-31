@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+<link th:href="@{/assets/css/admin-dashboard-style.css}" rel="stylesheet"/>
+<body class="bg-white">
+<!-- Header -->
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Header -->
+<!-- //Main-->
+<main id="main" class="main p-lg-5">
+	<!--Module Section-->
+		<div class="row">
+			<div class="col-xl-3 col-lg-4 col-md-6" th:each="mainMenu, mainIndex: ${headerForm.menuList}">
+				<a th:href="@{${firstUrl}}">
+					<div class="modules-block2" th:with="firstUrl=${#lists.isEmpty(mainMenu.subMenu) ? '#' :
+					(#lists.isEmpty(mainMenu.subMenu[0].subMenu) ? mainMenu.subMenu[0].urlPath : mainMenu.subMenu[0].subMenu[0].urlPath)}">
+						<!--<ul class="module-subMenu"
+						th:classappend="'module-subMenu-' + ${mainIndex.index % 4 < 2 ? 'lftArw' : 'rgtArw end'}">
+							<h3 class="title">
+								<i class="ph-duotone " th:classappend="${mainMenu.iconName}"></i>
+								<span th:text="${mainMenu.menuHeading}"></span>
+							</h3>
+							<li th:if="${!#lists.isEmpty(mainMenu.subMenu)}" th:each="subMenu, subMenuIndex: ${mainMenu.subMenu}">
+								<a th:href="@{${subMenu.urlPath}}">
+									<i class="ph-duotone "
+									   th:classappend="${#lists.isEmpty(subMenu.subMenu)} ? 'ph-caret-right' : 'ph-caret-double-right'"></i>
+									<span th:text="${subMenu.menuHeading}"></span>
+								</a>
+								<ul th:if="${!#lists.isEmpty(subMenu.subMenu)}" class="ps-2 pt-0 pb-0">
+									<li th:each="subSubMenu: ${subMenu.subMenu}">
+										<a th:href="@{${subSubMenu.urlPath}}">
+											<i class="ph-duotone ph-caret-right"></i>
+											<span th:text="${subSubMenu.menuHeading}"></span>
+										</a>
+									</li>
+								</ul>
+							</li>
+						</ul>-->
+						<div class="img-box">
+							<a th:href="@{${firstUrl}}">
+								<img th:src="@{|/assets/img/ccw-modules/${!mainMenu.bannerName.equals('') ? mainMenu.bannerName : 'modules-img-01.webp'}|}" alt="">
+							</a>
+							<div class="cont-box">
+								<img th:src="@{|/assets/img/ccw-modules/${!mainMenu.imageName.equals('') ? mainMenu.imageName : '01-AdminSettings.svg'}|}"
+									 th:href="@{${firstUrl}}" class="icon" data-bs-toggle="tooltip" data-bs-title="Admin Settings">
+								<h6 class="title flex-grow-1 text-center mb-0" th:href="@{${firstUrl}}">
+									<span th:text="${mainMenu.menuHeading}"></span>
+								</h6>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		<!--//Module Section-->
+</main>
+<!-- //Main-->
+<!-- Reset Password Modal -->
+<!--<th:block th:replace="~{reset-password-modal}"></th:block>-->
+<!-- Info Modal -->
+<th:block th:replace="~{common/modal/success-modal :: contents(headerText=#{message.label.confirmation}, bodyText=#{message.label.reset.password.success})}"></th:block>
+<!--//-->
+<!-- Footer-->
+
+<!-- //Footer-->
+<!--//-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, null)}">
+<script th:src="@{/assets/js/common/reset-password.js}"></script>
+<script th:src="@{/assets/js/dashboard/admin-dashboard.js}"></script>
+</th:block>
+</body>
+</html>

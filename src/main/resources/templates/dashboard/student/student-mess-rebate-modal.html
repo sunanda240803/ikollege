@@ -1,0 +1,177 @@
+<!-- Form Module -->
+<div th:replace="~{common/modal-template :: modal('student-mess-rebate-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+	<modalHeader>
+		<span th:text="#{message.label.add.messrebate.request}"></span>
+	</modalHeader>
+	<modalBody>
+		<form class="themeForm" th:action="@{#{url.student.mess.rebate} + #{url.save}}" method="post" 
+			enctype="multipart/form-data" th:object="${messRebateDto}" id="messRebateForm"> 
+			<div class="row">
+				<div class="col-lg-12 mb-3">
+					 <th:block th:replace="~{common/template/note :: noteContent('message.label.note', null, ~{::noteContent})}">
+						 <noteContent>
+								<ul>
+									<li>
+										<span th:text="#{message.label.note.line.one.of.one}"></span>
+										<span th:text="${minFromDate}"></span>
+										<span th:text="#{message.label.note.line.one.of.two}"></span>
+										<span th:text="${maxFromDate}"></span>
+										<span th:text="#{message.label.note.line.one.of.three}"></span>
+									</li>
+									<li>
+										<span th:text="#{message.label.note.line.two.of.one}"></span>
+										<span th:text="${minPeriod}"></span>
+										<span th:text="#{message.label.note.line.two.of.two}"></span>
+										<span th:text="${minPeriod}"></span>
+										<span th:text="#{message.label.note.line.two.of.three}"></span>
+									</li>
+									<li>
+										<span th:text="#{message.label.note.line.three.of.one}"></span>
+										<span th:text="${maxPeriod}"></span>
+										<span th:text="#{message.label.note.line.three.of.two}"></span>
+									</li>
+								</ul>
+						</noteContent>
+					</th:block>
+				</div>
+				<input type="hidden" th:value="${minFromDate}" id="minFromDate">
+				<input type="hidden" th:value="${maxFromDate}" id="maxFromDate">
+				<input type="hidden" th:value="${minPeriod}" id="minPeriod">
+				<input type="hidden" th:value="${maxPeriod}" id="maxPeriod">
+<!-- 				<div class="col-lg-6 mb-3"> -->
+<!-- 					<label class="form-label" > -->
+<!-- 						<span th:text="#{message.label.academic.leave.from.date}"></span> -->
+<!-- 						<th:block th:replace="~{common/template/mandatory-symbol}" /> -->
+<!-- 					</label> -->
+<!-- 					<input type="date" class="form-control required-input" id="leaveFrom" th:field="*{leaveFrom}" required> -->
+<!-- 					<div class="invalid-feedback" th:text="#{message.validation.academic.leave.from.date.required}"></div> -->
+<!-- 				</div> -->
+<!-- 				<div class="col-lg-6 mb-3"> -->
+<!-- 					<label class="form-label" > -->
+<!-- 						<span th:text="#{message.label.academic.leave.to.date}"></span> -->
+<!-- 						<th:block th:replace="~{common/template/mandatory-symbol}" /> -->
+<!-- 					</label> -->
+<!-- 					<input type="date" class="form-control date-validation" th:field="*{leaveTo}" id="leaveTo"> -->
+<!-- 					<div class="invalid-feedback" th:text="#{message.validation.academic.leave.to.date.required}"></div> -->
+<!-- 					<div class="invalid-req-feedback d-none" th:text="#{message.validation.academic.leave.to.date.required}"></div> -->
+<!-- 		          	<div class="invalid-future-feedback d-none" th:text="#{message.validation.leave.to.date.greater}"></div> -->
+<!-- 				</div> -->
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.rebate.from.date}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="date" class="form-control date-validation" th:field="*{rebateFrom}" id="rebateFrom"
+						th:classappend="${#fields.hasErrors('rebateFrom')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors"  th:errors="*{rebateFrom}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.rebate.from.date.required}"></div>
+					<div class="invalid-req-feedback d-none" th:text="#{message.validation.rebate.from.date.required}"></div>
+					<div class="invalid-invalid-feedback d-none" th:text="#{message.validation.rebate.from.date.invalid.one}
+						+ ' ' + ${minFromDate} + ' ' + #{message.validation.rebate.from.date.invalid.two} + ' ' + ${maxFromDate} + ' ' +
+						#{message.validation.rebate.from.date.invalid.three}"></div>
+					<div class="invalid-already-requested-feedback d-none" th:text="#{message.validation.rebate.from.already.requested}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.rebate.to.date}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="date" class="form-control date-validation" th:field="*{rebateTo}" id="rebateTo"
+						th:classappend="${#fields.hasErrors('rebateTo')} ? 'is-invalid' : ''">
+					<div class="invalid-feedback backendErrors"  th:errors="*{rebateTo}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.rebate.to.date.required}" ></div>
+					<div class="invalid-req-feedback d-none" th:text="#{message.validation.rebate.to.date.required}" ></div>
+		          	<div class="invalid-future-feedback d-none" th:text="#{message.validation.rebate.to.date.greater}"></div>
+		          	<div class="invalid-min-period-feedback d-none" th:text="#{message.validation.rebate.to.min.period.one}
+						+ ' ' + ${minPeriod} + ' ' + #{message.validation.rebate.to.min.period.two} + ' ' + ${minPeriod} + ' ' +
+						#{message.validation.rebate.to.min.period.three}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.rebate.reason}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<textarea class="form-control required-input" th:field="*{rebateReason}" id="rebateReason"
+						th:placeholder="#{message.label.rebate.reason}" maxlength="1000" required
+						th:classappend="${#fields.hasErrors('rebateReason')} ? 'is-invalid' : ''"/>
+					<div class="invalid-feedback backendErrors" th:errors="*{rebateReason}"></div>
+					<div class="invalid-feedback-frontEnd" th:text="#{message.validation.rebate.reason.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.no.of.days}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<input type="text" class="form-control" id="noOfDays"
+						th:placeholder="#{message.label.no.of.days}" disabled>
+    				<input type="hidden" id="hiddenNoOfDays" th:field="*{noOfDays}">
+					<div class="invalid-feedback" th:text="#{message.validation.no.of.days.required}"></div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.guideName}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<div class="input-group">
+						<th:block th:if="${(studentDetails.facultyName == null) || (studentDetails.facultyName == '') || (studentDetails.facultyName == '0')}">
+							<input type="text" class="form-control isAlphaAndSpace required-input"
+								th:field="*{guideName}" id="guideName" th:placeholder="#{message.label.guideName}" required
+								th:classappend="${#fields.hasErrors('guideName')} ? 'is-invalid' : ''">
+						</th:block>
+						<th:block th:if="${(studentDetails.facultyName != null) && (studentDetails.facultyName != '0')  && (studentDetails.facultyName != '')}">
+							<div class="form-control form-graybox">
+								<span th:text="${studentDetails.facultyName}"></span>
+							</div>
+						</th:block>
+						<button class="btn btn-tmPrimary" type="button" data-bs-toggle="tooltip" data-bs-custom-class="custom-popover" 
+						  		data-bs-trigger="hover focus" th:attr="data-bs-title=#{message.label.guide.approval}"> 
+						  	<i class="fas fa-question-circle"></i>
+						</button>
+						<div class="invalid-feedback backendErrors" th:errors="*{guideName}"></div>
+					  	<div class="invalid-feedback-frontEnd" th:text="#{message.label.guideName.required}"></div>
+					</div>
+				</div>
+				<div class="col-lg-6 mb-3">
+					<label class="form-label" >
+						<span th:text="#{message.label.guideEmail}"></span>
+						<th:block th:replace="~{common/template/mandatory-symbol}" />
+					</label>
+					<div class="input-group">
+					<th:block th:if="${(studentDetails.facultyEmail == null) || (studentDetails.facultyEmail == '')}">
+						<input type="email" class="form-control required-email"
+							th:field="*{guideEmail}" id="guideEmail" th:placeholder="#{message.label.guideEmail}"
+							th:classappend="${#fields.hasErrors('guideEmail')} ? 'is-invalid' : ''">
+					</th:block>
+					<th:block th:if="${(studentDetails.facultyEmail != null) && (studentDetails.facultyEmail != '')}">
+						<div class="form-control form-graybox">
+							<span id="guideEmail" th:text="${studentDetails.facultyEmail}"></span>
+						</div>
+					</th:block>
+					<button class="btn btn-tmPrimary" type="button" data-bs-toggle="tooltip" 
+					  		data-bs-custom-class="custom-popover" data-bs-trigger="hover focus" 
+					  		th:attr="data-bs-title=#{message.label.guide.approval}" >
+					  	<i class="fas fa-question-circle"></i>
+					  </button>
+					  <div class="invalid-feedback backendErrors" th:errors="*{guideEmail}"></div>
+					  <div class="invalid-feedback-frontEnd" th:text="#{message.label.guideEmail.required}"></div>
+		              <div class="invalid-req-feedback d-none"><span th:text="#{message.label.guideEmail.required}"></span></div>
+		              <div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+					</div>
+				</div>
+				<div class="col-lg-6 exceedPeriod d-none mb-3">
+					<label class="form-label">
+						<span th:text="#{message.label.reported.document}"></span>
+<!--						<th:block th:replace="~{common/template/mandatory-symbol}" />-->
+					</label>
+					<th:block th:replace="~{common/template/drag-drop-file-upload-template::contents(
+						'uploadFile', 'file', ${#messages.msg('message.accepted.file.type.pdf.images')}, 'uploadDoc',
+						null, ${#messages.msg('message.drag.drop.here.reported.doc')})}">
+					</th:block>
+<!--					<input type="hidden" class="form-control">-->
+<!--					<div class="invalid-feedback backendErrors" th:errors="*{file}"></div>-->
+<!--               		<div class="invalid-feedback-frontEnd" th:text="#{message.validation.reported.document.required}"></div>-->
+				</div>
+			</div>
+		</form>
+	</modalBody>
+</div>

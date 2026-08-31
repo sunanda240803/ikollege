@@ -1,0 +1,55 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="build(id, type, buttonType, size, tooltip, buttonText, extraClass)">
+  <button th:type="${type}" th:id="${id != null ? id : 'defaultSubmit'}" th:class="${
+      'btn ' + 
+      (size != null ? 'btn-' + size + ' ' : '') +
+      'me-2 ' +
+      (extraClass != null ? extraClass + ' ' : '') +
+      (buttonType != null ? 
+        (buttonType == 'getData' ? 'btn-lgtblue px-4' :
+         buttonType == 'save' ? 'btn-aqua' :
+         buttonType == 'submit' ? 'btn-tmPrimary' :
+         buttonType == 'cancel' ? 'btn-tmSecondary' :
+         buttonType == 'update' ? 'btn-blue' :
+         buttonType == 'approve' ? 'btn-success' :
+         buttonType == 'override' ? 'btn-info text-white' :
+         buttonType == 'reject' ? 'btn-danger' :
+         buttonType == 'upload' ? 'btn-purple' :
+         buttonType == 'download' ? 'btn-pink' :
+         buttonType == 'back' ? 'btn-secondary' :
+         buttonType == 'add' ? 'btn-success' :
+         buttonType == 'edit' ? 'btn-primary' :
+         buttonType == 'delete' ? 'btn-danger' :
+         buttonType == 'remove' ? 'btn-orange' :
+         buttonType == 'view' ? 'btn-bluegray' :
+         buttonType == 'info' ? 'btn-info text-white' :
+         buttonType == 'question' ? 'btn-brown text-white' :
+         buttonType == 'warning' ? 'btn-warning' :
+         'btn-tmPrimary') : 'btn-tmPrimary'
+      )}" th:data-bs-toggle="${tooltip != null ? 'tooltip' : ''}" th:data-bs-title="${tooltip}">
+    <i th:class="${
+      buttonType != null ? 
+        (buttonType == 'getData' ? 'fa-solid fa-search me-1' :
+         buttonType == 'save' ? 'fa-solid fa-floppy-disk me-1' :
+         buttonType == 'submit' ? 'fa-solid fa-arrow-pointer me-1' :
+         buttonType == 'cancel' ? 'fa-solid fa-circle-xmark me-1' :
+         buttonType == 'update' ? 'fa-solid fa-rotate me-1' :
+         buttonType == 'approve' ? 'fa-solid fa-circle-check me-1' :
+         buttonType == 'override' ? 'fa-solid fa-check-to-slot me-1' :
+         buttonType == 'reject' ? 'fa-solid fa-ban me-1' :
+         buttonType == 'upload' ? 'fa-solid fa-file-arrow-up me-1' :
+         buttonType == 'download' ? 'fa-solid fa-file-arrow-down me-1' :
+         buttonType == 'back' ? 'fa-solid fa-circle-arrow-left me-1' :
+         buttonType == 'add' ? 'fa-solid fa-circle-plus' :
+         buttonType == 'edit' ? 'fa-solid fa-pencil' :
+         buttonType == 'delete' ? 'fa-solid fa-trash-can' :
+         buttonType == 'remove' ? 'fa-solid fa-circle-xmark' :
+         buttonType == 'view' ? 'fa-solid fa-eye' :
+         buttonType == 'info' ? 'fa-solid fa-circle-info' :
+         buttonType == 'question' ? 'fa-solid fa-question' :
+         buttonType == 'warning' ? 'fa-solid fa-triangle-exclamation' :
+         'fa-solid fa-arrow-pointer me-1')
+      : 'fa-solid fa-arrow-pointer me-1'
+    }"></i>
+    <span th:text="${buttonText != null ? buttonText : (buttonType != null ? #strings.capitalize(buttonType) : 'Submit')}"></span>
+  </button>
+</th:block>

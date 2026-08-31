@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head th:replace="~{common/head :: common_header(~{::link})} "></head>
+   <body>
+      <header th:replace="~{common/header:: title(${headerForm})}"></header>
+      <!-- //Main-->
+      <main id="main" class="main">
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="card main-card mt-4">
+                  <div class="card-body themeForm">
+                     <form action="#" method="get">
+                        <div class="row mb-3">
+                           <div class="col-auto">
+                              <label for="search" class="form-label"><span th:text="#{message.label.keyword}"></span>
+                              <i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"  
+                                 data-bs-title="Use Mess Name, Floor Name, Caterer to search"></i>
+                              </label>
+                              <input type="text" class="form-control" name="search" id="search" th:field="*{form.search}">
+                           </div>
+                           <div class="col-auto mt-3">
+                              <button class="btn btn-secondary mt-4" type="submit">
+                              <span th:text="#{message.label.search}"></span>
+                              </button>
+                           </div>
+                        </div>
+                     </form>
+                     <div class="mb-4">
+                        <div class="table-responsive themeTable">
+                           <table id="messTable" class="table table-bordered nowrap w-100">
+                              <thead>
+                                 <tr>
+                                    <th th:text="#{message.label.mess.name}"></th>
+                                    <th th:text="#{message.label.caterer}"></th>
+                                    <th th:text="#{message.label.mess.vendor.code}"></th>
+                                    <th th:text="#{message.label.from.date}"></th>
+                                    <th th:text="#{message.label.to.date}"></th>
+                                    <th>
+                                       <span th:text="#{message.label.rate}"></span>
+                                       <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    </th>
+                                 </tr>
+                              </thead>
+                              <tbody th:with="dateFormat=#{date.format}">
+                                 <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                     th:each="allocation, iter: ${form.paginationList.getContent()}">
+                                    <td th:text="${allocation.messName}+' - '+${allocation.floorName}+' - '+${allocation.description}"></td>
+                                    <td th:text="${allocation.caterer}"></td>
+                                    <td th:text="${allocation.vendorCode}"></td>
+                                    <td th:text="${#temporals.format(allocation.fromDate, dateFormat)}"></td>
+                                    <td th:text="${#temporals.format(allocation.toDate, dateFormat)}"></td>
+                                    <td>
+                                       <span class="text-end currency" th:text="${allocation.rate != null ? allocation.rate : 0}"></span>
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                        <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </main>
+      <div th:id="modalDiv"></div>
+      <!-- Footer-->
+      <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+         <script th:src="@{/assets/js/mess/mess-allocation.js}"></script>
+
+         <script th:inline="javascript">
+            const basePath = /*[[#{url.mess.vendor.allocation}]]*/ '';
+            const addPath = /*[[#{url.add}]]*/ '';
+         </script>
+      </th:block>
+      <!-- Footer-->
+   </body>
+</html>

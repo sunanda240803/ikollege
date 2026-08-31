@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+ <header th:replace="~{common/student-dashboard-header:: title(${headerForm},'Guest Accommodation Request','Dashboard', null, null, null,'Back',null,#{url.dashboard}+#{url.student},null)}">
+</header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!-- Conditional Link Section -->
+		<div class="container mt-4">
+		    <div th:if="${isWardenInfoPresent != null}" class="d-flex justify-content-center">
+		        <button class="btn btn-warning text-center py-2 px-4">
+		        	<span th:text="${isWardenInfoPresent}"></span>
+		       	</button>
+		    </div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<div class="mb-4">
+							<div class="table-responsive themeTable">
+								<table id="accommodatonRequestDataTable" class="table table-bordered nowrap w-100">
+									<thead>
+										<tr>
+		                                    <th th:text="#{message.label.request.fromdate}"></th>
+		                                    <th th:text="#{message.label.request.todate}"></th>
+		                                    <th th:text="#{message.label.extension}"></th>
+		                                    <th th:text="#{message.label.status}"></th>
+                                    		<th th:text="#{message.label.payment.status}"></th>
+                                    		<th class="text-center" th:text="#{message.label.action}"></th>
+                                    	</tr>
+									</thead>
+									<tbody>
+								    	<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+											th:each="guestRequest, iter: ${form.paginationList.getContent()}">
+										   <td th:text="${#temporals.format(guestRequest.fromDate,  #messages.msg('date.format'))}"></td>
+				                           <td th:text="${#temporals.format(guestRequest.toDate,  #messages.msg('date.format'))}"></td>
+				                           <td th:text="${guestRequest.stayTo != null ? #temporals.format(guestRequest.stayTo,  #messages.msg('date.format')) : '-'}"></td>
+				                           <td><th:block th:include="common/template/approval-status-badge :: statusBadge(${guestRequest.wardenApprovalStatus},null)"></th:block></td>
+				                           <td ><th:block th:include="common/template/approval-status-badge :: statusBadge(null,${guestRequest.paymentStatus})"></th:block></td>
+				                           
+				                           <td class="text-center">
+												<th:block th:if="${guestRequest.wardenApprovalStatus == #messages.msg('message.status.validating')}">
+												    <button id="cancelButton" type="button" class="btn btn-outline-danger btn-sm me-2 cancel" 
+												          th:data-guest-id="${guestRequest.encryptedRequestId}" onclick="cancelGuestAccommodationRequest(this)"  data-bs-toggle="tooltip" th:title="#{message.label.cancel}">
+												        <i class="fa-solid fa-ban fa-lg"></i>
+													</button>
+												</th:block>
+												
+											   <button id="viewButton" type="button" class="btn btn-sm btn-outline-bluegray me-2"
+													   aria-label="View" th:data-guest-id="${guestRequest.encryptedRequestId}"
+													   onclick="viewGuestAccommodationRequest(this)">
+												   <i class="fa-solid fa-eye" data-bs-toggle="tooltip" th:title="#{message.label.view}"></i>
+											   </button>
+
+												<th:block th:if="${guestRequest.wardenApprovalStatus == #messages.msg('message.status.wardenapprovecomplete')
+												                  && guestRequest.paymentStatus == #messages.msg('message.status.paid')}">
+												    <a th:href="@{#{url.guest.accommodation.request}+#{url.stay.extension}+'/'+${guestRequest.encryptedRequestId}}" 
+												       id="applyButton" type="button" class="btn btn-outline-warning btn-sm me-2 apply" 
+												       data-bs-toggle="tooltip" th:title="#{message.label.apply.stay.extension}">
+												        <i class="fa-solid fa-up-right-from-square"></i>
+												    </a>
+												</th:block>
+											
+				                           </td>
+			                        	</tr>
+				                        <tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+											<td colspan="6" class="text-center">
+												<span th:text="#{message.label.no.data.available}"></span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<input type="hidden" id="newId" th:value="${newId}">
+	<div th:id="modalDivView"></div>
+	<th:block th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.guest.cancel.request})}"></th:block>
+	<!-- Cancel Modal-->
+	<th:block th:replace="~{common/modal/cancel-modal ::
+	   contents(headerText=#{message.label.confirmation},bodyText=#{message.label.cancel.guest.request})}">
+	</th:block>
+	<!-- //Cancel Modal-->
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/mess/guest-accommodation-request.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.guest.accommodation.request}]]*/ '';
+			const downloadURL = /*[[#{url.download}]]*/ '';
+			const cancelURL = /*[[#{url.guest.cancel}]]*/ '';
+			const cancelMsg = /*[[${#messages.msg('response.cancel.success')}]]*/'';
+			const success = /*[[${#messages.msg('message.status.success')}]]*/'';
+			const cancel = /*[[${#messages.msg('message.status.cancelled')}]]*/'';
+        </script>
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

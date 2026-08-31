@@ -1,0 +1,57 @@
+.admin-dashboard .modules-block {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.admin-dashboard .modules-block:hover .module-subMenu {
+    display: none;
+}
+
+.admin-dashboard .modules-block.open .module-subMenu {
+    display: block;
+}
+
+.admin-dashboard .modules-block .module-subMenu {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.admin-dashboard .modules-block .module-subMenu:hover {
+    display: block !important;
+}
+
+.admin-dashboard .modules-block .img-box:hover,
+.admin-dashboard .modules-block .img-box:focus {
+    transform: scale(1.03) !important;
+}
+
+.admin-dashboard .modules-block .module-subMenu {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.admin-dashboard .modules-block .module-subMenu h3.title {
+    font-size: 0.85rem;
+}
+
+.admin-dashboard .modules-block .info-box {
+    padding: 18px 45px 18px 95px;
+}
+
+@media (max-width: 576px) {
+    .admin-dashboard .modules-block .module-subMenu {
+        transform: translateX(0) !important;
+        width: 90vw;
+        max-height: 50vh;
+    }
+
+    .admin-dashboard .modules-block .info-box .title {
+        font-size: 1rem;
+    }
+
+    .admin-dashboard .modules-block .info-box .icon {
+        height: 70px;
+        width: 70px;
+        top: -35px;
+    }
+}

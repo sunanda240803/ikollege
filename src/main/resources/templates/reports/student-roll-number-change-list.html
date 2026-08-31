@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body themeForm">
+                    <form action="#" method="get">
+                        <div class="row mb-3">
+                            <div class="col-lg-2 mb-3">
+                                <label for="previousStudentId" class="form-label" th:text="#{message.label.previous.id}"></label>
+                                <input type="text" class="form-control" name="previousId" id="previousStudentId">
+                            </div>
+                            <div class="col-lg-2 mb-3">
+                                <label for="changeStudentId" class="form-label" th:text="#{message.label.change.student.id}"></label>
+                                <input type="text" class="form-control" name="changeStudentId" id="changeStudentId">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                                <label for="studentName" class="form-label" th:text="#{message.label.student.name}"></label>
+                                <input type="text" class="form-control" name="studentName" id="studentName">
+                            </div>
+                            <div class="col-lg-2 mb-3">
+                                <label for="requestDate" class="form-label" th:text="#{message.label.request.date}"></label>
+                                <input type="date" class="form-control" name="requestDate" id="requestDate">
+                            </div>
+                            <div class="col-lg-2 mb-3 mt-4">
+                                <button class="btn btn-lgtblue mt-2" type="submit">
+                                    <i class="fa-solid fa-database"></i>
+                                    <span th:text="#{message.label.get.data}"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="mb-4">
+                        <div class="table-responsive themeTable">
+                            <table id="studentRollNumberChangeTable" class="table table-bordered nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th th:text="#{message.label.request.date}"></th>
+                                    <th th:text="#{message.label.previous.roll.no}"></th>
+                                    <th th:text="#{message.label.student.name}"></th>
+                                    <th th:text="#{message.label.change.roll.no}"></th>
+                                    <th class="text-center" th:text="#{message.label.uploaded.file}"></th>
+                                    <th class="text-center" th:text="#{message.label.approval.status}"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${studentRollNoChangeList ne null &&  !studentRollNoChangeList.isEmpty()}"
+                                    th:each="student, iter: ${studentRollNoChangeList}">
+                                    <td><span th:text="${student.requestedDate()}"></span></td>
+                                    <td th:text="${student.previousRollNo()}"></td>
+                                    <td th:text="${student.studentName()}"></td>
+                                    <td th:text="${student.changedRollNo()}"></td>
+                                    <td class="text-center">
+                                        <a th:href="@{#{url.student.roll.no.change}+#{url.download}+'/'+${student.fileName()}}" class="btn btn-pink me-2" target="_blank"
+                                           data-bs-toggle="tooltip" th:data-bs-title="#{message.label.download.file}">
+                                            <i class="fa-solid fa-file-arrow-down"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-info me-1" th:id="${iter.count}" th:if="${student.status() ne null and
+                                         student.status().equalsIgnoreCase('Pending')}"
+                                                th:onclick="approve([[${student.previousRollNo()}]],[[${student.changedRollNo()}]], [[${student.id()}]], this)"
+                                                data-bs-toggle="tooltip" th:data-bs-title="#{message.label.approve}">
+                                            <i class="fa-solid fa-check-to-slot"></i>
+                                        </button>
+
+                                        <th:block th:unless="${student.status() ne null and
+                                         student.status().equalsIgnoreCase('Pending')}" th:include="common/template/approval-status-badge :: statusBadge(${student.status()},null)"></th:block>
+                                    </td>
+                                </tr>
+                                <tr th:if="${studentRollNoChangeList eq null or  studentRollNoChangeList.isEmpty()}">
+                                    <td colspan="6" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{common/modal/info-modal ::
+   contents(id=null,headerText=#{message.label.confirmation},bodyText=#{message.label.status.update.approve})}">
+</th:block>
+
+<!-- Footer -->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/hostel/student-roll-number-change-list.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.student.roll.no.change}]]*/ '';
+        const approveURL = /*[[#{url.approve}]]*/ '';
+    </script>
+</th:block>
+<!-- Footer -->
+</body>
+
+</html>

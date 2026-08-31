@@ -1,0 +1,23 @@
+/* Styling for active menu background */
+.active {
+    background-color: rgba(0, 0, 0, 0.02); /* Slightly dark background */
+    /*background-color: #b7b7b7; !* Slightly dark background *!*/
+    /*border-radius: 5px;*/
+}
+.megaMenu ul li a {
+    display: flex;
+    align-items: start;
+    color: #000000;
+    max-width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+.megaMenu ul li a i {
+    flex-shrink: 0;
+}
+.megaMenu ul li .toggle {
+    display: flex;
+    align-items: center;
+}

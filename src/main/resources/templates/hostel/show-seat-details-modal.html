@@ -1,0 +1,114 @@
+<div th:replace="~{common/modal-template ::
+  modal('show-seat-details-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'lg')}">
+  <modalHeader th:text="#{message.label.show.seat}"></modalHeader>
+  <modalBody>
+    <form class="themeForm" th:action="@{#{url.show.seat.details}}" method="post" th:object="${showSeatDetailsDto}" id="showSeatDetailsForm" >
+   	  <input type="hidden" th:name="id" th:value="${showSeatDetailsDto.id}" id="showSeatId">
+      <div class="row">
+        <div class="col-lg-6 mb-3" th:if="${showSeatDetailsDto.id == null || showSeatDetailsDto.id <= 0}">
+               <label class="form-label" for="eventId">
+                   <span th:text="#{message.label.event.name}"></span>
+                   <th:block th:replace="~{common/template/mandatory-symbol}" />
+               </label>
+                <select class="form-select required-select-input" data-live-search="true"  th:name="show.showEventMaster.id" th:id="eventIdInput"
+                  	 	 th:value="${eventId}" onchange="getShowNameList('eventIdInput','showNameInput')" required>
+                   <option value="" th:text="#{message.label.select}"></option>
+                 	<option th:each="event:${eventList}"
+					th:value="${event.id}" th:text="${event.eventName}"
+					>
+				</option>
+               </select>
+               <div class="invalid-feedback" id="eventVal" th:text="#{message.validation.event.name.required}"></div>
+           </div>
+           <div class="col-lg-6 mb-3" th:if="${showSeatDetailsDto.id != null}">
+			    <label class="form-label">
+			        <span th:text="#{message.label.event.name}"></span>
+			        <th:block th:replace="~{common/template/mandatory-symbol}" />
+			    </label>
+			    <div class="form-control form-graybox"><span th:text="${showSeatDetailsDto.show.showEventMaster.eventName}"></span></div>
+			    <input type="hidden" th:value="${showSeatDetailsDto.show.showEventMaster.id}" th:id="editEventId"/>
+			</div>
+           
+           <div class="col-lg-6 mb-3" th:if="${showSeatDetailsDto.id == null || showSeatDetailsDto.id <= 0}">
+			<label for="showName" class="form-label">
+				<span th:text="#{message.label.show.name}"></span> 
+				<th:block th:replace="~{common/template/mandatory-symbol}" />
+			</label>
+			<select class="selectpicker required-select-input" data-live-search="true"  th:field="*{show.id}" id="showNameInput"
+				th:disabled="${showSeatDetailsDto.id != null && showSeatDetailsDto.id > 0}" required >
+				<option value="" th:text="#{message.label.select}"></option>
+				 <option th:each="show : ${showList}" th:value="${show.id}"
+						th:text="${show.showName}"
+						></option> 
+			</select>
+			<input type="hidden" th:if="${showSeatDetailsDto.id != null && showSeatDetailsDto.id > 0}" th:field="*{show.id}" />
+			<div class="invalid-feedback" th:text="#{message.validation.show.name.required}"></div>
+		</div>
+		<div class="col-lg-6 mb-3" th:if="${showSeatDetailsDto.id != null}">
+		    <label class="form-label">
+		        <span th:text="#{message.label.show.name}"></span>
+		        <th:block th:replace="~{common/template/mandatory-symbol}" />
+		    </label>
+		    <div class="form-control form-graybox"><span th:text="${showSeatDetailsDto.show.showName}"></span></div>
+		    <input type="hidden" th:if="${showSeatDetailsDto.id != null && showSeatDetailsDto.id > 0}" th:field="*{show.id}" />
+		</div>
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="seatName">
+            <span th:text="#{message.label.seat.name}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input" id="seatName" th:field="*{seatName}"
+                 th:placeholder="#{message.placeholder.seat.name}" required maxlength="63"
+                 th:classappend="${#fields.hasErrors('seatName')} ? 'is-invalid' : ''">
+          <div class="invalid-feedback backendErrors" th:errors="*{seatName}"></div>
+          <div class="invalid-feedback-frontEnd" th:text="#{message.validation.seat.name.required}"></div>
+        </div>
+        <!-- <div class="col-lg-6 mb-3">
+          <label class="form-label" for="amount">
+            <span th:text="#{message.label.amount}"></span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input" id="amount" th:name="amount"
+          		oninput="validateNumberInput(this)" th:value="${#numbers.formatDecimal(showSeatDetailsDto.amount, 0, '2', 'POINT')}"
+                 th:placeholder="#{message.placeholder.amount}" maxlength="8" required>
+          <div class="invalid-feedback" th:text="#{message.validation.amount.required}"></div>
+        </div> -->
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="discountedAmount"><span th:text="#{message.label.discount.amount}"></span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <th:block th:replace="~{common/template/mandatory-symbol}" />
+          </label>
+          <input type="text" class="form-control required-input" id="discountedAmount" th:name="discountedAmount"
+          		oninput="validateNumberInput(this)" th:value="${#numbers.formatDecimal(showSeatDetailsDto.discountedAmount, 0, '2', 'POINT')}"
+                 th:placeholder="#{message.placeholder.discount.amount}" maxlength="8" required>
+          <div class="invalid-feedback" th:text="#{message.validation.discount.amount.required}"></div>
+        </div>
+        <div class="col-lg-6 mb-3">
+           <label class="form-label mt-3" for="currentlyActive">
+               <span th:text="#{message.label.active}"></span>
+           </label>
+           <div class="form-check">
+               <input class="form-check-input " type="checkbox" id="currentlyActive"  th:name="currentlyActive"
+               	   th:checked="${showSeatDetailsDto.currentlyActive=='Y'}" >
+               <label class="form-check-label" for="currentlyActive"
+                      th:text="#{message.label.currently.active}">
+               </label>
+               <div class="invalid-feedback" th:text="#{message.validation.currently.active.required}"></div>
+           </div>
+        </div>
+        <div class="col-lg-6 mb-3">
+          <label class="form-label" for="isAvailable">
+            <span th:text="#{message.label.available}"></span>
+          </label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="isAvailable"  th:name="isAvailable"
+            	th:checked="${showSeatDetailsDto.isAvailable==true}">
+            <label class="form-check-label" for="isAvailable" th:text="#{message.label.seat.available}"></label>
+            <div class="invalid-feedback" th:text="#{message.validation.available.status.required}"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modalBody>
+</div>

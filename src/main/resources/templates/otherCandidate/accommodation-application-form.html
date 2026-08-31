@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+    <!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+                <div class="card-body">
+                    <form class="themeForm" th:action="@{#{url.accommodation.request}}"
+                          th:object="${accommodationRequestForm}"
+                          id="accommodationRequestForm" method="post" enctype="multipart/form-data"
+                          th:with="categoryEnum = ${T(com.iitm.hosteldine.constant.CategoryEnum)},
+                          category = ${accommodationRequestForm.candidateAppointmentRequestDto.id ne null and accommodationRequestForm.candidateAppointmentRequestDto.id >0 ?
+                           accommodationRequestForm.candidateAppointmentRequestDto.category : accommodationRequestForm.candidateProfileDto.postSelect}">
+                        <input type="hidden" name="imageName" id="imageName" th:field="*{candidateProfileDto.imageName}">
+                        <div th:insert="~{common/temporary-accommodation-notes::notes}"></div>
+                        <div class="row mt-4">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title">
+                                    <span th:if="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}"
+                                          th:text="#{message.label.interview.details}"></span>
+
+                                    <span th:unless="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}"
+                                          th:text="#{message.label.appointment.details}"></span>
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-lg-3" th:if="${!category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label" for="periodOfAppointmentFrom">
+                                    <span th:text="#{message.label.period.appointment}+' '+#{message.label.from}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="periodOfAppointmentFrom"
+                                       required oninput="document.getElementById('periodOfStayFrom').value = this.value"
+                                       th:field="*{candidateAppointmentRequestDto.appointmentFrom}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.appointmentFrom')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.appointmentFrom}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.period.of.appointment.from.required}"></div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3" th:if="${!category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label" for="periodOfAppointmentTo">
+                                    <span th:text="#{message.label.period.appointment}+' '+#{message.label.To}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="periodOfAppointmentTo"
+                                       required
+                                       oninput="document.getElementById('periodOfStayTo').value = this.value"
+                                       th:field="*{candidateAppointmentRequestDto.appointmentTo}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.appointmentTo')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.appointmentTo}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.period.of.appointment.to.required}"></div>
+                                <div class="invalid-req-feedback d-none"
+                                     th:text="#{message.validation.period.of.appointment.to.required}"></div>
+                                <div class="invalid-feedback-date-compare d-none"
+                                     th:text="#{message.validation.appointment.end.date}"></div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="periodOfStayFrom">
+                                    <span th:text="#{message.label.period.stay.request}+' '+#{message.label.from}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="periodOfStayFrom" required
+                                       th:field="*{candidateAppointmentRequestDto.stayFrom}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.stayFrom')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.stayFrom}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.period.of.stay.from.required}"></div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label" for="periodOfStayTo">
+                                    <span th:text="#{message.label.period.stay.request}+' '+#{message.label.To}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="date" class="form-control required-input" id="periodOfStayTo" required
+                                       th:field="*{candidateAppointmentRequestDto.stayTo}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.stayTo')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.stayTo}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.period.of.stay.to.required}"></div>
+                                <div class="invalid-req-feedback d-none"
+                                     th:text="#{message.validation.period.of.stay.to.required}"></div>
+                                <div class="invalid-feedback-date-compare d-none"
+                                     th:text="#{message.validation.stay.end.date}"></div>
+                                <div class="invalid-feedback-approved-dates-compare d-none" th:text="#{message.validation.appointment.approved.date}"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"
+                                    th:text="#{message.label.other.details}"></h2>
+                            </div>
+
+                            <input type="hidden" th:field="*{candidateAppointmentRequestDto.messOption}">
+
+                            <!--<div class="col-lg-3 mb-3" th:if="${!category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label" for="stipendFellowshipPay">
+                                    <span th:text="#{message.label.stipend}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                    <span th:text="#{message.label.not.applicable}"></span>
+                                </label>
+                                <input type="text" oninput="validateNumberInput(this)"
+                                       class="form-control required-input" id="stipendFellowshipPay"
+                                       required th:field="*{candidateAppointmentRequestDto.grossPay}" maxlength="8">
+                                <div class="invalid-feedback" th:text="#{message.validation.stipend.required}"></div>
+                            </div>-->
+
+                            <div class="col-lg-3 mb-3" th:if="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label" for="applicationNo">
+                                    <span th:text="#{message.label.application.no}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" class="form-control required-input" id="applicationNo" required
+                                       th:field="*{candidateAppointmentRequestDto.applicationNo}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.applicationNo')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.applicationNo}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.applicationNo}"></div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3" th:if="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                                <label class="form-label" for="proDept">
+                                    <span th:text="#{message.label.program.department}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" class="form-control required-input" id="proDept" required
+                                       th:field="*{candidateAppointmentRequestDto.programDept}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.programDept')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.programDept}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{messsage.validation.program.department.required}"></div>
+                            </div>
+
+                            <div class="col-lg-3 mb-3">
+                                <label class="form-label">
+                                    <span th:text="#{message.label.category}"></span>
+                                </label>
+                                <input type="hidden" th:name="|candidateAppointmentRequestDto.categoryOthers|"
+                                       th:if="${accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.OTHERS.value)}"
+                                       th:value="*{candidateProfileDto.postOthers}">
+                                <input type="hidden" th:name="|candidateAppointmentRequestDto.category|"
+                                       th:value="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id > 0
+                                ?candidateAppointmentRequestDto.category : candidateProfileDto.postSelect}"
+                                id="category">
+
+                                <div class="form-control form-graybox"
+                                     th:text="${accommodationRequestForm.candidateAppointmentRequestDto.id eq null or accommodationRequestForm.candidateAppointmentRequestDto.id <= 0 ? accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.INTERVIEWS.value) ? 'MS/PHD Interview':
+                                       accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.PROJECT_STAFF.value) ? 'ICSR' : accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.INTERNSHIP.value) ?
+                                       'Internship with IITM Faculty' : accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.SASTHRA.value) ? 'Sasthra / Saarang' :
+                                        accommodationRequestForm.candidateProfileDto.postSelect.equalsIgnoreCase(categoryEnum.OTHERS.value) ? accommodationRequestForm.candidateProfileDto.postSelect +' - ('+accommodationRequestForm.candidateProfileDto.postOthers+')'
+                                        : accommodationRequestForm.candidateProfileDto.postSelect
+                                       : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value) ? 'MS/PHD Interview':
+                                       accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.PROJECT_STAFF.value) ? 'ICSR'
+                                       : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.INTERNSHIP.value) ?
+                                       'Internship with IITM Faculty' : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.SASTHRA.value) ?
+                                       'Sasthra / Saarang' : accommodationRequestForm.candidateAppointmentRequestDto.category.equalsIgnoreCase(categoryEnum.OTHERS.value) ?
+                                       accommodationRequestForm.candidateAppointmentRequestDto.category+' - ('+accommodationRequestForm.candidateAppointmentRequestDto.categoryOthers+')'
+                                       : accommodationRequestForm.candidateAppointmentRequestDto.category}"></div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label" for="purpose">
+                                    <span th:text="#{message.label.purpose}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <textarea type="text" class="form-control required-input"
+                                          th:placeholder="#{message.placeholder.purpose}"
+                                          id="purpose" required th:field="*{candidateAppointmentRequestDto.purpose}"
+                                          th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.purpose')} ? 'is-invalid' : ''">
+											</textarea>
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.purpose}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.stay.request.purpose.required}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4" th:if="${!category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}">
+                            <div class="col-lg-12">
+                                <h2 class="tmsub-title"
+                                    th:text="#{message.label.validating.authority}"></h2>
+                            </div>
+                            <!--<div class="col-lg-12 mb-3">
+                                <div class="noteBox">
+                                    <h4><i class="fa-solid fa-file-circle-exclamation me-1"></i>
+                                        <span th:text="#{message.label.note}"></span> :</h4>
+                                    <ul>
+                                        <li th:text="#{message.lablel.validating.message}"></li>
+                                    </ul>
+                                </div>
+                            </div>-->
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="authorityName">
+                                    <span th:text="#{message.label.authority.name}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="text" class="form-control required-input" maxlength="127"
+                                       id="authorityName" required
+                                       th:readonly="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id > 0
+                                       and !candidateAppointmentRequestDto.approvalStatus.equalsIgnoreCase('Rejected')}"
+                                       th:field="*{candidateAppointmentRequestDto.validatingAuthority}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.validatingAuthority')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.validatingAuthority}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.authority.name.required}"></div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label class="form-label" for="authorityEmail">
+                                    <span th:text="#{message.label.authority.email}"></span>
+                                    <th:block th:replace="~{common/template/mandatory-symbol}"/>
+                                </label>
+                                <input type="email" class="form-control required-input" maxlength="127"
+                                       id="authorityEmail" required
+                                       th:readonly="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id > 0
+                                       and !candidateAppointmentRequestDto.approvalStatus.equalsIgnoreCase('Rejected')}"
+                                       th:field="*{candidateAppointmentRequestDto.validatingAuthorityEmail}"
+                                       th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.validatingAuthorityEmail')} ? 'is-invalid' : ''">
+                                <div class="invalid-feedback backendErrors"
+                                     th:errors="*{candidateAppointmentRequestDto.validatingAuthorityEmail}"></div>
+                                <div class="invalid-feedback-frontEnd"
+                                     th:text="#{message.validation.authority.email.required}"></div>
+                                <div class="invalid-domain-email d-none"
+                                     th:text="#{message.validation.invalid.email.domain}"></div>
+                            </div>
+                        </div>
+
+                        <th:block
+                                th:if="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id > 0}">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="tmsub-title"
+                                        th:text="#{message.label.approval.details}"></h2>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="table-responsive themeTable">
+                                    <table class="table table-bordered nowrap w-100">
+                                        <thead>
+                                        <tr>
+                                            <th th:text="#{message.label.approver.name}"></th>
+                                            <th th:text="#{message.label.approver.email}"></th>
+                                            <th th:text="#{message.label.approval.status}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:if="*{candidateWorkflowList ne null and !candidateWorkflowList.isEmpty()}"
+                                            th:each="workflow : *{candidateWorkflowList}">
+                                            <td th:text="${workflow.validatorName}"></td>
+                                            <td th:text="${workflow.email}"></td>
+                                            <td>
+                                                <th:block th:include="common/template/approval-status-badge ::
+                                                statusBadge(${workflow.status},null)"></th:block>
+                                            </td>
+                                        </tr>
+
+                                        <tr th:unless="*{candidateWorkflowList ne null and !candidateWorkflowList.isEmpty()}">
+                                            <td colspan="3" class="text-center"><span
+                                                    th:text="#{message.label.no.data.available}"></span></td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </th:block>
+
+
+                        <div class="row mt-4">
+                            <div class="col-lg-9">
+                                <h2 th:unless="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}" class="tmsub-title"
+                                    th:text="#{message.label.upload.documents}"></h2>
+
+                                <h2 th:if="${category.equalsIgnoreCase(categoryEnum.INTERVIEWS.value)}" class="tmsub-title"
+                                    th:text="#{message.label.upload.call.letter}"></h2>
+                            </div>
+                            <div class="col-lg-3 text-lg-end">
+                                <button type="button" class="btn btn-success btn-sm" onclick="addDocument()">
+                                    <i class="fa-solid fa-circle-plus me-1"></i>
+                                    <span th:text="#{message.add.document}"></span>
+                                </button>
+                            </div>
+
+                            <div class="col-lg-12 mb-3">
+                                <div class="noteBox">
+                                    <h4><i class="fa-solid fa-file-circle-exclamation me-1"></i>
+                                        <span th:text="#{message.label.note}"></span> :</h4>
+                                    <ul>
+                                        <li th:text="#{message.label.upload.documents.note}"></li>
+                                        <li th:text="#{message.upload.documents.note2}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3" th:if="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id > 0
+                                            and candidateFilesInformationList ne null and !candidateFilesInformationList.isEmpty()}"
+                                 th:each="candidateFile : ${accommodationRequestForm.candidateFilesInformationList}">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="text-truncate"
+                                                 th:text="${candidateFile.description == null or #strings.isEmpty(#strings.trim(candidateFile.description)) ? candidateFile.filename : candidateFile.description}"></div>
+                                            <button class="btn btn-tmPrimary btn-sm" type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+                                                    th:attr="data-bs-title=#{message.label.download.file}"
+                                                    th:data-filename="${candidateFile.filename}"
+                                                    onclick="triggerDownload(this)">
+                                                <i class="fa fa-download pdf text-white"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div id="fileUploadContainer" class="row"></div>
+                        </div>
+
+                        <div >
+                            <div th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.applicableCharges')
+                            or #fields.hasErrors('candidateAppointmentRequestDto.documentsUploaded')} ? 'is-invalid' : ''">
+                                <div class="row mt-3 mb-3">
+                                    <div class="col-lg-12 d-flex align-items-start">
+                                        <input type="checkbox" class="form-check-input mb-2 required-input me-2"
+                                               id="termsCondition1" name="termsCondition1" required
+                                               th:field="*{candidateAppointmentRequestDto.documentsUploaded}"
+                                               th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.documentsUploaded')} ? 'is-invalid' : ''">
+                                        <label class="form-check-label fw-bold" for="termsCondition1"
+                                               th:utext="#{message.lable.request.terms.1}">
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback"
+                                         th:text="#{message.validation.terms.condition.required}"></div>
+                                </div>
+
+                                <div class="row mt-3 mb-3">
+                                    <div class="col-lg-12 d-flex align-items-start">
+                                        <input type="checkbox" class="form-check-input mb-2 required-input me-2"
+                                               id="termsCondition2" name="termsCondition1" required
+                                               th:field="*{candidateAppointmentRequestDto.applicableCharges}"
+                                               th:classappend="${#fields.hasErrors('candidateAppointmentRequestDto.applicableCharges')} ? 'is-invalid' : ''">
+                                        <label class="form-check-label fw-bold" for="termsCondition2"
+                                               th:utext="#{message.lable.request.terms.2}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback"
+                                 th:text="#{message.validation.terms.condition.required}"></div>
+                        </div>
+
+
+                        <!--Button Section-->
+                        <div class="row text-end ">
+                            <div class="col-lg-12 mb-4">
+                                <div class="d-flex align-items-center justify-content-end">
+
+                                    <button type="button" onclick="window.history.back();" class="btn btn-secondary px-4 me-3" id="cancel" >
+                                        <i class="fa-solid fa-ban me-1"></i>
+                                        <span th:text="#{message.button.cancel}"></span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary px-4 me-3"
+                                            id="accommodationRequestSave"
+                                            th:if="*{candidateAppointmentRequestDto.id eq null or candidateAppointmentRequestDto.id<=0
+                                            and !candidateAppointmentRequestDto.approvalStatus.equalsIgnoreCase('Rejected')}">
+                                        <i class="fa-solid fa-arrow-pointer me-1"></i> <span
+                                            th:text="#{message.button.save}"></span>
+                                    </button>
+
+                                    <button
+                                            th:if="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id > 0
+                                            and !candidateAppointmentRequestDto.approvalStatus.equalsIgnoreCase('Rejected')}"
+                                            type="button"
+                                            class="btn btn-aqua px-4 me-3" id="accommodationRequestSave">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                                        <span th:text="#{message.button.update}"></span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary px-4 me-3"
+                                            id="accommodationRequestSave"
+                                            th:if="*{candidateAppointmentRequestDto.id ne null and candidateAppointmentRequestDto.id>0
+                                            and candidateAppointmentRequestDto.approvalStatus.equalsIgnoreCase('Rejected')}">
+                                        <i class="fa-solid fa-retweet"></i>
+                                        <span th:text="#{message.button.re.apply}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Hidden Template for Dynamic Content -->
+<div id="dynamicTemplate" class="d-none hidden">
+    <!--    <div class="col-lg-12">-->
+    <div class="col-lg-6 mb-3">
+        <label class="form-label" for="description_{index}">
+            <span th:text="#{message.label.description}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+        </label>
+        <input type="text" id="description_{index}" class="form-control required-input" required
+               name="files[{index}].description" placeholder="Description {index}">
+        <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+    </div>
+    <div class="col-lg-6 mb-3">
+        <label class="form-label" for="chooseFile_{index}">
+            <span th:text="#{message.choose.file}"></span>
+            <th:block th:replace="~{common/template/mandatory-symbol}"/>
+        </label>
+        <div th:replace="~{common/template/drag-drop-file-upload-template::contents('chooseFile_{index}', 'files[{index}].file', ${#messages.msg('message.guest.upload.file.types')}, 'uploadDoc', null, ${#messages.msg('message.drag.drop.guest.request.select')})}">
+            <div class="invalid-feedback" th:text="#{message.validation.document.required}"></div>
+        </div>
+    </div>
+    <!--    </div>-->
+</div>
+
+<!-- //Main-->
+<th:block th:replace="~{common/modal/warning-modal ::
+   contents(id = 'conflict', headerText=#{message.label.warning},bodyText=#{message.accommodation.conflicting})}"></th:block>
+
+<th:block th:replace="~{common/modal/warning-modal ::
+   contents(id = 'stipend', headerText=#{message.label.warning},bodyText=#{message.stipend.amount.confirmation})}"></th:block>
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/othersLogin/accommadation-request.js}"></script>
+    <script th:src="@{/assets/js/common/drag-drop-file-upload.js}"></script>
+    <script th:inline="javascript">
+        const uploadFileMsg = /*[[${#messages.msg('message.validation.document.required')}]]*/'';
+        const download = /*[[#{url.download}]]*/ '';
+        const baseURL = /*[[#{url.accommodation.request}]]*/ '';
+        const check = /*[[#{url.cancel.check}]]*/ '';
+        const file = /*[[#{url.file}]]*/ '';
+        const image = /*[[#{url.image}]]*/ '';
+        const requestId = [[${accommodationRequestForm.candidateAppointmentRequestDto.id}]];
+        const guideEmail = [[${guideEmail}]];
+        const approvedStayRanges = /*[[${candidateAppointmentApprovedDetails}]]*/ [];
+        if (requestId <= 0) {
+            addDocument();
+        }
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

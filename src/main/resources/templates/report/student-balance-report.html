@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} "></head>
+
+<body>
+    <header th:replace="~{common/header:: title(${headerForm})}"></header>
+    <!-- //Main-->
+    <main id="main" class="main">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card main-card mt-4">
+                    <div class="card-body themeForm">
+                        <form class="themeForm" th:action="@{#{url.hostel.student.balance.report}}" method="get">
+                            <div class="row">
+                            	<div class="col-lg-3 mb-3">
+                                    <label for="search" class="form-label"><span
+                                            th:text="#{message.label.hostel.name}"></span></label>
+                                    <select class="form-select" id="hostelId" name="hostelId"
+                                        aria-label="Select Hostel">
+                                        <option value=""
+                                            th:text="#{message.label.select} + ' ' + #{message.label.hostel.name}"
+                                            th:selected="${(param['additionalParam.hostelId'] != null ? param['additionalParam.hostelId'].toString() : '') == ''}">
+                                        </option>
+
+                                        <option value="all" th:text="#{message.option.all}"
+                                            th:selected="${param['additionalParam.hostelId'] != null and param['additionalParam.hostelId'].toString() == 'all'}">
+                                        </option>
+
+                                        <option th:each="hostel : ${hostelList}" th:value="${hostel.id}"
+                                            th:selected="${param['additionalParam.hostelId'] != null and param['additionalParam.hostelId'].toString() == hostel.id.toString()}">
+                                            <span th:text="${hostel.hostelName}"></span></option>
+                                    </select>
+                                </div>
+                           	 	<div class="col-lg-3 mb-3">
+                                    <label for="search" class="form-label"><span
+                                            th:text="#{message.label.types}"></span></label>
+                                    <select class="form-select" id="studentBalance" name="studentBalance">
+                                        <option value="all"
+                                            th:selected="${param['additionalParam.studentBalance'] != null and param['additionalParam.studentBalance'].toString() == 'all'}">
+                                            <span th:text="#{message.option.all}"></span>
+                                        </option>
+                                        <option value="positive"
+                                            th:selected="${param['additionalParam.studentBalance'] != null and param['additionalParam.studentBalance'].toString() == 'positive'}">
+                                            <span th:text="#{message.option.positive}"></span>
+                                        </option>
+                                        <option value="negative"
+                                            th:selected="${param['additionalParam.studentBalance'] != null and param['additionalParam.studentBalance'].toString() == 'negative'}">
+                                            <span th:text="#{message.option.negative}"></span>
+                                        </option>
+                                    </select>
+                                </div>
+								<div class="col-auto" style="margin-top: 38px">
+									<input type="hidden" name="studentBalanceHidden"
+										th:value="${param['additionalParam?.studentBalance']}" /> <input
+										type="hidden" name="hostelIdHidden"
+										th:value="${param['additionalParam?.hostelId']}" />
+									<button class="btn btn-lgtblue" type="button" onclick="getStudentBalanceReport()">
+										<i class="fa-solid fa-database"></i> 
+										<span th:text="#{message.label.get.data}"></span>
+									</button>
+								</div>
+							</div>
+                        </form>
+                        <!-- check if reportList -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <!-- reportList -->
+                                    <div class="table-responsive themeTable">
+                                        <table class="table table-bordered nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th th:text="#{message.label.student.id}"></th>
+                                                    <th th:text="#{message.label.student.name}"></th>
+                                                    <th th:text="#{message.label.hostel.name}"></th>
+                                                    <th th:text="#{message.label.room.number}"></th>
+                                                    <th th:text="#{message.label.balance.amount}" class="text-end"> <i
+                                                            class="fa-solid fa-indian-rupee-sign me-1"></i> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+                                                    th:each="report, iter : ${form.paginationList.getContent()}">
+                                                    <td th:text="${report.studentId}"></td>
+                                                    <td th:text="${report.studentName}"></td>
+                                                    <td th:text="${report.hostelName}"></td>
+                                                    <td th:text="${report.roomNumber}"></td>
+                                                    <td class="text-end">
+                                                        <span class="currency"
+                                                            th:text="${report.netBal >= 0 ? report.netBal : -report.netBal}"></span>
+                                                        <span th:if="${report.netBal >= 0}"
+                                                            th:text="#{message.label.dr}"></span>
+                                                        <span th:if="${report.netBal < 0}"
+                                                            th:text="#{message.label.cr}"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer-->
+    <th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+        <script th:inline="javascript">
+            var excelUrl = /*[[${excelUrl}]]*/ '';
+            const baseURL = /*[[#{url.hostel.student.balance.report}]]*/'';
+        </script>
+        <script th:src="@{/assets/js/hostel/student-balance-report.js}"></script>
+    </th:block>
+</body>
+
+</html>

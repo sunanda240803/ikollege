@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <th:block th:replace="~{common/head :: common_header(~{null})}"></th:block>
+</head>
+<body>
+<!-- Login Page-->
+<section class="login-page-wrapper pt-5">
+    <!-- Login Page Content -->
+    <div class="login-page-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-9 col-lg-8 col-xl-6">
+                    <input type="hidden" name="" id="status" th:value="${status}">
+                    <input type="hidden" name="" id="key" th:value="${key}">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- //Login Page-->
+<!-- JS FILES -->
+<th:block th:replace="~{common/footer2 :: scripts(~{::script}, null)}">
+    <script th:src="@{/assets/js/othersLogin/mail-approve-reject.js}"></script>
+    <script th:inline="javascript">
+        const baseURL = /*[[#{url.public.api}]]*/ '';
+        const otherCandidateUrl = /*[[#{url.other.candidate.user}]]*/ '';
+    </script>
+</th:block>
+<th:block th:replace="~{common/modal/info-modal :: contents(id=null, headerText=#{message.label.information},bodyText=#{message.request.approve})}"></th:block>
+</body>
+</html>

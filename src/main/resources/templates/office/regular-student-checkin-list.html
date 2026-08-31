@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.bootstrap5.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/staterestore/1.4.3/css/stateRestore.bootstrap5.css">
+    <link rel="stylesheet" th:href="@{/assets/css/hostel/regular-student-checkin.css}">
+</head>
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body themeForm">
+						<input type="hidden" th:value="${form.getAdditionalParam()}">
+						<th:block th:replace="~{common/dean-dashboard-filter :: formInputs(${form.getAdditionalParam()})}"></th:block>
+						<th:block th:if="${cardDetails != null}">
+							<div class="row">
+								<div class="col-lg-4">
+									<div class="card mb-3">
+										<div class="card-header bg-primary text-bg-primary p-2 fw-bold text-center">
+											<span th:text="#{message.label.room.details}"></span>
+										</div>
+										<div class="checkin-card-body mt-3">
+											<div class="row">
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.total.rooms}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.totalRooms}"></span>
+												</div>
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.rooms.vacant}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.roomsFree}"></span>
+												</div>
+												<div class="col-12 mb-2">
+													<span th:text="#{message.label.rooms.allotted}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.roomsAllotted}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="card mb-3">
+										<div class="card-header bg-primary text-bg-primary p-2 fw-bold text-center">
+											<span th:text="#{message.label.seat.details}"></span>
+										</div>
+										<div class="checkin-card-body mt-3">
+											<div class="row">
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.total.seats}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.totalNoOfSeats}"></span>
+												</div>
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.seats.vacant}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.exactVacancy}"></span>
+												</div>
+												<div class="col-12 mb-2">
+													<span th:text="#{message.label.allotted.including.overload}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.allotted}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="card mb-3">
+										<div class="card-header bg-primary text-bg-primary p-2 fw-bold text-center">
+											<span th:text="#{message.label.allotted.last.seven.days}"></span>
+										</div>
+										<div class="checkin-card-body mt-3">
+											<div class="row">
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.checkedin}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.checkInCount}"></span>
+												</div>
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.checkedout}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.checkOutCount}"></span>
+												</div>
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.allotted}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.occupied}"></span>
+												</div>
+												<div class="col-6 mb-2">
+													<span th:text="#{message.label.shifted}"></span><br>
+													<span class="fw-bold text-tmPrimary"
+														th:text="*{cardDetails.vacatedCount}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</th:block>
+						<th:block th:replace="~{common/dean-common-table}"></th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	<div th:id="modalCheckStatusDiv"></div>
+	<!-- Info Modal -->
+	<th:block th:replace="~{common/modal/info-modal ::
+	    contents(id=null,headerText=#{message.label.confirmation},bodyText=#{message.label.student.check.in})}">
+	</th:block>
+
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+		<script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.js"></script>
+		<script src="https://cdn.datatables.net/staterestore/1.4.3/js/dataTables.stateRestore.js"></script>
+		<script src="https://cdn.datatables.net/staterestore/1.4.3/js/stateRestore.bootstrap5.js"></script>
+		<script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.js"></script>
+		<script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.bootstrap5.js"></script>
+		<script th:src="@{/assets/js/data-table-common.js}"></script>
+		<script th:src="@{/assets/js/office/regular-student-checkin.js}"></script>
+	</th:block>
+
+</body>
+</html>

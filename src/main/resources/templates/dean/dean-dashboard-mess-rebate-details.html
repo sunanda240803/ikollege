@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+<header th:replace="~{common/header:: title(${headerForm})}"></header>
+<!-- //Main-->
+<main id="main" class="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card main-card mt-4">
+            	<div class="card-body themeForm">
+            		<th:block th:if="${deanMessRebateDto != null}">
+	                    <form class="themeForm">
+	                        <div class="row">
+	                            <div class="col-lg-12">
+	                                <h2 class="tmsub-title">
+	                                    <span th:text="#{message.label.student.details}"></span>
+	                                </h2>
+	                            </div>
+	                        </div>
+	                        <div class="row" style="padding-left: 20px;">
+								<div class="col-lg-2 mb-3">
+									<div class="upload-box">
+										<div class="box text-center">
+											<label>
+												<img th:attr="onerror='this.src=\'' + @{/assets/img/user-img1.png} + '\''"
+													 th:src="@{#{url.file} + #{url.image} + '/STUDENT_IMAGE/' + ${deanMessRebateDto.studentId}}"
+													 alt="Student Profile" style="max-width: 95%; max-height: 95%;" />
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-10 mb-3">
+									<div class="row">
+										<div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.student.name}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.studentName) ?  'N/A' : deanMessRebateDto.studentName}"></span>			                                	
+			                                </div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.dob}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.dob) ?  'N/A' : deanMessRebateDto.dob}"></span>
+			                            	</div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.gender}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.gender) ?  'N/A' : deanMessRebateDto.gender}"></span>
+			                                </div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.address}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.studentAddress) ?  'N/A' : deanMessRebateDto.studentAddress}"></span>
+			                            	</div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.city}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.city) ?  'N/A' : deanMessRebateDto.city}"></span>
+			                                </div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.state}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.state) ?  'N/A' : deanMessRebateDto.state}"></span>
+			                            	</div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.contact.number}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.studentMobile) ?  'N/A' : deanMessRebateDto.studentMobile}"></span>
+			                                </div>
+			                            </div>
+			                            <div class="col-lg-4 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.email.address}"> </span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.studentEmail) ?  'N/A' : deanMessRebateDto.studentEmail}"></span>
+			                            	</div>
+			                            </div>
+			                            <div class="col-lg-6 mb-3">
+			                                <label class="form-label">
+			                                    <span th:text="#{message.label.pin.code}"></span>                                    
+			                                </label>
+			                                <div class="form-control form-graybox">
+			                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.pincode) ?  'N/A' : deanMessRebateDto.pincode}"></span>
+			                                </div>
+			                            </div>
+									</div>								
+								</div>							
+	                        </div>
+	                        <div class="row">
+	                            <div class="col-lg-12">
+	                                <h2 class="tmsub-title">
+	                                    <span th:text="#{message.label.mess.rebate.details}"></span>
+	                                </h2>
+	                            </div>
+	                        </div>
+	                        <div class="row" style="padding-left: 20px;">
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.rebate.from}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+	                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.fromDateRebate) ?  'N/A' : deanMessRebateDto.fromDateRebate}"></span>
+	                                </div>
+	                            </div>
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.rebate.to}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+	                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.toDateRebate) ?  'N/A' : deanMessRebateDto.toDateRebate}"></span>
+	                            	</div>
+	                            </div>
+	                        </div>
+	                        <div class="row" style="padding-left: 20px;">
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.reason}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+	                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.reason) ?  'N/A' : deanMessRebateDto.reason}"></span>
+	                                </div>
+	                            </div>
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.no.of.days}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+	                                	<span class="normal-font" th:text="${deanMessRebateDto.noOfDays != 0 ?  deanMessRebateDto.noOfDays : 'N/A'}"></span>
+	                            	</div>
+	                            </div>
+	                        </div>
+	                        <div class="row" style="padding-left: 20px;">
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.guide.name}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+	                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.guideName) ?  'N/A' : deanMessRebateDto.guideName}"></span>
+	                                </div>
+	                            </div>
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.common.email}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+	                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.guideEmail) ?  'N/A' : deanMessRebateDto.guideEmail}"></span>
+	                            	</div>
+	                            </div>
+	                        </div>
+	                        <div class="row" style="padding-left: 20px;">
+	                            <div class="col-lg-6 mb-3">
+	                                <label class="form-label">
+	                                    <span th:text="#{message.label.document.type}"> </span>                                    
+	                                </label>
+	                                <div class="form-control form-graybox">
+									    <span class="normal-font" th:if="${deanMessRebateDto.fileName != null}" th:text="#{message.label.attach.document}"></span>
+									    <span class="normal-font" th:if="${deanMessRebateDto.documentType == 'self'}" th:text="#{message.label.self.declaration}"></span>
+									    <span class="normal-font" th:unless="${deanMessRebateDto.documentType == 'doc' or deanMessRebateDto.documentType == 'self'}" th:text="'N/A'"></span>
+									</div>
+	                            </div>
+	                        </div>
+	                        <div th:if="${deanMessRebateDto.fileName != null}">
+	                        	<div class="row" style="padding-left: 20px;">
+		                            <div class="col-lg-6 mb-3">
+		                                <label class="form-label" th:text="#{message.label.reported.document}"></label>
+                                        <ul class="list-group">
+                                            <li class="list-group-item" >
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.fileName) ? 'N/A' : deanMessRebateDto.fileName}"></span>
+                                                    <button class="btn btn-tmPrimary btn-sm" type="button" data-bs-toggle="tooltip"
+                                                            data-bs-custom-class="custom-popover" data-bs-trigger="hover focus"
+                                                            th:attr="data-bs-title=#{message.label.download.file}"
+                                                            th:data-filename="${deanMessRebateDto.fileName}" onclick="triggerDownload(this)">
+                                                        <i class="fa fa-download pdf text-white"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        </ul>
+		                            </div>
+		                        </div>
+	                        </div>                        
+	                        <div th:if="${deanMessRebateDto.documentType == 'self'}">
+	                        	<div class="row" style="padding-left: 20px;">
+		                            <div class="col-lg-6 mb-3">
+		                                <label class="form-label">
+		                                    <span th:text="#{message.label.self.declaration.details}"> </span>                                    
+		                                </label>
+		                            </div>
+		                        </div>
+	                        	<div class="row" style="padding-left: 20px;">
+		                            <div class="col-lg-6 mb-3">
+		                                <label class="form-label">
+		                                    <span th:text="#{message.label.vacate.date}"> </span>                                    
+		                                </label>
+		                                <div class="form-control form-graybox">
+		                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.vacateDate) ?  'N/A' : deanMessRebateDto.vacateDate}"></span>
+		                                </div>
+		                            </div>
+		                            <div class="col-lg-6 mb-3">
+		                                <label class="form-label">
+		                                    <span th:text="#{message.label.home.town}"> </span>                                    
+		                                </label>
+		                                <div class="form-control form-graybox">
+		                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.homeTown) ?  'N/A' : deanMessRebateDto.homeTown}"></span>
+		                            	</div>
+		                            </div>
+		                        </div>
+		                        <div class="row" style="padding-left: 20px;">
+		                            <div class="col-lg-6 mb-3">
+		                                <label class="form-label">
+		                                    <span th:text="#{message.label.self.declaration.date}"> </span>                                    
+		                                </label>
+		                                <div class="form-control form-graybox">
+		                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.selfDeclarationDate) ?  'N/A' : deanMessRebateDto.selfDeclarationDate}"></span>
+		                                </div>
+		                            </div>
+		                            <div class="col-lg-6 mb-3">
+		                                <label class="form-label">
+		                                    <span th:text="#{message.label.self.declaration.signature}"> </span>                                    
+		                                </label>
+		                                <div class="form-control form-graybox">
+		                                	<span class="normal-font" th:text="${#strings.isEmpty(deanMessRebateDto.selfDeclartionSignature) ?  'N/A' : deanMessRebateDto.selfDeclartionSignature}"></span>
+		                            	</div>
+		                            </div>
+		                        </div>
+	                        </div>
+	                        
+	                        <div class="row">
+	                            <div class="col-lg-12">
+	                                <h2 class="tmsub-title">
+	                                    <span th:text="#{message.label.approval.status.details}"></span>
+	                                </h2>
+	                            </div>
+	                        </div>
+	                        <div class="row" style="padding-left: 20px;">
+	                            <div class="col-lg-6 mb-3">
+	                                <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+	                                	<span class="normal-font" th:utext="${#strings.isEmpty(deanMessRebateDto.approvalStatusDetails) ?  'N/A' : deanMessRebateDto.approvalStatusDetails}"></span>
+	                            	</div>
+	                            </div>
+	                        </div>
+	                        <div th:if="${deanMessRebateDto != null && deanMessRebateDto.deanMessRebateWorkflowDtoList != null && deanMessRebateDto.deanMessRebateWorkflowDtoList.size() > 0}">
+							    <th:block th:each="deanMessRebateWorkflowDto : ${deanMessRebateDto.deanMessRebateWorkflowDtoList}">
+							        <div th:if="${deanMessRebateWorkflowDto != null}">
+							            <div class="row" style="padding-left: 20px;">
+							                <div class="col-lg-6 mb-3" th:if="${deanMessRebateWorkflowDto.approvalNotes != null && deanMessRebateWorkflowDto.approvalNotes != ''}">
+							                    <label class="form-label">
+							                        <span th:text="#{message.label.approval.notes}"> </span>                                    
+							                    </label>
+							                    <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+							                        <span class="normal-font" th:text="${deanMessRebateWorkflowDto.approvalNotes}"></span>
+							                    </div>
+							                </div>
+							                <div class="col-lg-6 mb-3" th:if="${deanMessRebateWorkflowDto.rejectionNotes != null && deanMessRebateWorkflowDto.rejectionNotes != ''}">
+							                    <label class="form-label">
+							                        <span th:text="#{message.label.rejection.notes}"> </span>                                    
+							                    </label>
+							                    <div class="form-control form-graybox text-wrap" style="height: 99px; overflow: auto;">
+							                        <span class="normal-font" th:text="${deanMessRebateWorkflowDto.rejectionNotes}"></span>
+							                    </div>
+							                </div>
+							            </div>
+							        </div>
+							    </th:block>
+							</div>
+							<div th:if="${(deanMessRebateDto.status == 'Validating' || deanMessRebateDto.status == 'Default' || deanMessRebateDto.status == 'Pending') && (deanMessRebateDto.workflowApprovalStatus == 'Default' || deanMessRebateDto.workflowApprovalStatus == 'Pending')}">
+							    <div class="row" style="padding-left: 20px;">
+							        <div class="col-lg-6 mb-3">
+							            <label class="form-label">
+							                <span th:text="#{message.label.approval.notes}"></span>
+							            </label>
+							            <textarea id="workflowApprovalNotes" class="form-control" th:field="*{deanMessRebateDto.workflowApprovalNotes}" rows="3"></textarea>
+							        </div>
+							        <div class="col-lg-6 mb-3">
+							            <label class="form-label">
+							                <span th:text="#{message.label.reject.reason}"></span>
+							            </label>
+							            <textarea id="workflowRejectReason"  class="form-control" th:field="*{deanMessRebateDto.workflowRejectReason}" rows="3"></textarea>
+							        </div>
+							    </div>
+							    <div class="row" style="padding-left: 20px;">
+							        <div class="col-lg-6 mb-3">
+							            <button type="button" class="btn btn-success" name="action" 
+							                    value="OverrideAndApproved" 
+							                    id="overrideAndApproved"
+                                                th:data-mail="${mail}"
+							                    onclick="handleButtonClick('OverrideAndApproved', this)"
+							                    th:text="${deanMessRebateDto.approvalLevel != 3 || (deanMessRebateDto.status == 'Pending' && deanMessRebateDto.workflowApprovalStatus == 'Pending')} ? #{message.button.approve} : #{message.button.ovveride.approve}">
+		                                 </button>
+							        </div>
+							        <div class="col-lg-6 mb-3">
+							            <button type="button" class="btn btn-danger" name="action" 
+							            		value="Rejected" 
+							            		id="rejected"
+                                                th:data-mail="${mail}"
+							            		onclick="handleButtonClick('Rejected', this)"
+							            		th:text="#{message.label.reject}">
+							           	</button>
+							        </div>
+							    </div>
+							</div>
+	                    </form>
+	                </th:block>
+            	</div>                
+            </div>
+        </div>
+    </div>
+</main>
+<!-- //Main-->
+
+<!-- Footer-->
+<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+    <script th:src="@{/assets/js/dean/dean-dashboard.js}"></script>
+    <script th:inline="javascript">
+    	window.deanMessRebateDto = /*[[${deanMessRebateDto}]]*/ {};
+    	console.log('deanMessRebateDto : ' + window.deanMessRebateDto);
+    	const messRebateURL = /*[[#{url.dean.approval.mess.rebate}]]*/ '';
+		const updteStatusURL = /*[[#{url.dean.approval.mess.rebate.update.status}]]*/ '';		
+		const studentMessRebateURL = /*[[#{url.student.mess.rebate}]]*/ '';
+		const downloadURL = /*[[#{url.download}]]*/ '';
+    </script>
+</th:block>
+<!-- //Footer-->
+</body>
+</html>

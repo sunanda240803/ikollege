@@ -1,0 +1,250 @@
+<th:block th:fragment="title(headerForm)">
+    <div class="page-loading d-none" id="loader">
+        <div role="status">
+            <img th:src="@{/assets/img/hm-iitm-logo.gif}" alt="">
+            <h4>Loading...</h4>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="header fixed-top">
+        <nav class="navbar navbar-expand-lg p-0">
+            <div class="container-fluid justify-content-around p-0">
+                <div class="row w-100">
+                    <div class="col-lg-5">
+                        <!--Client Logo-->
+                        <div class="header-logo d-flex align-items-center justify-content-between">
+                            <a href="#" class="d-flex align-items-center">
+                                <img th:src="@{/assets/img/client/hm_iitm_logo.png}" alt="hmiitm">
+                                <span>
+									<span th:text="${institute.schoolName}"></span><br>
+									<span class="text-dark"th:text="${institute.location}"></span>
+								</span>
+                            </a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                    aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="fa-solid fa-outdent"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 pe-lg-0">
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link active dropdown-toggle" role="button"
+                                       data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-house"></i> Home
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-arrow listMenu">
+                                        <li><a class="dropdown-item" href="/hosteldine/index"><i class="fa-solid fa-gauge"></i>
+                                            Dashboard</a></li>
+                                    </ul>
+                                </li>
+                                <!--MegaMenu-->
+                                <li class="nav-item dropdown position-static">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        <i class="fa-solid fa-boxes-stacked"></i> Modules
+                                    </a>
+                                    <ul class="dropdown-menu megaMenu">
+                                        <div class="container-fluid">
+                                            <!--Modules Search Row-->
+                                            <div class="row mt-2 mb-3">
+                                                <div class="col-lg-6 mx-auto">
+                                                    <div class="input-group search-module">
+                                                        <input type="text" class="form-control  form-control-sm"
+                                                               placeholder="Search Module Menu"
+                                                               aria-label="Search Module Menu"
+                                                               aria-describedby="search-module">
+                                                        <button class="btn btn-sm btn-tmPrimary" type="button"
+                                                                id="search-module">
+                                                            <i class="fas fa-search me-1"></i> Module Menu
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Menu Row-->
+                                            <div class="row mb-3">
+                                                <div class="col-lg-2">
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-school"></i> Admin Settings
+                                                        </h3>
+
+                                                        <li><a href="school-info.html"><i
+                                                                class="fas fa-angle-double-right"></i> College
+                                                            Information</a></li>
+                                                        <li><a href="management-details.html"><i
+                                                                class="fas fa-angle-double-right"></i> Management
+                                                            Details</a></li>
+                                                        <li><a href="account-privileges.html"><i
+                                                                class="fas fa-angle-double-right"></i> Role
+                                                            Privileges</a></li>
+                                                        <li><a th:href="@{#{url.course.master}}"><i
+                                                                class="fas fa-angle-double-right"></i> Course Master
+                                                        </a></li>
+                                                        <li><a th:href="@{#{url.course.master}}"><i
+                                                                class="fas fa-angle-double-right"></i> Department
+                                                        </a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-user-tie"></i> Caterer</h3>
+
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Caterer Master</a></li>
+                                                    </ul>
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-user-tie"></i> Staff</h3>
+
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Staff
+                                                            Search</a></li>
+                                                        <li><a th:href="@{#{url.staff.details}}"><i
+                                                                class="fas fa-angle-double-right"></i> New
+                                                            Staff</a></li>
+
+                                                        <li><a th:href="@{#{url.designation.master}}"><i
+                                                                class="fas fa-angle-double-right"></i> Designation
+                                                            Master</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Activate Staff</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-user-graduate"></i> Student
+                                                        </h3>
+
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Common
+                                                            Search</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Student Search</a></li>
+                                                        <li><a th:href="@{#{url.student.bulk.upload}}"><i class="fas fa-angle-double-right"></i> Add
+                                                            Students Bulk upload</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-briefcase"></i> Asset</h3>
+
+                                                        <li><a th:href="@{#{url.asset.configuration}+#{url.list}}"><i
+                                                                class="fas fa-angle-double-right"></i> Asset
+                                                            Configuration</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Search
+                                                            Asset</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Add
+                                                            Asset</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Asset
+                                                            Maintenance</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Asset
+                                                            Verify</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-hotel"></i> Hostel</h3>
+                                                        <li><a th:href="@{#{url.hostel.master}}"><i
+                                                                class="fas fa-angle-double-right"></i> Hostel
+                                                            Master</a></li>
+                                                        <li><a th:href="@{#{url.floor.master}}"><i
+                                                                class="fas fa-angle-double-right"></i> Floor
+                                                            Master</a></li>
+                                                        <li><a th:href="@{#{url.hostel.room.info}}"><i
+                                                                class="fas fa-angle-double-right"></i> Room
+                                                            Configuration</a></li>
+                                                        <li><a th:href="@{#{url.hostel.bulk.room.config}}"><i
+                                                                class="fas fa-angle-double-right"></i> Bulk Room
+                                                            Configuration</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Room
+                                                            Inventory</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Room
+                                                            Allotment</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Expense</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Expenses Details</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Attendance</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Search</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Staff
+                                                            Room Allotment</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Staff
+                                                            Attendance</a></li>
+                                                        <li><a th:href="@{#{url.hostel.user.mapping}+#{url.list}}"><i
+                                                                class="fas fa-angle-double-right"></i> Hostel User
+                                                            Mapping</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <ul>
+                                                        <h3 class="title"><i class="fas fa-utensils"></i> Mess</h3>
+                                                        <li><a th:href="@{#{url.mess.master}}"><i
+                                                                class="fas fa-angle-double-right"></i> Mess
+                                                            Master</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Mess
+                                                            Vendor Allotment</a></li>
+                                                        <li><a th:href="@{#{url.mess.vendor.master}+#{url.list}}"><i
+                                                                class="fas fa-angle-double-right"></i> Vendor
+                                                            Master</a></li>
+                                                        <li><a th:href="@{#{url.mess.session}}"><i
+                                                                class="fas fa-angle-double-right"></i>Mess
+                                                            Session</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Mess
+                                                            Controller</a></li>
+                                                        <li><a th:href="@{#{url.mess.terminal}}"><i class="fas fa-angle-double-right"></i> Mess
+                                                            Terminal</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Mess
+                                                            Capacity Settings</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Food
+                                                            Court Credit</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i> Food
+                                                            Court Debit</a></li>
+                                                        <li><a href="#"><i class="fas fa-angle-double-right"></i>
+                                                            Student Mess Allotment</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ul>
+                                </li>
+                                <!--//MegaMenu-->
+                                <li class="nav-item dropdown accountMenu">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        <i class="fa-solid fa-circle-user"></i> My Account
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-arrow listMenu">
+                                        <li class="dropdown-header d-flex align-items-center ">
+                                            <img th:src="@{/assets/img/user-img1.png}" alt="Profile" class="rounded-circle">
+                                            <span>
+												<h6><span th:text="${@securityCtxUtil.userName()}"></span></h6>
+												Software Admin
+											</span>
+                                        </li>
+                                        <li><a class="dropdown-item" href="logout"> <i
+                                                class="fa-solid fa-arrow-right-from-bracket"></i> Logout </a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!--Page Title-->
+        <div class="pagetitle">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1>Admin Dashboard</h1>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <button type="button" id="cancelButton" onclick="window.history.back();" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-circle-arrow-left me-1"></i> Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- //Header -->
+</th:block>

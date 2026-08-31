@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body">
+						<form class="themeForm mb-4" th:action="@{#{url.bulk.room.inventory}+#{url.save}}" method="post"
+							enctype="multipart/form-data" th:object="${roomInventoryForm}" id="roomInventoryForm">
+							<div class="row" id="bulkRoomInventory">
+								<div class="row">
+									<div class="col-lg-12">
+										<h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.download}"></span></h2>
+									</div>
+								</div>
+								<div class="col-lg-12 mb-3 d-flex align-items-center">
+									<span class="fs-5">
+										<u class="text-tmPrimary">
+											<a th:href="@{#{url.bulk.room.inventory}+#{url.template.download}}"
+											   id="excelTemplate">
+												<span th:text="#{message.label.click.here.caps}"></span>
+											</a>
+										</u>
+										<span th:text="#{message.label.hostel.inventory.click.here.note}"></span>
+									</span>
+								</div>
+								<div class="row">
+									<div class="col-lg-12">
+										<h2 class="tmsub-title"><span th:text="#{message.label.bulk.upload.file.header}"></span></h2>
+									</div>
+								</div>
+								<label class="form-label me-3" for="uploadFile">
+									<span th:text="#{message.label.bulk.upload.file}"></span>
+									<th:block th:replace="~{common/template/mandatory-symbol}" />
+								</label>
+								<div class="col-lg-3">
+									<input type="file" class="form-control" name="file" id="uploadFile"
+										   placeholder="Upload File" accept=".xlsx, .xls">
+									<div class="invalid-feedback uploadFileReq errMsg d-none" th:text="#{message.validation.upload.file.required}"></div>
+									<div class="invalid-feedback invalidType errMsg d-none" th:text="#{message.validation.invalid.file.type}"></div>
+									<div class="invalid-feedback invalidName errMsg d-none" th:text="#{message.validation.invalid.file.name}"></div>
+								</div>
+								<div class="col-lg-3 my-2">
+									<button type="submit" id="uploadFileButton" class="btn btn-purple px-4 me-2"
+											aria-hidden="true" onclick="return validateFile()">
+										<i class="fa-solid fa-file-arrow-up me-1"></i>
+										<span th:text="#{message.button.upload.file}"></span>
+									</button>
+								</div>
+							</div>
+
+<!--								</div>-->
+							<div class="errorText"
+								 th:if="${roomInfoDto != null && roomInfoDto.errorList != null && !roomInfoDto.errorList.isEmpty()}">
+								<ul>
+									<li th:each="error : ${roomInfoDto.errorList}">
+										<span th:text="${error}" class="text-danger"></span>
+									</li>
+								</ul>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Footer-->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<!-- Datad Table JS FILES -->
+		<script th:src="@{/assets/js/hostel/bulk-room-inventory.js}"></script>
+
+	</th:block>
+	<!-- Footer-->
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+<div th:replace="~{common/modal-template ::
+   modal('dean-dashboard-resend-mail-modal', ~{::modalHeader}, ~{::modalBody}, null, null, null, null, 'lg')}">
+    <modalHeader></modalHeader>
+    <modalBody>
+        <form class="themeForm" id="deanDashboardResendMail" th:object="${deanApprovalDto}" method="post">
+            <div class="row">
+				<input type="hidden" th:name="data" th:value="${data}" th:id="data" />
+				<input type="hidden" th:value="${url}" th:id="url" />
+            </div>
+        </form>
+    </modalBody>
+</div>

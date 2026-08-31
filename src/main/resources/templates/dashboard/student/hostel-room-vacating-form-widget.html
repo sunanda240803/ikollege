@@ -1,0 +1,31 @@
+<div th:replace="~{common/widget-template :: content('hostel-room-vacating-form-widget', ~{::modalHeader}, ~{::modalBody}, ~{::modalFooter})}">
+  <modalHeader th:text="#{message.label.hostel.room.vacating.form}"></modalHeader>
+  <modalBody>
+    <form th:object="${StudentHostelRoomVacatingRequestDto}">
+      <!-- Show details if date and status are not empty -->
+      <div class="row text-center" th:if="${!isDateAndStatusEmpty}">
+        <div class="col-lg-6">
+          <span class="text-tmPrimary fw-bold" th:text="#{message.label.applied.on}"></span><br>
+          <div class="fw-bold text-primary" th:text="${#temporals.format(createdAt, #messages.msgOrNull('date.format'))}"></div>
+        </div>
+        <div class="col-lg-6">
+          <span class="text-tmPrimary fw-bold" th:text="#{message.label.status}"></span><br>
+          <th:block th:include="common/template/approval-status-badge :: statusBadge(${status},null)"></th:block>
+        </div>
+      </div>
+
+      <!-- Show note if date and status are empty -->
+      <div class="row text-center justify-content-center fw-bold" th:if="${isDateAndStatusEmpty}"
+           th:text="#{message.label.hostel.room.vacating.form.note}"></div>
+    </form>
+  </modalBody>
+  <modalfooter>
+    <th:block>
+      <div class="text-end">
+        <a th:href="@{#{url.hostel.room.vacating.form}}" class="text-secondary mb-0 align-end"><span th:text="#{message.label.click.view.apply}"></span>
+          <a th:href="@{#{url.hostel.room.vacating.form}}" class="ms-2"><i class="fa-solid fa-arrow-right"></i> </a>
+        </a>
+      </div>
+    </th:block>
+  </modalfooter>
+</div>

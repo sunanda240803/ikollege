@@ -1,0 +1,19 @@
+<div th:replace="~{common/modal-template :: modal('ldap-authentication-modal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Save, null, 'sm')}">
+	<modalHeader> <span
+		th:text="#{message.label.authentication}"></span> </modalHeader>
+	<modalBody>
+	<form class="themeForm" id="ldapAuthenticationId">
+		<div class="row">
+			<div class="col-lg-12 mb-3">
+				<label class="form-label" for="facilityName"> 
+					<span th:text="#{message.label.ldap.password}"></span> 
+					<th:block th:replace="~{common/template/mandatory-symbol}" />
+				</label> 
+				<input type="password" class="form-control required-input" id="password" th:name="password" maxlength="64"
+					th:placeholder="#{message.placeholder.password}" required>
+				<div class="invalid-feedback" th:text="#{message.validation.password.required}"></div>
+			</div>
+		</div>
+	</form>
+	</modalBody>
+</div>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{common/head :: common_header(~{::link})}"></head>
+	<!--If you want to specify custom styling, create its own css page and link it here.-->
+	<link rel="stylesheet" th:href="@{/assets/css/hostel/caterer-ledger-mapping.css}">
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- //Main-->
+	<main id="main" class="main">
+		<!--School Info Section-->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-lg-4">
+								<form class="themeForm g-3 needs-validation"
+									id="catereMappingForm"
+									th:action="@{#{url.caterer.ledger.mapping}}"
+									method="post" th:object="${catererLedgerMappingDto}">
+									<div class="row">
+										<div class="col-lg-12">
+											<h2 class="tmsub-title"
+												th:text="#{message.label.caterer.account.head.user.name}"></h2>
+										</div>
+									</div>
+									<span class="form-text mb-3"
+										th:text="#{message.label.caterer.account.head.user.name.note}"></span>
+									<div class="col-lg-12 mb-3">
+										<label for="userName" class="form-label">
+											<span th:text="#{message.label.username}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+										<div class="input-group mb-3">
+											<input type="text" class="form-control required-input"
+												id="userName" th:field="*{userName}" list="names"
+												th:placeholder="#{message.placeholder.username}"
+												th:classappend="${#fields.hasErrors('userName')} ? 'is-invalid' : ''">
+											<datalist id="names">
+												<option th:each="user : ${userList}" th:text="${user.id.username}"></option>
+											</datalist>
+											<div class="invalid-feedback backendErrors" th:errors="*{userName}"></div>
+											<div class="invalid-feedback-frontEnd" th:text="#{message.validation.enter.usernme}"></div>
+											<div class="invalid-req-feedback d-none" th:text="#{message.validation.enter.usernme}"></div>
+											<div class="invalid-user-feedback d-none" th:text="#{message.validation.error.user.name.not.valid}"></div>
+										</div>
+									</div>
+									<div class="col-lg-12 mb-3">
+										<!-- Label for Input -->
+										<label class="form-label" for="searchAccountHead">
+											<span th:text="#{message.label.caterer.account.head}"></span>
+											<th:block th:replace="~{common/template/mandatory-symbol}" />
+										</label>
+										<!-- Search Input -->
+										<input type="text" class="form-control" id="searchAccountHead" th:field="*{accHead}"
+											th:placeholder="#{message.label.caterer.account.head.search}"
+											th:classappend="${#fields.hasErrors('accHead')} ? 'is-invalid' : ''">
+										<div class="accountHead border rounded p-3">
+											<!-- Select All Option -->
+											<div class="form-check mb-2" id="searchAllCheck">
+												<input class="form-check-input required-input" type="checkbox" value="" id="selectAllAccHead">
+												<label class="form-label fw-bold" for="selectAllAccHead"
+													th:text="#{message.label.select.all.caterer.account.head}">
+												</label>
+											</div>
+											<!-- Individual Options -->
+											<div class="searchAccHead">
+												<div class="form-check" th:each="accHead, iter: ${catererLedgerMappingDto.catererAccountHeadList}">
+												    <input type="checkbox"
+												           th:field="*{catererAccountHeadList[__${iter.index}__].status}" 
+												           class="form-check-input accHeadCheckbox"
+												           th:id="${'accHead_' + iter.index}">
+												    <input type="hidden" th:field="*{catererAccountHeadList[__${iter.index}__].id.acchead}">
+												    <label class="form-check-label"
+												           th:for="${'accHead_' + iter.index}">
+												        <span th:text="${accHead.accname}"></span>
+												    </label>
+												</div>
+											</div>
+										</div>
+										<!-- Validation Message -->
+										<div class="invalid-feedback backendErrors mt-2" th:errors="*{accHead}"></div>
+										<div class="invalid-feedback-frontEnd mt-2" th:text="#{message.validation.caterer.account.head.name}"></div>
+										<div class="invalid-req-feedback d-none" th:text="#{message.validation.caterer.account.head.name}"></div>
+									</div>
+									<div class="modal-footer col-lg-12 mt-2">
+										<button type="submit" id="saveCaterer" class="btn btn-primary" onclick="return validateUserName()">
+											<i class="fa-solid fa-save"></i> <span
+												th:text="#{message.button.save}"></span>
+										</button>
+									</div>
+								</form>
+							</div>
+							<div class="col-lg-8">
+								<div class="row">
+									<div class="col-lg-12">
+										<h2 class="tmsub-title" th:text="#{message.label.caterer.user.mapping.list}"></h2>
+									</div>
+								</div>
+								<form action="#" method="get">
+									<div class="row mb-3">
+										<div class="col-auto">
+											<label for="search" class="form-label">
+												<span th:text="#{message.label.keyword}"></span>
+												<i class="fas fa-info-circle text-secondary" data-bs-toggle="tooltip"
+													data-bs-title="Use Account Head Name and User Name to search"></i>
+											</label> 
+											<input type="text" class="form-control" name="search" id="search"
+				                                   th:value="${form.search}">
+										</div>
+										<div class="col-auto mt-3">
+											<button class="btn btn-secondary mt-3" type="submit">
+												<span th:text="#{message.label.search}"></span>
+											</button>
+										</div>
+									</div>
+								</form>
+								<div class="table-responsive themeTable">
+									<table id="catererMappingTable"
+										class="table table-bordered nowrap w-100">
+										<thead>
+											<tr>
+												<th th:text="#{message.label.username}"></th>
+												<th th:text="#{message.label.account.head.name}"></th>
+												<th class="text-center" th:text="#{message.label.action}"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:if="${form.paginationList != null && form.paginationList.getContent() != null}"
+												th:each="ledgerMapping, iter: ${form.paginationList.getContent()}">
+												<td th:text="${ledgerMapping.catererName}"></td>
+												<td th:text="${ledgerMapping.accname}"></td>
+												<td class="text-center">
+													<div class="d-flex justify-content-center">
+														<button type="button" class="btn btn-outline-danger btn-sm"
+															data-bs-toggle="tooltip"
+															th:id="${'deleteReq_'+iter.index}"
+															th:data-acc-head="${ledgerMapping.accHead}"
+															th:data-caterer-name="${ledgerMapping.catererName}"
+															onclick="deleteMapping(this);" data-bs-title="Delete">
+															<i class="fa-solid fa-trash-can"></i>
+														</button>
+													</div>
+												</td>
+											</tr>
+											<tr th:if="${form.paginationList  == null || form.paginationList.getContent().size() eq 0}">
+												<td colspan="3" class="text-center"><span th:text="#{message.label.no.data.available}"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div
+									th:replace="~{common/template/pagination :: pagination(${form})}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div th:id="modalDiv"></div>
+	<th:block
+		th:replace="~{common/modal/delete-modal :: contents(headerText=#{message.label.confirmation},bodyText=#{message.label.delete.row})}">
+	</th:block>
+	<!-- Footer-->
+	<th:block
+		th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/hostel/caterer-mapping.js}"></script>
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.caterer.ledger.mapping}]]*/ '';
+		</script>
+	</th:block>
+	<!-- Footer-->
+</body>
+</html>

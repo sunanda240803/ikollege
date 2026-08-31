@@ -1,0 +1,77 @@
+/* Click Here Wrapper Styles */
+.click-here-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    border-radius: 30px;
+    padding: 6px 12px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: relative;
+    cursor: default;
+    box-shadow: 0 4px 8px rgba(9, 9, 9, 0.3);
+    animation: blink 2s infinite;
+    margin-left: 15px;
+}
+
+/* Blinking Animation */
+@keyframes blink {
+    20%, 100% { opacity: 2; }
+    50% { opacity: 0; }
+}
+
+/* Glow Effect */
+.click-here-wrapper:before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: -8px;
+    right: -8px;
+    background: rgba(26, 26, 26, 0.4);
+    border-radius: 30px;
+    z-index: -1;
+    filter: blur(4px);
+}
+
+/* Button Container */
+.btn-container {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: nowrap;
+}
+
+.btn-container .click-here-animation,
+.btn-container .register-btn {
+    flex: 1;
+    padding: 0;
+}
+
+.btn-container .click-here-animation {
+    margin-right: 5px;
+}
+
+/* Register Button Styling */
+.register-btn {
+    margin-right: 55px;
+    text-align: right;
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .btn-container {
+        flex-direction: row; /* Stack elements vertically on small screens */
+    }
+
+    .btn-container .click-here-animation,
+    .btn-container .register-btn {
+        margin-right: 0;
+    }
+
+    .register-btn {
+        margin-left: 15px; /* Add space between elements */
+    }
+}

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{common/head :: common_header(~{::link})} ">
+</head>
+
+<body>
+	<header th:replace="~{common/header:: title(${headerForm})}"></header>
+	<!-- Main -->
+	<main id="main" class="main">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card main-card mt-4">
+					<div class="card-body">
+						<form class="themeForm" id="convocationForm" th:action="@{#{url.accommodation.mess.convocation}}"
+							th:object="${convocationAdditionalCouponsDto}" method="post">
+							<div class="row">
+								<div class="col-lg-12 mb-3">
+									<th:block th:replace="~{common/template/note :: noteContent('message.label.note', ${convocationNotes}, null)}"></th:block>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title" th:text="#{message.label.student.details}"></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.iitm.roll.no}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="text" id="studentId" class="form-control uppercase" th:field="*{convocation.studentId}"
+										th:placeholder="#{message.label.enter}+' '+#{message.label.iitm.roll.no}" required maxlength="10"
+										   oninput="this.value = this.value.toUpperCase()"  onblur="checkIfStudentExist()"
+										   th:classappend="${#fields.hasErrors('convocation.studentId')} ? 'is-invalid' : ''">
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.studentId}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.label.validation.student.id.is.required}"></div>
+									<div class="invalid-req-feedback d-none" th:text="#{message.label.validation.student.id.is.required}"></div>
+									<div class="invalid-not-exist-feedback d-none" th:text="#{message.label.validation.student.id.exist}"></div>
+									<div class="invalid-accomm-exist-feedback d-none" th:text="#{message.label.student.convocation.accommodation.already.exist}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.student.name}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="text" class="form-control isAlphaAndSpace required-input" th:field="*{convocation.studentName}"
+										id="studentName" th:placeholder="#{message.label.enter}+' '+#{message.label.student.name}" maxlength="64" required
+										th:classappend="${#fields.hasErrors('convocation.studentName')} ? 'is-invalid' : ''">
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.studentName}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.student.details.name}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.gender}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" th:classappend="${#fields.hasErrors('convocation.gender')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" value="M" id="male"
+												  th:field="*{convocation.gender}" required>
+											<label class="form-check-label" for="male"><span th:text="#{message.label.male}"></span></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" value="F" id="female"
+												   th:field="*{convocation.gender}" required>
+											<label class="form-check-label" for="female"><span th:text="#{message.label.female}"></span></label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.gender}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.student.details.gender}"></div>							
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.personal.email.id}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="text" id="email" class="form-control required-email" th:field="*{convocation.mailId}"
+										th:placeholder="#{message.label.enter}+' '+#{message.label.email}"
+										th:classappend="${#fields.hasErrors('convocation.gender')} ? 'is-invalid' : ''">
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.mailId}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.email.id.required}"></div>
+									<div class="invalid-req-feedback d-none" th:text="#{message.validation.email.id.required}"></div>
+									<div class="invalid-valid-feedback d-none" th:text="#{message.validation.email.id}"></div>
+								</div>
+								<div class="col-lg-3 mb-3">
+									<label class="form-label">
+										<span th:text="#{message.label.menu}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<select class="form-select required-input" required th:field="*{convocation.menuType}"
+										th:classappend="${#fields.hasErrors('convocation.menuType')} ? 'is-invalid' : ''">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.menu}"></option>
+										<option th:each="menu : ${menuType}" th:value="${menu}" th:text="${menu}"></option>
+									</select>
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.menuType}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.menu.required}"></div>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-lg-12">
+									<h2 class="tmsub-title" th:text="#{message.label.hostel.accommodation}"></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-6 mb-3">
+									<label class="form-label">
+										<span th:utext="${convocationAccommodationQuestion}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<input type="hidden" id="accommodationPreference" name="convocation.accommodationPreference"
+									       th:value="${convocationAdditionalCouponsDto.convocation != null ? convocationAdditionalCouponsDto.convocation.accommodationPreference : ''}">
+									<input type="hidden" id="accommodationStatus" name="convocation.accommodationStatus"
+									       th:value="${convocationAdditionalCouponsDto.convocation != null ? convocationAdditionalCouponsDto.convocation.accommodationStatus : ''}">
+									<div class="checkRadio-bg form-control" id="needAccommodationOption"
+									     th:classappend="${#fields.hasErrors('convocation.accommodationPreference')} ? 'is-invalid' : ''">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" id="needAccommodationYes"
+											       name="needAccommodationChoice" value="true"
+											       th:attr="data-preference=${accommodationPreferenceAccommodation}"
+											       required>
+											<label class="form-check-label" for="needAccommodationYes">
+												<span th:text="#{message.label.yes}"></span>
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" id="needAccommodationNo"
+											       name="needAccommodationChoice" value="false" required>
+											<label class="form-check-label" for="needAccommodationNo">
+												<span th:text="#{message.label.no}"></span>
+											</label>
+										</div>
+									</div>
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.accommodationPreference}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.accommodation.required}"></div>
+								</div>
+								<div class="col-lg-12 mb-3 d-none" id="accommodationAllotmentNoteRow">
+									<p class="mb-0" th:utext="${convocationAccommodationNote}"></p>
+								</div>
+								<div class="col-lg-6 mb-3 d-none" id="oldHostelQuestionRow">
+									<label class="form-label">
+										<span th:text="#{message.label.old.hostel.friend}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<div class="checkRadio-bg form-control" id="oldHostelOption">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" id="oldHostelYes"
+											       name="oldHostelChoice" value="true"
+											       th:attr="data-preference=${accommodationPreferenceHostel}"
+											       required>
+											<label class="form-check-label" for="oldHostelYes">
+												<span th:text="#{message.label.yes}"></span>
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input required-input" type="radio" id="oldHostelNo"
+											       name="oldHostelChoice" value="false"
+											       th:attr="data-preference=${accommodationPreferenceHostelNotNeeded}"
+											       required>
+											<label class="form-check-label" for="oldHostelNo">
+												<span th:text="#{message.label.no}"></span>
+											</label>
+										</div>
+									</div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.accommodation.required}"></div>
+								</div>
+								<div class="col-lg-4 mb-3 d-none" id="hostelNameRow">
+									<label class="form-label" for="hostelName">
+										<span th:text="#{message.label.hostel.preference}"></span>
+										<th:block th:replace="~{common/template/mandatory-symbol}" />
+									</label>
+									<select class="form-select" id="hostelName" th:field="*{convocation.hostelName}"
+									        th:classappend="${#fields.hasErrors('convocation.hostelName')} ? 'is-invalid' : ''">
+										<option value="" th:text="#{message.label.select}+' '+#{message.label.hostelName}"></option>
+										<option th:each="hostel : ${hostelList}" th:value="${hostel.hostelName}"
+										        th:text="${hostel.hostelName}"></option>
+									</select>
+									<div class="invalid-feedback backendErrors" th:errors="*{convocation.hostelName}"></div>
+									<div class="invalid-feedback-frontEnd" th:text="#{message.validation.hostel.name.required}"></div>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-lg-12 mb-3">
+									<label class="form-label">
+										<span th:if="${complimentaryCouponDate != null}"
+										      th:text="${#messages.msg('message.label.complimentary.coupons')} + ' ' 
+								               + ${#temporals.format(T(java.time.LocalDate).parse(complimentaryCouponDate), #messages.msg('date.format'))} 
+								               + ' (' + ${#messages.msg('message.label.veg.only')} + ')'">
+										</span>
+									</label>
+									<p th:text="#{message.label.session.wise.complimentary.coupons}"></p>
+									<div class="table-responsive themeTable">
+										<table id="complimentaryCouponsTable" class="table table-bordered nowrap w-100">
+											<thead class="text-center">
+												<tr>
+													<th th:text="#{message.label.date}"></th>
+													<th th:text="#{message.label.breakfast}"></th>
+													<th th:text="#{message.label.lunch}"></th>
+													<th th:text="#{message.label.dinner}"></th>
+													<th th:text="#{message.label.select.all}"></th>
+												</tr>
+											</thead>
+											<tbody class="text-center">
+												<tr>
+													<td>
+														<span th:text="${#temporals.format(T(java.time.LocalDate).parse(complimentaryCouponDate), #messages.msg('date.format'))}">
+													</td>
+													<td>
+														<input th:class="form-check-input" type="checkbox" id="bf" th:field="*{bf}" value="B">
+													 </td>
+													<td>
+														<input th:class="form-check-input" type="checkbox" id="ln" th:field="*{ln}" value="L">
+													 </td>
+													<td>
+														<input th:class="form-check-input" type="checkbox" id="dn" th:field="*{dn}" value="D">
+													 </td>
+													<td>
+														<input th:class="form-check-input" type="checkbox" id="all">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 mb-3">
+									<label class="form-label">
+										<span th:if="${startDate != null && endDate != null}" 
+											th:utext="#{message.label.need.additional.coupons} + ' ' +
+											${#temporals.format(startDate, #messages.msg('date.format'))} 
+											+' - '+ ${#temporals.format(endDate, #messages.msg('date.format'))} 
+											+ '? (' + #{message.label.veg.only} + ')'">
+										</span>
+									</label>
+									<p th:text="#{message.label.session.date.need.additional.coupons}"></p>
+									<div class="mb-4">
+										<!-- Design purpose hidden fields-->
+										<input type="hidden" id="fromDate" th:value="${startDate}">
+										<input type="hidden" id="toDate" th:value="${endDate}">
+										<input type="hidden" id="bfRate" th:value="${bfRate}">
+										<input type="hidden" id="lnRate" th:value="${lnRate}">
+										<input type="hidden" id="dnRate" th:value="${dnRate}">
+										<div class="table-responsive themeTable">
+										    <table id="couponsTable" class="table table-bordered text-center nowrap w-100">
+										        <thead>
+										            <tr>
+														<th><span th:text="#{message.label.date}"></span></th>
+														<th><span th:text="#{message.label.breakfast}"></span> 
+															(<i class="fa-solid fa-indian-rupee-sign"></i>
+															<span id="bfRateDisplay"></span>)
+														</th>
+														<th><span th:text="#{message.label.lunch}"></span> 
+															(<i class="fa-solid fa-indian-rupee-sign"></i>
+															<span id="lnRateDisplay"></span>)
+														</th>
+														<th><span th:text="#{message.label.dinner}"></span> 
+															(<i class="fa-solid fa-indian-rupee-sign"></i>
+															<span id="dnRateDisplay"></span>)
+														</th>
+										            </tr>
+										        </thead>
+										        <tbody id="couponBody">
+										            <!-- Rows will be dynamically inserted here -->
+										        </tbody>												
+												<tfoot>
+													<tr>
+														<th colspan="3" class="text-end">Sub Total (₹)</th>
+														<td>
+															<div class="form-control form-graybox">
+																<span id="subTotalAmount"></span>
+															</div>
+														</td>
+													</tr>
+												</tfoot>
+										    </table>
+										</div>
+										<input type="hidden" id="convocationAccommodationRate" th:value="${convocationAccommodationRate}">
+										<input type="hidden" id="overallAmount" th:field="*{convocation.overallAmount}">
+									</div>
+								</div>
+							</div>
+							<!-- Summary Section -->
+						    <div class="row mb-2">
+						        <div class="col-lg-8 text-end fw-bold">Sub total (₹):</div>
+						        <div class="col-lg-4">
+						            <div class="form-control form-graybox">
+						                <span id="summarySubTotal">0</span>
+						            </div>
+						        </div>
+						    </div>
+						    <div class="row mb-2" id="accommodationRow" style="display:none;">
+						        <div class="col-lg-8 text-end fw-bold">Accommodation (₹):</div>
+						        <div class="col-lg-4">
+						            <div class="form-control form-graybox">
+						                <span id="summaryAccommodation">0</span>
+						            </div>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-lg-8 text-end fw-bold">Total (₹):</div>
+						        <div class="col-lg-4">
+						            <div class="form-control form-graybox">
+						                <span id="summaryTotal">0</span>
+						            </div>
+						        </div>
+						    </div>
+							<div class="col-lg-12 my-4">
+								<div class="d-flex align-items-center justify-content-end">
+									<button type="submit" class="btn btn-aqua px-4 me-3" id="saveForm">
+										<i class="fa-solid fa-credit-card me-1"></i>
+										<span id="submitButtonText" th:text="#{message.button.submit}"></span>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Main -->
+	
+	<!-- Footer -->
+	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
+		<script th:src="@{/assets/js/student/accommodation-mess-during-convocation.js}"></script>		
+		<script th:inline="javascript">
+			const baseURL = /*[[#{url.accommodation.mess.convocation}]]*/ '';
+			const studentURL = /*[[#{url.student}]]*/ '';
+			const accommodationExistsURL = /*[[#{url.accommodation.exists}]]*/ '';
+		</script>
+		<script th:inline="javascript">		
+			const messages = {
+				"message.button.submit": /*[[#{message.button.submit}]]*/ "Submit",
+				"message.button.submit.pay": /*[[#{message.button.submit.pay}]]*/ "Submit & Pay"
+			};
+		</script>
+	</th:block>
+	<!-- Footer -->
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<th:block th:fragment="familyDetailsProof">
+	
+	
+	<div id="dynamicTemplate" class="d-none hidden">
+		<div class="col-lg-3 mb-3" id="proof_{index}">
+			<div class="col-lg-12 mb-3">
+				<label class="form-label" for="proofType_{index}">
+					<span th:text="#{message.label.type.of.proof}"></span>
+<!--					<th:block th:replace="~{common/template/mandatory-symbol}" />-->
+				</label>
+				<input type="hidden" name="familyDetails[{index}].id" id="proofTypeId_{index}" data-template="true"/>
+				<select class="form-select" name="familyDetails[{index}].proofType" id="proofType_{index}"
+					data-template="true">
+					 <option value="" th:text="#{message.label.select}+' '+#{message.label.proof.type}"></option>
+					 <option th:each="proofTypes : ${proofTypeList}"
+			            th:value="${proofTypes}" th:text="${proofTypes}">
+			         </option>
+				</select>
+				<div class="invalid-feedback" th:text="#{message.validation.proof.type.required}"></div>
+				<div class="form-control form-graybox" id="fileTypeBox_{index}">
+	        		<span id="fileType_{index}"></span>
+	   			</div>
+			</div>
+			<div class="col-lg-12 mb-3">
+				<label class="form-label" for="description_{index}">
+					<span th:text="#{message.label.description}"></span>
+				</label>
+		    	<input type="text" id="description_{index}" class="form-control"
+		           name="familyDetails[{index}].description" placeholder="Description"> 
+				<div class="form-control form-graybox" id="fileDescBox_{index}">
+	        		<span id="fileDesc_{index}"></span>
+	   			</div>
+			</div>
+			<div class="upload-box d-lg-block">
+				<div class="box text-center has-validation m-0 w-100">
+					<div id="file_{index}">
+						<span th:text="#{message.label.upload.id.proof}"></span>
+<!--						<th:block th:replace="~{common/template/mandatory-symbol}" />-->
+						<input type="file" name="familyDetails[{index}].chooseFile" id="familyIdProof{index}"
+							   class="inputfile inputfile-4" data-template="true"
+							   data-multiple-caption="{count} files selected" data-width="300"
+							   data-height="400" th:accept="'.jpg,.jpeg,.png,.pdf'"
+							   onchange="showSelectedImageAndPDF(this,'familyIdProfImage{index}')"
+							   data-file-type="img">
+						<label for="familyIdProof{index}">
+							<img for="familyIdProof{index}" class="img-fluid d-block mx-auto profile" id="familyIdProfImage{index}"
+								 th:data-default="@{/assets/img/id-proof.png}"
+								 th:src="@{/assets/img/id-proof.png}" alt="">
+						</label>
+						<div class="invalid-feedback"><span th:text="#{message.validation.id.proof}"></span></div>
+						<div class="invalid-value-feedback d-none" th:text="#{message.validation.id.proof}"></div>
+						<div class="invalid-dimension-feedback d-none" th:text="#{message.validation.profile.dimension}"></div>
+						<div class="invalid-size-feedback d-none" th:text="#{message.validation.image.size}"></div>
+						<div class="invalid-img-feedback d-none" th:text="#{message.invalid.proof.file.format}"></div>
+						<div class="invalid-format-feedback d-none" th:text="#{message.invalid.proof.file.format}"></div>
+					</div>
+					<div id="fileNameBox_{index}">
+						<img class="img-fluid d-block mx-auto profile"
+							id="fileName_{index}" data-width="300" data-height="400"
+							th:data-default="@{/assets/img/id-proof.png}" alt=""
+							th:attr="onerror='this.src=\'' + @{/assets/img/id-proof.png} + '\''">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>

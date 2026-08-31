@@ -1,0 +1,143 @@
+<div th:replace="~{common/modal-template ::
+    modal('settlementModal', ~{::modalHeader}, ~{::modalBody}, Cancel, null, Submit, null, 'lg')}">
+
+    <!-- Modal Header -->
+    <modalHeader th:text="#{message.label.noc.settlement}"></modalHeader>
+
+    <!-- Modal Body -->
+    <modalBody>
+        <form class="themeForm" id="settlementForm" th:action="@{#{url.hostel.noc.settlement.save}}" method="post"
+              th:object="${settlementFormDTO}">
+
+            <input type="hidden" th:field="*{studentId}" />
+            <input type="hidden" th:field="*{settlementCount}" />
+            <input type="hidden" th:field="*{hostelName}" />
+            <input type="hidden" th:field="*{description}" />
+            <input type="hidden" th:field="*{ddNo}" />
+            <input type="hidden" th:field="*{amount}" />
+<!--            <input type="hidden" th:field="*{accountHead}" />-->
+
+            <div class="row">
+                
+                <div class="col-lg-12 mt-2">
+                    <h2 class="tmsub-title" th:text="#{message.label.noc.settlement}"></h2>
+                </div>
+
+
+                <!-- Bank -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="bank">
+                        <span th:text="#{message.label.bank} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select id="bank" class="form-select required-input" th:field="*{bankId}" required disabled>
+                        <option value="" th:text="#{message.label.select}"></option>
+                        <option th:each="bank : ${settlementFormDTO.bankList}"
+                                th:value="${bank.id.acchead}"
+                                th:text="${bank.accname}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:text="#{message.validation.bank.required}"></div>
+                </div>
+
+                <!-- System Date -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="systemDate">
+                        <span th:text="#{message.label.date} + ':'"></span>
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{systemDate}" id="systemDate">
+                </div>
+
+                <!-- DD Number -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="ddNo">
+                        <span th:text="#{message.label.reference.number} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" th:field="*{ddNo}" id="ddNo" disabled>
+                </div>
+
+                <!-- Amount -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="amount">
+                        <span th:text="#{message.label.amount} + ':'"></span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input numeric text-end" min="0" th:field="*{amount}" id="amount" disabled>
+                    <div class="invalid-feedback" th:text="#{message.validation.amount.required}"></div>
+                </div>
+
+
+                <!-- DD Date -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="ddDate">
+                        <span th:text="#{message.label.settlement.date} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{ddDate}" id="ddDate" required>
+                    <div class="invalid-feedback" th:text="#{message.validation.settlement.date.required}"></div>
+                </div>
+
+                <!-- description -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="description">
+                        <span th:text="#{message.label.description} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" th:field="*{description}" id="description" disabled>
+                    <div class="invalid-feedback" th:text="#{message.validation.description.required}"></div>
+                </div>
+
+                <!-- Account Head -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="accountHead">
+                        <span th:text="#{message.label.account.head} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <input type="text" class="form-control required-input" th:field="*{accountHead}" id="accountHead" readonly>
+                    <div class="invalid-feedback" th:text="#{message.validation.accountHead.required}"></div>
+                </div>
+
+
+                <!-- Mess Card Type -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="messCard">
+                        <span th:text="#{message.label.mess.card.type} + ':'"></span>
+                    </label>
+                    <input type="text" class="form-control" th:field="*{messCard}" id="messCard" readonly>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <!-- Student Details Section -->
+                <div class="col-lg-12 mt-2">
+                    <h2 class="tmsub-title" th:text="#{message.label.noc.settlement.clearance.detail}"></h2>
+                </div>
+
+                <!-- Clearance Reason -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="clearanceReason">
+                        <span th:text="#{message.label.clearance.reason} + ':'"></span>
+                        <th:block th:replace="~{common/template/mandatory-symbol}" />
+                    </label>
+                    <select id="clearanceReason" class="form-select required-input" th:field="*{clearanceReason}" required>
+                        <option value="" th:text="#{message.label.select}"></option>
+                        <option th:each="reason : ${settlementFormDTO.clearanceReasonList}"
+                                th:value="${reason}"
+                                th:text="${reason}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:text="#{message.validation.clearance.reason.required}"></div>
+                </div>
+
+                <!--Date Of Vacating -->
+                <div class="col-lg-6 mb-3">
+                    <label class="form-label" for="vacatingDate">
+                        <span th:text="#{message.label.vacating.date} + ':'"></span>
+                    </label>
+                    <input type="date" class="form-control required-input" th:field="*{vacatingDate}" id="vacatingDate">
+                </div>
+            </div>
+        </form>
+    </modalBody>
+</div>
