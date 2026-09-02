@@ -19,6 +19,10 @@ public class HTMLPage {
 	public static final String VIEW_INVENTORY = "student/view-inventory";
 
 	// Hostel Master
+	public static final String HOSTEL_CAPACITY = "hostel/hostel-capacity";
+	public static final String HOSTEL_CAPACITY_MODULE = "hostel/hostel-capacity";
+	public static final String HOSTEL_UTILIZATION_REPORT = "hostel/hostel-utilization-report";
+	public static final String YEARWISE_HOSTEL_CAPACITY_REPORT = "hostel/yearwise-hostel-capacity-report";
 	public static final String HOSTEL_MASTER = "hostel/hostel-master";
 	public static final String ADD_EDIT_HOSTEL_MASTER = "hostel/hostel-master-modal";
 	public static final String FLOOR_MASTER = "hostel/floor-master";
