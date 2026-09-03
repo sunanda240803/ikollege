@@ -1,5 +1,6 @@
 package com.iitm.hosteldine.controller.hostel;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.iitm.hosteldine.dto.hostel.HostelCapacityDto;
+import com.iitm.hosteldine.dto.hostel.HostelGuestTariffDto;
 import com.iitm.hosteldine.dto.hostel.HostelStudentDistributionDto;
 import com.iitm.hosteldine.form.common.PaginationForm;
 import com.iitm.hosteldine.service.hostel.HostelCapacityService;
@@ -32,12 +34,22 @@ public class HostelCapacityController {
     @GetMapping
     public String getHostelCapacityList(
             @RequestParam(name = "hostelId", required = false) Long selectedHostelId,
-            @RequestParam(name = "academicYear", required = false, defaultValue = "2026-2027") String selectedAcademicYear,
+            @RequestParam(name = "fromDate", required = false) String fromDate,
+            @RequestParam(name = "toDate", required = false) String toDate,
             PaginationForm form, 
             ModelMap map, 
             HttpServletRequest request) throws Exception {
         
-        List<String> academicYearList = hostelCapacityService.getAcademicYearList();
+        LocalDate today = LocalDate.now();
+        if (toDate == null || toDate.trim().isEmpty()) {
+            toDate = today.toString();
+        }
+        if (fromDate == null || fromDate.trim().isEmpty()) {
+            fromDate = today.minusDays(30).toString();
+        }
+
+        String selectedAcademicYear = fromDate.length() >= 4 ? fromDate.substring(0, 4) + "-" + (Integer.parseInt(fromDate.substring(0, 4)) + 1) : "2026-2027";
+
         List<HostelCapacityDto> capacityList = hostelCapacityService.getHostelCapacityList(selectedAcademicYear);
         
         // Default to ALL Hostels (0L) if none selected
@@ -46,12 +58,17 @@ public class HostelCapacityController {
         }
         
         List<HostelStudentDistributionDto> studentDistributionList = hostelCapacityService.getHostelStudentDistribution(selectedHostelId, selectedAcademicYear);
+        List<HostelGuestTariffDto> guestTariffList = hostelCapacityService.getGuestRoomTariffReport(selectedHostelId);
+        List<HostelCapacityDto> yearWiseCapacityList = hostelCapacityService.getYearWiseHostelCapacityList(selectedHostelId);
 
         map.addAttribute("capacityList", capacityList);
         map.addAttribute("selectedHostelId", selectedHostelId);
-        map.addAttribute("academicYearList", academicYearList);
+        map.addAttribute("fromDate", fromDate);
+        map.addAttribute("toDate", toDate);
         map.addAttribute("selectedAcademicYear", selectedAcademicYear);
         map.addAttribute("studentDistributionList", studentDistributionList);
+        map.addAttribute("guestTariffList", guestTariffList);
+        map.addAttribute("yearWiseCapacityList", yearWiseCapacityList);
 
         commonResponseUtil.updateCommonModelAttributes(map, request, null, form);
         
@@ -61,11 +78,16 @@ public class HostelCapacityController {
     @GetMapping("/downloadReport")
     public ResponseEntity<byte[]> downloadExcelReport(
             @RequestParam(name = "hostelId", required = false) Long selectedHostelId,
-            @RequestParam(name = "academicYear", required = false, defaultValue = "2026-2027") String academicYear) throws Exception {
+            @RequestParam(name = "fromDate", required = false) String fromDate,
+            @RequestParam(name = "toDate", required = false) String toDate) throws Exception {
         
-        byte[] excelBytes = hostelCapacityService.downloadHostelCapacityExcelReport(selectedHostelId, academicYear);
+        LocalDate today = LocalDate.now();
+        if (toDate == null || toDate.trim().isEmpty()) toDate = today.toString();
+        if (fromDate == null || fromDate.trim().isEmpty()) fromDate = today.minusDays(30).toString();
+
+        byte[] excelBytes = hostelCapacityService.downloadHostelCapacityExcelReport(selectedHostelId, fromDate, toDate);
         
-        String fileName = "Hostel_Capacity_Report_" + (academicYear != null ? academicYear : "ALL") + ".xlsx";
+        String fileName = "Comprehensive_Hostel_Capacity_Report_" + fromDate + "_to_" + toDate + ".xlsx";
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
