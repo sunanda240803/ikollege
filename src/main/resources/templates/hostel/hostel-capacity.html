@@ -18,23 +18,7 @@
 			html, body, .stop-scrolling {
 				overflow: auto !important;
 			}
-			.main-card .card-body {
-				min-height: auto !important;
-				padding: 0.75rem !important;
-			}
-			.card {
-				min-height: auto !important;
-				margin-bottom: 0.85rem !important;
-			}
-			.card-body {
-				min-height: auto !important;
-				padding: 0.5rem 0.75rem !important;
-			}
-			.table-responsive {
-				min-height: auto !important;
-			}
 			.compact-card {
-				min-height: auto !important;
 				border: 1px solid #e0e6ed;
 				border-radius: 8px;
 				background: #ffffff;
@@ -43,21 +27,19 @@
 			.stat-pill {
 				font-size: 0.85rem;
 				font-weight: 600;
-				padding: 3px 8px;
+				padding: 4px 10px;
 				border-radius: 6px;
 			}
 			.table-compact th {
 				background-color: #f8f9fa;
-				font-size: 0.82rem;
+				font-size: 0.85rem;
 				text-transform: uppercase;
 				letter-spacing: 0.5px;
 				color: #495057;
-				padding: 6px 8px !important;
 			}
 			.table-compact td {
-				font-size: 0.88rem;
+				font-size: 0.9rem;
 				vertical-align: middle;
-				padding: 5px 8px !important;
 			}
 			.dept-badge {
 				background: #f1f5f9;
@@ -89,34 +71,30 @@
 				<div class="card main-card mt-3">
 					<div class="card-body themeForm p-3">
 						
-						<!-- Filter Controls Header: Date Range + Hostel Select + Single Download Button -->
-						<div class="row mb-3 align-items-center g-2 bg-light p-2 rounded shadow-sm border">
+						<!-- Filter Controls Header: Hostel Select + Academic Year Select + Download Button -->
+						<div class="row mb-3 align-items-center g-2">
 							
-							<!-- From Date Filter -->
-							<div class="col-md-3 col-sm-6">
-								<div class="input-group input-group-sm">
+							<!-- Academic Year Selector -->
+							<div class="col-md-4 col-sm-6">
+								<div class="input-group input-group-sm shadow-sm">
 									<span class="input-group-text bg-secondary text-white fw-bold">
-										<i class="fa-solid fa-calendar-day me-1"></i>From Date
+										<i class="fa-solid fa-calendar-days me-1"></i>Academic Year
 									</span>
-									<input type="date" id="fromDateInput" class="form-select fw-semibold" th:value="${fromDate}" />
-								</div>
-							</div>
-
-							<!-- To Date Filter -->
-							<div class="col-md-3 col-sm-6">
-								<div class="input-group input-group-sm">
-									<span class="input-group-text bg-secondary text-white fw-bold">
-										<i class="fa-solid fa-calendar-check me-1"></i>To Date
-									</span>
-									<input type="date" id="toDateInput" class="form-select fw-semibold" th:value="${toDate}" />
+									<select id="academicYearSelect" class="form-select fw-semibold" onchange="switchAcademicYear(this.value)">
+										<option th:each="yr : ${academicYearList}" 
+												th:value="${yr}" 
+												th:text="${yr}"
+												th:selected="${yr == selectedAcademicYear}">
+										</option>
+									</select>
 								</div>
 							</div>
 
 							<!-- Hostel Selector -->
-							<div class="col-md-3 col-sm-8">
-								<div class="input-group input-group-sm">
+							<div class="col-md-5 col-sm-6">
+								<div class="input-group input-group-sm shadow-sm">
 									<span class="input-group-text bg-tmPrimary text-white fw-bold">
-										<i class="fa-solid fa-building-user me-1"></i>Hostel
+										<i class="fa-solid fa-building-user me-1"></i>Select Hostel
 									</span>
 									<select id="hostelSelect" class="form-select fw-semibold" onchange="renderHostelDetails(this.value)">
 										<option value="0" th:selected="${selectedHostelId == 0}">-- ALL HOSTELS (Consolidated View) --</option>
@@ -129,573 +107,252 @@
 								</div>
 							</div>
 
-							<!-- Filter Action & Excel Download Button -->
-							<div class="col-md-3 col-sm-4 text-md-end text-center d-flex gap-1 justify-content-end">
-								<button type="button" class="btn btn-sm btn-primary fw-bold px-2" onclick="applyDateFilter()">
-									<i class="fa-solid fa-filter me-1"></i>Apply Filter
-								</button>
-								<button type="button" class="btn btn-sm btn-success fw-bold px-2 shadow-sm" onclick="downloadReport()">
-									<i class="fa-solid fa-file-excel me-1"></i>Download Report
+							<!-- Excel Download Button -->
+							<div class="col-md-3 col-sm-12 text-md-end text-center">
+								<button type="button" class="btn btn-sm btn-success fw-bold px-3 shadow-sm" onclick="downloadReport()">
+									<i class="fa-solid fa-file-excel me-1"></i>Download Excel Report
 								</button>
 							</div>
 
 						</div>
 
-						<!-- ========================================== -->
-						<!-- SECTION 1: HOSTEL CAPACITY SUMMARY         -->
-						<!-- ========================================== -->
-						<div class="card mb-3 border-0 shadow-sm">
-							<div class="card-header bg-primary text-white py-2 px-3 d-flex align-items-center justify-content-between rounded-top">
-								<h6 class="fw-bold mb-0 text-white">
-									<i class="fa-solid fa-building me-2"></i>1. Hostel Capacity Summary
-								</h6>
-								<span class="badge bg-white text-primary fw-bold">Hostel Accommodation Capacity</span>
+						<!-- Selected Hostel Info Banner & 3 Key Summary Stats -->
+						<div class="row g-2 mb-3">
+							
+							<!-- Hostel Name Banner -->
+							<div class="col-lg-3 col-md-12">
+								<div class="compact-card p-2 h-100 d-flex flex-column justify-content-center bg-light border-start border-4 border-primary">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<h5 class="mb-0 fw-bold text-tmPrimary" id="displayHostelName">Hostel Name</h5>
+											<small class="text-muted" id="displayHostelCode">Code: -</small>
+										</div>
+										<span id="displayGenderBadge" class="badge bg-primary px-2 py-1">Male</span>
+									</div>
+								</div>
 							</div>
-							<div class="card-body p-2">
 
-								<!-- SINGLE HOSTEL VIEW: Room Category | No. of Rooms | Capacity (Beds) -->
-								<div class="table-responsive compact-card p-0 mb-2" id="singleHostelTableCard" th:style="${selectedHostelId != 0 ? 'display: block;' : 'display: none;'}">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary">
-											<i class="fa-solid fa-hotel me-1 text-primary"></i><span id="displayHostelName">Selected Hostel</span> (<span id="displayHostelCode">Code</span>)
-										</span>
-										<span class="badge bg-primary text-white">Hostel Capacity Breakdown</span>
+							<!-- Total Capacity -->
+							<div class="col-lg-3 col-md-4">
+								<div class="compact-card p-2 h-100 border-start border-4 border-primary">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<span class="text-muted small fw-semibold text-uppercase">Total Capacity</span>
+											<h4 class="mb-0 fw-bold text-dark" id="valTotalCapacity">0</h4>
+										</div>
+										<div class="bg-primary bg-opacity-10 text-primary rounded p-2 fs-5">
+											<i class="fa-solid fa-building"></i>
+										</div>
 									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
-										<thead class="table-light text-center">
-											<tr>
-												<th class="text-start">Room Category</th>
-												<th class="text-center">No. of Rooms</th>
-												<th class="text-center">Capacity (Beds)</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-bed text-info me-2"></i>Single Room</td>
-												<td class="text-center fw-semibold text-dark" id="valSingleRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valSingleCap">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-user-group text-success me-2"></i>Double Room</td>
-												<td class="text-center fw-semibold text-dark" id="valDoubleRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valDoubleCap">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-users text-warning me-2"></i>Triple Room</td>
-												<td class="text-center fw-semibold text-dark" id="valTripleRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valTripleCap">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-people-group text-danger me-2"></i>Quadruple Room</td>
-												<td class="text-center fw-semibold text-dark" id="valQuadRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valQuadCap">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-hotel text-secondary me-2"></i>Dormitory Rooms</td>
-												<td class="text-center fw-semibold text-dark" id="valDormRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valDormCap">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-wheelchair text-dark me-2"></i>PD Rooms</td>
-												<td class="text-center fw-semibold text-dark" id="valPdRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valPdCap">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark"><i class="fa-solid fa-user-check text-primary me-2"></i>Guest Rooms</td>
-												<td class="text-center fw-semibold text-dark" id="valGuestRooms">0</td>
-												<td class="text-center fw-bold text-primary" id="valGuestCap">0</td>
-											</tr>
-										</tbody>
-										<tfoot class="table-light fw-bold text-center">
-											<tr>
-												<td class="text-start text-uppercase">Total</td>
-												<td class="text-dark" id="valTotalRooms">0</td>
-												<td class="text-primary fs-6" id="valTotalCapacity">0</td>
-											</tr>
-										</tfoot>
-									</table>
 								</div>
+							</div>
 
-								<!-- ALL HOSTELS CONSOLIDATED VIEW: Hostel-wise Capacity Summary -->
-								<div class="table-responsive compact-card p-0" id="allHostelsMasterTableCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary small">
-											<i class="fa-solid fa-list-check me-1 text-primary"></i>Hostel-wise Accommodation Bed Capacity Summary
-										</span>
-										<span class="badge bg-primary text-white" th:text="${#lists.size(capacityList) + ' Hostels'}">18 Hostels</span>
+							<!-- Total Utilized -->
+							<div class="col-lg-3 col-md-4">
+								<div class="compact-card p-2 h-100 border-start border-4 border-danger">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<span class="text-muted small fw-semibold text-uppercase">Total Utilized</span>
+											<h4 class="mb-0 fw-bold text-danger" id="valTotalUtilized">0</h4>
+										</div>
+										<div class="bg-danger bg-opacity-10 text-danger rounded p-2 fs-5">
+											<i class="fa-solid fa-user-check"></i>
+										</div>
 									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle text-center">
-										<thead class="table-dark">
-											<tr>
-												<th>#</th>
-												<th class="text-start">Hostel Name</th>
-												<th>Code</th>
-												<th>Single Bed Capacity</th>
-												<th>Double Bed Capacity</th>
-												<th>Triple Bed Capacity</th>
-												<th>Quadruple Bed Capacity</th>
-												<th>Dormitory Capacity</th>
-												<th>PD Room Capacity</th>
-												<th>Guest Room Capacity</th>
-												<th>Total Capacity (Beds)</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="h, iterStat : ${capacityList}">
-												<td class="fw-semibold text-muted" th:text="${iterStat.count}">1</td>
-												<td class="fw-bold text-start text-tmPrimary">
-													<a th:href="@{/hostelCapacity(hostelId=${h.hostelId}, fromDate=${fromDate}, toDate=${toDate})}" th:text="${h.hostelName}" class="text-decoration-none text-tmPrimary">Hostel Name</a>
-												</td>
-												<td><span class="badge bg-secondary" th:text="${h.hostelCode}">BH</span></td>
-												<td class="fw-semibold text-dark" th:text="${h.singleCapacity}">0</td>
-												<td class="fw-semibold text-dark" th:text="${h.doubleCapacity}">0</td>
-												<td class="fw-semibold text-dark" th:text="${h.tripleCapacity}">0</td>
-												<td class="fw-semibold text-dark" th:text="${h.quadCapacity}">0</td>
-												<td class="fw-semibold text-dark" th:text="${h.dormCapacity}">0</td>
-												<td class="fw-semibold text-dark" th:text="${h.pdCapacity}">0</td>
-												<td class="fw-semibold text-dark" th:text="${h.guestCapacity}">0</td>
-												<td class="fw-bold text-primary fs-6" th:text="${h.totalCapacity}">0</td>
-											</tr>
-										</tbody>
-										<tfoot class="table-light fw-bold">
-											<tr id="allHostelsTableFooter">
-												<td colspan="3" class="text-end text-uppercase">Consolidated Total Beds:</td>
-												<td class="text-dark" id="footSingleCap">0</td>
-												<td class="text-dark" id="footDoubleCap">0</td>
-												<td class="text-dark" id="footTripleCap">0</td>
-												<td class="text-dark" id="footQuadCap">0</td>
-												<td class="text-dark" id="footDormCap">0</td>
-												<td class="text-dark" id="footPdCap">0</td>
-												<td class="text-dark" id="footGuestCap">0</td>
-												<td class="text-primary fs-6" id="footTotalCap">0</td>
-											</tr>
-										</tfoot>
-									</table>
 								</div>
+							</div>
 
+							<!-- Total Vacant -->
+							<div class="col-lg-3 col-md-4">
+								<div class="compact-card p-2 h-100 border-start border-4 border-success">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<span class="text-muted small fw-semibold text-uppercase">Total Vacant</span>
+											<h4 class="mb-0 fw-bold text-success" id="valTotalVacant">0</h4>
+										</div>
+										<div class="bg-success bg-opacity-10 text-success rounded p-2 fs-5">
+											<i class="fa-solid fa-bed"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- Compact Room Category Breakdown Table -->
+						<div class="table-responsive compact-card p-0 mb-4">
+							<table class="table table-sm table-hover table-bordered table-compact mb-0">
+								<thead>
+									<tr>
+										<th>Room Category</th>
+										<th class="text-center">Total Rooms</th>
+										<th class="text-center">Total Capacity</th>
+										<th class="text-center">Utilized (Occupied)</th>
+										<th class="text-center">Vacant (Available)</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single Occupancy</strong></td>
+										<td class="text-center fw-semibold" id="valSingleRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valSingleCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valSingleUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valSingleVacant">0</span></td>
+									</tr>
+									<tr>
+										<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double Occupancy</strong></td>
+										<td class="text-center fw-semibold" id="valDoubleRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valDoubleCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valDoubleUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valDoubleVacant">0</span></td>
+									</tr>
+									<tr>
+										<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple Occupancy</strong></td>
+										<td class="text-center fw-semibold" id="valTripleRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valTripleCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valTripleUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valTripleVacant">0</span></td>
+									</tr>
+									<tr>
+										<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple Occupancy</strong></td>
+										<td class="text-center fw-semibold" id="valQuadRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valQuadCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valQuadUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valQuadVacant">0</span></td>
+									</tr>
+									<tr>
+										<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory Capacity</strong></td>
+										<td class="text-center fw-semibold" id="valDormRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valDormCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valDormUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valDormVacant">0</span></td>
+									</tr>
+									<tr>
+										<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD (Physically Disabled) Rooms</strong></td>
+										<td class="text-center fw-semibold" id="valPdRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valPdCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valPdUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valPdVacant">0</span></td>
+									</tr>
+									<tr>
+										<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest Rooms</strong></td>
+										<td class="text-center fw-semibold" id="valGuestRooms">0</td>
+										<td class="text-center fw-bold text-primary" id="valGuestCap">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill" id="valGuestUtilized">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill" id="valGuestVacant">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<!-- Consolidated All Hostels Overview Table (Visible ONLY when ALL Hostels is selected) -->
+						<div class="table-responsive compact-card p-0 mb-4" id="allHostelsMasterTableCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
+							<div class="p-3 bg-light border-bottom d-flex align-items-center justify-content-between">
+								<h6 class="fw-bold text-tmPrimary mb-0">
+									<i class="fa-solid fa-list-check me-2 text-primary"></i>All Hostels Consolidated Capacity & Vacancy Summary
+								</h6>
+								<span class="badge bg-primary text-white" th:text="${#lists.size(capacityList) + ' Hostels'}">18 Hostels</span>
+							</div>
+							<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+								<thead class="table-dark">
+									<tr>
+										<th>#</th>
+										<th>Hostel Name</th>
+										<th class="text-center">Code</th>
+										<th class="text-center">Gender</th>
+										<th class="text-center">Total Capacity</th>
+										<th class="text-center">Utilized</th>
+										<th class="text-center">Vacant</th>
+										<th class="text-center">Single (Occ/Cap)</th>
+										<th class="text-center">Double (Occ/Cap)</th>
+										<th class="text-center">Triple (Occ/Cap)</th>
+										<th class="text-center">Quad (Occ/Cap)</th>
+										<th class="text-center">Dorm (Occ/Cap)</th>
+										<th class="text-center">PD (Occ/Cap)</th>
+										<th class="text-center">Guest (Occ/Cap)</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="h, iterStat : ${capacityList}">
+										<td class="text-center fw-semibold text-muted" th:text="${iterStat.count}">1</td>
+										<td class="fw-bold text-tmPrimary">
+											<a th:href="@{/hostelCapacity(hostelId=${h.hostelId}, academicYear=${selectedAcademicYear})}" th:text="${h.hostelName}" class="text-decoration-none text-tmPrimary">Hostel Name</a>
+										</td>
+										<td class="text-center"><span class="badge bg-secondary" th:text="${h.hostelCode}">BH</span></td>
+										<td class="text-center">
+											<span th:if="${h.hostelGenderType == 'M'}" class="badge bg-primary">Male</span>
+											<span th:if="${h.hostelGenderType == 'F'}" class="badge bg-danger">Female</span>
+											<span th:if="${h.hostelGenderType != 'M' && h.hostelGenderType != 'F'}" class="badge bg-secondary" th:text="${h.hostelGenderType}">Co-Ed</span>
+										</td>
+										<td class="text-center fw-bold text-dark" th:text="${h.totalCapacity}">0</td>
+										<td class="text-center"><span class="badge bg-danger bg-opacity-10 text-danger stat-pill fw-bold" th:text="${h.totalUtilized}">0</span></td>
+										<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success stat-pill fw-bold" th:text="${h.totalVacant}">0</span></td>
+										<td class="text-center text-muted small" th:text="${h.singleUtilized + '/' + h.singleCapacity}">0/0</td>
+										<td class="text-center text-muted small" th:text="${h.doubleUtilized + '/' + h.doubleCapacity}">0/0</td>
+										<td class="text-center text-muted small" th:text="${h.tripleUtilized + '/' + h.tripleCapacity}">0/0</td>
+										<td class="text-center text-muted small" th:text="${h.quadUtilized + '/' + h.quadCapacity}">0/0</td>
+										<td class="text-center text-muted small" th:text="${h.dormUtilized + '/' + h.dormCapacity}">0/0</td>
+										<td class="text-center text-muted small" th:text="${h.pdUtilized + '/' + h.pdCapacity}">0/0</td>
+										<td class="text-center text-muted small" th:text="${h.guestUtilized + '/' + h.guestCapacity}">0/0</td>
+									</tr>
+								</tbody>
+								<tfoot class="table-light fw-bold">
+									<tr id="allHostelsTableFooter">
+										<td colspan="4" class="text-end text-uppercase">Consolidated Total:</td>
+										<td class="text-center text-dark" id="footTotalCap">0</td>
+										<td class="text-center text-danger" id="footTotalUtil">0</td>
+										<td class="text-center text-success" id="footTotalVac">0</td>
+										<td class="text-center text-muted small" id="footSingle">0/0</td>
+										<td class="text-center text-muted small" id="footDouble">0/0</td>
+										<td class="text-center text-muted small" id="footTriple">0/0</td>
+										<td class="text-center text-muted small" id="footQuad">0/0</td>
+										<td class="text-center text-muted small" id="footDorm">0/0</td>
+										<td class="text-center text-muted small" id="footPd">0/0</td>
+										<td class="text-center text-muted small" id="footGuest">0/0</td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+
+						<!-- Section Header: Student Distribution by Course & Batch Year -->
+						<div class="d-flex align-items-center justify-content-between mb-2">
+							<h6 class="fw-bold text-tmPrimary mb-0">
+								<i class="fa-solid fa-graduation-cap me-2 text-primary"></i>Resident Students Distribution by Course & Batch Year
+							</h6>
+							<small class="text-muted fw-semibold">Filtered by Selected Hostel & Academic Year</small>
+						</div>
+
+						<!-- Course Summary Badges -->
+						<div class="compact-card p-3 mb-3 bg-light">
+							<div class="fw-semibold text-secondary small mb-2 text-uppercase">Course / Department Totals:</div>
+							<div id="courseSummaryContainer">
+								<span class="text-muted small">Loading distribution...</span>
 							</div>
 						</div>
 
-						<!-- ========================================== -->
-						<!-- SECTION 2: HOSTEL VACANCY REPORT           -->
-						<!-- ========================================== -->
-						<div class="card mb-3 border-0 shadow-sm">
-							<div class="card-header bg-success text-white py-2 px-3 d-flex align-items-center justify-content-between rounded-top">
-								<h6 class="fw-bold mb-0 text-white">
-									<i class="fa-solid fa-door-open me-2"></i>2. Hostel Vacancy Report
-								</h6>
-								<span class="badge bg-white text-success fw-bold">Current Availability Status</span>
-							</div>
-							<div class="card-body p-2">
-
-								<!-- SINGLE HOSTEL VACANCY BREAKDOWN TABLE -->
-								<div class="table-responsive compact-card p-0 mb-2" id="singleHostelVacancyCard" th:style="${selectedHostelId != 0 ? 'display: block;' : 'display: none;'}">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary">
-											<i class="fa-solid fa-bed me-1 text-success"></i><span id="displayVacHostelName">Selected Hostel</span> (<span id="displayVacHostelCode">Code</span>) - Room Category Vacancy Breakdown
-										</span>
-										<span class="badge bg-success text-white">Room & Partial Bed Vacancy Analysis</span>
-									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle text-center">
-										<thead class="table-success text-dark align-middle">
-											<tr>
-												<th rowspan="2" class="text-start">Room Category</th>
-												<th rowspan="2">Total No. of Rooms</th>
-												<th rowspan="2">Fully Vacant Rooms</th>
-												<th colspan="2" class="bg-warning bg-opacity-25 border-bottom">Partially Occupied Rooms (Partial Bed Status)</th>
-												<th rowspan="2">Total Vacant Capacity (Beds)</th>
-											</tr>
-											<tr>
-												<th class="bg-danger bg-opacity-10 text-danger">Occupied Beds</th>
-												<th class="bg-success bg-opacity-10 text-success">Vacant Beds</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-bed text-info me-2"></i>Single Room</td>
-												<td class="fw-semibold text-dark" id="vacSingleRooms">0</td>
-												<td class="text-success fw-semibold" id="vacSingleFullyVac">0</td>
-												<td class="text-danger fw-semibold">0</td>
-												<td class="text-success fw-semibold">0</td>
-												<td class="fw-bold text-success" id="vacSingleTotalVac">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-user-group text-success me-2"></i>Double Room</td>
-												<td class="fw-semibold text-dark" id="vacDoubleRooms">0</td>
-												<td class="text-success fw-semibold" id="vacDoubleFullyVac">0</td>
-												<td class="text-danger fw-semibold" id="vacDoubleOccBeds">0</td>
-												<td class="text-success fw-semibold" id="vacDoubleVacBeds">0</td>
-												<td class="fw-bold text-success" id="vacDoubleTotalVac">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-users text-warning me-2"></i>Triple Room</td>
-												<td class="fw-semibold text-dark" id="vacTripleRooms">0</td>
-												<td class="text-success fw-semibold" id="vacTripleFullyVac">0</td>
-												<td class="text-danger fw-semibold" id="vacTripleOccBeds">0</td>
-												<td class="text-success fw-semibold" id="vacTripleVacBeds">0</td>
-												<td class="fw-bold text-success" id="vacTripleTotalVac">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-people-group text-danger me-2"></i>Quadruple Room</td>
-												<td class="fw-semibold text-dark" id="vacQuadRooms">0</td>
-												<td class="text-success fw-semibold" id="vacQuadFullyVac">0</td>
-												<td class="text-danger fw-semibold" id="vacQuadOccBeds">0</td>
-												<td class="text-success fw-semibold" id="vacQuadVacBeds">0</td>
-												<td class="fw-bold text-success" id="vacQuadTotalVac">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-hotel text-secondary me-2"></i>Dormitory Rooms</td>
-												<td class="fw-semibold text-dark" id="vacDormRooms">0</td>
-												<td class="text-success fw-semibold" id="vacDormFullyVac">0</td>
-												<td class="text-danger fw-semibold" id="vacDormOccBeds">0</td>
-												<td class="text-success fw-semibold" id="vacDormVacBeds">0</td>
-												<td class="fw-bold text-success" id="vacDormTotalVac">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-wheelchair text-dark me-2"></i>PD Rooms</td>
-												<td class="fw-semibold text-dark" id="vacPdRooms">0</td>
-												<td class="text-success fw-semibold" id="vacPdFullyVac">0</td>
-												<td class="text-danger fw-semibold" id="vacPdOccBeds">0</td>
-												<td class="text-success fw-semibold" id="vacPdVacBeds">0</td>
-												<td class="fw-bold text-success" id="vacPdTotalVac">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-user-check text-primary me-2"></i>Guest Rooms</td>
-												<td class="fw-semibold text-dark" id="vacGuestRooms">0</td>
-												<td class="text-success fw-semibold" id="vacGuestFullyVac">0</td>
-												<td class="text-danger fw-semibold" id="vacGuestOccBeds">0</td>
-												<td class="text-success fw-semibold" id="vacGuestVacBeds">0</td>
-												<td class="fw-bold text-success" id="vacGuestTotalVac">0</td>
-											</tr>
-										</tbody>
-										<tfoot class="table-light fw-bold">
-											<tr>
-												<td class="text-start text-uppercase">Total</td>
-												<td class="text-dark" id="vacTotalRooms">0</td>
-												<td class="text-success" id="vacTotalFullyVac">0</td>
-												<td class="text-danger" id="vacTotalPartOccBeds">0</td>
-												<td class="text-success" id="vacTotalPartVacBeds">0</td>
-												<td class="text-success fs-6" id="vacTotalVacantBeds">0</td>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-
-								<!-- ALL HOSTELS VACANCY OVERVIEW TABLE -->
-								<div class="table-responsive compact-card p-0" id="allHostelsVacancyCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary small">
-											<i class="fa-solid fa-list-check me-1 text-success"></i>Hostel-wise Vacancy Overview Report
-										</span>
-										<span class="badge bg-success text-white" th:text="${#lists.size(capacityList) + ' Hostels'}">18 Hostels</span>
-									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle text-center">
-										<thead class="table-success text-dark">
-											<tr>
-												<th>#</th>
-												<th class="text-start">Hostel Name</th>
-												<th>Code</th>
-												<th>Total Vacant Capacity (Beds)</th>
-												<th>Fully Vacant Rooms</th>
-												<th>Partial Occ Beds</th>
-												<th>Partial Vac Beds</th>
-												<th>Vacant Single Beds</th>
-												<th>Vacant Double Beds</th>
-												<th>Vacant Triple Beds</th>
-												<th>Vacant Quad Beds</th>
-												<th>Vacant Dorm Capacity</th>
-												<th>Vacant PD Rooms</th>
-												<th>Vacant Guest Rooms</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="h, iterStat : ${capacityList}">
-												<td class="fw-semibold text-muted" th:text="${iterStat.count}">1</td>
-												<td class="fw-bold text-start text-tmPrimary">
-													<a th:href="@{/hostelCapacity(hostelId=${h.hostelId}, fromDate=${fromDate}, toDate=${toDate})}" th:text="${h.hostelName}" class="text-decoration-none text-tmPrimary">Hostel Name</a>
-												</td>
-												<td><span class="badge bg-secondary" th:text="${h.hostelCode}">BH</span></td>
-												<td class="fw-bold text-success fs-6" th:text="${h.totalVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.fullyVacantRooms}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.partiallyOccupiedBeds}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.partiallyVacantBeds}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.singleVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.doubleVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.tripleVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.quadVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.dormVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.pdVacant}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.guestVacant}">0</td>
-											</tr>
-										</tbody>
-										<tfoot class="table-light fw-bold">
-											<tr>
-												<td colspan="3" class="text-end text-uppercase">Consolidated Total Vacant:</td>
-												<td class="text-success fs-6" id="footSec2TotalVac">0</td>
-												<td class="text-success" id="footSec2FullyVac">0</td>
-												<td class="text-danger" id="footSec2PartOccBeds">0</td>
-												<td class="text-success" id="footSec2PartVacBeds">0</td>
-												<td colspan="7" class="text-muted small">Sum across all hostels</td>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-
-							</div>
-						</div>
-
-						<!-- ========================================== -->
-						<!-- SECTION 3: HOSTEL UTILIZATION REPORT       -->
-						<!-- ========================================== -->
-						<div class="card mb-3 border-0 shadow-sm">
-							<div class="card-header bg-danger text-white py-2 px-3 d-flex align-items-center justify-content-between rounded-top">
-								<h6 class="fw-bold mb-0 text-white">
-									<i class="fa-solid fa-chart-pie me-2"></i>3. Hostel Utilization Report
-								</h6>
-								<span class="badge bg-white text-danger fw-bold">Occupancy & Student Distribution</span>
-							</div>
-							<div class="card-body p-2">
-
-								<!-- SINGLE HOSTEL UTILIZATION BREAKDOWN TABLE -->
-								<div class="table-responsive compact-card p-0 mb-2" id="singleHostelUtilizationCard" th:style="${selectedHostelId != 0 ? 'display: block;' : 'display: none;'}">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary">
-											<i class="fa-solid fa-bed me-1 text-danger"></i><span id="displayUtilHostelName">Selected Hostel</span> (<span id="displayUtilHostelCode">Code</span>) - Room Category Utilization Breakdown
-										</span>
-										<span class="badge bg-danger text-white">Room & Partial Occupancy Analysis</span>
-									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle text-center">
-										<thead class="table-danger text-dark align-middle">
-											<tr>
-												<th rowspan="2" class="text-start">Room Category</th>
-												<th rowspan="2">Total No. of Rooms</th>
-												<th rowspan="2">Fully Occupied Rooms</th>
-												<th colspan="2" class="bg-warning bg-opacity-25 border-bottom">Partially Occupied Rooms (Partial Bed Status)</th>
-												<th rowspan="2">Total Utilized Capacity (Occupied Beds)</th>
-											</tr>
-											<tr>
-												<th class="bg-danger bg-opacity-10 text-danger">Occupied Beds</th>
-												<th class="bg-success bg-opacity-10 text-success">Vacant Beds</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-bed text-info me-2"></i>Single Room</td>
-												<td class="fw-semibold text-dark" id="utilSingleRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilSingleFullyOcc">0</td>
-												<td class="text-danger fw-semibold">0</td>
-												<td class="text-success fw-semibold">0</td>
-												<td class="fw-bold text-danger" id="utilSingleTotalUtil">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-user-group text-success me-2"></i>Double Room</td>
-												<td class="fw-semibold text-dark" id="utilDoubleRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilDoubleFullyOcc">0</td>
-												<td class="text-danger fw-semibold" id="utilDoubleOccBeds">0</td>
-												<td class="text-success fw-semibold" id="utilDoubleVacBeds">0</td>
-												<td class="fw-bold text-danger" id="utilDoubleTotalUtil">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-users text-warning me-2"></i>Triple Room</td>
-												<td class="fw-semibold text-dark" id="utilTripleRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilTripleFullyOcc">0</td>
-												<td class="text-danger fw-semibold" id="utilTripleOccBeds">0</td>
-												<td class="text-success fw-semibold" id="utilTripleVacBeds">0</td>
-												<td class="fw-bold text-danger" id="utilTripleTotalUtil">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-people-group text-danger me-2"></i>Quadruple Room</td>
-												<td class="fw-semibold text-dark" id="utilQuadRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilQuadFullyOcc">0</td>
-												<td class="text-danger fw-semibold" id="utilQuadOccBeds">0</td>
-												<td class="text-success fw-semibold" id="utilQuadVacBeds">0</td>
-												<td class="fw-bold text-danger" id="utilQuadTotalUtil">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-hotel text-secondary me-2"></i>Dormitory Rooms</td>
-												<td class="fw-semibold text-dark" id="utilDormRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilDormFullyOcc">0</td>
-												<td class="text-danger fw-semibold" id="utilDormOccBeds">0</td>
-												<td class="text-success fw-semibold" id="utilDormVacBeds">0</td>
-												<td class="fw-bold text-danger" id="utilDormTotalUtil">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-wheelchair text-dark me-2"></i>PD Rooms</td>
-												<td class="fw-semibold text-dark" id="utilPdRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilPdFullyOcc">0</td>
-												<td class="text-danger fw-semibold" id="utilPdOccBeds">0</td>
-												<td class="text-success fw-semibold" id="utilPdVacBeds">0</td>
-												<td class="fw-bold text-danger" id="utilPdTotalUtil">0</td>
-											</tr>
-											<tr>
-												<td class="fw-semibold text-dark text-start"><i class="fa-solid fa-user-check text-primary me-2"></i>Guest Rooms</td>
-												<td class="fw-semibold text-dark" id="utilGuestRooms">0</td>
-												<td class="text-danger fw-semibold" id="utilGuestFullyOcc">0</td>
-												<td class="text-danger fw-semibold" id="utilGuestOccBeds">0</td>
-												<td class="text-success fw-semibold" id="utilGuestVacBeds">0</td>
-												<td class="fw-bold text-danger" id="utilGuestTotalUtil">0</td>
-											</tr>
-										</tbody>
-										<tfoot class="table-light fw-bold">
-											<tr>
-												<td class="text-start text-uppercase">Total</td>
-												<td class="text-dark" id="utilTotalRooms">0</td>
-												<td class="text-danger" id="utilTotalFullyOcc">0</td>
-												<td class="text-danger" id="utilTotalPartOccBeds">0</td>
-												<td class="text-success" id="utilTotalPartVacBeds">0</td>
-												<td class="text-danger fs-6" id="utilTotalUtilizedBeds">0</td>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-
-								<!-- ALL HOSTELS UTILIZATION OVERVIEW TABLE -->
-								<div class="table-responsive compact-card p-0 mb-2" id="allHostelsUtilizationCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary small">
-											<i class="fa-solid fa-list-check me-1 text-danger"></i>Hostel-wise Utilization Overview Report
-										</span>
-										<span class="badge bg-danger text-white" th:text="${#lists.size(capacityList) + ' Hostels'}">18 Hostels</span>
-									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle text-center">
-										<thead class="table-danger text-dark">
-											<tr>
-												<th>#</th>
-												<th class="text-start">Hostel Name</th>
-												<th>Code</th>
-												<th>Total Utilized Capacity (Beds)</th>
-												<th>Fully Occupied Rooms</th>
-												<th>Partial Occ Beds</th>
-												<th>Partial Vac Beds</th>
-												<th>Utilized Single Beds</th>
-												<th>Utilized Double Beds</th>
-												<th>Utilized Triple Beds</th>
-												<th>Utilized Quad Beds</th>
-												<th>Utilized Dorm Capacity</th>
-												<th>Utilized PD Rooms</th>
-												<th>Utilized Guest Rooms</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="h, iterStat : ${capacityList}">
-												<td class="fw-semibold text-muted" th:text="${iterStat.count}">1</td>
-												<td class="fw-bold text-start text-tmPrimary">
-													<a th:href="@{/hostelCapacity(hostelId=${h.hostelId}, fromDate=${fromDate}, toDate=${toDate})}" th:text="${h.hostelName}" class="text-decoration-none text-tmPrimary">Hostel Name</a>
-												</td>
-												<td><span class="badge bg-secondary" th:text="${h.hostelCode}">BH</span></td>
-												<td class="fw-bold text-danger fs-6" th:text="${h.totalUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.fullyOccupiedRooms}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.partiallyOccupiedBeds}">0</td>
-												<td class="text-success fw-semibold" th:text="${h.partiallyVacantBeds}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.singleUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.doubleUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.tripleUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.quadUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.dormUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.pdUtilized}">0</td>
-												<td class="text-danger fw-semibold" th:text="${h.guestUtilized}">0</td>
-											</tr>
-										</tbody>
-										<tfoot class="table-light fw-bold">
-											<tr>
-												<td colspan="3" class="text-end text-uppercase">Consolidated Total Utilized:</td>
-												<td class="text-danger fs-6" id="footSec3TotalUtil">0</td>
-												<td class="text-danger" id="footSec3FullyOcc">0</td>
-												<td class="text-danger" id="footSec3PartOccBeds">0</td>
-												<td class="text-success" id="footSec3PartVacBeds">0</td>
-												<td colspan="7" class="text-muted small">Sum across all hostels</td>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-
-								<!-- SUB-SECTION: Detailed Hostel-wise Student Distribution Analysis Table -->
-								<div class="table-responsive compact-card p-0">
-									<div class="p-2 bg-light border-bottom d-flex align-items-center justify-content-between">
-										<span class="fw-bold text-tmPrimary small">
-											<i class="fa-solid fa-users-rectangle me-1 text-primary"></i>Hostel-wise Student Distribution Analysis
-										</span>
-										<span class="badge bg-secondary text-white">Department & Batch Allotments</span>
-									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0">
-										<thead class="table-light text-center">
-											<tr>
-												<th class="text-start">Course / Department</th>
-												<th>Code</th>
-												<th>Batch Year</th>
-												<th>Resident Student Count</th>
-											</tr>
-										</thead>
-										<tbody id="studentDistTbody">
-											<tr th:each="dist : ${studentDistributionList}">
-												<td class="fw-semibold text-dark text-start" th:text="${dist.courseName}">Course Name</td>
-												<td class="text-center"><span class="badge bg-secondary" th:text="${dist.courseCode}">CS</span></td>
-												<td class="text-center fw-bold text-primary" th:text="${dist.batchYear}">2024</td>
-												<td class="text-center"><span class="badge bg-primary bg-opacity-10 text-primary stat-pill fw-bold" th:text="${dist.studentCount}">0</span></td>
-											</tr>
-											<tr th:if="${#lists.isEmpty(studentDistributionList)}">
-												<td colspan="4" class="text-center text-muted py-3">No active student room allotments found for the selected filters.</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-
-							</div>
-						</div>
-
-						<!-- ========================================== -->
-						<!-- SECTION 4: GUEST ROOM AVAILABILITY & TARIFF-->
-						<!-- ========================================== -->
-						<div class="card mb-3 border-0 shadow-sm">
-							<div class="card-header bg-info text-dark py-2 px-3 d-flex align-items-center justify-content-between rounded-top">
-								<h6 class="fw-bold mb-0 text-dark">
-									<i class="fa-solid fa-hotel me-2"></i>4. Guest Room Availability including Tariff Report
-								</h6>
-								<span class="badge bg-dark text-white fw-bold">Present Date Guest Room Status & Tariff Breakdown</span>
-							</div>
-							<div class="card-body p-2">
-								<div class="table-responsive compact-card p-0">
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle text-center">
-										<thead class="table-info text-dark">
-											<tr>
-												<th>#</th>
-												<th class="text-start">Hostel Name</th>
-												<th>Code</th>
-												<th>Total Guest Rooms</th>
-												<th>Single Guest Rooms (Rooms / Vacant)</th>
-												<th>Single Room Rate (₹/Day)</th>
-												<th>Shared Guest Rooms (Rooms / Vacant)</th>
-												<th>Shared Room Rate (₹/Day)</th>
-												<th>Lodging Base Charge (₹)</th>
-												<th>Total Vacant Rooms (Today)</th>
-												<th>Total Utilized Rooms (Today)</th>
-												<th>Cost of Vacant Rooms (₹/Day)</th>
-												<th>Tariff Notes</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="g, iterStat : ${guestTariffList}">
-												<td class="fw-semibold text-muted" th:text="${iterStat.count}">1</td>
-												<td class="fw-bold text-start text-tmPrimary" th:text="${g.hostelName}">Hostel Name</td>
-												<td><span class="badge bg-secondary" th:text="${g.hostelCode}">BH</span></td>
-												<td class="fw-bold text-dark" th:text="${g.totalGuestRooms}">0</td>
-												<td class="text-muted small" th:text="${g.singleGuestRooms + ' Rms / ' + g.singleGuestVacant + ' Vac'}">0 Rms / 0 Vac</td>
-												<td class="fw-bold text-primary" th:text="${'₹' + g.singleRoomTariff}">₹800</td>
-												<td class="text-muted small" th:text="${g.sharedGuestRooms + ' Rms / ' + g.sharedGuestVacant + ' Vac'}">0 Rms / 0 Vac</td>
-												<td class="fw-bold text-primary" th:text="${'₹' + g.sharedRoomTariff}">₹1200</td>
-												<td class="fw-semibold text-dark" th:text="${'₹' + g.lodgingBaseCharge}">₹250</td>
-												<td><span class="badge bg-success bg-opacity-10 text-success stat-pill fw-bold" th:text="${g.vacantGuestRoomsToday}">0</span></td>
-												<td><span class="badge bg-danger bg-opacity-10 text-danger stat-pill fw-bold" th:text="${g.utilizedGuestRoomsToday}">0</span></td>
-												<td class="fw-bold text-danger" th:text="${'₹' + g.vacantRoomsCost}">₹0</td>
-												<td class="text-muted small text-start" th:text="${g.tariffDescription}">Standard Tariff</td>
-											</tr>
-											<tr th:if="${#lists.isEmpty(guestTariffList)}">
-												<td colspan="13" class="text-center text-muted py-3">No guest room details found for the selected hostel.</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
+						<!-- Detailed Batch Year Matrix Table -->
+						<div class="table-responsive compact-card p-0">
+							<table class="table table-sm table-hover table-bordered table-compact mb-0">
+								<thead>
+									<tr>
+										<th>Course / Department</th>
+										<th class="text-center">Code</th>
+										<th class="text-center">Batch Year</th>
+										<th class="text-center">Resident Students</th>
+									</tr>
+								</thead>
+								<tbody id="studentDistTbody">
+									<tr th:each="dist : ${studentDistributionList}">
+										<td class="fw-semibold text-dark" th:text="${dist.courseName}">Course Name</td>
+										<td class="text-center"><span class="badge bg-secondary" th:text="${dist.courseCode}">CS</span></td>
+										<td class="text-center fw-bold text-primary" th:text="${dist.batchYear}">2024</td>
+										<td class="text-center"><span class="badge bg-primary bg-opacity-10 text-primary stat-pill" th:text="${dist.studentCount}">0</span></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(studentDistributionList)}">
+										<td colspan="4" class="text-center text-muted py-3">No active student room allotments found for the selected filters.</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 
 					</div>
@@ -710,8 +367,7 @@
 			/*<![CDATA[*/
 			const capacityData = /*[[${capacityList}]]*/ [];
 			const currentHostelId = /*[[${selectedHostelId}]]*/ 0;
-			const currentFromDate = /*[[${fromDate}]]*/ '';
-			const currentToDate = /*[[${toDate}]]*/ '';
+			const currentAcademicYear = /*[[${selectedAcademicYear}]]*/ '2026-2027';
 			const studentDistData = /*[[${studentDistributionList}]]*/ [];
 			/*]]>*/
 
@@ -724,9 +380,7 @@
 						hostelName: 'All Hostels (Consolidated View)',
 						hostelCode: 'ALL',
 						hostelGenderType: 'Co-Ed',
-						totalRooms: 0, totalCapacity: 0, totalUtilized: 0, totalVacant: 0,
-						fullyOccupiedRooms: 0, partiallyOccupiedRooms: 0, fullyVacantRooms: 0,
-						partiallyOccupiedBeds: 0, partiallyVacantBeds: 0,
+						totalCapacity: 0, totalUtilized: 0, totalVacant: 0,
 						singleRooms: 0, singleCapacity: 0, singleUtilized: 0, singleVacant: 0,
 						doubleRooms: 0, doubleCapacity: 0, doubleUtilized: 0, doubleVacant: 0,
 						tripleRooms: 0, tripleCapacity: 0, tripleUtilized: 0, tripleVacant: 0,
@@ -736,16 +390,9 @@
 						guestRooms: 0, guestCapacity: 0, guestUtilized: 0, guestVacant: 0
 					};
 					capacityData.forEach(item => {
-						h.totalRooms += (item.totalRooms || 0);
 						h.totalCapacity += (item.totalCapacity || 0);
 						h.totalUtilized += (item.totalUtilized || 0);
 						h.totalVacant += (item.totalVacant || 0);
-
-						h.fullyOccupiedRooms += (item.fullyOccupiedRooms || 0);
-						h.partiallyOccupiedRooms += (item.partiallyOccupiedRooms || 0);
-						h.fullyVacantRooms += (item.fullyVacantRooms || 0);
-						h.partiallyOccupiedBeds += (item.partiallyOccupiedBeds || 0);
-						h.partiallyVacantBeds += (item.partiallyVacantBeds || 0);
 
 						h.singleRooms += (item.singleRooms || 0);
 						h.singleCapacity += (item.singleCapacity || 0);
@@ -787,228 +434,78 @@
 				}
 
 				const masterTableCard = document.getElementById('allHostelsMasterTableCard');
-				const singleTableCard = document.getElementById('singleHostelTableCard');
-				if (masterTableCard && singleTableCard) {
-					if (String(hostelId) === '0') {
-						masterTableCard.style.display = 'block';
-						singleTableCard.style.display = 'none';
-					} else {
-						masterTableCard.style.display = 'none';
-						singleTableCard.style.display = 'block';
-					}
+				if (masterTableCard) {
+					masterTableCard.style.display = (String(hostelId) === '0') ? 'block' : 'none';
 				}
 
-				const vacSingleCard = document.getElementById('singleHostelVacancyCard');
-				const vacAllCard = document.getElementById('allHostelsVacancyCard');
-				if (vacSingleCard && vacAllCard) {
-					if (String(hostelId) === '0') {
-						vacSingleCard.style.display = 'none';
-						vacAllCard.style.display = 'block';
-					} else {
-						vacSingleCard.style.display = 'block';
-						vacAllCard.style.display = 'none';
-					}
-				}
-
-				const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
-				setTxt('displayHostelName', h.hostelName);
-				setTxt('displayHostelCode', 'Code: ' + h.hostelCode);
+				document.getElementById('displayHostelName').innerText = h.hostelName;
+				document.getElementById('displayHostelCode').innerText = 'Code: ' + h.hostelCode;
 				
 				const genderBadge = document.getElementById('displayGenderBadge');
-				if (genderBadge) {
-					if (h.hostelGenderType === 'M') {
-						genderBadge.innerText = 'Male Hostel';
-						genderBadge.className = 'badge bg-primary px-2 py-1';
-					} else if (h.hostelGenderType === 'F') {
-						genderBadge.innerText = 'Female Hostel';
-						genderBadge.className = 'badge bg-danger px-2 py-1';
-					} else {
-						genderBadge.innerText = h.hostelGenderType || 'Co-Ed';
-						genderBadge.className = 'badge bg-secondary px-2 py-1';
-					}
+				if (h.hostelGenderType === 'M') {
+					genderBadge.innerText = 'Male Hostel';
+					genderBadge.className = 'badge bg-primary px-2 py-1';
+				} else if (h.hostelGenderType === 'F') {
+					genderBadge.innerText = 'Female Hostel';
+					genderBadge.className = 'badge bg-danger px-2 py-1';
+				} else {
+					genderBadge.innerText = h.hostelGenderType || 'Co-Ed';
+					genderBadge.className = 'badge bg-secondary px-2 py-1';
 				}
 
-				// Key Summary Totals
-				setTxt('valTotalRooms', h.totalRooms || 0);
-				setTxt('valTotalCapacity', h.totalCapacity || 0);
-				setTxt('valFullyOccupiedRooms', h.fullyOccupiedRooms || 0);
-				setTxt('valPartiallyOccupiedRooms', h.partiallyOccupiedRooms || 0);
-				setTxt('valPartialOccBeds', h.partiallyOccupiedBeds || 0);
-				setTxt('valPartialVacBeds', h.partiallyVacantBeds || 0);
-				setTxt('valFullyVacantRooms', h.fullyVacantRooms || 0);
-				setTxt('valTotalVacant', h.totalVacant || 0);
+				// Key Totals
+				document.getElementById('valTotalCapacity').innerText = h.totalCapacity || 0;
+				document.getElementById('valTotalUtilized').innerText = h.totalUtilized || 0;
+				document.getElementById('valTotalVacant').innerText = h.totalVacant || 0;
 				
 				// Single
-				setTxt('valSingleRooms', h.singleRooms || 0);
-				setTxt('valSingleCap', h.singleCapacity || 0);
-				setTxt('valSingleUtilized', h.singleUtilized || 0);
-				setTxt('valSingleVacant', h.singleVacant || 0);
+				document.getElementById('valSingleRooms').innerText = h.singleRooms || 0;
+				document.getElementById('valSingleCap').innerText = h.singleCapacity || 0;
+				document.getElementById('valSingleUtilized').innerText = h.singleUtilized || 0;
+				document.getElementById('valSingleVacant').innerText = h.singleVacant || 0;
 				
 				// Double
-				setTxt('valDoubleRooms', h.doubleRooms || 0);
-				setTxt('valDoubleCap', h.doubleCapacity || 0);
-				setTxt('valDoubleUtilized', h.doubleUtilized || 0);
-				setTxt('valDoubleVacant', h.doubleVacant || 0);
+				document.getElementById('valDoubleRooms').innerText = h.doubleRooms || 0;
+				document.getElementById('valDoubleCap').innerText = h.doubleCapacity || 0;
+				document.getElementById('valDoubleUtilized').innerText = h.doubleUtilized || 0;
+				document.getElementById('valDoubleVacant').innerText = h.doubleVacant || 0;
 				
 				// Triple
-				setTxt('valTripleRooms', h.tripleRooms || 0);
-				setTxt('valTripleCap', h.tripleCapacity || 0);
-				setTxt('valTripleUtilized', h.tripleUtilized || 0);
-				setTxt('valTripleVacant', h.tripleVacant || 0);
+				document.getElementById('valTripleRooms').innerText = h.tripleRooms || 0;
+				document.getElementById('valTripleCap').innerText = h.tripleCapacity || 0;
+				document.getElementById('valTripleUtilized').innerText = h.tripleUtilized || 0;
+				document.getElementById('valTripleVacant').innerText = h.tripleVacant || 0;
 				
 				// Quad
-				setTxt('valQuadRooms', h.quadRooms || 0);
-				setTxt('valQuadCap', h.quadCapacity || 0);
-				setTxt('valQuadUtilized', h.quadUtilized || 0);
-				setTxt('valQuadVacant', h.quadVacant || 0);
+				document.getElementById('valQuadRooms').innerText = h.quadRooms || 0;
+				document.getElementById('valQuadCap').innerText = h.quadCapacity || 0;
+				document.getElementById('valQuadUtilized').innerText = h.quadUtilized || 0;
+				document.getElementById('valQuadVacant').innerText = h.quadVacant || 0;
 				
 				// Dorm
-				setTxt('valDormRooms', h.dormRooms || 0);
-				setTxt('valDormCap', h.dormCapacity || 0);
-				setTxt('valDormUtilized', h.dormUtilized || 0);
-				setTxt('valDormVacant', h.dormVacant || 0);
+				document.getElementById('valDormRooms').innerText = h.dormRooms || 0;
+				document.getElementById('valDormCap').innerText = h.dormCapacity || 0;
+				document.getElementById('valDormUtilized').innerText = h.dormUtilized || 0;
+				document.getElementById('valDormVacant').innerText = h.dormVacant || 0;
 				
 				// PD
-				setTxt('valPdRooms', h.pdRooms || 0);
-				setTxt('valPdCap', h.pdCapacity || 0);
-				setTxt('valPdUtilized', h.pdUtilized || 0);
-				setTxt('valPdVacant', h.pdVacant || 0);
+				document.getElementById('valPdRooms').innerText = h.pdRooms || 0;
+				document.getElementById('valPdCap').innerText = h.pdCapacity || 0;
+				document.getElementById('valPdUtilized').innerText = h.pdUtilized || 0;
+				document.getElementById('valPdVacant').innerText = h.pdVacant || 0;
 				
 				// Guest
-				setTxt('valGuestRooms', h.guestRooms || 0);
-				setTxt('valGuestCap', h.guestCapacity || 0);
-				setTxt('valGuestUtilized', h.guestUtilized || 0);
-				setTxt('valGuestVacant', h.guestVacant || 0);
+				document.getElementById('valGuestRooms').innerText = h.guestRooms || 0;
+				document.getElementById('valGuestCap').innerText = h.guestCapacity || 0;
+				document.getElementById('valGuestUtilized').innerText = h.guestUtilized || 0;
+				document.getElementById('valGuestVacant').innerText = h.guestVacant || 0;
 
-				// Section 2 Vacancy Report Detailed Breakdown
-				setTxt('displayVacHostelName', h.hostelName);
-				setTxt('displayVacHostelCode', 'Code: ' + h.hostelCode);
-
-				setTxt('vacSingleRooms', h.singleRooms || 0);
-				setTxt('vacSingleFullyVac', h.singleFullVac !== undefined ? h.singleFullVac : (h.singleVacant || 0));
-				setTxt('vacSingleTotalVac', h.singleVacant || 0);
-
-				setTxt('vacDoubleRooms', h.doubleRooms || 0);
-				setTxt('vacDoubleFullyVac', h.doubleFullVac || 0);
-				setTxt('vacDoubleOccBeds', h.doublePartOccBeds || 0);
-				setTxt('vacDoubleVacBeds', h.doublePartVacBeds || 0);
-				setTxt('vacDoubleTotalVac', h.doubleVacant || 0);
-
-				setTxt('vacTripleRooms', h.tripleRooms || 0);
-				setTxt('vacTripleFullyVac', h.tripleFullVac || 0);
-				setTxt('vacTripleOccBeds', h.triplePartOccBeds || 0);
-				setTxt('vacTripleVacBeds', h.triplePartVacBeds || 0);
-				setTxt('vacTripleTotalVac', h.tripleVacant || 0);
-
-				setTxt('vacQuadRooms', h.quadRooms || 0);
-				setTxt('vacQuadFullyVac', h.quadFullVac || 0);
-				setTxt('vacQuadOccBeds', h.quadPartOccBeds || 0);
-				setTxt('vacQuadVacBeds', h.quadPartVacBeds || 0);
-				setTxt('vacQuadTotalVac', h.quadVacant || 0);
-
-				setTxt('vacDormRooms', h.dormRooms || 0);
-				setTxt('vacDormFullyVac', h.dormFullVac || 0);
-				setTxt('vacDormOccBeds', h.dormPartOccBeds || 0);
-				setTxt('vacDormVacBeds', h.dormPartVacBeds || 0);
-				setTxt('vacDormTotalVac', h.dormVacant || 0);
-
-				setTxt('vacPdRooms', h.pdRooms || 0);
-				setTxt('vacPdFullyVac', h.pdFullVac || 0);
-				setTxt('vacPdOccBeds', h.pdPartOccBeds || 0);
-				setTxt('vacPdVacBeds', h.pdPartVacBeds || 0);
-				setTxt('vacPdTotalVac', h.pdVacant || 0);
-
-				setTxt('vacGuestRooms', h.guestRooms || 0);
-				setTxt('vacGuestFullyVac', h.guestFullVac || 0);
-				setTxt('vacGuestOccBeds', h.guestPartOccBeds || 0);
-				setTxt('vacGuestVacBeds', h.guestPartVacBeds || 0);
-				setTxt('vacGuestTotalVac', h.guestVacant || 0);
-
-				setTxt('vacTotalRooms', h.totalRooms || 0);
-				setTxt('vacTotalFullyVac', h.fullyVacantRooms || 0);
-				setTxt('vacTotalPartOccBeds', h.partiallyOccupiedBeds || 0);
-				setTxt('vacTotalPartVacBeds', h.partiallyVacantBeds || 0);
-				setTxt('vacTotalVacantBeds', h.totalVacant || 0);
-
-				// Section 3 Utilization Report Detailed Breakdown
-				const utilSingleCard = document.getElementById('singleHostelUtilizationCard');
-				const utilAllCard = document.getElementById('allHostelsUtilizationCard');
-				if (utilSingleCard && utilAllCard) {
-					if (String(hostelId) === '0') {
-						utilSingleCard.style.display = 'none';
-						utilAllCard.style.display = 'block';
-					} else {
-						utilSingleCard.style.display = 'block';
-						utilAllCard.style.display = 'none';
-					}
-				}
-
-				setTxt('displayUtilHostelName', h.hostelName);
-				setTxt('displayUtilHostelCode', 'Code: ' + h.hostelCode);
-
-				setTxt('utilSingleRooms', h.singleRooms || 0);
-				setTxt('utilSingleFullyOcc', h.singleUtilized || 0);
-				setTxt('utilSingleTotalUtil', h.singleUtilized || 0);
-
-				let dFullOcc = Math.max(0, Math.floor((h.doubleUtilized - (h.doublePartOccBeds || 0)) / (h.doubleRooms > 0 ? 2 : 1)));
-				setTxt('utilDoubleRooms', h.doubleRooms || 0);
-				setTxt('utilDoubleFullyOcc', dFullOcc);
-				setTxt('utilDoubleOccBeds', h.doublePartOccBeds || 0);
-				setTxt('utilDoubleVacBeds', h.doublePartVacBeds || 0);
-				setTxt('utilDoubleTotalUtil', h.doubleUtilized || 0);
-
-				let tFullOcc = Math.max(0, Math.floor((h.tripleUtilized - (h.triplePartOccBeds || 0)) / (h.tripleRooms > 0 ? 3 : 1)));
-				setTxt('utilTripleRooms', h.tripleRooms || 0);
-				setTxt('utilTripleFullyOcc', tFullOcc);
-				setTxt('utilTripleOccBeds', h.triplePartOccBeds || 0);
-				setTxt('utilTripleVacBeds', h.triplePartVacBeds || 0);
-				setTxt('utilTripleTotalUtil', h.tripleUtilized || 0);
-
-				let qFullOcc = Math.max(0, Math.floor((h.quadUtilized - (h.quadPartOccBeds || 0)) / (h.quadRooms > 0 ? 4 : 1)));
-				setTxt('utilQuadRooms', h.quadRooms || 0);
-				setTxt('utilQuadFullyOcc', qFullOcc);
-				setTxt('utilQuadOccBeds', h.quadPartOccBeds || 0);
-				setTxt('utilQuadVacBeds', h.quadPartVacBeds || 0);
-				setTxt('utilQuadTotalUtil', h.quadUtilized || 0);
-
-				setTxt('utilDormRooms', h.dormRooms || 0);
-				setTxt('utilDormFullyOcc', 0);
-				setTxt('utilDormOccBeds', h.dormPartOccBeds || 0);
-				setTxt('utilDormVacBeds', h.dormPartVacBeds || 0);
-				setTxt('utilDormTotalUtil', h.dormUtilized || 0);
-
-				setTxt('utilPdRooms', h.pdRooms || 0);
-				setTxt('utilPdFullyOcc', h.pdUtilized || 0);
-				setTxt('utilPdOccBeds', h.pdPartOccBeds || 0);
-				setTxt('utilPdVacBeds', h.pdPartVacBeds || 0);
-				setTxt('utilPdTotalUtil', h.pdUtilized || 0);
-
-				setTxt('utilGuestRooms', h.guestRooms || 0);
-				setTxt('utilGuestFullyOcc', h.guestUtilized || 0);
-				setTxt('utilGuestOccBeds', h.guestPartOccBeds || 0);
-				setTxt('utilGuestVacBeds', h.guestPartVacBeds || 0);
-				setTxt('utilGuestTotalUtil', h.guestUtilized || 0);
-
-				setTxt('utilTotalRooms', h.totalRooms || 0);
-				setTxt('utilTotalFullyOcc', h.fullyOccupiedRooms || 0);
-				setTxt('utilTotalPartOccBeds', h.partiallyOccupiedBeds || 0);
-				setTxt('utilTotalPartVacBeds', h.partiallyVacantBeds || 0);
-				setTxt('utilTotalUtilizedBeds', h.totalUtilized || 0);
-
-				// If hostel selection changed on page, switch URL
+				// If hostel selection changed on page, switch URL to render hostel student distribution
 				if (String(hostelId) !== String(currentHostelId)) {
-					const fDate = document.getElementById('fromDateInput').value || currentFromDate;
-					const tDate = document.getElementById('toDateInput').value || currentToDate;
-					window.location.href = getBasePath() + 'hostelCapacity?hostelId=' + hostelId + '&fromDate=' + encodeURIComponent(fDate) + '&toDate=' + encodeURIComponent(tDate);
+					const academicYearSelect = document.getElementById('academicYearSelect');
+					const academicYear = academicYearSelect ? academicYearSelect.value : currentAcademicYear;
+					window.location.href = getBasePath() + 'hostelCapacity?hostelId=' + hostelId + '&academicYear=' + encodeURIComponent(academicYear);
 				}
-			}
-
-			function applyDateFilter() {
-				const selectHostel = document.getElementById('hostelSelect');
-				const hostelId = selectHostel ? selectHostel.value : currentHostelId;
-				const fDate = document.getElementById('fromDateInput').value || currentFromDate;
-				const tDate = document.getElementById('toDateInput').value || currentToDate;
-				window.location.href = getBasePath() + 'hostelCapacity?hostelId=' + hostelId + '&fromDate=' + encodeURIComponent(fDate) + '&toDate=' + encodeURIComponent(tDate);
 			}
 
 			function renderCourseSummary() {
@@ -1038,62 +535,50 @@
 				return b;
 			}
 
+			function switchAcademicYear(year) {
+				const selectHostel = document.getElementById('hostelSelect');
+				const hostelId = selectHostel ? selectHostel.value : currentHostelId;
+				window.location.href = getBasePath() + 'hostelCapacity?hostelId=' + hostelId + '&academicYear=' + encodeURIComponent(year);
+			}
+
 			function downloadReport() {
 				const selectHostel = document.getElementById('hostelSelect');
 				const hostelId = selectHostel ? selectHostel.value : currentHostelId;
-				const fDate = document.getElementById('fromDateInput').value || currentFromDate;
-				const tDate = document.getElementById('toDateInput').value || currentToDate;
-				window.location.href = getBasePath() + 'hostelCapacity/downloadReport?hostelId=' + hostelId + '&fromDate=' + encodeURIComponent(fDate) + '&toDate=' + encodeURIComponent(tDate);
+				const academicYearSelect = document.getElementById('academicYearSelect');
+				const academicYear = academicYearSelect ? academicYearSelect.value : currentAcademicYear;
+				window.location.href = getBasePath() + 'hostelCapacity/downloadReport?hostelId=' + hostelId + '&academicYear=' + encodeURIComponent(academicYear);
 			}
 
 			function calculateTableFooters() {
 				if (!capacityData || capacityData.length === 0) return;
 				let totCap = 0, totUtil = 0, totVac = 0;
-				let singleCap = 0, doubleCap = 0, tripleCap = 0, quadCap = 0, dormCap = 0, pdCap = 0, guestCap = 0;
-				let totFullOcc = 0, totFullVac = 0, totPartOccBeds = 0, totPartVacBeds = 0;
+				let sUtil = 0, sCap = 0, dUtil = 0, dCap = 0, tUtil = 0, tCap = 0, qUtil = 0, qCap = 0, dmUtil = 0, dmCap = 0, pUtil = 0, pCap = 0, gUtil = 0, gCap = 0;
 
 				capacityData.forEach(h => {
 					totCap += (h.totalCapacity || 0);
 					totUtil += (h.totalUtilized || 0);
 					totVac += (h.totalVacant || 0);
 
-					singleCap += (h.singleCapacity || 0);
-					doubleCap += (h.doubleCapacity || 0);
-					tripleCap += (h.tripleCapacity || 0);
-					quadCap += (h.quadCapacity || 0);
-					dormCap += (h.dormCapacity || 0);
-					pdCap += (h.pdCapacity || 0);
-					guestCap += (h.guestCapacity || 0);
-
-					totFullOcc += (h.fullyOccupiedRooms || 0);
-					totFullVac += (h.fullyVacantRooms || 0);
-					totPartOccBeds += (h.partiallyOccupiedBeds || 0);
-					totPartVacBeds += (h.partiallyVacantBeds || 0);
+					sUtil += (h.singleUtilized || 0); sCap += (h.singleCapacity || 0);
+					dUtil += (h.doubleUtilized || 0); dCap += (h.doubleCapacity || 0);
+					tUtil += (h.tripleUtilized || 0); tCap += (h.tripleCapacity || 0);
+					qUtil += (h.quadUtilized || 0); qCap += (h.quadCapacity || 0);
+					dmUtil += (h.dormUtilized || 0); dmCap += (h.dormCapacity || 0);
+					pUtil += (h.pdUtilized || 0); pCap += (h.pdCapacity || 0);
+					gUtil += (h.guestUtilized || 0); gCap += (h.guestCapacity || 0);
 				});
 
-				const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
-				setVal('footSingleCap', singleCap);
-				setVal('footDoubleCap', doubleCap);
-				setVal('footTripleCap', tripleCap);
-				setVal('footQuadCap', quadCap);
-				setVal('footDormCap', dormCap);
-				setVal('footPdCap', pdCap);
-				setVal('footGuestCap', guestCap);
-				setVal('footTotalCap', totCap);
+				if (document.getElementById('footTotalCap')) document.getElementById('footTotalCap').innerText = totCap;
+				if (document.getElementById('footTotalUtil')) document.getElementById('footTotalUtil').innerText = totUtil;
+				if (document.getElementById('footTotalVac')) document.getElementById('footTotalVac').innerText = totVac;
 
-				setVal('footSec2TotalVac', totVac);
-				setVal('footSec2FullyVac', totFullVac);
-				setVal('footSec2PartOccBeds', totPartOccBeds);
-				setVal('footSec2PartVacBeds', totPartVacBeds);
-
-				setVal('footSec3TotalUtil', totUtil);
-				setVal('footSec3FullyOcc', totFullOcc);
-				setVal('footSec3PartOccBeds', totPartOccBeds);
-				setVal('footSec3PartVacBeds', totPartVacBeds);
-
-				setVal('footYearTotalCap', totCap);
-				setVal('footYearTotalUtil', totUtil);
-				setVal('footYearTotalVac', totVac);
+				if (document.getElementById('footSingle')) document.getElementById('footSingle').innerText = sUtil + '/' + sCap;
+				if (document.getElementById('footDouble')) document.getElementById('footDouble').innerText = dUtil + '/' + dCap;
+				if (document.getElementById('footTriple')) document.getElementById('footTriple').innerText = tUtil + '/' + tCap;
+				if (document.getElementById('footQuad')) document.getElementById('footQuad').innerText = qUtil + '/' + qCap;
+				if (document.getElementById('footDorm')) document.getElementById('footDorm').innerText = dmUtil + '/' + dmCap;
+				if (document.getElementById('footPd')) document.getElementById('footPd').innerText = pUtil + '/' + pCap;
+				if (document.getElementById('footGuest')) document.getElementById('footGuest').innerText = gUtil + '/' + gCap;
 			}
 
 			$(document).ready(function() {
