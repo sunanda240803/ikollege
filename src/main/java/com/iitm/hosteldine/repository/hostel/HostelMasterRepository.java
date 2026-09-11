@@ -243,14 +243,15 @@ public interface HostelMasterRepository extends JpaRepository<HostelMasterEntity
 	               "hm.hostel_id, " +
 	               "hm.hostel_name, " +
 	               "UPPER(SUBSTRING(hra.student_id FROM 1 FOR 2)) AS course_code, " +
-	               "COALESCE(dept.dept_name, UPPER(SUBSTRING(hra.student_id FROM 1 FOR 2))) AS course_name, " +
+	               "COALESCE(cm.course_master_name, UPPER(SUBSTRING(hra.student_id FROM 1 FOR 2))) AS course_name, " +
 	               "CASE WHEN SUBSTRING(hra.student_id FROM 3 FOR 2) ~ '^[0-9]{2}$' THEN '20' || SUBSTRING(hra.student_id FROM 3 FOR 2) ELSE 'Other' END AS batch_year, " +
 	               "COUNT(hra.room_allotment_id) AS student_count " +
 	               "FROM schooldev.dost_hostel_name hm " +
 	               "JOIN schooldev.\"HOSTEL_FLOOR_MASTER\" hfm ON hfm.hostel_id = hm.hostel_id " +
 	               "JOIN schooldev.\"HOSTEL_ROOM_INFO\" ri ON (ri.building_id = hfm.floor_id AND ri.active_flag = 'Y') " +
 	               "JOIN schooldev.\"HOSTEL_ROOM_ALLOTMENT_INFO\" hra ON (hra.room_id = ri.room_id AND hra.active_flag = 'Y' AND hra.vacate_date IS NULL AND hra.shifted_date IS NULL) " +
-	               "LEFT JOIN schooldev.dost_election_department dept ON (dept.dept_code = UPPER(SUBSTRING(hra.student_id FROM 1 FOR 2)) OR dept.alt_dept_code = UPPER(SUBSTRING(hra.student_id FROM 1 FOR 2)) OR dept.alt_dept_code2 = UPPER(SUBSTRING(hra.student_id FROM 1 FOR 2))) " +
+	               "LEFT JOIN schooldev.\"COURSE_ALLOCATION_INFO\" cai ON (cai.student_id = hra.student_id AND cai.active_flag = 'Y') " +
+	               "LEFT JOIN schooldev.course_master cm ON (cm.course_master_id = cai.course_id AND cm.active_flag = 'Y') " +
 	               "WHERE hm.active_flag = 'Y' AND (:hostelId = 0 OR hm.hostel_id = :hostelId) " +
 	               "GROUP BY hm.hostel_id, hm.hostel_name, course_code, course_name, batch_year " +
 	               "ORDER BY hm.hostel_name, course_name, batch_year DESC", nativeQuery = true)

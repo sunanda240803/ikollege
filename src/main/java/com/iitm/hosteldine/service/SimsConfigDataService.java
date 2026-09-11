@@ -145,6 +145,7 @@ public class SimsConfigDataService {
     public static final String ONLINE_CRON_JOB_VERSION = "ONLINE_CRON_JOB_VERSION";
     public static final String CONVOCATION_OPEN_LINK_DATE = "CONVOCATION_OPEN_LINK_DATE";
     public static final String CONVOCATION_MAIL_BCC = "CONVOCATION_MAIL_BCC";
+    public static final String HOSTEL_CAPACITY_ALLOWED_USERS = "HOSTEL_CAPACITY_ALLOWED_USERS";
 
 
     SimsConfigDataRepository simsConfigDataRepository;
@@ -171,6 +172,22 @@ public class SimsConfigDataService {
             displayList = new ArrayList<>(Arrays.stream(propertyDisplaysList.split(",")).toList());
         }
         return displayList;
+    }
+
+    public boolean isUserAllowedForHostelCapacity(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return false;
+        }
+        if ("SoftwareAdmin".equalsIgnoreCase(com.iitm.hosteldine.config.SecurityCtxUtil.userRole())) {
+            return true;
+        }
+        ArrayList<String> allowedUsers = getSimConfigValueArrayList(HOSTEL_CAPACITY_ALLOWED_USERS);
+        if (allowedUsers == null || allowedUsers.isEmpty()) {
+            return true;
+        }
+        return allowedUsers.stream().anyMatch(user -> 
+            user.trim().equalsIgnoreCase(username.trim()) || "ALL".equalsIgnoreCase(user.trim())
+        );
     }
 
     public ArrayList<SimsConfigDataJsonArrayDto> getSimConfigValueFromJsonArray(String key) {

@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.iitm.hosteldine.config.SecurityCtxUtil;
 import com.iitm.hosteldine.dto.hostel.HostelCapacityDto;
 import com.iitm.hosteldine.dto.hostel.HostelGuestTariffDto;
 import com.iitm.hosteldine.dto.hostel.HostelStudentDistributionDto;
 import com.iitm.hosteldine.form.common.PaginationForm;
+import com.iitm.hosteldine.service.SimsConfigDataService;
 import com.iitm.hosteldine.service.hostel.HostelCapacityService;
 import com.iitm.hosteldine.util.HTMLPage;
 import com.iitm.hosteldine.util.response.CommonResponseUtil;
@@ -30,7 +34,11 @@ import lombok.RequiredArgsConstructor;
 public class HostelCapacityController {
 
     private final HostelCapacityService hostelCapacityService;
+    private final SimsConfigDataService simsConfigDataService;
     private final CommonResponseUtil commonResponseUtil;
+
+    @Value("${url.error}")
+    private String errorUrl;
 
     @GetMapping
     public String getHostelCapacityList(
@@ -40,6 +48,11 @@ public class HostelCapacityController {
             PaginationForm form, 
             ModelMap map, 
             HttpServletRequest request) throws Exception {
+
+        String userName = SecurityCtxUtil.userName();
+        if (!simsConfigDataService.isUserAllowedForHostelCapacity(userName)) {
+            return "redirect:" + errorUrl + "?error=forbidden";
+        }
         
         LocalDate today = LocalDate.now();
         if (fromDate == null || fromDate.trim().isEmpty()) {
@@ -75,6 +88,11 @@ public class HostelCapacityController {
             @RequestParam(name = "hostelId", required = false) Long selectedHostelId,
             @RequestParam(name = "fromDate", required = false) String fromDate,
             @RequestParam(name = "toDate", required = false) String toDate) throws Exception {
+
+        String userName = SecurityCtxUtil.userName();
+        if (!simsConfigDataService.isUserAllowedForHostelCapacity(userName)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         
         byte[] excelBytes = hostelCapacityService.downloadHostelCapacityExcelReport(selectedHostelId, fromDate, toDate);
         
@@ -86,3 +104,4 @@ public class HostelCapacityController {
                 .body(excelBytes);
     }
 }
+

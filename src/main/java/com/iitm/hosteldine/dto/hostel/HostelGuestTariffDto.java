@@ -34,6 +34,22 @@ public class HostelGuestTariffDto {
     private String tariffDescription;
 
     private java.util.List<GuestRoomDetail> roomDetails;
+    private java.util.List<GuestTypeSummary> typeSummaries;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GuestTypeSummary {
+        private String guestType;
+        private String displayName;
+        private Long totalRooms;
+        private Long totalCapacity;
+        private Long occupiedRooms;
+        private Long occupiedSeats;
+        private Long vacantRooms;
+        private Long vacantSeats;
+    }
 
     @Data
     @Builder

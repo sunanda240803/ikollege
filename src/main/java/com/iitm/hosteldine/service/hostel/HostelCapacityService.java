@@ -307,12 +307,17 @@ public class HostelCapacityService {
         long utilizedToday = 0;
         long vacantToday = 0;
 
+        java.util.Map<String, HostelGuestTariffDto.GuestTypeSummary> summaryMap = new java.util.LinkedHashMap<>();
+        summaryMap.put("guest", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("guest").displayName("Guest Rooms").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
+        summaryMap.put("icsr", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("icsr").displayName("ICSR Rooms").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
+        summaryMap.put("official", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("official").displayName("Official Rooms").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
+
         for (Object[] row : rawList) {
             String hName = row[1] != null ? row[1].toString() : "";
             String floorName = row[2] != null ? row[2].toString() : "";
             String roomNo = row[3] != null ? row[3].toString() : "";
             Integer cap = row[4] != null ? ((Number) row[4]).intValue() : 1;
-            String guestType = row[5] != null ? row[5].toString() : "guest";
+            String guestTypeRaw = row[5] != null ? row[5].toString().toLowerCase() : "guest";
             String status = row[6] != null ? row[6].toString() : "Vacant";
             String occupantInfo = row[7] != null ? row[7].toString() : "";
 
@@ -336,7 +341,28 @@ public class HostelCapacityService {
                     .occupantType(isOccupied ? occupantInfo : "Available")
                     .tariffPerDay(ratePerDay)
                     .build());
+
+            HostelGuestTariffDto.GuestTypeSummary typeSummary = summaryMap.computeIfAbsent(guestTypeRaw, k -> {
+                String dName = "guest".equals(k) ? "Guest Rooms" : "icsr".equals(k) ? "ICSR Rooms" : "official".equals(k) ? "Official Rooms" : (k.toUpperCase() + " Rooms");
+                return HostelGuestTariffDto.GuestTypeSummary.builder()
+                        .guestType(k)
+                        .displayName(dName)
+                        .totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L)
+                        .build();
+            });
+
+            typeSummary.setTotalRooms(typeSummary.getTotalRooms() + 1);
+            typeSummary.setTotalCapacity(typeSummary.getTotalCapacity() + cap);
+            if (isOccupied) {
+                typeSummary.setOccupiedRooms(typeSummary.getOccupiedRooms() + 1);
+                typeSummary.setOccupiedSeats(typeSummary.getOccupiedSeats() + cap);
+            } else {
+                typeSummary.setVacantRooms(typeSummary.getVacantRooms() + 1);
+                typeSummary.setVacantSeats(typeSummary.getVacantSeats() + cap);
+            }
         }
+
+        List<HostelGuestTariffDto.GuestTypeSummary> typeSummaries = new ArrayList<>(summaryMap.values());
 
         return HostelGuestTariffDto.builder()
                 .hostelId(targetHostelId)
@@ -352,6 +378,7 @@ public class HostelCapacityService {
                 .vacantRoomsCost(vacantToday * singleTariff)
                 .bookingDurationDays(1)
                 .roomDetails(roomDetailList)
+                .typeSummaries(typeSummaries)
                 .build();
     }
 
@@ -371,6 +398,19 @@ public class HostelCapacityService {
             headerStyle.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
+            CellStyle subHeaderStyle = workbook.createCellStyle();
+            Font subHeaderFont = workbook.createFont();
+            subHeaderFont.setBold(true);
+            subHeaderFont.setColor(IndexedColors.WHITE.getIndex());
+            subHeaderStyle.setFont(subHeaderFont);
+            subHeaderStyle.setFillForegroundColor(IndexedColors.DARK_TEAL.getIndex());
+            subHeaderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            CellStyle boldStyle = workbook.createCellStyle();
+            Font boldFont = workbook.createFont();
+            boldFont.setBold(true);
+            boldStyle.setFont(boldFont);
+
             // Sheet 1: Capacity Summary (Category-Wise)
             Sheet sheet1 = workbook.createSheet("1. Capacity Summary");
             Row titleRow1 = sheet1.createRow(0);
@@ -379,7 +419,7 @@ public class HostelCapacityService {
             titleCell1.setCellStyle(headerStyle);
 
             String[] s1Headers = {
-                "Hostel Name", "Code", "Gender", "Total Cap", "Total Utilized", "Total Vacant",
+                "Hostel Name", "Code", "Gender", "Total Cap", "Total Utilized", "Partially Occupied Rooms", "Partially Vacant Seats", "Total Vacant",
                 "Single Rooms", "Single Cap", "Double Rooms", "Double Cap", "Triple Rooms", "Triple Cap",
                 "Quad Rooms", "Quad Cap", "Dorm Rooms", "Dorm Cap", "PD Rooms", "PD Cap",
                 "Guest Rooms", "Guest Cap", "ICSR Rooms", "ICSR Cap", "Official Rooms", "Official Cap"
@@ -401,26 +441,28 @@ public class HostelCapacityService {
                 row.createCell(2).setCellValue("M".equals(h.getHostelGenderType()) ? "Male" : "F".equals(h.getHostelGenderType()) ? "Female" : "Co-Ed");
                 row.createCell(3).setCellValue(h.getTotalCapacity());
                 row.createCell(4).setCellValue(h.getTotalUtilized());
-                row.createCell(5).setCellValue(h.getTotalVacant());
+                row.createCell(5).setCellValue(h.getPartiallyVacantRooms());
+                row.createCell(6).setCellValue(h.getPartiallyVacantBeds());
+                row.createCell(7).setCellValue(h.getTotalVacant());
 
-                row.createCell(6).setCellValue(h.getSingleRooms());
-                row.createCell(7).setCellValue(h.getSingleCapacity());
-                row.createCell(8).setCellValue(h.getDoubleRooms());
-                row.createCell(9).setCellValue(h.getDoubleCapacity());
-                row.createCell(10).setCellValue(h.getTripleRooms());
-                row.createCell(11).setCellValue(h.getTripleCapacity());
-                row.createCell(12).setCellValue(h.getQuadRooms());
-                row.createCell(13).setCellValue(h.getQuadCapacity());
-                row.createCell(14).setCellValue(h.getDormRooms());
-                row.createCell(15).setCellValue(h.getDormCapacity());
-                row.createCell(16).setCellValue(h.getPdRooms());
-                row.createCell(17).setCellValue(h.getPdCapacity());
-                row.createCell(18).setCellValue(h.getGuestRooms());
-                row.createCell(19).setCellValue(h.getGuestCapacity());
-                row.createCell(20).setCellValue(h.getIcsrRooms());
-                row.createCell(21).setCellValue(h.getIcsrCapacity());
-                row.createCell(22).setCellValue(h.getOfficialRooms());
-                row.createCell(23).setCellValue(h.getOfficialCapacity());
+                row.createCell(8).setCellValue(h.getSingleRooms());
+                row.createCell(9).setCellValue(h.getSingleCapacity());
+                row.createCell(10).setCellValue(h.getDoubleRooms());
+                row.createCell(11).setCellValue(h.getDoubleCapacity());
+                row.createCell(12).setCellValue(h.getTripleRooms());
+                row.createCell(13).setCellValue(h.getTripleCapacity());
+                row.createCell(14).setCellValue(h.getQuadRooms());
+                row.createCell(15).setCellValue(h.getQuadCapacity());
+                row.createCell(16).setCellValue(h.getDormRooms());
+                row.createCell(17).setCellValue(h.getDormCapacity());
+                row.createCell(18).setCellValue(h.getPdRooms());
+                row.createCell(19).setCellValue(h.getPdCapacity());
+                row.createCell(20).setCellValue(h.getGuestRooms());
+                row.createCell(21).setCellValue(h.getGuestCapacity());
+                row.createCell(22).setCellValue(h.getIcsrRooms());
+                row.createCell(23).setCellValue(h.getIcsrCapacity());
+                row.createCell(24).setCellValue(h.getOfficialRooms());
+                row.createCell(25).setCellValue(h.getOfficialCapacity());
             }
             for (int i = 0; i < s1Headers.length; i++) sheet1.autoSizeColumn(i);
 
@@ -432,9 +474,9 @@ public class HostelCapacityService {
             titleCell2.setCellStyle(headerStyle);
 
             String[] s2Headers = {
-                "Hostel Name", "Total Vacant Beds", "Partially Vacant Rooms", "Partially Vacant Beds",
-                "Vacant Single Beds", "Vacant Double Beds", "Vacant Triple Beds", "Vacant Quad Beds",
-                "Vacant Dorm Beds", "Vacant PD Beds", "Vacant Guest Beds", "Vacant ICSR Beds", "Vacant Official Beds"
+                "Hostel Name", "Total Vacant Seats", "Partially Vacant Rooms", "Partially Vacant Seats",
+                "Vacant Single Seats", "Vacant Double Seats", "Vacant Triple Seats", "Vacant Quad Seats",
+                "Vacant Dorm Seats", "Vacant PD Seats", "Vacant Guest Seats", "Vacant ICSR Seats", "Vacant Official Seats"
             };
             Row headerRow2 = sheet2.createRow(2);
             for (int i = 0; i < s2Headers.length; i++) {
@@ -465,20 +507,51 @@ public class HostelCapacityService {
 
             // Sheet 3: Utilization & Student Distribution Report
             Sheet sheet3 = workbook.createSheet("3. Utilization Report");
-            Row titleRow3 = sheet3.createRow(0);
-            Cell titleCell3 = titleRow3.createCell(0);
-            titleCell3.setCellValue("SECTION 3: HOSTEL UTILIZATION & STUDENT DISTRIBUTION ANALYSIS");
-            titleCell3.setCellStyle(headerStyle);
+            addTitleRow(sheet3, 0, "SECTION 3: HOSTEL UTILIZATION & STUDENT DISTRIBUTION ANALYSIS", headerStyle);
 
-            String[] s3Headers = {"Hostel Name", "Course / Department", "Course Code", "Batch Year", "Resident Student Count"};
-            Row headerRow3 = sheet3.createRow(2);
-            for (int i = 0; i < s3Headers.length; i++) {
-                Cell cell = headerRow3.createCell(i);
-                cell.setCellValue(s3Headers[i]);
-                cell.setCellStyle(headerStyle);
+            int rIdx3 = 2;
+            addTitleRow(sheet3, rIdx3++, "SECTION 3A: ROOM CATEGORY UTILIZATION SUMMARY", subHeaderStyle);
+            addHeaderRow(sheet3, rIdx3++, new String[]{
+                "Hostel Name", "Room Category", "Utilized Rooms (Count)",
+                "Partially Occupied (Rooms / Beds)", "Overloaded (Rooms / Seats)", "Total Allotted Seats (Inc. Overload)"
+            }, headerStyle);
+
+            for (HostelCapacityDto h : capacityList) {
+                if (selectedHostelId != null && selectedHostelId > 0 && !selectedHostelId.equals(h.getHostelId())) continue;
+
+                Object[][] cats = {
+                    {"Single Occupancy", nvl(h.getSingleUtilizedRooms()), h.getSinglePartVacRooms(), h.getSinglePartVacBeds(), h.getSingleOverRooms(), h.getSingleOverSeats(), nvl(h.getSingleUtilized())},
+                    {"Double Occupancy", nvl(h.getDoubleUtilizedRooms()), h.getDoublePartVacRooms(), h.getDoublePartVacBeds(), h.getDoubleOverRooms(), h.getDoubleOverSeats(), nvl(h.getDoubleUtilized())},
+                    {"Triple Occupancy", nvl(h.getTripleUtilizedRooms()), h.getTriplePartVacRooms(), h.getTriplePartVacBeds(), h.getTripleOverRooms(), h.getTripleOverSeats(), nvl(h.getTripleUtilized())},
+                    {"Quadruple Occupancy", nvl(h.getQuadUtilizedRooms()), h.getQuadPartVacRooms(), h.getQuadPartVacBeds(), h.getQuadOverRooms(), h.getQuadOverSeats(), nvl(h.getQuadUtilized())},
+                    {"Dormitory Rooms", nvl(h.getDormUtilizedRooms()), h.getDormPartVacRooms(), h.getDormPartVacBeds(), h.getDormOverRooms(), h.getDormOverSeats(), nvl(h.getDormUtilized())},
+                    {"PD Rooms", nvl(h.getPdUtilizedRooms()), h.getPdPartVacRooms(), h.getPdPartVacBeds(), h.getPdOverRooms(), h.getPdOverSeats(), nvl(h.getPdUtilized())},
+                    {"Guest Rooms", nvl(h.getGuestUtilizedRooms()), h.getGuestPartVacRooms(), h.getGuestPartVacBeds(), h.getGuestOverRooms(), h.getGuestOverSeats(), nvl(h.getGuestUtilized())},
+                    {"ICSR Rooms", nvl(h.getIcsrUtilizedRooms()), h.getIcsrPartVacRooms(), h.getIcsrPartVacBeds(), h.getIcsrOverRooms(), h.getIcsrOverSeats(), nvl(h.getIcsrUtilized())},
+                    {"Official Rooms", nvl(h.getOfficialUtilizedRooms()), h.getOfficialPartVacRooms(), h.getOfficialPartVacBeds(), h.getOfficialOverRooms(), h.getOfficialOverSeats(), nvl(h.getOfficialUtilized())}
+                };
+
+                long totRooms = 0;
+                for (Object[] c : cats) {
+                    addCatRow(sheet3, rIdx3++, h.getHostelName(), (String) c[0], (Long) c[1], (Long) c[2], (Long) c[3], (Long) c[4], (Long) c[5], (Long) c[6]);
+                    totRooms += (Long) c[1];
+                }
+
+                Row rTot = sheet3.createRow(rIdx3++);
+                addStyledCell(rTot, 0, h.getHostelName(), boldStyle);
+                addStyledCell(rTot, 1, "TOTAL ALLOTTED SEATS (INC. OVERLOAD)", boldStyle);
+                addStyledCell(rTot, 2, totRooms, boldStyle);
+                addStyledCell(rTot, 3, nvl(h.getPartiallyVacantRooms()) + " / " + nvl(h.getPartiallyVacantBeds()), boldStyle);
+                addStyledCell(rTot, 4, nvl(h.getOverloadedRooms()) + " / " + nvl(h.getOverloadedSeats()), boldStyle);
+                addStyledCell(rTot, 5, nvl(h.getTotalUtilized()), boldStyle);
+
+                rIdx3++;
             }
 
-            int rIdx3 = 3;
+            rIdx3++;
+            addTitleRow(sheet3, rIdx3++, "SECTION 3B: RESIDENT STUDENT DISTRIBUTION (COURSE & BATCH YEAR)", subHeaderStyle);
+            addHeaderRow(sheet3, rIdx3++, new String[]{"Hostel Name", "Course / Department", "Course Code", "Batch Year", "Resident Student Count"}, headerStyle);
+
             for (HostelStudentDistributionDto s : studentDistList) {
                 Row row = sheet3.createRow(rIdx3++);
                 row.createCell(0).setCellValue(s.getHostelName());
@@ -487,42 +560,72 @@ public class HostelCapacityService {
                 row.createCell(3).setCellValue(s.getBatchYear());
                 row.createCell(4).setCellValue(s.getStudentCount());
             }
-            for (int i = 0; i < s3Headers.length; i++) sheet3.autoSizeColumn(i);
 
-            // Sheet 4: Live Guest Room Details & Tariff Report (Present Date Only)
+            for (int i = 0; i < 6; i++) sheet3.autoSizeColumn(i);
+
+            // Sheet 4: Live Guest Room Type Summary & Tariff Report (Present Date Only)
             Sheet sheet4 = workbook.createSheet("4. Live Guest Rooms & Tariff");
-            Row titleRow4 = sheet4.createRow(0);
-            Cell titleCell4 = titleRow4.createCell(0);
-            titleCell4.setCellValue("SECTION 4: LIVE GUEST ROOM DETAILS & TARIFF (PRESENT DATE: " + LocalDate.now() + ")");
-            titleCell4.setCellStyle(headerStyle);
+            addTitleRow(sheet4, 0, "SECTION 4: LIVE GUEST ROOM DETAILS & TARIFF (PRESENT DATE: " + LocalDate.now() + ")", headerStyle);
 
             Row tariffInfoRow = sheet4.createRow(1);
-            tariffInfoRow.createCell(0).setCellValue("Single Guest Room Rate: ₹" + guestTariffDto.getSingleRoomTariff() + " | Shared Guest Room Rate: ₹" + guestTariffDto.getSharedRoomTariff() + " | Lodging Base Charge: ₹" + guestTariffDto.getLodgingBaseCharge());
+            tariffInfoRow.createCell(0).setCellValue("Single Guest Room Rate: ₹" + guestTariffDto.getSingleRoomTariff() + " | Shared Guest Room Rate: ₹" + guestTariffDto.getSharedRoomTariff() + " | Stay with Student: ₹" + guestTariffDto.getLodgingBaseCharge());
 
-            String[] s4Headers = {"Room No & Hostel", "Floor Name", "Capacity", "Current Live Status (Today)", "Occupant / Resident Info", "Tariff Rate per Day (₹)"};
-            Row headerRow4 = sheet4.createRow(3);
-            for (int i = 0; i < s4Headers.length; i++) {
-                Cell cell = headerRow4.createCell(i);
-                cell.setCellValue(s4Headers[i]);
-                cell.setCellStyle(headerStyle);
-            }
+            addHeaderRow(sheet4, 3, new String[]{"Room Category / Type", "Total Rooms", "Total Capacity (Seats)", "Occupied Rooms", "Occupied Seats", "Vacant Rooms", "Vacant Seats"}, headerStyle);
 
             int rIdx4 = 4;
-            if (guestTariffDto.getRoomDetails() != null) {
-                for (HostelGuestTariffDto.GuestRoomDetail g : guestTariffDto.getRoomDetails()) {
+            if (guestTariffDto.getTypeSummaries() != null) {
+                for (HostelGuestTariffDto.GuestTypeSummary s : guestTariffDto.getTypeSummaries()) {
                     Row row = sheet4.createRow(rIdx4++);
-                    row.createCell(0).setCellValue(g.getRoomNo());
-                    row.createCell(1).setCellValue(g.getFloorName());
-                    row.createCell(2).setCellValue(g.getCapacity());
-                    row.createCell(3).setCellValue(g.getCurrentStatus());
-                    row.createCell(4).setCellValue(g.getOccupantType());
-                    row.createCell(5).setCellValue(g.getTariffPerDay());
+                    row.createCell(0).setCellValue(s.getDisplayName());
+                    row.createCell(1).setCellValue(s.getTotalRooms());
+                    row.createCell(2).setCellValue(s.getTotalCapacity());
+                    row.createCell(3).setCellValue(s.getOccupiedRooms());
+                    row.createCell(4).setCellValue(s.getOccupiedSeats());
+                    row.createCell(5).setCellValue(s.getVacantRooms());
+                    row.createCell(6).setCellValue(s.getVacantSeats());
                 }
             }
-            for (int i = 0; i < s4Headers.length; i++) sheet4.autoSizeColumn(i);
+            for (int i = 0; i < 7; i++) sheet4.autoSizeColumn(i);
 
             workbook.write(out);
             return out.toByteArray();
         }
+    }
+
+    private void addTitleRow(Sheet s, int rowIdx, String title, CellStyle style) {
+        Row r = s.createRow(rowIdx);
+        Cell c = r.createCell(0);
+        c.setCellValue(title);
+        if (style != null) c.setCellStyle(style);
+    }
+
+    private void addHeaderRow(Sheet s, int rowIdx, String[] headers, CellStyle style) {
+        Row r = s.createRow(rowIdx);
+        for (int i = 0; i < headers.length; i++) {
+            Cell c = r.createCell(i);
+            c.setCellValue(headers[i]);
+            if (style != null) c.setCellStyle(style);
+        }
+    }
+
+    private void addCatRow(Sheet s, int rowIdx, String hostel, String category, long utilRooms, Long partR, Long partB, Long overR, Long overS, long utilSeats) {
+        Row r = s.createRow(rowIdx);
+        r.createCell(0).setCellValue(hostel);
+        r.createCell(1).setCellValue(category);
+        r.createCell(2).setCellValue(utilRooms);
+        r.createCell(3).setCellValue(nvl(partR) + " / " + nvl(partB));
+        r.createCell(4).setCellValue(nvl(overR) + " / " + nvl(overS));
+        r.createCell(5).setCellValue(utilSeats);
+    }
+
+    private void addStyledCell(Row r, int col, Object val, CellStyle style) {
+        Cell c = r.createCell(col);
+        if (val instanceof Number) c.setCellValue(((Number) val).doubleValue());
+        else c.setCellValue(val != null ? val.toString() : "");
+        if (style != null) c.setCellStyle(style);
+    }
+
+    private long nvl(Long val) {
+        return val != null ? val : 0L;
     }
 }

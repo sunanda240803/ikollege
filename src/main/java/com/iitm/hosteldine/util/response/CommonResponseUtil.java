@@ -14,6 +14,7 @@ import com.iitm.hosteldine.form.common.FooterForm;
 import com.iitm.hosteldine.form.common.HeaderForm;
 import com.iitm.hosteldine.form.common.PaginationForm;
 import com.iitm.hosteldine.service.MenuService;
+import com.iitm.hosteldine.service.SimsConfigDataService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -52,7 +53,13 @@ public class CommonResponseUtil {
     private String backendValidationButton;
     private DynamicSecurityService dynamicSecurityService;
     private MenuService menuService;
+    private SimsConfigDataService simsConfigDataService;
     private final CommonController commonController;
+
+    @Autowired
+    public void setSimsConfigDataService(SimsConfigDataService simsConfigDataService) {
+        this.simsConfigDataService = simsConfigDataService;
+    }
 
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
@@ -159,20 +166,55 @@ public class CommonResponseUtil {
                 header.setDashboardList(sortedList);
                 MenuListDto dashboardMenu = dashboardList.getFirst();
                 if (dashboardMenu != null) {
+                    boolean isAllowed = simsConfigDataService != null && simsConfigDataService.isUserAllowedForHostelCapacity(SecurityCtxUtil.userName());
+
                     if (dashboardMenu.getSubMenu() != null) {
-                        header.setMenuList(dashboardMenu.getSubMenu());
+                        List<MenuListDto> menuList = dashboardMenu.getSubMenu();
+                        if (!isAllowed) {
+                            menuList = filterHostelCapacity(menuList);
+                        }
+                        header.setMenuList(menuList);
                     }
                     if (dashboardMenu.getSubTab() != null) {
-                        header.setTabList(dashboardMenu.getSubTab());
+                        List<MenuListDto> tabList = dashboardMenu.getSubTab();
+                        if (!isAllowed) {
+                            tabList = filterHostelCapacity(tabList);
+                        }
+                        header.setTabList(tabList);
                     }
                     if (dashboardMenu.getSubReport() != null) {
-                        header.setReportList(dashboardMenu.getSubReport());
+                        List<MenuListDto> reportList = dashboardMenu.getSubReport();
+                        if (!isAllowed) {
+                            reportList = filterHostelCapacity(reportList);
+                        }
+                        header.setReportList(reportList);
                     }
                 }
             }
         }
         return header;
     }
+
+    private List<MenuListDto> filterHostelCapacity(List<MenuListDto> list) {
+        if (list == null) return null;
+        List<MenuListDto> filtered = new ArrayList<>();
+        for (MenuListDto dto : list) {
+            boolean isCapacity = (dto.getUrlPath() != null && dto.getUrlPath().toLowerCase().contains("hostelcapacity"))
+                    || (dto.getMenuHeading() != null && dto.getMenuHeading().toLowerCase().contains("hostel capacity"));
+            if (!isCapacity) {
+                MenuListDto copy = dto.clone();
+                if (copy.getSubMenu() != null && !copy.getSubMenu().isEmpty()) {
+                    copy.setSubMenu(filterHostelCapacity(copy.getSubMenu()));
+                }
+                if (copy.getSubTab() != null && !copy.getSubTab().isEmpty()) {
+                    copy.setSubTab(filterHostelCapacity(copy.getSubTab()));
+                }
+                filtered.add(copy);
+            }
+        }
+        return filtered;
+    }
+
     
     public void updateSaveResponseByStatus(String saveStatus,RedirectAttributes redirectAttrs) {
     	BaseResponse baseResponse = new BaseResponse();

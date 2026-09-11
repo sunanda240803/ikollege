@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head th:replace="~{common/head :: common_header(~{::link})}">
 </head>
 
 <body>
 	<header th:replace="~{common/header :: title(${headerForm})}"></header>
-	
+
 	<!-- Main Content -->
 	<main id="main" class="main">
 		<style>
-			#loader, .page-loading {
+			#loader,
+			.page-loading {
 				display: none !important;
 				opacity: 0 !important;
 				visibility: hidden !important;
 				pointer-events: none !important;
 			}
-			html, body, .stop-scrolling {
+
+			html,
+			body,
+			.stop-scrolling {
 				overflow: auto !important;
 			}
+
 			.compact-card {
 				border: 1px solid #e0e6ed;
 				border-radius: 8px;
 				background: #ffffff;
-				box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 			}
+
 			.stat-pill {
 				font-size: 0.85rem;
 				font-weight: 600;
 				padding: 4px 10px;
 				border-radius: 6px;
 			}
+
 			.table-compact th {
 				background-color: #f8f9fa;
 				font-size: 0.85rem;
@@ -37,10 +45,12 @@
 				letter-spacing: 0.5px;
 				color: #495057;
 			}
+
 			.table-compact td {
 				font-size: 0.9rem;
 				vertical-align: middle;
 			}
+
 			.dept-badge {
 				background: #f1f5f9;
 				border: 1px solid #cbd5e1;
@@ -50,6 +60,7 @@
 				margin: 3px;
 				font-size: 0.85rem;
 			}
+
 			.section-header-banner {
 				background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
 				color: #ffffff;
@@ -59,12 +70,13 @@
 				font-weight: 700;
 				font-size: 1.02rem;
 			}
+
 			.section-card {
 				border: 1px solid #cbd5e1;
 				border-radius: 8px;
 				margin-bottom: 24px;
 				background: #ffffff;
-				box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+				box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
 				overflow: hidden;
 			}
 		</style>
@@ -87,7 +99,7 @@
 			<div class="col-lg-12">
 				<div class="card main-card mt-3">
 					<div class="card-body themeForm p-3">
-						
+
 						<!-- Filter Controls Header -->
 						<div class="row mb-3 align-items-center g-2 bg-light p-2 rounded border">
 							<!-- From Date -->
@@ -96,7 +108,8 @@
 									<span class="input-group-text bg-secondary text-white fw-bold">
 										<i class="fa-solid fa-calendar-day me-1"></i>From Date
 									</span>
-									<input type="date" id="fromDateInput" class="form-control fw-semibold" th:value="${selectedFromDate}">
+									<input type="date" id="fromDateInput" class="form-control fw-semibold"
+										th:value="${selectedFromDate}">
 								</div>
 							</div>
 
@@ -106,7 +119,8 @@
 									<span class="input-group-text bg-secondary text-white fw-bold">
 										<i class="fa-solid fa-calendar-check me-1"></i>To Date
 									</span>
-									<input type="date" id="toDateInput" class="form-control fw-semibold" th:value="${selectedToDate}">
+									<input type="date" id="toDateInput" class="form-control fw-semibold"
+										th:value="${selectedToDate}">
 								</div>
 							</div>
 
@@ -116,19 +130,25 @@
 									<span class="input-group-text bg-tmPrimary text-white fw-bold">
 										<i class="fa-solid fa-building-user me-1"></i>Select Hostel
 									</span>
-									<select id="hostelSelect" class="form-select fw-semibold" onchange="renderHostelDetails(this.value)">
-										<option value="0" th:selected="${selectedHostelId == 0}">-- ALL HOSTELS (Consolidated View) --</option>
-										<option th:each="h : ${capacityList}" th:value="${h.hostelId}" th:text="${h.hostelName + ' (' + h.hostelCode + ')'}" th:selected="${h.hostelId == selectedHostelId}"></option>
+									<select id="hostelSelect" class="form-select fw-semibold"
+										onchange="renderHostelDetails(this.value)">
+										<option value="0" th:selected="${selectedHostelId == 0}">-- ALL HOSTELS
+											(Consolidated View) --</option>
+										<option th:each="h : ${capacityList}" th:value="${h.hostelId}"
+											th:text="${h.hostelName + ' (' + h.hostelCode + ')'}"
+											th:selected="${h.hostelId == selectedHostelId}"></option>
 									</select>
 								</div>
 							</div>
 
 							<!-- Action Buttons -->
 							<div class="col-md-2 col-sm-4 text-end d-flex gap-1 justify-content-end">
-								<button type="button" class="btn btn-sm btn-primary fw-bold px-2 shadow-sm" onclick="applyDateFilter()">
+								<button type="button" class="btn btn-sm btn-primary fw-bold px-2 shadow-sm"
+									onclick="applyDateFilter()">
 									<i class="fa-solid fa-filter me-1"></i>Filter
 								</button>
-								<button type="button" class="btn btn-sm btn-success fw-bold px-2 shadow-sm" onclick="downloadReport()">
+								<button type="button" class="btn btn-sm btn-success fw-bold px-2 shadow-sm"
+									onclick="downloadReport()">
 									<i class="fa-solid fa-file-excel me-1"></i>Excel
 								</button>
 							</div>
@@ -138,10 +158,12 @@
 						<div class="row g-2 mb-3">
 							<!-- Hostel Name Banner -->
 							<div class="col-lg-3 col-md-12">
-								<div class="compact-card p-2 h-100 d-flex flex-column justify-content-center bg-light border-start border-4 border-primary">
+								<div
+									class="compact-card p-2 h-100 d-flex flex-column justify-content-center bg-light border-start border-4 border-primary">
 									<div class="d-flex justify-content-between align-items-center">
 										<div>
-											<h5 class="mb-0 fw-bold text-tmPrimary" id="displayHostelName">Hostel Name</h5>
+											<h5 class="mb-0 fw-bold text-tmPrimary" id="displayHostelName">Hostel Name
+											</h5>
 											<small class="text-muted" id="displayHostelCode">Code: -</small>
 										</div>
 										<span id="displayGenderBadge" class="badge bg-primary px-2 py-1">Male</span>
@@ -154,7 +176,8 @@
 								<div class="compact-card p-2 h-100 border-start border-4 border-primary">
 									<div class="d-flex align-items-center justify-content-between">
 										<div>
-											<span class="text-muted small fw-semibold text-uppercase">Total Capacity</span>
+											<span class="text-muted small fw-semibold text-uppercase">Total
+												Capacity</span>
 											<h4 class="mb-0 fw-bold text-dark" id="valTotalCapacity">0</h4>
 										</div>
 										<div class="bg-primary bg-opacity-10 text-primary rounded p-2 fs-5">
@@ -169,7 +192,8 @@
 								<div class="compact-card p-2 h-100 border-start border-4 border-danger">
 									<div class="d-flex align-items-center justify-content-between">
 										<div>
-											<span class="text-muted small fw-semibold text-uppercase">Allotted Seats (Including Overload)</span>
+											<span class="text-muted small fw-semibold text-uppercase">Allotted Seats
+												(Including Overload)</span>
 											<h4 class="mb-0 fw-bold text-danger" id="valTotalUtilized">0</h4>
 										</div>
 										<div class="bg-danger bg-opacity-10 text-danger rounded p-2 fs-5">
@@ -184,7 +208,8 @@
 								<div class="compact-card p-2 h-100 border-start border-4 border-success">
 									<div class="d-flex align-items-center justify-content-between">
 										<div>
-											<span class="text-muted small fw-semibold text-uppercase">Total Vacant</span>
+											<span class="text-muted small fw-semibold text-uppercase">Total
+												Vacant</span>
 											<h4 class="mb-0 fw-bold text-success" id="valTotalVacant">0</h4>
 										</div>
 										<div class="bg-success bg-opacity-10 text-success rounded p-2 fs-5">
@@ -200,8 +225,10 @@
 						<!-- ========================================================================= -->
 						<div class="section-card">
 							<div class="section-header-banner d-flex justify-content-between align-items-center">
-								<span><i class="fa-solid fa-layer-group me-2"></i>SECTION 1: Hostel Capacity Summary (Category-wise)</span>
-								<small class="fw-normal text-white-50">Single/Double/Triple/Quad exclude Special Rooms (PD, Guest, Official, ICSR)</small>
+								<span><i class="fa-solid fa-layer-group me-2"></i>SECTION 1: Hostel Capacity Summary
+									(Category-wise)</span>
+								<small class="fw-normal text-white-50">Single/Double/Triple/Quad exclude Special Rooms
+									(PD, Guest, Official, ICSR)</small>
 							</div>
 							<div class="p-3">
 								<!-- Multi-Row Category Capacity Table -->
@@ -216,47 +243,57 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single Occupancy</strong></td>
+												<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single
+														Occupancy</strong></td>
 												<td class="text-center fw-semibold" id="valSingleRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valSingleCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double Occupancy</strong></td>
+												<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double
+														Occupancy</strong></td>
 												<td class="text-center fw-semibold" id="valDoubleRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valDoubleCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple Occupancy</strong></td>
+												<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple
+														Occupancy</strong></td>
 												<td class="text-center fw-semibold" id="valTripleRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valTripleCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple Occupancy</strong></td>
+												<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple
+														Occupancy</strong></td>
 												<td class="text-center fw-semibold" id="valQuadRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valQuadCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory Rooms</strong></td>
+												<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory
+														Rooms</strong></td>
 												<td class="text-center fw-semibold" id="valDormRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valDormCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD (Physically Disabled) Rooms</strong></td>
+												<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD
+														(Physically Disabled) Rooms</strong></td>
 												<td class="text-center fw-semibold" id="valPdRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valPdCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest Rooms</strong></td>
+												<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest
+														Rooms</strong></td>
 												<td class="text-center fw-semibold" id="valGuestRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valGuestCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR Rooms</strong></td>
+												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR
+														Rooms</strong></td>
 												<td class="text-center fw-semibold" id="valIcsrRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valIcsrCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-building-flag text-secondary me-2"></i><strong>Official Rooms</strong></td>
+												<td><i
+														class="fa-solid fa-building-flag text-secondary me-2"></i><strong>Official
+														Rooms</strong></td>
 												<td class="text-center fw-semibold" id="valOfficialRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valOfficialCap">0</td>
 											</tr>
@@ -265,11 +302,14 @@
 								</div>
 
 								<!-- Master Consolidated All Hostels Section 1 Table -->
-								<div class="table-responsive compact-card p-0" id="sec1MasterCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
+								<div class="table-responsive compact-card p-0" id="sec1MasterCard"
+									th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
 									<div class="p-2 bg-light border-bottom fw-bold text-tmPrimary small">
-										<i class="fa-solid fa-table me-2"></i>All Hostels Consolidated Category Capacity Master Summary
+										<i class="fa-solid fa-table me-2"></i>All Hostels Consolidated Category Capacity
+										Master Summary
 									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+									<table
+										class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
 										<thead class="table-dark">
 											<tr>
 												<th>#</th>
@@ -291,17 +331,29 @@
 											<tr th:each="h, iterStat : ${capacityList}">
 												<td class="text-center text-muted" th:text="${iterStat.count}">1</td>
 												<td class="fw-bold text-tmPrimary" th:text="${h.hostelName}">Hostel</td>
-												<td class="text-center"><span th:text="${h.hostelGenderType == 'M' ? 'Male' : (h.hostelGenderType == 'F' ? 'Female' : 'Co-Ed')}" class="badge bg-secondary"></span></td>
+												<td class="text-center"><span
+														th:text="${h.hostelGenderType == 'M' ? 'Male' : (h.hostelGenderType == 'F' ? 'Female' : 'Co-Ed')}"
+														class="badge bg-secondary"></span></td>
 												<td class="text-center fw-bold" th:text="${h.totalCapacity}">0</td>
-												<td class="text-center small" th:text="${h.singleRooms + ' (' + h.singleCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.doubleRooms + ' (' + h.doubleCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.tripleRooms + ' (' + h.tripleCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.quadRooms + ' (' + h.quadCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.dormRooms + ' (' + h.dormCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.pdRooms + ' (' + h.pdCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.guestRooms + ' (' + h.guestCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.icsrRooms + ' (' + h.icsrCapacity + ')'}">0</td>
-												<td class="text-center small" th:text="${h.officialRooms + ' (' + h.officialCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.singleRooms + ' (' + h.singleCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.doubleRooms + ' (' + h.doubleCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.tripleRooms + ' (' + h.tripleCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.quadRooms + ' (' + h.quadCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.dormRooms + ' (' + h.dormCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.pdRooms + ' (' + h.pdCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.guestRooms + ' (' + h.guestCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.icsrRooms + ' (' + h.icsrCapacity + ')'}">0</td>
+												<td class="text-center small"
+													th:text="${h.officialRooms + ' (' + h.officialCapacity + ')'}">0
+												</td>
 											</tr>
 										</tbody>
 									</table>
@@ -313,77 +365,112 @@
 						<!-- SECTION 2: HOSTEL VACANCY REPORT (MULTI-ROW CATEGORY VACANCY TABLE) -->
 						<!-- ========================================================================= -->
 						<div class="section-card">
-							<div class="section-header-banner d-flex justify-content-between align-items-center bg-success bg-gradient">
-								<span><i class="fa-solid fa-door-open me-2"></i>SECTION 2: Hostel Vacancy Report (Category-wise Breakdown)</span>
-								<small class="fw-normal text-white-50">Captures vacant beds across room categories (including partial vacancy)</small>
+							<div
+								class="section-header-banner d-flex justify-content-between align-items-center bg-success bg-gradient">
+								<span><i class="fa-solid fa-door-open me-2"></i>SECTION 2: Hostel Vacancy Report
+									(Category-wise Breakdown)</span>
+								<small class="fw-normal text-white-50">Captures vacant seats across room categories
+									(including partial vacancy)</small>
 							</div>
 							<div class="p-3">
-								
+
 								<!-- Multi-Row Category Vacancy Table -->
 								<div class="table-responsive compact-card p-0 mb-3">
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+									<table
+										class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
 										<thead class="table-success">
 											<tr>
 												<th>Room Category</th>
 												<th class="text-center">Fully Vacant Rooms</th>
 												<th class="text-center">Partially Vacant (R / B)</th>
-												<th class="text-center">Total Vacant Beds</th>
+												<th class="text-center">Total Vacant Seats</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacSingleRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacSinglePart">0/0</td>
-												<td class="text-center fw-bold text-success" id="valVacSingleBeds">0</td>
+												<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacSingleRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacSinglePart">0/0</td>
+												<td class="text-center fw-bold text-success" id="valVacSingleBeds">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacDoubleRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacDoublePart">0/0</td>
-												<td class="text-center fw-bold text-success" id="valVacDoubleBeds">0</td>
+												<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacDoubleRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacDoublePart">0/0</td>
+												<td class="text-center fw-bold text-success" id="valVacDoubleBeds">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacTripleRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacTriplePart">0/0</td>
-												<td class="text-center fw-bold text-success" id="valVacTripleBeds">0</td>
+												<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacTripleRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacTriplePart">0/0</td>
+												<td class="text-center fw-bold text-success" id="valVacTripleBeds">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacQuadRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacQuadPart">0/0</td>
+												<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacQuadRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacQuadPart">0/0</td>
 												<td class="text-center fw-bold text-success" id="valVacQuadBeds">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacDormRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacDormPart">0/0</td>
+												<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacDormRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacDormPart">0/0</td>
 												<td class="text-center fw-bold text-success" id="valVacDormBeds">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD Rooms</strong></td>
+												<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD
+														Rooms</strong></td>
 												<td class="text-center fw-semibold text-dark" id="valVacPdRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacPdPart">0/0</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacPdPart">0/0</td>
 												<td class="text-center fw-bold text-success" id="valVacPdBeds">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacGuestRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacGuestPart">0/0</td>
+												<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacGuestRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacGuestPart">0/0</td>
 												<td class="text-center fw-bold text-success" id="valVacGuestBeds">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacIcsrRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacIcsrPart">0/0</td>
+												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacIcsrRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacIcsrPart">0/0</td>
 												<td class="text-center fw-bold text-success" id="valVacIcsrBeds">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-building-flag text-secondary me-2"></i><strong>Official Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valVacOfficialRooms">0</td>
-												<td class="text-center small text-warning fw-semibold" id="valVacOfficialPart">0/0</td>
-												<td class="text-center fw-bold text-success" id="valVacOfficialBeds">0</td>
+												<td><i
+														class="fa-solid fa-building-flag text-secondary me-2"></i><strong>Official
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valVacOfficialRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valVacOfficialPart">0/0</td>
+												<td class="text-center fw-bold text-success" id="valVacOfficialBeds">0
+												</td>
 											</tr>
 										</tbody>
 										<tfoot class="table-success fw-bold">
@@ -398,11 +485,14 @@
 								</div>
 
 								<!-- Master Consolidated All Hostels Section 2 Vacancy Table -->
-								<div class="table-responsive compact-card p-0" id="sec2MasterCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
+								<div class="table-responsive compact-card p-0" id="sec2MasterCard"
+									th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
 									<div class="p-2 bg-light border-bottom fw-bold text-tmPrimary small">
-										<i class="fa-solid fa-table me-2"></i>All Hostels Consolidated Vacancy Summary Master Table
+										<i class="fa-solid fa-table me-2"></i>All Hostels Consolidated Vacancy Summary
+										Master Table
 									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+									<table
+										class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
 										<thead class="table-dark">
 											<tr>
 												<th>#</th>
@@ -423,16 +513,27 @@
 											<tr th:each="h, iter : ${capacityList}">
 												<td class="text-center text-muted" th:text="${iter.count}">1</td>
 												<td class="fw-bold text-tmPrimary" th:text="${h.hostelName}">Hostel</td>
-												<td class="text-center"><span class="badge bg-success stat-pill" th:text="${h.totalVacant}">0</span></td>
-												<td class="text-center small text-warning fw-bold" th:text="${h.partiallyVacantRooms + '/' + h.partiallyVacantBeds}">0/0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.singleVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.doubleVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.tripleVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.quadVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.dormVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.pdVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.guestVacant}">0</td>
-												<td class="text-center small text-success fw-semibold" th:text="${h.icsrVacant + h.officialVacant}">0</td>
+												<td class="text-center"><span class="badge bg-success stat-pill"
+														th:text="${h.totalVacant}">0</span></td>
+												<td class="text-center small text-warning fw-bold"
+													th:text="${h.partiallyVacantRooms + '/' + h.partiallyVacantBeds}">
+													0/0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.singleVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.doubleVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.tripleVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.quadVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.dormVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.pdVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.guestVacant}">0</td>
+												<td class="text-center small text-success fw-semibold"
+													th:text="${h.icsrVacant + h.officialVacant}">0</td>
 											</tr>
 										</tbody>
 									</table>
@@ -445,101 +546,162 @@
 						<!-- SECTION 3: HOSTEL UTILIZATION REPORT (MULTI-ROW CATEGORY UTILIZATION TABLE) -->
 						<!-- ========================================================================= -->
 						<div class="section-card">
-							<div class="section-header-banner d-flex justify-content-between align-items-center bg-danger bg-gradient">
-								<span><i class="fa-solid fa-chart-pie me-2"></i>SECTION 3: Hostel Utilization Report (Category-wise Breakdown & Student Distribution)</span>
-								<small class="fw-normal text-white-50">Occupancy statistics & resident student roll number breakdown</small>
+							<div
+								class="section-header-banner d-flex justify-content-between align-items-center bg-danger bg-gradient">
+								<span><i class="fa-solid fa-chart-pie me-2"></i>SECTION 3: Hostel Utilization Report
+									(Category-wise Breakdown & Student Distribution)</span>
+								<small class="fw-normal text-white-50">Occupancy statistics & resident student roll
+									number breakdown</small>
 							</div>
 							<div class="p-3">
-								
+
 								<!-- Multi-Row Category Utilization Table -->
 								<div class="table-responsive compact-card p-0 mb-3">
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+									<table
+										class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
 										<thead class="table-danger">
 											<tr>
 												<th>Room Category</th>
 												<th class="text-center">Utilized Rooms (Count)</th>
+												<th class="text-center">Partially Occupied (R / B)</th>
 												<th class="text-center">Overloaded (R / S)</th>
 												<th class="text-center">Total Allotted Seats (Inc. Overload)</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilSingleRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilSingleOver">0/0</td>
-												<td class="text-center fw-bold text-danger" id="valUtilSingleSeats">0</td>
+												<td><i class="fa-solid fa-bed text-info me-2"></i><strong>Single
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilSingleRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilSinglePart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilSingleOver">0/0</td>
+												<td class="text-center fw-bold text-danger" id="valUtilSingleSeats">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilDoubleRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilDoubleOver">0/0</td>
-												<td class="text-center fw-bold text-danger" id="valUtilDoubleSeats">0</td>
+												<td><i class="fa-solid fa-user-group text-success me-2"></i><strong>Double
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilDoubleRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilDoublePart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilDoubleOver">0/0</td>
+												<td class="text-center fw-bold text-danger" id="valUtilDoubleSeats">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilTripleRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilTripleOver">0/0</td>
-												<td class="text-center fw-bold text-danger" id="valUtilTripleSeats">0</td>
+												<td><i class="fa-solid fa-users text-warning me-2"></i><strong>Triple
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilTripleRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilTriplePart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilTripleOver">0/0</td>
+												<td class="text-center fw-bold text-danger" id="valUtilTripleSeats">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple Occupancy</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilQuadRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilQuadOver">0/0</td>
+												<td><i class="fa-solid fa-people-group text-danger me-2"></i><strong>Quadruple
+														Occupancy</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilQuadRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilQuadPart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilQuadOver">0/0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilQuadSeats">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilDormRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilDormOver">0/0</td>
+												<td><i class="fa-solid fa-hotel text-secondary me-2"></i><strong>Dormitory
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilDormRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilDormPart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilDormOver">0/0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilDormSeats">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD Rooms</strong></td>
+												<td><i class="fa-solid fa-wheelchair text-dark me-2"></i><strong>PD
+														Rooms</strong></td>
 												<td class="text-center fw-semibold text-dark" id="valUtilPdRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilPdOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilPdPart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilPdOver">0/0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilPdSeats">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilGuestRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilGuestOver">0/0</td>
-												<td class="text-center fw-bold text-danger" id="valUtilGuestSeats">0</td>
+												<td><i class="fa-solid fa-user-check text-primary me-2"></i><strong>Guest
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilGuestRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilGuestPart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilGuestOver">0/0</td>
+												<td class="text-center fw-bold text-danger" id="valUtilGuestSeats">0
+												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilIcsrRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilIcsrOver">0/0</td>
+												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilIcsrRooms">0
+												</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilIcsrPart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilIcsrOver">0/0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilIcsrSeats">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-building-flag text-secondary me-2"></i><strong>Official Rooms</strong></td>
-												<td class="text-center fw-semibold text-dark" id="valUtilOfficialRooms">0</td>
-												<td class="text-center small text-danger fw-semibold" id="valUtilOfficialOver">0/0</td>
-												<td class="text-center fw-bold text-danger" id="valUtilOfficialSeats">0</td>
+												<td><i
+														class="fa-solid fa-building-flag text-secondary me-2"></i><strong>Official
+														Rooms</strong></td>
+												<td class="text-center fw-semibold text-dark" id="valUtilOfficialRooms">
+													0</td>
+												<td class="text-center small text-warning fw-semibold"
+													id="valUtilOfficialPart">0/0</td>
+												<td class="text-center small text-danger fw-semibold"
+													id="valUtilOfficialOver">0/0</td>
+												<td class="text-center fw-bold text-danger" id="valUtilOfficialSeats">0
+												</td>
 											</tr>
 										</tbody>
 										<tfoot class="table-danger fw-bold">
 											<tr>
 												<td>TOTAL ALLOTTED SEATS (INCLUDING OVERLOAD)</td>
 												<td class="text-center text-muted" id="valSec3TotalUtilRooms">0</td>
+												<td class="text-center text-warning" id="valSec3TotalPart">0/0</td>
 												<td class="text-center text-danger" id="valSec3TotalOver">0/0</td>
-												<td class="text-center text-danger fs-6" id="valSec3TotalUtilized">0</td>
+												<td class="text-center text-danger fs-6" id="valSec3TotalUtilized">0
+												</td>
 											</tr>
 										</tfoot>
 									</table>
 								</div>
 
 								<!-- Master Consolidated All Hostels Section 3 Utilization Table -->
-								<div class="table-responsive compact-card p-0 mb-3" id="sec3MasterCard" th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
+								<div class="table-responsive compact-card p-0 mb-3" id="sec3MasterCard"
+									th:style="${selectedHostelId == 0 ? 'display: block;' : 'display: none;'}">
 									<div class="p-2 bg-light border-bottom fw-bold text-tmPrimary small">
-										<i class="fa-solid fa-table me-2"></i>All Hostels Consolidated Utilization Master Summary Table
+										<i class="fa-solid fa-table me-2"></i>All Hostels Consolidated Utilization
+										Master Summary Table
 									</div>
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+									<table
+										class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
 										<thead class="table-dark">
 											<tr>
 												<th>#</th>
 												<th>Hostel Name</th>
 												<th class="text-center">Allotted Seats (Inc. Overload)</th>
+												<th class="text-center">Partially Occupied (R/B)</th>
 												<th class="text-center">Overloaded Seats</th>
 												<th class="text-center">Single</th>
 												<th class="text-center">Double</th>
@@ -555,16 +717,29 @@
 											<tr th:each="h, iter : ${capacityList}">
 												<td class="text-center text-muted" th:text="${iter.count}">1</td>
 												<td class="fw-bold text-tmPrimary" th:text="${h.hostelName}">Hostel</td>
-												<td class="text-center"><span class="badge bg-danger stat-pill" th:text="${h.totalUtilized}">0</span></td>
-												<td class="text-center small text-danger fw-bold" th:text="${h.overloadedSeats}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.singleUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.doubleUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.tripleUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.quadUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.dormUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.pdUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.guestUtilized}">0</td>
-												<td class="text-center small text-danger fw-semibold" th:text="${h.icsrUtilized + h.officialUtilized}">0</td>
+												<td class="text-center"><span class="badge bg-danger stat-pill"
+														th:text="${h.totalUtilized}">0</span></td>
+												<td class="text-center small text-warning fw-bold"
+													th:text="${h.partiallyVacantRooms + '/' + h.partiallyVacantBeds}">
+													0/0</td>
+												<td class="text-center small text-danger fw-bold"
+													th:text="${h.overloadedSeats}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.singleUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.doubleUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.tripleUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.quadUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.dormUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.pdUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.guestUtilized}">0</td>
+												<td class="text-center small text-danger fw-semibold"
+													th:text="${h.icsrUtilized + h.officialUtilized}">0</td>
 											</tr>
 										</tbody>
 									</table>
@@ -575,7 +750,7 @@
 									<table class="table table-sm table-hover table-bordered table-compact mb-0">
 										<thead>
 											<tr>
-												<th>Course / Department</th>
+												<!-- <th>Course / Department</th> -->
 												<th class="text-center">Code</th>
 												<th class="text-center">Batch Year</th>
 												<th class="text-center">Resident Roll Number Count</th>
@@ -583,13 +758,19 @@
 										</thead>
 										<tbody>
 											<tr th:each="dist : ${studentDistributionList}">
-												<td class="fw-semibold text-dark" th:text="${dist.courseName}">Course Name</td>
-												<td class="text-center"><span class="badge bg-secondary" th:text="${dist.courseCode}">CS</span></td>
-												<td class="text-center fw-bold text-primary" th:text="${dist.batchYear}">2024</td>
-												<td class="text-center"><span class="badge bg-primary bg-opacity-10 text-primary stat-pill" th:text="${dist.studentCount}">0</span></td>
+												<!-- <td class="fw-semibold text-dark" th:text="${dist.courseName}">Course
+													Name</td> -->
+												<td class="text-center"><span class="badge bg-secondary"
+														th:text="${dist.courseCode}"></span></td>
+												<td class="text-center fw-bold text-primary"
+													th:text="${dist.batchYear}"></td>
+												<td class="text-center"><span
+														class="badge bg-primary bg-opacity-10 text-primary stat-pill"
+														th:text="${dist.studentCount}"></span></td>
 											</tr>
 											<tr th:if="${#lists.isEmpty(studentDistributionList)}">
-												<td colspan="4" class="text-center text-muted py-3">No active student room allotments found for the selected filters.</td>
+												<td colspan="4" class="text-center text-muted py-3">No active student
+													room allotments found for the selected filters.</td>
 											</tr>
 										</tbody>
 									</table>
@@ -601,10 +782,13 @@
 						<!-- SECTION 4: GUEST ROOM AVAILABILITY INCLUDING TARIFF REPORT (PRESENT DATE ONLY) -->
 						<!-- ========================================================================= -->
 						<div class="section-card border-info">
-							<div class="section-header-banner d-flex justify-content-between align-items-center bg-info bg-gradient text-dark">
-								<span class="fw-bold"><i class="fa-solid fa-hotel me-2"></i>SECTION 4: Guest Room Details & Tariff Report</span>
+							<div
+								class="section-header-banner d-flex justify-content-between align-items-center bg-info bg-gradient text-dark">
+								<span class="fw-bold"><i class="fa-solid fa-hotel me-2"></i>SECTION 4: Guest Room
+									Details & Tariff Report</span>
 								<span class="badge bg-dark text-white px-3 py-1">
-									<i class="fa-solid fa-clock me-1"></i>STRICTLY PRESENT DATE (<span th:text="${todayDateStr}">06-Sep-2026</span>)
+									<i class="fa-solid fa-clock me-1"></i>STRICTLY PRESENT DATE (<span
+										th:text="${todayDateStr}">06-Sep-2026</span>)
 								</span>
 							</div>
 							<div class="p-3">
@@ -612,61 +796,84 @@
 								<div class="row g-2 mb-3" th:if="${guestTariffDto != null}">
 									<div class="col-md-3">
 										<div class="compact-card p-2 bg-light border-start border-4 border-info">
-											<small class="text-muted fw-bold text-uppercase d-block">Single Room Tariff</small>
-											<h5 class="mb-0 fw-bold text-dark" th:text="'₹' + ${guestTariffDto.singleRoomTariff} + ' / day'">₹750 / day</h5>
+											<small class="text-muted fw-bold text-uppercase d-block">Single Room
+												Tariff</small>
+											<h5 class="mb-0 fw-bold text-dark"
+												th:text="'₹' + ${guestTariffDto.singleRoomTariff} + ' / day'">₹750 / day
+											</h5>
 										</div>
 									</div>
 									<div class="col-md-3">
 										<div class="compact-card p-2 bg-light border-start border-4 border-primary">
-											<small class="text-muted fw-bold text-uppercase d-block">Shared Room Tariff</small>
-											<h5 class="mb-0 fw-bold text-dark" th:text="'₹' + ${guestTariffDto.sharedRoomTariff} + ' / day'">₹500 / day</h5>
+											<small class="text-muted fw-bold text-uppercase d-block">Shared Room
+												Tariff</small>
+											<h5 class="mb-0 fw-bold text-dark"
+												th:text="'₹' + ${guestTariffDto.sharedRoomTariff} + ' / day'">₹500 / day
+											</h5>
 										</div>
 									</div>
 									<div class="col-md-3">
 										<div class="compact-card p-2 bg-light border-start border-4 border-secondary">
-											<small class="text-muted fw-bold text-uppercase d-block">Lodging Base Charge</small>
-											<h5 class="mb-0 fw-bold text-dark" th:text="'₹' + ${guestTariffDto.lodgingBaseCharge}">₹200</h5>
+											<small class="text-muted fw-bold text-uppercase d-block">Stay with
+												Student</small>
+											<h5 class="mb-0 fw-bold text-dark"
+												th:text="'₹' + ${guestTariffDto.lodgingBaseCharge}">₹200</h5>
 										</div>
 									</div>
-									<div class="col-md-3">
-										<div class="compact-card p-2 bg-light border-start border-4 border-danger">
-											<small class="text-muted fw-bold text-uppercase d-block">Vacant Rooms Revenue Loss</small>
-											<h5 class="mb-0 fw-bold text-danger" th:text="'₹' + ${guestTariffDto.vacantRoomsCost} + ' / day'">₹0 / day</h5>
-										</div>
-									</div>
+
 								</div>
 
-								<!-- Live Guest Rooms List Table -->
+								<!-- Type-wise Guest & Special Rooms Summary Table -->
 								<div class="table-responsive compact-card p-0">
-									<table class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
+									<table
+										class="table table-sm table-hover table-bordered table-compact mb-0 align-middle">
 										<thead class="table-dark">
 											<tr>
 												<th>#</th>
-												<th>Room Number & Hostel</th>
-												<th>Floor Name</th>
-												<th class="text-center">Room Capacity</th>
-												<th class="text-center">Live Status Today</th>
-												<th>Occupant / Resident Details</th>
-												<th class="text-end">Tariff Rate (₹/day)</th>
+												<th>Room Category / Type</th>
+												<th class="text-center">Total Rooms</th>
+												<th class="text-center">Total Capacity (Seats)</th>
+												<th class="text-center">Occupied Rooms</th>
+
+												<th class="text-center">Vacant Rooms</th>
+
 											</tr>
 										</thead>
 										<tbody>
-											<tr th:each="g, iter : ${guestTariffDto.roomDetails}">
+											<tr th:each="s, iter : ${guestTariffDto.typeSummaries}">
 												<td class="text-center text-muted" th:text="${iter.count}">1</td>
-												<td class="fw-bold text-tmPrimary" th:text="${g.roomNo}">Room 101</td>
-												<td class="text-muted small" th:text="${g.floorName}">Ground Floor</td>
-												<td class="text-center fw-semibold" th:text="${g.capacity}">1</td>
-												<td class="text-center">
-													<span th:if="${g.currentStatus == 'Occupied'}" class="badge bg-danger stat-pill">Occupied</span>
-													<span th:if="${g.currentStatus == 'Vacant'}" class="badge bg-success stat-pill">Vacant</span>
-												</td>
-												<td class="small fw-semibold text-dark" th:text="${g.occupantType}">Guest Resident</td>
-												<td class="text-end fw-bold text-primary" th:text="'₹' + ${g.tariffPerDay}">750</td>
+												<td class="fw-bold text-tmPrimary" th:text="${s.displayName}">Guest
+													Rooms</td>
+												<td class="text-center fw-semibold" th:text="${s.totalRooms}">0</td>
+												<td class="text-center fw-semibold text-primary"
+													th:text="${s.totalCapacity}">0</td>
+												<td class="text-center fw-bold text-danger"
+													th:text="${s.occupiedRooms}">0</td>
+
+												<td class="text-center fw-bold text-success" th:text="${s.vacantRooms}">
+													0</td>
+
 											</tr>
-											<tr th:if="${guestTariffDto == null || #lists.isEmpty(guestTariffDto.roomDetails)}">
-												<td colspan="7" class="text-center text-muted py-3">No guest room details configured or active for present date.</td>
+											<tr
+												th:if="${guestTariffDto == null || #lists.isEmpty(guestTariffDto.typeSummaries)}">
+												<td colspan="6" class="text-center text-muted py-3">No guest / official
+													/ ICSR room details configured for present date.</td>
 											</tr>
 										</tbody>
+										<tfoot class="table-dark fw-bold"
+											th:if="${guestTariffDto != null && !#lists.isEmpty(guestTariffDto.typeSummaries)}">
+											<tr>
+												<td colspan="2">TOTAL GUEST & SPECIAL ROOMS</td>
+												<td class="text-center" th:text="${guestTariffDto.totalGuestRooms}">0
+												</td>
+												<td class="text-center text-primary"
+													th:text="${guestTariffDto.totalGuestCapacity}">0</td>
+												<td class="text-center text-danger"
+													th:text="${guestTariffDto.utilizedGuestRoomsToday}">0</td>
+												<td class="text-center text-success"
+													th:text="${guestTariffDto.vacantGuestRoomsToday}">0</td>
+											</tr>
+										</tfoot>
 									</table>
 								</div>
 							</div>
@@ -682,11 +889,11 @@
 	<th:block th:replace="~{common/footer :: scripts(~{::script}, ${footerForm})}">
 		<script th:inline="javascript">
 			/*<![CDATA[*/
-			const capacityData = /*[[${capacityList}]]*/ [];
+			const capacityData = /*[[${capacityList}]]*/[];
 			const currentHostelId = /*[[${selectedHostelId}]]*/ 0;
 			const currentFromDate = /*[[${selectedFromDate}]]*/ '';
 			const currentToDate = /*[[${selectedToDate}]]*/ '';
-			const studentDistData = /*[[${studentDistributionList}]]*/ [];
+			const studentDistData = /*[[${studentDistributionList}]]*/[];
 			/*]]>*/
 
 			function setTxt(id, txt) {
@@ -696,7 +903,7 @@
 
 			function renderHostelDetails(hostelId) {
 				if (!capacityData || capacityData.length === 0) return;
-				
+
 				let h = null;
 				if (String(hostelId) === '0') {
 					h = {
@@ -730,7 +937,7 @@
 
 				setTxt('displayHostelName', h.hostelName);
 				setTxt('displayHostelCode', 'Code: ' + h.hostelCode);
-				
+
 				const genderBadge = document.getElementById('displayGenderBadge');
 				if (genderBadge) {
 					const g = h.hostelGenderType;
@@ -741,7 +948,7 @@
 				setTxt('valTotalCapacity', h.totalCapacity);
 				setTxt('valTotalUtilized', h.totalUtilized);
 				setTxt('valTotalVacant', h.totalVacant);
-				
+
 				// Section 1 Category Capacity
 				setTxt('valSingleRooms', h.singleRooms); setTxt('valSingleCap', h.singleCapacity);
 				setTxt('valDoubleRooms', h.doubleRooms); setTxt('valDoubleCap', h.doubleCapacity);
@@ -769,19 +976,20 @@
 				setTxt('valSec2TotalPart', (h.partiallyVacantRooms || 0) + '/' + (h.partiallyVacantBeds || 0));
 				setTxt('valSec2TotalVacant', h.totalVacant);
 
-				// Section 3 Category Utilization (with Overload column)
-				setTxt('valUtilSingleRooms', h.singleUtilizedRooms); setTxt('valUtilSingleOver', (h.singleOverRooms || 0) + '/' + (h.singleOverSeats || 0)); setTxt('valUtilSingleSeats', h.singleUtilized);
-				setTxt('valUtilDoubleRooms', h.doubleUtilizedRooms); setTxt('valUtilDoubleOver', (h.doubleOverRooms || 0) + '/' + (h.doubleOverSeats || 0)); setTxt('valUtilDoubleSeats', h.doubleUtilized);
-				setTxt('valUtilTripleRooms', h.tripleUtilizedRooms); setTxt('valUtilTripleOver', (h.tripleOverRooms || 0) + '/' + (h.tripleOverSeats || 0)); setTxt('valUtilTripleSeats', h.tripleUtilized);
-				setTxt('valUtilQuadRooms', h.quadUtilizedRooms); setTxt('valUtilQuadOver', (h.quadOverRooms || 0) + '/' + (h.quadOverSeats || 0)); setTxt('valUtilQuadSeats', h.quadUtilized);
-				setTxt('valUtilDormRooms', h.dormUtilizedRooms); setTxt('valUtilDormOver', (h.dormOverRooms || 0) + '/' + (h.dormOverSeats || 0)); setTxt('valUtilDormSeats', h.dormUtilized);
-				setTxt('valUtilPdRooms', h.pdUtilizedRooms); setTxt('valUtilPdOver', (h.pdOverRooms || 0) + '/' + (h.pdOverSeats || 0)); setTxt('valUtilPdSeats', h.pdUtilized);
-				setTxt('valUtilGuestRooms', h.guestUtilizedRooms); setTxt('valUtilGuestOver', (h.guestOverRooms || 0) + '/' + (h.guestOverSeats || 0)); setTxt('valUtilGuestSeats', h.guestUtilized);
-				setTxt('valUtilIcsrRooms', h.icsrUtilizedRooms); setTxt('valUtilIcsrOver', (h.icsrOverRooms || 0) + '/' + (h.icsrOverSeats || 0)); setTxt('valUtilIcsrSeats', h.icsrUtilized);
-				setTxt('valUtilOfficialRooms', h.officialUtilizedRooms); setTxt('valUtilOfficialOver', (h.officialOverRooms || 0) + '/' + (h.officialOverSeats || 0)); setTxt('valUtilOfficialSeats', h.officialUtilized);
+				// Section 3 Category Utilization (with Partially Occupied & Overload columns)
+				setTxt('valUtilSingleRooms', h.singleUtilizedRooms); setTxt('valUtilSinglePart', (h.singlePartVacRooms || 0) + '/' + (h.singlePartVacBeds || 0)); setTxt('valUtilSingleOver', (h.singleOverRooms || 0) + '/' + (h.singleOverSeats || 0)); setTxt('valUtilSingleSeats', h.singleUtilized);
+				setTxt('valUtilDoubleRooms', h.doubleUtilizedRooms); setTxt('valUtilDoublePart', (h.doublePartVacRooms || 0) + '/' + (h.doublePartVacBeds || 0)); setTxt('valUtilDoubleOver', (h.doubleOverRooms || 0) + '/' + (h.doubleOverSeats || 0)); setTxt('valUtilDoubleSeats', h.doubleUtilized);
+				setTxt('valUtilTripleRooms', h.tripleUtilizedRooms); setTxt('valUtilTriplePart', (h.triplePartVacRooms || 0) + '/' + (h.triplePartVacBeds || 0)); setTxt('valUtilTripleOver', (h.tripleOverRooms || 0) + '/' + (h.tripleOverSeats || 0)); setTxt('valUtilTripleSeats', h.tripleUtilized);
+				setTxt('valUtilQuadRooms', h.quadUtilizedRooms); setTxt('valUtilQuadPart', (h.quadPartVacRooms || 0) + '/' + (h.quadPartVacBeds || 0)); setTxt('valUtilQuadOver', (h.quadOverRooms || 0) + '/' + (h.quadOverSeats || 0)); setTxt('valUtilQuadSeats', h.quadUtilized);
+				setTxt('valUtilDormRooms', h.dormUtilizedRooms); setTxt('valUtilDormPart', (h.dormPartVacRooms || 0) + '/' + (h.dormPartVacBeds || 0)); setTxt('valUtilDormOver', (h.dormOverRooms || 0) + '/' + (h.dormOverSeats || 0)); setTxt('valUtilDormSeats', h.dormUtilized);
+				setTxt('valUtilPdRooms', h.pdUtilizedRooms); setTxt('valUtilPdPart', (h.pdPartVacRooms || 0) + '/' + (h.pdPartVacBeds || 0)); setTxt('valUtilPdOver', (h.pdOverRooms || 0) + '/' + (h.pdOverSeats || 0)); setTxt('valUtilPdSeats', h.pdUtilized);
+				setTxt('valUtilGuestRooms', h.guestUtilizedRooms); setTxt('valUtilGuestPart', (h.guestPartVacRooms || 0) + '/' + (h.guestPartVacBeds || 0)); setTxt('valUtilGuestOver', (h.guestOverRooms || 0) + '/' + (h.guestOverSeats || 0)); setTxt('valUtilGuestSeats', h.guestUtilized);
+				setTxt('valUtilIcsrRooms', h.icsrUtilizedRooms); setTxt('valUtilIcsrPart', (h.icsrPartVacRooms || 0) + '/' + (h.icsrPartVacBeds || 0)); setTxt('valUtilIcsrOver', (h.icsrOverRooms || 0) + '/' + (h.icsrOverSeats || 0)); setTxt('valUtilIcsrSeats', h.icsrUtilized);
+				setTxt('valUtilOfficialRooms', h.officialUtilizedRooms); setTxt('valUtilOfficialPart', (h.officialPartVacRooms || 0) + '/' + (h.officialPartVacBeds || 0)); setTxt('valUtilOfficialOver', (h.officialOverRooms || 0) + '/' + (h.officialOverSeats || 0)); setTxt('valUtilOfficialSeats', h.officialUtilized);
 
 				const totalUtilRooms = (h.singleUtilizedRooms || 0) + (h.doubleUtilizedRooms || 0) + (h.tripleUtilizedRooms || 0) + (h.quadUtilizedRooms || 0) + (h.dormUtilizedRooms || 0) + (h.pdUtilizedRooms || 0) + (h.guestUtilizedRooms || 0) + (h.icsrUtilizedRooms || 0) + (h.officialUtilizedRooms || 0);
 				setTxt('valSec3TotalUtilRooms', totalUtilRooms);
+				setTxt('valSec3TotalPart', (h.partiallyVacantRooms || 0) + '/' + (h.partiallyVacantBeds || 0));
 				setTxt('valSec3TotalOver', (h.overloadedRooms || 0) + '/' + (h.overloadedSeats || 0));
 				setTxt('valSec3TotalUtilized', h.totalUtilized);
 
@@ -821,4 +1029,5 @@
 		</script>
 	</th:block>
 </body>
+
 </html>
