@@ -309,7 +309,7 @@ public class HostelCapacityService {
 
         java.util.Map<String, HostelGuestTariffDto.GuestTypeSummary> summaryMap = new java.util.LinkedHashMap<>();
         summaryMap.put("guest", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("guest").displayName("Guest Rooms").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
-        summaryMap.put("icsr", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("icsr").displayName("ICSR Rooms").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
+        summaryMap.put("icsr", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("icsr").displayName("Assistant Warden Room").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
         summaryMap.put("official", HostelGuestTariffDto.GuestTypeSummary.builder().guestType("official").displayName("Official Rooms").totalRooms(0L).totalCapacity(0L).occupiedRooms(0L).occupiedSeats(0L).vacantRooms(0L).vacantSeats(0L).build());
 
         for (Object[] row : rawList) {
@@ -343,7 +343,7 @@ public class HostelCapacityService {
                     .build());
 
             HostelGuestTariffDto.GuestTypeSummary typeSummary = summaryMap.computeIfAbsent(guestTypeRaw, k -> {
-                String dName = "guest".equals(k) ? "Guest Rooms" : "icsr".equals(k) ? "ICSR Rooms" : "official".equals(k) ? "Official Rooms" : (k.toUpperCase() + " Rooms");
+                String dName = "guest".equals(k) ? "Guest Rooms" : "icsr".equals(k) ? "Assistant Warden Room" : "official".equals(k) ? "Official Rooms" : (k.toUpperCase() + " Rooms");
                 return HostelGuestTariffDto.GuestTypeSummary.builder()
                         .guestType(k)
                         .displayName(dName)
@@ -422,7 +422,7 @@ public class HostelCapacityService {
                 "Hostel Name", "Code", "Gender", "Total Cap", "Total Utilized", "Partially Occupied Rooms", "Partially Vacant Seats", "Total Vacant",
                 "Single Rooms", "Single Cap", "Double Rooms", "Double Cap", "Triple Rooms", "Triple Cap",
                 "Quad Rooms", "Quad Cap", "Dorm Rooms", "Dorm Cap", "PD Rooms", "PD Cap",
-                "Guest Rooms", "Guest Cap", "ICSR Rooms", "ICSR Cap", "Official Rooms", "Official Cap"
+                "Guest Rooms", "Guest Cap", "Assistant Warden Rooms", "Assistant Warden Cap", "Official Rooms", "Official Cap"
             };
 
             Row headerRow1 = sheet1.createRow(2);
@@ -476,7 +476,7 @@ public class HostelCapacityService {
             String[] s2Headers = {
                 "Hostel Name", "Total Vacant Seats", "Partially Vacant Rooms", "Partially Vacant Seats",
                 "Vacant Single Seats", "Vacant Double Seats", "Vacant Triple Seats", "Vacant Quad Seats",
-                "Vacant Dorm Seats", "Vacant PD Seats", "Vacant Guest Seats", "Vacant ICSR Seats", "Vacant Official Seats"
+                "Vacant Dorm Seats", "Vacant PD Seats", "Vacant Guest Seats", "Vacant Assistant Warden Seats", "Vacant Official Seats"
             };
             Row headerRow2 = sheet2.createRow(2);
             for (int i = 0; i < s2Headers.length; i++) {
@@ -527,7 +527,7 @@ public class HostelCapacityService {
                     {"Dormitory Rooms", nvl(h.getDormUtilizedRooms()), h.getDormPartVacRooms(), h.getDormPartVacBeds(), h.getDormOverRooms(), h.getDormOverSeats(), nvl(h.getDormUtilized())},
                     {"PD Rooms", nvl(h.getPdUtilizedRooms()), h.getPdPartVacRooms(), h.getPdPartVacBeds(), h.getPdOverRooms(), h.getPdOverSeats(), nvl(h.getPdUtilized())},
                     {"Guest Rooms", nvl(h.getGuestUtilizedRooms()), h.getGuestPartVacRooms(), h.getGuestPartVacBeds(), h.getGuestOverRooms(), h.getGuestOverSeats(), nvl(h.getGuestUtilized())},
-                    {"ICSR Rooms", nvl(h.getIcsrUtilizedRooms()), h.getIcsrPartVacRooms(), h.getIcsrPartVacBeds(), h.getIcsrOverRooms(), h.getIcsrOverSeats(), nvl(h.getIcsrUtilized())},
+                    {"Assistant Warden Room", nvl(h.getIcsrUtilizedRooms()), h.getIcsrPartVacRooms(), h.getIcsrPartVacBeds(), h.getIcsrOverRooms(), h.getIcsrOverSeats(), nvl(h.getIcsrUtilized())},
                     {"Official Rooms", nvl(h.getOfficialUtilizedRooms()), h.getOfficialPartVacRooms(), h.getOfficialPartVacBeds(), h.getOfficialOverRooms(), h.getOfficialOverSeats(), nvl(h.getOfficialUtilized())}
                 };
 

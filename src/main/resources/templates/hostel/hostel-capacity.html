@@ -228,7 +228,7 @@
 								<span><i class="fa-solid fa-layer-group me-2"></i>SECTION 1: Hostel Capacity Summary
 									(Category-wise)</span>
 								<small class="fw-normal text-white-50">Single/Double/Triple/Quad exclude Special Rooms
-									(PD, Guest, Official, ICSR)</small>
+									(PD, Guest, Official, Assistant Warden)</small>
 							</div>
 							<div class="p-3">
 								<!-- Multi-Row Category Capacity Table -->
@@ -285,8 +285,8 @@
 												<td class="text-center fw-bold text-primary" id="valGuestCap">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR
-														Rooms</strong></td>
+												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>Assistant
+														Warden Rooms</strong></td>
 												<td class="text-center fw-semibold" id="valIcsrRooms">0</td>
 												<td class="text-center fw-bold text-primary" id="valIcsrCap">0</td>
 											</tr>
@@ -323,7 +323,7 @@
 												<th class="text-center">Dorm</th>
 												<th class="text-center">PD</th>
 												<th class="text-center">Guest</th>
-												<th class="text-center">ICSR</th>
+												<th class="text-center">Assistant Warden</th>
 												<th class="text-center">Official</th>
 											</tr>
 										</thead>
@@ -453,8 +453,8 @@
 												<td class="text-center fw-bold text-success" id="valVacGuestBeds">0</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR
-														Rooms</strong></td>
+												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>Assistant
+														Warden Rooms</strong></td>
 												<td class="text-center fw-semibold text-dark" id="valVacIcsrRooms">0
 												</td>
 												<td class="text-center small text-warning fw-semibold"
@@ -506,7 +506,7 @@
 												<th class="text-center">Dorm</th>
 												<th class="text-center">PD</th>
 												<th class="text-center">Guest</th>
-												<th class="text-center">ICSR / Official</th>
+												<th class="text-center">Assistant Warden / Official</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -650,8 +650,8 @@
 												</td>
 											</tr>
 											<tr>
-												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>ICSR
-														Rooms</strong></td>
+												<td><i class="fa-solid fa-flask text-purple me-2"></i><strong>Assistant
+														Warden Rooms</strong></td>
 												<td class="text-center fw-semibold text-dark" id="valUtilIcsrRooms">0
 												</td>
 												<td class="text-center small text-warning fw-semibold"
@@ -710,7 +710,7 @@
 												<th class="text-center">Dorm</th>
 												<th class="text-center">PD</th>
 												<th class="text-center">Guest</th>
-												<th class="text-center">ICSR / Official</th>
+												<th class="text-center">Assistant Warden / Official</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -857,7 +857,7 @@
 											<tr
 												th:if="${guestTariffDto == null || #lists.isEmpty(guestTariffDto.typeSummaries)}">
 												<td colspan="6" class="text-center text-muted py-3">No guest / official
-													/ ICSR room details configured for present date.</td>
+													/ Assistant Warden room details configured for present date.</td>
 											</tr>
 										</tbody>
 										<tfoot class="table-dark fw-bold"
