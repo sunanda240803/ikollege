@@ -178,12 +178,9 @@ public class SimsConfigDataService {
         if (username == null || username.trim().isEmpty()) {
             return false;
         }
-        if ("SoftwareAdmin".equalsIgnoreCase(com.iitm.hosteldine.config.SecurityCtxUtil.userRole())) {
-            return true;
-        }
         ArrayList<String> allowedUsers = getSimConfigValueArrayList(HOSTEL_CAPACITY_ALLOWED_USERS);
         if (allowedUsers == null || allowedUsers.isEmpty()) {
-            return true;
+            return false;
         }
         return allowedUsers.stream().anyMatch(user -> 
             user.trim().equalsIgnoreCase(username.trim()) || "ALL".equalsIgnoreCase(user.trim())

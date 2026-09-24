@@ -78,6 +78,13 @@ public class HomeController {
 
     @GetMapping({"${url.home}", "${url.home2}"})
     public String home(ModelMap map, HttpServletRequest request) {
+        String username = SecurityCtxUtil.userName();
+        if (username != null && !SecurityCtxUtil.ANONYMOUS_USER.equalsIgnoreCase(username)) {
+            if (simsConfigDataService.isUserAllowedForHostelCapacity(username)) {
+                return Constants.REDIRECT + "/hostelCapacity/slideshow";
+            }
+            return Constants.REDIRECT + "/index";
+        }
         boolean isIFPPButtonNeeded = Boolean.parseBoolean(simsConfigDataService.getSimConfigValue(SimsConfigDataService.IS_IFPP_BUTTON_NEEDED));
         ArrayList<String> convocationDates = simsConfigDataService.getSimConfigValueArrayList(SimsConfigDataService.CONVOCATION_DATES);
         String convocationOpenLink = simsConfigDataService.getSimConfigValue(SimsConfigDataService.CONVOCATION_OPEN_LINK);
@@ -260,7 +267,13 @@ public class HomeController {
 
             String loginType = userDetails.getLoginType();
             map.addAttribute("loginType", loginType);
+
             List<MenuListDto> dashboards = dynamicSecurityService.getMenusForRole(authentication, "dashboard");
+            String username = SecurityCtxUtil.userName();
+            if (simsConfigDataService.isUserAllowedForHostelCapacity(username)) {
+                return Constants.REDIRECT + "/hostelCapacity/slideshow";
+            }
+
             if (!dashboards.isEmpty()) {
                 return Constants.REDIRECT + dashboards.getFirst().getUrlPath();
             } else {

@@ -274,4 +274,31 @@ public interface HostelMasterRepository extends JpaRepository<HostelMasterEntity
 	               "AND LOWER(COALESCE(ri.official_guest_status, '')) IN ('guest', 'official', 'icsr') " +
 	               "ORDER BY hm.hostel_name, hfm.floor_name, ri.room_no", nativeQuery = true)
 	List<Object[]> getLiveGuestRoomDetailsList(@Param("hostelId") Long hostelId);
+
+	@Query(value = "SELECT " +
+	               "hm.hostel_id, " +
+	               "COALESCE(SUM(CASE WHEN COALESCE(hpnp.room_capacity, ri.capacity) = 1 AND LOWER(COALESCE(ri.official_guest_status, '')) NOT IN ('guest', 'official', 'icsr', 'pd') THEN 1 ELSE 0 END), 0) AS single_phys, " +
+	               "COALESCE(SUM(CASE WHEN COALESCE(hpnp.room_capacity, ri.capacity) = 2 AND LOWER(COALESCE(ri.official_guest_status, '')) NOT IN ('guest', 'official', 'icsr', 'pd') THEN 1 ELSE 0 END), 0) AS double_phys, " +
+	               "COALESCE(SUM(CASE WHEN COALESCE(hpnp.room_capacity, ri.capacity) = 3 AND LOWER(COALESCE(ri.official_guest_status, '')) NOT IN ('guest', 'official', 'icsr', 'pd') THEN 1 ELSE 0 END), 0) AS triple_phys, " +
+	               "COALESCE(SUM(CASE WHEN COALESCE(hpnp.room_capacity, ri.capacity) = 4 AND LOWER(COALESCE(ri.official_guest_status, '')) NOT IN ('guest', 'official', 'icsr', 'pd') THEN 1 ELSE 0 END), 0) AS quad_phys, " +
+	               "COALESCE(SUM(CASE WHEN COALESCE(hpnp.room_capacity, ri.capacity) > 4 AND LOWER(COALESCE(ri.official_guest_status, '')) NOT IN ('guest', 'official', 'icsr', 'pd') THEN 1 ELSE 0 END), 0) AS dorm_phys, " +
+	               "COALESCE(SUM(CASE WHEN LOWER(COALESCE(ri.official_guest_status, '')) = 'pd' THEN 1 ELSE 0 END), 0) AS pd_phys, " +
+	               "COALESCE(SUM(CASE WHEN LOWER(COALESCE(ri.official_guest_status, '')) = 'guest' THEN 1 ELSE 0 END), 0) AS guest_phys, " +
+	               "COALESCE(SUM(CASE WHEN LOWER(COALESCE(ri.official_guest_status, '')) = 'icsr' THEN 1 ELSE 0 END), 0) AS icsr_phys, " +
+	               "COALESCE(SUM(CASE WHEN LOWER(COALESCE(ri.official_guest_status, '')) = 'official' THEN 1 ELSE 0 END), 0) AS official_phys, " +
+	               "COALESCE(COUNT(DISTINCT hpnp.id), 0) AS total_phys " +
+	               "FROM schooldev.dost_hostel_name hm " +
+	               "JOIN schooldev.\"HOSTEL_FLOOR_MASTER\" hfm ON hfm.hostel_id = hm.hostel_id AND hfm.active_flag = 'Y' " +
+	               "JOIN schooldev.\"HOSTEL_ROOM_INFO\" ri ON (ri.building_id = hfm.floor_id AND ri.active_flag = 'Y') " +
+	               "JOIN ( " +
+	               "    SELECT room_id, COUNT(room_allotment_id) AS active_occupants " +
+	               "    FROM schooldev.\"HOSTEL_ROOM_ALLOTMENT_INFO\" " +
+	               "    WHERE active_flag = 'Y' AND vacate_date IS NULL AND shifted_date IS NULL " +
+	               "    GROUP BY room_id " +
+	               ") room_occ ON room_occ.room_id = ri.room_id AND room_occ.active_occupants > ri.capacity " +
+	               "JOIN schooldev.\"HOSTEL_ROOM_ALLOTMENT_INFO\" hra ON (hra.room_id = ri.room_id AND hra.active_flag = 'Y' AND hra.vacate_date IS NULL AND hra.shifted_date IS NULL) " +
+	               "JOIN schooldev.hostel_physically_not_present_students hpnp ON hpnp.roll_number = hra.student_id " +
+	               "WHERE hm.active_flag = 'Y' " +
+	               "GROUP BY hm.hostel_id", nativeQuery = true)
+	List<Object[]> getPhysicallyUnavailableOverloadCountByHostel();
 }

@@ -151,6 +151,11 @@
 									onclick="downloadReport()">
 									<i class="fa-solid fa-file-excel me-1"></i>Excel
 								</button>
+								<a th:href="@{/hostelCapacity/slideshow(fromDate=${selectedFromDate}, toDate=${selectedToDate})}"
+									class="btn btn-sm btn-info text-white fw-bold px-2 shadow-sm"
+									title="Slideshow Mode">
+									<i class="fa-solid fa-play me-1"></i>Slideshow
+								</a>
 							</div>
 						</div>
 
@@ -227,8 +232,8 @@
 							<div class="section-header-banner d-flex justify-content-between align-items-center">
 								<span><i class="fa-solid fa-layer-group me-2"></i>SECTION 1: Hostel Capacity Summary
 									(Category-wise)</span>
-								<small class="fw-normal text-white-50">Single/Double/Triple/Quad exclude Special Rooms
-									(PD, Guest, Official, Assistant Warden)</small>
+								<!-- <small class="fw-normal text-white-50">Single/Double/Triple/Quad exclude Special Rooms
+									(PD, Guest, Official, Assistant Warden)</small> -->
 							</div>
 							<div class="p-3">
 								<!-- Multi-Row Category Capacity Table -->
@@ -369,8 +374,8 @@
 								class="section-header-banner d-flex justify-content-between align-items-center bg-success bg-gradient">
 								<span><i class="fa-solid fa-door-open me-2"></i>SECTION 2: Hostel Vacancy Report
 									(Category-wise Breakdown)</span>
-								<small class="fw-normal text-white-50">Captures vacant seats across room categories
-									(including partial vacancy)</small>
+								<!-- <small class="fw-normal text-white-50">Captures vacant seats across room categories
+									(including partial vacancy)</small> -->
 							</div>
 							<div class="p-3">
 
@@ -550,8 +555,8 @@
 								class="section-header-banner d-flex justify-content-between align-items-center bg-danger bg-gradient">
 								<span><i class="fa-solid fa-chart-pie me-2"></i>SECTION 3: Hostel Utilization Report
 									(Category-wise Breakdown & Student Distribution)</span>
-								<small class="fw-normal text-white-50">Occupancy statistics & resident student roll
-									number breakdown</small>
+								<!-- <small class="fw-normal text-white-50">Occupancy statistics & resident student roll
+									number breakdown</small> -->
 							</div>
 							<div class="p-3">
 
@@ -565,6 +570,7 @@
 												<th class="text-center">Utilized Rooms (Count)</th>
 												<th class="text-center">Partially Occupied (R / B)</th>
 												<th class="text-center">Overloaded (R / S)</th>
+												<th class="text-center">Physically Unavailable</th>
 												<th class="text-center">Total Allotted Seats (Inc. Overload)</th>
 											</tr>
 										</thead>
@@ -578,6 +584,7 @@
 													id="valUtilSinglePart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilSingleOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilSinglePhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilSingleSeats">0
 												</td>
 											</tr>
@@ -590,6 +597,7 @@
 													id="valUtilDoublePart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilDoubleOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilDoublePhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilDoubleSeats">0
 												</td>
 											</tr>
@@ -602,6 +610,7 @@
 													id="valUtilTriplePart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilTripleOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilTriplePhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilTripleSeats">0
 												</td>
 											</tr>
@@ -614,6 +623,7 @@
 													id="valUtilQuadPart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilQuadOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilQuadPhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilQuadSeats">0</td>
 											</tr>
 											<tr>
@@ -625,6 +635,7 @@
 													id="valUtilDormPart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilDormOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilDormPhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilDormSeats">0</td>
 											</tr>
 											<tr>
@@ -635,6 +646,7 @@
 													id="valUtilPdPart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilPdOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilPdPhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilPdSeats">0</td>
 											</tr>
 											<tr>
@@ -646,6 +658,7 @@
 													id="valUtilGuestPart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilGuestOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilGuestPhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilGuestSeats">0
 												</td>
 											</tr>
@@ -658,6 +671,7 @@
 													id="valUtilIcsrPart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilIcsrOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilIcsrPhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilIcsrSeats">0</td>
 											</tr>
 											<tr>
@@ -670,6 +684,7 @@
 													id="valUtilOfficialPart">0/0</td>
 												<td class="text-center small text-danger fw-semibold"
 													id="valUtilOfficialOver">0/0</td>
+												<td class="text-center small text-warning fw-semibold" id="valUtilOfficialPhys">0</td>
 												<td class="text-center fw-bold text-danger" id="valUtilOfficialSeats">0
 												</td>
 											</tr>
@@ -680,6 +695,8 @@
 												<td class="text-center text-muted" id="valSec3TotalUtilRooms">0</td>
 												<td class="text-center text-warning" id="valSec3TotalPart">0/0</td>
 												<td class="text-center text-danger" id="valSec3TotalOver">0/0</td>
+												<td class="text-center text-warning"
+													id="valSec3TotalPhysicallyUnavailable">0</td>
 												<td class="text-center text-danger fs-6" id="valSec3TotalUtilized">0
 												</td>
 											</tr>
@@ -702,7 +719,8 @@
 												<th>Hostel Name</th>
 												<th class="text-center">Allotted Seats (Inc. Overload)</th>
 												<th class="text-center">Partially Occupied (R/B)</th>
-												<th class="text-center">Overloaded Seats</th>
+												<th class="text-center">Overload Seats</th>
+												<th class="text-center">Physically Unavailable</th>
 												<th class="text-center">Single</th>
 												<th class="text-center">Double</th>
 												<th class="text-center">Triple</th>
@@ -724,6 +742,8 @@
 													0/0</td>
 												<td class="text-center small text-danger fw-bold"
 													th:text="${h.overloadedSeats}">0</td>
+												<td class="text-center small text-warning fw-bold"
+													th:text="${h.physicallyUnavailableSeats}">0</td>
 												<td class="text-center small text-danger fw-semibold"
 													th:text="${h.singleUtilized}">0</td>
 												<td class="text-center small text-danger fw-semibold"
@@ -750,6 +770,7 @@
 									<table class="table table-sm table-hover table-bordered table-compact mb-0">
 										<thead>
 											<tr>
+												<th th:if="${selectedHostelId == 0}">Hostel Name</th>
 												<!-- <th>Course / Department</th> -->
 												<th class="text-center">Code</th>
 												<th class="text-center">Batch Year</th>
@@ -758,6 +779,8 @@
 										</thead>
 										<tbody>
 											<tr th:each="dist : ${studentDistributionList}">
+												<td th:if="${selectedHostelId == 0}" class="fw-bold text-dark"
+													th:text="${dist.hostelName}">Hostel Name</td>
 												<!-- <td class="fw-semibold text-dark" th:text="${dist.courseName}">Course
 													Name</td> -->
 												<td class="text-center"><span class="badge bg-secondary"
@@ -769,7 +792,8 @@
 														th:text="${dist.studentCount}"></span></td>
 											</tr>
 											<tr th:if="${#lists.isEmpty(studentDistributionList)}">
-												<td colspan="4" class="text-center text-muted py-3">No active student
+												<td th:colspan="${selectedHostelId == 0 ? 4 : 3}"
+													class="text-center text-muted py-3">No active student
 													room allotments found for the selected filters.</td>
 											</tr>
 										</tbody>
@@ -918,7 +942,8 @@
 						guestRooms: 0, guestCapacity: 0, guestUtilized: 0, guestVacant: 0, guestVacantRooms: 0, guestUtilizedRooms: 0, guestPartVacRooms: 0, guestPartVacBeds: 0, guestOverRooms: 0, guestOverSeats: 0,
 						icsrRooms: 0, icsrCapacity: 0, icsrUtilized: 0, icsrVacant: 0, icsrVacantRooms: 0, icsrUtilizedRooms: 0, icsrPartVacRooms: 0, icsrPartVacBeds: 0, icsrOverRooms: 0, icsrOverSeats: 0,
 						officialRooms: 0, officialCapacity: 0, officialUtilized: 0, officialVacant: 0, officialVacantRooms: 0, officialUtilizedRooms: 0, officialPartVacRooms: 0, officialPartVacBeds: 0, officialOverRooms: 0, officialOverSeats: 0,
-						partiallyVacantRooms: 0, partiallyVacantBeds: 0, overloadedRooms: 0, overloadedSeats: 0
+						singlePhysicallyUnavailable: 0, doublePhysicallyUnavailable: 0, triplePhysicallyUnavailable: 0, quadPhysicallyUnavailable: 0, dormPhysicallyUnavailable: 0, pdPhysicallyUnavailable: 0, guestPhysicallyUnavailable: 0, icsrPhysicallyUnavailable: 0, officialPhysicallyUnavailable: 0,
+						partiallyVacantRooms: 0, partiallyVacantBeds: 0, overloadedRooms: 0, overloadedSeats: 0, physicallyUnavailableSeats: 0
 					};
 					capacityData.forEach(item => {
 						for (let k in h) {
@@ -977,20 +1002,21 @@
 				setTxt('valSec2TotalVacant', h.totalVacant);
 
 				// Section 3 Category Utilization (with Partially Occupied & Overload columns)
-				setTxt('valUtilSingleRooms', h.singleUtilizedRooms); setTxt('valUtilSinglePart', (h.singlePartVacRooms || 0) + '/' + (h.singlePartVacBeds || 0)); setTxt('valUtilSingleOver', (h.singleOverRooms || 0) + '/' + (h.singleOverSeats || 0)); setTxt('valUtilSingleSeats', h.singleUtilized);
-				setTxt('valUtilDoubleRooms', h.doubleUtilizedRooms); setTxt('valUtilDoublePart', (h.doublePartVacRooms || 0) + '/' + (h.doublePartVacBeds || 0)); setTxt('valUtilDoubleOver', (h.doubleOverRooms || 0) + '/' + (h.doubleOverSeats || 0)); setTxt('valUtilDoubleSeats', h.doubleUtilized);
-				setTxt('valUtilTripleRooms', h.tripleUtilizedRooms); setTxt('valUtilTriplePart', (h.triplePartVacRooms || 0) + '/' + (h.triplePartVacBeds || 0)); setTxt('valUtilTripleOver', (h.tripleOverRooms || 0) + '/' + (h.tripleOverSeats || 0)); setTxt('valUtilTripleSeats', h.tripleUtilized);
-				setTxt('valUtilQuadRooms', h.quadUtilizedRooms); setTxt('valUtilQuadPart', (h.quadPartVacRooms || 0) + '/' + (h.quadPartVacBeds || 0)); setTxt('valUtilQuadOver', (h.quadOverRooms || 0) + '/' + (h.quadOverSeats || 0)); setTxt('valUtilQuadSeats', h.quadUtilized);
-				setTxt('valUtilDormRooms', h.dormUtilizedRooms); setTxt('valUtilDormPart', (h.dormPartVacRooms || 0) + '/' + (h.dormPartVacBeds || 0)); setTxt('valUtilDormOver', (h.dormOverRooms || 0) + '/' + (h.dormOverSeats || 0)); setTxt('valUtilDormSeats', h.dormUtilized);
-				setTxt('valUtilPdRooms', h.pdUtilizedRooms); setTxt('valUtilPdPart', (h.pdPartVacRooms || 0) + '/' + (h.pdPartVacBeds || 0)); setTxt('valUtilPdOver', (h.pdOverRooms || 0) + '/' + (h.pdOverSeats || 0)); setTxt('valUtilPdSeats', h.pdUtilized);
-				setTxt('valUtilGuestRooms', h.guestUtilizedRooms); setTxt('valUtilGuestPart', (h.guestPartVacRooms || 0) + '/' + (h.guestPartVacBeds || 0)); setTxt('valUtilGuestOver', (h.guestOverRooms || 0) + '/' + (h.guestOverSeats || 0)); setTxt('valUtilGuestSeats', h.guestUtilized);
-				setTxt('valUtilIcsrRooms', h.icsrUtilizedRooms); setTxt('valUtilIcsrPart', (h.icsrPartVacRooms || 0) + '/' + (h.icsrPartVacBeds || 0)); setTxt('valUtilIcsrOver', (h.icsrOverRooms || 0) + '/' + (h.icsrOverSeats || 0)); setTxt('valUtilIcsrSeats', h.icsrUtilized);
-				setTxt('valUtilOfficialRooms', h.officialUtilizedRooms); setTxt('valUtilOfficialPart', (h.officialPartVacRooms || 0) + '/' + (h.officialPartVacBeds || 0)); setTxt('valUtilOfficialOver', (h.officialOverRooms || 0) + '/' + (h.officialOverSeats || 0)); setTxt('valUtilOfficialSeats', h.officialUtilized);
+				setTxt('valUtilSingleRooms', h.singleUtilizedRooms); setTxt('valUtilSinglePart', (h.singlePartVacRooms || 0) + '/' + (h.singlePartVacBeds || 0)); setTxt('valUtilSingleOver', (h.singleOverRooms || 0) + '/' + (h.singleOverSeats || 0)); setTxt('valUtilSinglePhys', h.singlePhysicallyUnavailable); setTxt('valUtilSingleSeats', h.singleUtilized);
+				setTxt('valUtilDoubleRooms', h.doubleUtilizedRooms); setTxt('valUtilDoublePart', (h.doublePartVacRooms || 0) + '/' + (h.doublePartVacBeds || 0)); setTxt('valUtilDoubleOver', (h.doubleOverRooms || 0) + '/' + (h.doubleOverSeats || 0)); setTxt('valUtilDoublePhys', h.doublePhysicallyUnavailable); setTxt('valUtilDoubleSeats', h.doubleUtilized);
+				setTxt('valUtilTripleRooms', h.tripleUtilizedRooms); setTxt('valUtilTriplePart', (h.triplePartVacRooms || 0) + '/' + (h.triplePartVacBeds || 0)); setTxt('valUtilTripleOver', (h.tripleOverRooms || 0) + '/' + (h.tripleOverSeats || 0)); setTxt('valUtilTriplePhys', h.triplePhysicallyUnavailable); setTxt('valUtilTripleSeats', h.tripleUtilized);
+				setTxt('valUtilQuadRooms', h.quadUtilizedRooms); setTxt('valUtilQuadPart', (h.quadPartVacRooms || 0) + '/' + (h.quadPartVacBeds || 0)); setTxt('valUtilQuadOver', (h.quadOverRooms || 0) + '/' + (h.quadOverSeats || 0)); setTxt('valUtilQuadPhys', h.quadPhysicallyUnavailable); setTxt('valUtilQuadSeats', h.quadUtilized);
+				setTxt('valUtilDormRooms', h.dormUtilizedRooms); setTxt('valUtilDormPart', (h.dormPartVacRooms || 0) + '/' + (h.dormPartVacBeds || 0)); setTxt('valUtilDormOver', (h.dormOverRooms || 0) + '/' + (h.dormOverSeats || 0)); setTxt('valUtilDormPhys', h.dormPhysicallyUnavailable); setTxt('valUtilDormSeats', h.dormUtilized);
+				setTxt('valUtilPdRooms', h.pdUtilizedRooms); setTxt('valUtilPdPart', (h.pdPartVacRooms || 0) + '/' + (h.pdPartVacBeds || 0)); setTxt('valUtilPdOver', (h.pdOverRooms || 0) + '/' + (h.pdOverSeats || 0)); setTxt('valUtilPdPhys', h.pdPhysicallyUnavailable); setTxt('valUtilPdSeats', h.pdUtilized);
+				setTxt('valUtilGuestRooms', h.guestUtilizedRooms); setTxt('valUtilGuestPart', (h.guestPartVacRooms || 0) + '/' + (h.guestPartVacBeds || 0)); setTxt('valUtilGuestOver', (h.guestOverRooms || 0) + '/' + (h.guestOverSeats || 0)); setTxt('valUtilGuestPhys', h.guestPhysicallyUnavailable); setTxt('valUtilGuestSeats', h.guestUtilized);
+				setTxt('valUtilIcsrRooms', h.icsrUtilizedRooms); setTxt('valUtilIcsrPart', (h.icsrPartVacRooms || 0) + '/' + (h.icsrPartVacBeds || 0)); setTxt('valUtilIcsrOver', (h.icsrOverRooms || 0) + '/' + (h.icsrOverSeats || 0)); setTxt('valUtilIcsrPhys', h.icsrPhysicallyUnavailable); setTxt('valUtilIcsrSeats', h.icsrUtilized);
+				setTxt('valUtilOfficialRooms', h.officialUtilizedRooms); setTxt('valUtilOfficialPart', (h.officialPartVacRooms || 0) + '/' + (h.officialPartVacBeds || 0)); setTxt('valUtilOfficialOver', (h.officialOverRooms || 0) + '/' + (h.officialOverSeats || 0)); setTxt('valUtilOfficialPhys', h.officialPhysicallyUnavailable); setTxt('valUtilOfficialSeats', h.officialUtilized);
 
 				const totalUtilRooms = (h.singleUtilizedRooms || 0) + (h.doubleUtilizedRooms || 0) + (h.tripleUtilizedRooms || 0) + (h.quadUtilizedRooms || 0) + (h.dormUtilizedRooms || 0) + (h.pdUtilizedRooms || 0) + (h.guestUtilizedRooms || 0) + (h.icsrUtilizedRooms || 0) + (h.officialUtilizedRooms || 0);
 				setTxt('valSec3TotalUtilRooms', totalUtilRooms);
 				setTxt('valSec3TotalPart', (h.partiallyVacantRooms || 0) + '/' + (h.partiallyVacantBeds || 0));
 				setTxt('valSec3TotalOver', (h.overloadedRooms || 0) + '/' + (h.overloadedSeats || 0));
+				setTxt('valSec3TotalPhysicallyUnavailable', h.physicallyUnavailableSeats);
 				setTxt('valSec3TotalUtilized', h.totalUtilized);
 
 				if (String(hostelId) !== String(currentHostelId)) {

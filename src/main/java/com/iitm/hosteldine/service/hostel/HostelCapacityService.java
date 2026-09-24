@@ -36,6 +36,25 @@ public class HostelCapacityService {
         List<Object[]> rawList = hostelMasterRepository.getHostelCapacityListByDateRange(fromDate, toDate);
         List<HostelCapacityDto> dtoList = new ArrayList<>();
 
+        java.util.Map<Long, long[]> physMap = new java.util.HashMap<>();
+        try {
+            List<Object[]> physicallyList = hostelMasterRepository.getPhysicallyUnavailableOverloadCountByHostel();
+            if (physicallyList != null) {
+                for (Object[] obj : physicallyList) {
+                    if (obj != null && obj[0] != null) {
+                        Long hId = ((Number) obj[0]).longValue();
+                        long[] physArr = new long[10];
+                        for (int i = 1; i <= 10; i++) {
+                            physArr[i - 1] = (obj.length > i && obj[i] != null) ? ((Number) obj[i]).longValue() : 0L;
+                        }
+                        physMap.put(hId, physArr);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // handle gracefully if table or data not present
+        }
+
         for (Object[] row : rawList) {
             Long hostelId = row[0] != null ? ((Number) row[0]).longValue() : 0L;
             String hostelName = row[1] != null ? row[1].toString() : "";
@@ -150,7 +169,19 @@ public class HostelCapacityService {
             Long partiallyUtilizedRooms = partiallyVacantRooms;
 
             Long overloadedRooms = row.length > 89 && row[89] != null ? ((Number) row[89]).longValue() : 0L;
-            Long overloadedSeats = row.length > 90 && row[90] != null ? ((Number) row[90]).longValue() : 0L;
+            Long grossOverloadedSeats = row.length > 90 && row[90] != null ? ((Number) row[90]).longValue() : 0L;
+            long[] pArr = physMap.getOrDefault(hostelId, new long[10]);
+            Long singlePhys = pArr[0];
+            Long doublePhys = pArr[1];
+            Long triplePhys = pArr[2];
+            Long quadPhys = pArr[3];
+            Long dormPhys = pArr[4];
+            Long pdPhys = pArr[5];
+            Long guestPhys = pArr[6];
+            Long icsrPhys = pArr[7];
+            Long officialPhys = pArr[8];
+            Long physicallyUnavailableSeats = pArr[9];
+            Long netOverloadedSeats = Math.max(0L, grossOverloadedSeats - physicallyUnavailableSeats);
 
             HostelCapacityDto dto = HostelCapacityDto.builder()
                     .hostelId(hostelId)
@@ -250,11 +281,22 @@ public class HostelCapacityService {
                     .officialPartVacBeds(officialPartVacBeds)
                     .officialOverRooms(officialOverRooms)
                     .officialOverSeats(officialOverSeats)
+                    .singlePhysicallyUnavailable(singlePhys)
+                    .doublePhysicallyUnavailable(doublePhys)
+                    .triplePhysicallyUnavailable(triplePhys)
+                    .quadPhysicallyUnavailable(quadPhys)
+                    .dormPhysicallyUnavailable(dormPhys)
+                    .pdPhysicallyUnavailable(pdPhys)
+                    .guestPhysicallyUnavailable(guestPhys)
+                    .icsrPhysicallyUnavailable(icsrPhys)
+                    .officialPhysicallyUnavailable(officialPhys)
                     .partiallyVacantRooms(partiallyVacantRooms)
                     .partiallyVacantBeds(partiallyVacantBeds)
                     .partiallyUtilizedRooms(partiallyUtilizedRooms)
                     .overloadedRooms(overloadedRooms)
-                    .overloadedSeats(overloadedSeats)
+                    .overloadedSeats(netOverloadedSeats)
+                    .physicallyUnavailableSeats(physicallyUnavailableSeats)
+                    .grossOverloadedSeats(grossOverloadedSeats)
                     .build();
 
             dtoList.add(dto);
@@ -542,7 +584,7 @@ public class HostelCapacityService {
                 addStyledCell(rTot, 1, "TOTAL ALLOTTED SEATS (INC. OVERLOAD)", boldStyle);
                 addStyledCell(rTot, 2, totRooms, boldStyle);
                 addStyledCell(rTot, 3, nvl(h.getPartiallyVacantRooms()) + " / " + nvl(h.getPartiallyVacantBeds()), boldStyle);
-                addStyledCell(rTot, 4, nvl(h.getOverloadedRooms()) + " / " + nvl(h.getOverloadedSeats()), boldStyle);
+                addStyledCell(rTot, 4, nvl(h.getOverloadedRooms()) + " / " + nvl(h.getOverloadedSeats()) + " (Physically Unavailable: " + nvl(h.getPhysicallyUnavailableSeats()) + ")", boldStyle);
                 addStyledCell(rTot, 5, nvl(h.getTotalUtilized()), boldStyle);
 
                 rIdx3++;

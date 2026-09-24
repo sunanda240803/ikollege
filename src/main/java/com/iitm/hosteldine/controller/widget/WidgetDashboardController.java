@@ -33,6 +33,7 @@ import com.iitm.hosteldine.dto.dean.DeanApprovalDto;
 import com.iitm.hosteldine.dto.dean.PropertyDto;
 import com.iitm.hosteldine.dto.student.StudentDetailsInfoDto;
 import com.iitm.hosteldine.exception.GlobalExceptionHandler;
+import com.iitm.hosteldine.service.SimsConfigDataService;
 import com.iitm.hosteldine.service.StudentBioDataService;
 import com.iitm.hosteldine.service.StudentDetailsInfoService;
 import com.iitm.hosteldine.service.OtherCandidate.OtherCandidateService;
@@ -63,6 +64,7 @@ public class WidgetDashboardController {
     private final HostelRoomAllotmentService hostelRoomAllotmentService;
     private final StudentDetailsInfoService studentDetailsInfoService;
     private final FileService fileService;
+    private final SimsConfigDataService simsConfigDataService;
 
     @Value("${url.dashboard}" + "${url.student}")
 	private String getStudentDashboard;
@@ -97,6 +99,10 @@ public class WidgetDashboardController {
 		MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
 		userDetails.setProfileName(SecurityCtxUtil.userName());
 
+		if (simsConfigDataService.isUserAllowedForHostelCapacity(SecurityCtxUtil.userName())) {
+			return Constants.REDIRECT + "/hostelCapacity/slideshow";
+		}
+
 	    List<MenuListDto> menuEntryList = dashboardService.getDashboardList();
 
 	    if (menuEntryList != null) {
@@ -125,6 +131,11 @@ public class WidgetDashboardController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
 		userDetails.setProfileName(SecurityCtxUtil.userName());
+
+		if (simsConfigDataService.isUserAllowedForHostelCapacity(SecurityCtxUtil.userName())) {
+			return Constants.REDIRECT + "/hostelCapacity/slideshow";
+		}
+
 		commonResponseUtil.updateCommonModelAttributes(model, request);
 		return HTMLPage.DASHBOARD;
 	}

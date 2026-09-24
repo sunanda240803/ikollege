@@ -20,6 +20,7 @@ public class HTMLPage {
 
 	// Hostel Master
 	public static final String HOSTEL_CAPACITY = "hostel/hostel-capacity";
+	public static final String HOSTEL_CAPACITY_SLIDESHOW = "hostel/hostel-capacity-slideshow";
 	public static final String HOSTEL_CAPACITY_MODULE = "hostel/hostel-capacity";
 	public static final String HOSTEL_UTILIZATION_REPORT = "hostel/hostel-utilization-report";
 	public static final String YEARWISE_HOSTEL_CAPACITY_REPORT = "hostel/yearwise-hostel-capacity-report";

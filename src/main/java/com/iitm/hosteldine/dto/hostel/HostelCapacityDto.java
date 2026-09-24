@@ -136,4 +136,17 @@ public class HostelCapacityDto {
     // Overload Metrics (matching Summary Page)
     private Long overloadedRooms;
     private Long overloadedSeats;
+    private Long physicallyUnavailableSeats;
+    private Long grossOverloadedSeats;
+
+    // Category-wise Physically Unavailable Metrics
+    private Long singlePhysicallyUnavailable;
+    private Long doublePhysicallyUnavailable;
+    private Long triplePhysicallyUnavailable;
+    private Long quadPhysicallyUnavailable;
+    private Long dormPhysicallyUnavailable;
+    private Long pdPhysicallyUnavailable;
+    private Long guestPhysicallyUnavailable;
+    private Long icsrPhysicallyUnavailable;
+    private Long officialPhysicallyUnavailable;
 }

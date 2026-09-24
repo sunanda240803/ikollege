@@ -103,5 +103,34 @@ public class HostelCapacityController {
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(excelBytes);
     }
+
+    @GetMapping("/slideshow")
+    public String getHostelCapacitySlideshow(
+            PaginationForm form, 
+            ModelMap map, 
+            HttpServletRequest request) throws Exception {
+
+        String userName = SecurityCtxUtil.userName();
+        if (!simsConfigDataService.isUserAllowedForHostelCapacity(userName)) {
+            return "redirect:" + errorUrl + "?error=forbidden";
+        }
+        
+        LocalDate today = LocalDate.now();
+        String todayStr = today.format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        Long selectedHostelId = 0L;
+
+        List<HostelCapacityDto> capacityList = hostelCapacityService.getHostelCapacityList(todayStr, todayStr);
+        HostelGuestTariffDto guestTariffDto = hostelCapacityService.getLiveGuestRoomTariffDetails(selectedHostelId);
+
+        map.addAttribute("capacityList", capacityList);
+        map.addAttribute("selectedHostelId", selectedHostelId);
+        map.addAttribute("todayDateStr", today.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+        map.addAttribute("guestTariffDto", guestTariffDto);
+
+        commonResponseUtil.updateCommonModelAttributes(map, request, null, form);
+        
+        return HTMLPage.HOSTEL_CAPACITY_SLIDESHOW;
+    }
 }
 
